@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- id 형식: view약자_속한xml명_view설명 -->
+<!-- view 약자
+        img: ImageView
+        btn: Button
+        lin: LinearLayout
+        tv: TextView
+        rtb: RatingBar              -->
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="10dp">
+    <LinearLayout
+        android:id="@+id/lin_pochadetail_reportContainer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+        <ImageButton
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@drawable/pochadetail_report"
+            android:adjustViewBounds="true"
+            android:scaleType="fitCenter"
+            android:background="@android:color/transparent"
+            android:layout_marginRight="5dp"
+            tools:ignore="SpeakableTextPresentCheck" />
+        <TextView
+            android:id="@+id/tv_pochadetail_report"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="신고하기"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            android:textStyle="bold"/>
+    </LinearLayout>
+    <android.widget.Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="방문 인증"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/lin_pochadetail_reportContainer"
+        app:layout_constraintBottom_toBottomOf="@id/lin_pochadetail_reportContainer"/>
+    <ImageView
+        android:id="@+id/img_pochadetail_location"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintWidth_max="400dp"
+        app:layout_constraintWidth_default="percent"
+        app:layout_constraintWidth_percent="0.85"
+        app:layout_constraintDimensionRatio="H, 2:1"
+        android:background="@color/black"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/lin_pochadetail_reportContainer"
+        android:layout_marginTop="10dp"/>
+    <TextView
+        android:id="@+id/tv_pochadetail_address"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="경기도 부천시 범안로 44 건물 우측 골목"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/img_pochadetail_location"
+        android:layout_marginTop="15dp"/>
+    <RatingBar
+        android:id="@+id/rtb_pochadetail_rating"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="?android:attr/ratingBarStyleIndicator"
+        android:isIndicator="true"
+        android:numStars="5"
+        android:rating="0"
+        android:stepSize="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_pochadetail_address"
+        android:layout_marginTop="15dp"/>
+    <LinearLayout
+        android:id="@+id/lin_pochadetail_payContainer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/lin_pochadetail_openContainer"
+        app:layout_constraintTop_toTopOf="@id/lin_pochadetail_openContainer"
+        app:layout_constraintBottom_toBottomOf="@id/lin_pochadetail_openContainer">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="결제방식"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="현금"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginTop="5dp"/>
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/lin_pochadetail_openContainer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        app:layout_constraintStart_toEndOf="@id/lin_pochadetail_payContainer"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rtb_pochadetail_rating"
+        android:layout_marginTop="20dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="출몰시기"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            android:textStyle="bold"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="월 휴무"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginTop="2dp"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="17:00 ~ 24:00"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginTop="2dp"/>
+    </LinearLayout>
+    <android.widget.Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="정보수정"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/lin_pochadetail_openContainer"
+        android:layout_marginTop="20dp"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
