@@ -1,5 +1,8 @@
 plugins {
     id 'com.android.application'
+
+    // firebase 사용을 위한 구성 파일 - Google 서비스 플러그인
+    id 'com.google.gms.google-services'
 }
 
 android {
@@ -36,4 +39,8 @@ dependencies {
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+
+    // Firebase SDK 추가 - Firebsae Android BoM : 자동으로 라이브러리 버전 관리 제어
+    implementation(platform("com.google.firebase:firebase-bom:32.3.1"))
+    implementation('com.google.firebase:firebase-analytics:21.3.0')
 }

@@ -39,7 +39,7 @@ public class PochainfoActivity extends AppCompatActivity {
     View.OnClickListener onClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            // v.getResources().getResourceEntryName(v.getId()) : id 이름(문자) 반환
+            // v.getResources().getResourceEntryName(v.getId()) : id의 이름(문자)을 반환
             switch (v.getResources().getResourceEntryName(v.getId())) {
                 case "btn_pochainfo_detailTab":
                     // 객체 생성 및 초기화
