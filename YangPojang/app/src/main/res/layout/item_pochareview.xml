@@ -14,7 +14,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:padding="10dp">
     <TextView
-        android:id="@+id/tv_pochareview_username"
+        android:id="@+id/tv_pochareview_writerName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="익명"
@@ -30,15 +30,16 @@
         android:textColor="@color/black"
         android:textSize="18sp"
         android:textStyle="bold"
-        app:layout_constraintStart_toEndOf="@id/tv_pochareview_username"
-        app:layout_constraintBaseline_toBaselineOf="@id/tv_pochareview_username"
+        app:layout_constraintStart_toEndOf="@id/tv_pochareview_writerName"
+        app:layout_constraintBaseline_toBaselineOf="@id/tv_pochareview_writerName"
         android:layout_marginLeft="5dp"/>
     <LinearLayout
         android:id="@+id/lin_pochareview_imageContainer"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_pochareview_username"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_pochareview_writerName"
         android:layout_marginTop="5dp">
         <ImageView
             android:layout_width="100dp"
@@ -58,7 +59,7 @@
     </LinearLayout>
     <TextView
         android:id="@+id/tv_pochareview_textContent"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="여기 맛집으로 추천!!\n다음에도 반드시 사먹을게요~"
         android:textColor="@color/black"
@@ -67,7 +68,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/lin_pochareview_imageContainer"
-        android:layout_marginTop="10dp"/>
+        android:layout_marginTop="10dp"
+        />
     <ImageButton
         android:id="@+id/imgbtn_pochareview_report"
         android:layout_width="48dp"
