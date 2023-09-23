@@ -7,7 +7,7 @@ public class MeetingDTO {
     String meetDate;        // 번개 날짜
     String date;            // 번개 작성 날짜
     String time;            // 번개 시간
-    int maxMember;          // 번개 인원
+    double maxMember;          // 번개 인원
 
     // 생성자
     public MeetingDTO(String uid, String pchName) {
@@ -46,7 +46,7 @@ public class MeetingDTO {
         return time;
     }
 
-    public int getMaxMember() {
+    public double getMaxMember() {
         return maxMember;
     }
 
@@ -76,7 +76,7 @@ public class MeetingDTO {
         this.time = time;
     }
 
-    public void setMaxMember(int maxMember) {
+    public void setMaxMember(double maxMember) {
         this.maxMember = maxMember;
     }
 }
