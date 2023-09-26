@@ -1,6 +1,12 @@
 plugins {
     id 'com.android.application'
+    id 'com.google.gms.google-services'
 }
+
+    //local.properties 불러오기
+    Properties properties = new Properties()
+    properties.load(project.rootProject.file('local.properties').newDataInputStream())
+    def MAP_API_KEY = properties.getProperty('MAP_API_KEY')
 
 android {
     namespace 'com.yuhan.yangpojang'
@@ -9,12 +15,16 @@ android {
     defaultConfig {
         applicationId "com.yuhan.yangpojang"
         minSdk 31
-        targetSdk 31
+        targetSdk 33
         versionCode 1
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        manifestPlaceholders = [MAP_API_KEY : MAP_API_KEY]
+
     }
+
 
     buildTypes {
         release {
@@ -26,14 +36,65 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+    buildFeatures {
+        buildConfig true
+        compose true
+        viewBinding true
+    }
 }
 
 dependencies {
-
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.9.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+
+    //kakaotalk 에 사용되는 implementation들
+    //noinspection GradleCompatible
+    implementation 'com.android.support:design:28.0.0'
+    implementation "com.kakao.sdk:v2-all:2.15.0" // 전체 모듈 설치, 2.11.0 버전부터 지원
+    implementation "com.kakao.sdk:v2-user:2.15.0" // 카카오 로그인
+    implementation "com.kakao.sdk:v2-talk:2.15.0" // 친구, 메시지(카카오톡)
+    implementation "com.kakao.sdk:v2-story:2.15.0" // 카카오스토리
+    implementation "com.kakao.sdk:v2-share:2.15.0" // 메시지(카카오톡 공유)
+    implementation "com.kakao.sdk:v2-navi:2.15.0" // 카카오내비
+    implementation "com.kakao.sdk:v2-friend:2.15.0"  //카카오친구
+
+    implementation 'io.reactivex.rxjava2:rxjava:2.2.21'
+    implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
+
+
+    //firebase 이용을 위한 implematation
+    implementation(platform("com.google.firebase:firebase-bom:32.2.2")) //여러 firebase 라이브러리를 사용하는 경우 모든 버전이 호환되도록 BoM을 사용하여 라이브러리 버전을 관리하는것 추천
+    implementation 'com.google.firebase:firebase-analytics'
+    implementation 'com.google.firebase:firebase-auth:22.1.1'
+    implementation 'com.google.firebase:firebase-auth-ktx:22.1.1'
+    implementation 'com.google.firebase:firebase-database-ktx:20.2.2'
+    implementation 'com.google.firebase:firebase-database:20.2.2'
+    implementation 'com.google.firebase:firebase-firestore:24.7.0'
+    implementation 'com.google.firebase:firebase-auth:22.1.1'
+    implementation 'com.google.firebase:firebase-storage:20.2.1'
+
+    // Glide(이미지 관련)  사용을 위한 implementation  -    // 오픈소스 이미지 핸들링할 때 많이 사용되는 글라이드
+    implementation 'com.github.bumptech.glide:glide:4.12.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.12.0'
+
+
+    //jsoup - 자바로 html 구문 분석 가능한 java 파서
+    implementation 'org.jsoup:jsoup:1.16.1'
+    implementation 'com.sparkjava:spark-core:2.9.3'
+
+    //firbase 및 jwt 라이브러리 추가
+    implementation 'io.jsonwebtoken:jjwt-api:0.11.2'
+    implementation 'io.jsonwebtoken:jjwt-impl:0.11.2'
+    implementation 'io.jsonwebtoken:jjwt-jackson:0.11.2'
+
+    // 지도 관련
+    implementation 'com.naver.maps:map-sdk:3.17.0' //네이버 지도 SDK 의존성
+    implementation 'com.google.android.gms:play-services-location:21.0.1' //구글 플레이 서비스 위치 API 의존성(현재 위치 가져오기)
+
+
 }
