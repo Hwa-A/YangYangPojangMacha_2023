@@ -1,0 +1,361 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:backgroundTint="#FF5722"
+    android:outlineAmbientShadowColor="#FF5722"
+    android:outlineSpotShadowColor="#00FFFFFF">
+    <!--    tools:context=".ReportShop-->
+
+
+    <!--    <androidx.fragment.app.FragmentContainerView-->
+    <!--        android:id="@+id/reportshop"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="match_parent"-->
+
+    <!--        />-->
+    <ScrollView
+        android:id="@+id/scrollView2"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toTopOf="@+id/reportBtn"
+        tools:layout_editor_absoluteX="0dp"
+        tools:ignore="NotSibling">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!--            android:onClick : 클릭 명 설정
+                          android:clickable="true" : 클릭 할 수 있도록-->
+
+
+            <TextView
+                android:id="@+id/reportshopTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="가게 제보하기"
+                android:textSize="28dp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.485"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.021" />
+
+
+
+            <TextView
+                android:id="@+id/shopAddIs"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="가게 위치는"
+                android:textSize="18dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.07"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.085" />
+            <TextView
+                android:id="@+id/shopplace"
+                android:layout_width="368dp"
+                android:layout_height="70dp"
+                android:layout_marginTop="12dp"
+                android:clickable="true"
+                android:ems="10"
+                android:onClick="@putAdd"
+                android:text="위치 선택하기"
+                android:textColor="@android:color/holo_blue_bright"
+                android:textSize="20dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.488"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/shopAddIs"
+                />
+
+
+
+
+            <TextView
+                android:id="@+id/ShopNameIs"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="80dp"
+                android:text="가게 이름은"
+                android:textSize="18dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.067"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/shopplace" />
+
+            <Spinner
+                android:id="@+id/categorySpinner"
+                android:layout_width="342dp"
+                android:layout_height="0dp"
+                android:layout_marginTop="20dp"
+                android:gravity="end"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.492"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/txtCategory"
+                tools:ignore="TouchTargetSizeCheck" />
+
+            <TextView
+                android:id="@+id/txtCategory"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:gravity="center_horizontal"
+                android:text="카테고리"
+                android:textSize="18dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.486"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/editTextText2" />
+
+
+            <EditText
+                android:id="@+id/editTextText2"
+                android:layout_width="367dp"
+                android:layout_height="48dp"
+                android:layout_marginTop="4dp"
+                android:ems="10"
+                android:hint="ex))  영희네  or  별빛아파트 앞"
+                android:inputType="text"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.522"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/ShopNameIs" />
+
+            <CheckBox
+                android:id="@+id/pwayAccount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="계좌이체"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.516"
+                app:layout_constraintStart_toEndOf="@+id/pwayMobile"
+                app:layout_constraintTop_toBottomOf="@+id/pwayCash" />
+
+            <TextView
+                android:id="@+id/paywayIs"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="60dp"
+                android:gravity="center_horizontal"
+                android:text="결제 방식 (중복가능)"
+                android:textSize="18dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.498"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/categorySpinner" />
+
+            <CheckBox
+                android:id="@+id/pwayMobile"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="모바일"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.206"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/pwayCard" />
+
+            <CheckBox
+                android:id="@+id/pwayCard"
+                android:layout_width="68dp"
+                android:layout_height="48dp"
+                android:layout_marginTop="8dp"
+                android:text="카드"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.204"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/paywayIs" />
+
+            <CheckBox
+                android:id="@+id/pwayCash"
+                android:layout_width="68dp"
+                android:layout_height="48dp"
+                android:layout_marginTop="12dp"
+                android:text="현금"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.482"
+                app:layout_constraintStart_toEndOf="@+id/pwayCard"
+                app:layout_constraintTop_toBottomOf="@+id/paywayIs" />
+
+
+            <CheckBox
+                android:id="@+id/Fri"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:layout_marginTop="8dp"
+                android:text="금"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toEndOf="@+id/thu"
+                app:layout_constraintTop_toBottomOf="@+id/dayIs" />
+
+            <TextView
+                android:id="@+id/dayIs"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="출몰 시기"
+                android:textSize="18dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.486"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/pwayMobile" />
+
+            <CheckBox
+                android:id="@+id/mon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="월"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/dayIs" />
+
+            <CheckBox
+                android:id="@+id/tue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:layout_marginTop="8dp"
+                android:text="화"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toEndOf="@+id/mon"
+                app:layout_constraintTop_toBottomOf="@+id/dayIs" />
+
+            <CheckBox
+                android:id="@+id/wed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:layout_marginTop="8dp"
+                android:text="수"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toEndOf="@+id/tue"
+                app:layout_constraintTop_toBottomOf="@+id/dayIs" />
+
+            <CheckBox
+                android:id="@+id/thu"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:layout_marginTop="8dp"
+                android:text="목"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toEndOf="@+id/wed"
+                app:layout_constraintTop_toBottomOf="@+id/dayIs" />
+
+            <CheckBox
+                android:id="@+id/sun"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:layout_marginTop="8dp"
+                android:text="일"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toEndOf="@+id/sat"
+                app:layout_constraintTop_toBottomOf="@+id/dayIs" />
+
+            <CheckBox
+                android:id="@+id/sat"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:layout_marginTop="8dp"
+                android:text="토"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toEndOf="@+id/Fri"
+                app:layout_constraintTop_toBottomOf="@+id/dayIs" />
+
+
+            <ImageView
+                android:id="@+id/storeExteriorPhoto"
+                android:layout_width="107dp"
+                android:layout_height="107dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/border_rounded_coner"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.213"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/mon" />
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="가게사진\n등록하기"
+                android:textSize="16sp"
+                app:layout_constraintBottom_toBottomOf="@id/storeExteriorPhoto"
+                app:layout_constraintEnd_toEndOf="@id/storeExteriorPhoto"
+                app:layout_constraintStart_toStartOf="@id/storeExteriorPhoto"
+                app:layout_constraintTop_toTopOf="@id/storeExteriorPhoto" />
+
+
+            <ImageView
+
+                android:id="@+id/menuBoardPhoto"
+                android:layout_width="107dp"
+                android:layout_height="107dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/border_rounded_coner"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.803"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/Fri" />
+
+            <TextView
+                android:id="@+id/menuBoardText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="가게메뉴\n등록하기"
+                android:textSize="16sp"
+                app:layout_constraintBottom_toBottomOf="@id/menuBoardPhoto"
+                app:layout_constraintEnd_toEndOf="@id/menuBoardPhoto"
+                app:layout_constraintStart_toStartOf="@id/menuBoardPhoto"
+                app:layout_constraintTop_toTopOf="@id/menuBoardPhoto" />
+
+
+
+            <Button
+                android:id="@+id/reportBtn"
+                android:layout_width="88dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="12dp"
+                android:background="#FF5722"
+                android:text="등록"
+                android:textColor="#ffffff"
+                android:textSize="11dp"
+                app:iconTint="#FF5722"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.498"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/storeExteriorPhoto"
+                tools:ignore="TextContrastCheck,TextSizeCheck,TouchTargetSizeCheck" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

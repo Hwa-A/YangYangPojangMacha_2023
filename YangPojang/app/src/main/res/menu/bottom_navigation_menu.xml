@@ -1,0 +1,27 @@
+<!-- bottom_navigation_menu.xml -->
+<menu xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/navigation_map"
+        app:showAsAction="always"
+        android:enabled="true"
+        android:icon="@drawable/map"
+        tools:ignore="MenuTitle" />
+
+
+    <item
+        android:id="@+id/navigation_report_shop"
+        android:icon="@drawable/report"
+        android:enabled="true"
+        app:showAsAction="always"
+        tools:ignore="MenuTitle" />
+
+    <item
+        android:id="@+id/navigation_profile_show"
+        android:icon="@drawable/profile"
+        android:enabled="true"
+        app:showAsAction="always"
+        tools:ignore="MenuTitle" />
+
+</menu>

@@ -6,4 +6,10 @@
     </style>
 
     <style name="Theme.YangPojang" parent="Base.Theme.YangPojang" />
+    <style name="Theme.YangPojang.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+    <style name="Theme.YangPojang.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+    <style name="Theme.YangPojang.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>
