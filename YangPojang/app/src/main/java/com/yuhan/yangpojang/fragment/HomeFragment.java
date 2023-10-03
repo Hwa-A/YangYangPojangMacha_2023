@@ -177,7 +177,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
             mapFragment.getMapAsync(naverMap -> {
                 CompassView compassViewView = homeview.findViewById(R.id.compass);
                 compassViewView.setMap(naverMap);
-                LocationButtonView locationButtonView = findViewById(R.id.location_btn);
+                LocationButtonView locationButtonView = homeview.findViewById(R.id.location_btn);
                 locationButtonView.setMap(naverMap);
             });
         }
