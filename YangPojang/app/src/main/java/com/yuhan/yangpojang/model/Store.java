@@ -1,5 +1,7 @@
 package com.yuhan.yangpojang.model;
 
+import com.google.firebase.firestore.GeoPoint;
+
 //Store 클래스 - 가게 정보를 저장하는 모델 클래스
 public class Store {
     double latitude; //위도
@@ -10,23 +12,14 @@ public class Store {
     String storeAddress; //가게 주소
     String openingHours; //가게 영업시간
     float rating; //가게 별점
-
-    public Store(double latitude, double longitude, boolean isVerified, boolean hasMeeting, String storeName, String storeAddress, String openingHours, float rating){
-        this.latitude = latitude;
-        this.longitude = longitude;
-        this.isVerified = isVerified;
-        this.hasMeeting = hasMeeting;
-        this.storeName = storeName;
-        this.storeAddress = storeAddress;
-        this.openingHours = openingHours;
-        this.rating = rating;
-    }
+    String category; //카테고리
+    String imageUrl; //가게이미지 url
+    GeoPoint location; // 가게 위치
+    String geohash; //가게 위치에 대한 지오해쉬값
 
     public Store(){}
 
-    public double getLatitude() {
-        return latitude;
-    }
+    public double getLatitude() { return latitude; }
 
     public void setLatitude(double latitude) {
         this.latitude = latitude;
@@ -88,4 +81,33 @@ public class Store {
         this.rating = rating;
     }
 
+    public String getCategory() {return category;}
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    public GeoPoint getLocation() {
+        return location;
+    }
+
+    public void setLocation(GeoPoint location) {
+        this.location = location;
+    }
+
+    public String getGeohash() {
+        return geohash;
+    }
+
+    public void setGeohash(String geohash) {
+        this.geohash = geohash;
+    }
 }

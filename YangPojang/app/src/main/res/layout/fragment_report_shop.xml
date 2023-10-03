@@ -8,15 +8,8 @@
     android:backgroundTint="#FF5722"
     android:outlineAmbientShadowColor="#FF5722"
     android:outlineSpotShadowColor="#00FFFFFF">
-    <!--    tools:context=".ReportShop-->
 
 
-    <!--    <androidx.fragment.app.FragmentContainerView-->
-    <!--        android:id="@+id/reportshop"-->
-    <!--        android:layout_width="match_parent"-->
-    <!--        android:layout_height="match_parent"-->
-
-    <!--        />-->
     <ScrollView
         android:id="@+id/scrollView2"
         android:layout_width="match_parent"

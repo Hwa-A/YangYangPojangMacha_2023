@@ -21,6 +21,8 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
+        buildConfigField("String","POI_API_KEY", properties.getProperty("poi_api_key"))
+
         manifestPlaceholders = [MAP_API_KEY : MAP_API_KEY]
 
     }
@@ -47,25 +49,12 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.9.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 
-    //kakaotalk 에 사용되는 implementation들
-    //noinspection GradleCompatible
-    implementation 'com.android.support:design:28.0.0'
-    implementation "com.kakao.sdk:v2-all:2.15.0" // 전체 모듈 설치, 2.11.0 버전부터 지원
-    implementation "com.kakao.sdk:v2-user:2.15.0" // 카카오 로그인
-    implementation "com.kakao.sdk:v2-talk:2.15.0" // 친구, 메시지(카카오톡)
-    implementation "com.kakao.sdk:v2-story:2.15.0" // 카카오스토리
-    implementation "com.kakao.sdk:v2-share:2.15.0" // 메시지(카카오톡 공유)
-    implementation "com.kakao.sdk:v2-navi:2.15.0" // 카카오내비
-    implementation "com.kakao.sdk:v2-friend:2.15.0"  //카카오친구
-
     implementation 'io.reactivex.rxjava2:rxjava:2.2.21'
     implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
-
 
     //firebase 이용을 위한 implematation
     implementation(platform("com.google.firebase:firebase-bom:32.2.2")) //여러 firebase 라이브러리를 사용하는 경우 모든 버전이 호환되도록 BoM을 사용하여 라이브러리 버전을 관리하는것 추천
@@ -95,6 +84,11 @@ dependencies {
     // 지도 관련
     implementation 'com.naver.maps:map-sdk:3.17.0' //네이버 지도 SDK 의존성
     implementation 'com.google.android.gms:play-services-location:21.0.1' //구글 플레이 서비스 위치 API 의존성(현재 위치 가져오기)
+    implementation 'androidx.recyclerview:recyclerview:1.3.1' // RecyclerView 의존성 추가
+    implementation 'com.google.firebase:firebase-firestore-ktx:24.7.1' // 파이어베이스
+    implementation 'com.firebase:geofire-android-common:3.1.0' //파이어베이스 - Geohash : 중심 위치와 반경 기반으로 Geohash범위 계산
+    implementation 'com.github.bumptech.glide:glide:4.12.0' //Glide를 사용하여 이미지 로딩 및 표시 기능 활용
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.12.0' //이미지 로딩에 필요한 코드 생성
 
-
+    implementation 'com.squareup.okhttp3:okhttp:4.10.0' //HTTP통신 라이브러리(국토정보플랫폼 검색 api 사용)
 }
