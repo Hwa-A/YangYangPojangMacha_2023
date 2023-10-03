@@ -8,7 +8,6 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
@@ -17,7 +16,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.PointF;
@@ -302,13 +300,11 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
                                 TextView pocha_name = homeview.findViewById(R.id.pocha_name);
                                 TextView pocha_category = homeview.findViewById(R.id.pocha_category);
                                 TextView pocha_add = homeview.findViewById(R.id.pocha_add);
-                                TextView pocha_hours = homeview.findViewById(R.id.pocha_hours);
                                 RatingBar pocha_rating = homeview.findViewById(R.id.pocha_rating);
                                 ImageView pocha_image = homeview.findViewById(R.id.pocha_image);
-                                pocha_name.setText(stores.get(index).getStoreName());
+                                pocha_name.setText(stores.get(index).getShopName());
                                 pocha_category.setText(stores.get(index).getCategory());
-                                pocha_add.setText(stores.get(index).getStoreAddress());
-                                pocha_hours.setText(stores.get(index).getOpeningHours());
+                                pocha_add.setText(stores.get(index).getAddressName());
                                 pocha_rating.setRating(stores.get(index).getRating());
                                 Glide.with(getActivity()).load(stores.get(index).getImageUrl()).placeholder(getActivity().getDrawable(R.drawable.pocha)).into(pocha_image);
                                 pocha_info = getView().findViewById(R.id.pocha_info);
@@ -344,7 +340,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
 
                 //StoreData에 위치값 보내기
                 StoreData storeData = new StoreData();
-                storeData.addLocation(latitude, longitude);
+                storeData.addLocation(latitude, longitude, 1500);
                 loadStoreData(); //주소 검색 후 검색한 주소 기준으로 데이터 로드
             }
 

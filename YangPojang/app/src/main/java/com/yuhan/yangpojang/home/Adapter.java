@@ -33,7 +33,6 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
             name = itemview.findViewById(R.id.pocha_name);
             category = itemview.findViewById(R.id.pocha_category);
             add = itemview.findViewById(R.id.pocha_add);
-            open_hours = itemview.findViewById(R.id.pocha_hours);
 
         }
     }
@@ -54,10 +53,9 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Store item = mData.get(position);
 
-        holder.name.setText(item.getStoreName());
+        holder.name.setText(item.getShopName());
         holder.category.setText(item.getCategory());
-        holder.add.setText(item.getStoreAddress());
-        holder.open_hours.setText(item.getOpeningHours());
+        holder.add.setText(item.getAddressName());
     }
 
     @Override

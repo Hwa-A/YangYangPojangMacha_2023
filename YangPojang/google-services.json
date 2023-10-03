@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "885247344224",
+    "firebase_url": "https://yangyang-pojangmacha-default-rtdb.firebaseio.com",
+    "project_id": "yangyang-pojangmacha",
+    "storage_bucket": "yangyang-pojangmacha.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:885247344224:android:875c18d1af5a1f771f4d05",
+        "android_client_info": {
+          "package_name": "com.yuhan.yangpojang"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "885247344224-t8grdhr1j6mprhlsmucom0h8bv7ptpm9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.yuhan.yangpojang",
+            "certificate_hash": "c28680c25ac918c4f3139c1a3252bad8513d540a"
+          }
+        },
+        {
+          "client_id": "885247344224-t0km8ooov0ju38dv0883ik7ecfdsuppp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBnto_oJAh_X2FPoZ2lX_fJzA51vOfCSCw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "885247344224-t0km8ooov0ju38dv0883ik7ecfdsuppp.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
