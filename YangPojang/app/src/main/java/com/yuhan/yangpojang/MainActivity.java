@@ -19,6 +19,8 @@ import com.yuhan.yangpojang.fragment.ProfileShowFragment;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+// description : 하단 버튼 바를 구성 및 클릭시 각 페이지 Home, Profile, Report로 이동
+
 public class MainActivity extends AppCompatActivity {
     //reportShopFragemnt 에서 사용할 제보버튼
     private Button reportBtn;
@@ -46,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
         profileShowFragment = new ProfileShowFragment();
         homeFragment = new HomeFragment();
 
+        // 앱을 처음 켰을 때 보여지는 화면 -> HomeFragment
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container, homeFragment)
                 .commitAllowingStateLoss();
