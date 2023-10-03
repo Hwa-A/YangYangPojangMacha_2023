@@ -12,6 +12,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 
@@ -47,7 +48,7 @@ import com.naver.maps.map.util.MarkerIcons;
 import com.naver.maps.map.widget.CompassView;
 import com.naver.maps.map.widget.LocationButtonView;
 import com.yuhan.yangpojang.R;
-import com.yuhan.yangpojang.home.Adapter;
+import com.yuhan.yangpojang.home.PochaListAdapter;
 import com.yuhan.yangpojang.home.SearchActivity;
 import com.yuhan.yangpojang.model.Store;
 import com.yuhan.yangpojang.model.StoreData;
@@ -127,6 +128,33 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
         authon.setOnClickListener(authmeetingL);
         meetingoff.setOnClickListener(authmeetingL);
         meetingon.setOnClickListener(authmeetingL);
+
+        // 목록보기 버튼 구현
+        ImageButton show_list = getActivity().findViewById(R.id.showlist);
+        show_list.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (stores != null && !stores.isEmpty()) {
+                    ArrayList<Store> pochas = new ArrayList<>(stores);
+
+                    PochaListView(pochas);
+                } else {
+                    Toast.makeText(getActivity(), "조건에 맞는 업체가 없습니다.", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+    }
+
+    RecyclerView pochalist_view;
+    //포차리스트 구현
+    public void PochaListView(ArrayList<Store> pochas){
+        pochalist_view = getActivity().findViewById(R.id.pocha_list); //리사이클러 뷰
+        pochalist_view.setVisibility(View.VISIBLE);
+        PochaListAdapter pochaListAdapter = new PochaListAdapter(pochas); // 어댑터
+        pochalist_view.setAdapter(pochaListAdapter); //리사이클러뷰에 어댑터 장착
+
+        pochalist_view.setLayoutManager(new LinearLayoutManager(getActivity())); //레이아웃 매니저 지정
 
     }
 
@@ -233,22 +261,6 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
                 }
             }
     );
-
-    // 기본적인 지도 형태(마커 크기, 탭 원상복구용)
-    public void basemap(){
-        if(stores != null){
-            for(int i = 0; i < stores.size(); i++){
-                pochas[i].setWidth(80); //마커 사이즈 복구
-                pochas[i].setHeight(80);
-            }
-        }
-        if (pocha_info != null) {
-            pocha_info.setVisibility(INVISIBLE); //가게 상세정보 탭 닫기
-            ButtonPosition(uiSettings);
-        }
-        if(mRecyclerView != null)
-            mRecyclerView.setVisibility(INVISIBLE); //포차리스트 닫기
-    }
 
     ArrayList<Store> stores;
     Marker[] pochas;
@@ -370,46 +382,6 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
         }
     } // searchplace() 끝
 
-    RecyclerView mRecyclerView = null;
-    Adapter mAdapter = null;
-    ArrayList<Store> mList = new ArrayList<Store>();
-
-    /*//포차리스트 구현
-    public void RecyclerView(){
-        mRecyclerView = findViewById(R.id.recycler);
-        mAdapter = new Adapter(mList);
-        mRecyclerView.setAdapter(mAdapter);
-
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-        Store[] stores = StoreData.initializeStores();
-        for(int i = 0; i < stores.length; i++){
-            addItem(stores[i].getStoreName(), stores[i].getStoreAddress(), stores[i].getOpeningHours());
-        }
-        mAdapter.notifyDataSetChanged() ;
-
-        ImageButton show_list = findViewById(R.id.showlist);
-        show_list.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(mRecyclerView != null){
-                    mRecyclerView.setVisibility(VISIBLE);
-                }
-            }
-        });
-    }
-    public void addItem(String name, String add, String hours) {
-        Store item = new Store();
-
-        item.setStoreName(name);
-        item.setStoreAddress(add);
-        item.setOpeningHours(hours);
-
-        mList.add(item);
-    }*/ //
-
-
-
 
     // 지도 클릭 리스너 구현
     NaverMap.OnMapClickListener mapL = new NaverMap.OnMapClickListener() {
@@ -419,7 +391,21 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
         }
     };
 
-
+    // 기본적인 지도 형태(마커 크기, 탭 원상복구용)
+    public void basemap(){
+        if(stores != null){
+            for(int i = 0; i < stores.size(); i++){
+                pochas[i].setWidth(80); //마커 사이즈 복구
+                pochas[i].setHeight(80);
+            }
+        }
+        if (pocha_info != null) {
+            pocha_info.setVisibility(INVISIBLE); //가게 상세정보 탭 닫기
+            ButtonPosition(uiSettings);
+        }
+        if(pochalist_view != null)
+            pochalist_view.setVisibility(INVISIBLE); //포차리스트 닫기
+    }
 
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -431,7 +417,6 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
         }// onRequestPermissionsResult()메서드는 권한 요청 결과를 처리하고, 권한이 획득되었을 경우에만 NaverMap객체의 위치 추적 모드를 설정하는 역할을 함
 
     }
-
 
 
     //Overlay.OnClickListener : 네이버 지도 API에서 제동하는 인터페이스로, 오버레이(지도 위에 그려지는 그래픽 요소) 객체를 클릭했을 때 발생하는 이벤트 처리하는 메소드 정의
