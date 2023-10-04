@@ -94,6 +94,13 @@
     <string name="action_settings">Settings</string>
     <string name="title_activity_roport_shop">RoportShop</string>
 
+    <string name="success_login">구글 로그인 성공</string>
+    <string name="failed_login">구글 로그인 실패</string>
+    <string name="success_logout">로그아웃 되었습니다</string>
+    <string name="status_login">이미 로그인 되어있습니다</string>
+    <string name="default_web_client_id" />
+
+
     <string-array name="category_array">
         <item>카테고리 1</item>
         <item>카테고리 2</item>

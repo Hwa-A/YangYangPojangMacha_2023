@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".LoginPUserInfo">
+
+        <TextView
+            android:id="@+id/nickname"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="88dp"
+            android:text="닉네임은"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.114"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/nicknameIs"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:text="입니다."
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.103"
+            app:layout_constraintStart_toEndOf="@+id/userNickname"
+            app:layout_constraintTop_toBottomOf="@+id/nickname" />
+
+        <EditText
+            android:id="@+id/userNickname"
+            android:layout_width="182dp"
+            android:layout_height="39dp"
+            android:layout_marginTop="16dp"
+            android:ems="10"
+            android:hint="닉네임을 입력"
+            android:inputType="text"
+            android:textColorHint="#A3A3A3"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.179"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/nickname"
+            tools:ignore="TouchTargetSizeCheck" />
+
+
+        <TextView
+            android:id="@+id/birth"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="56dp"
+            android:text="생년월일은"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.118"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/userNickname" />
+
+        <Button
+            android:id="@+id/selectDateBtn"
+            android:layout_width="91dp"
+            android:layout_height="38dp"
+            android:layout_marginTop="12dp"
+            android:text="날짜고르기"
+            android:textColor="#FFFFFF"
+            android:textColorHighlight="#FFFFFF"
+            android:textColorLink="#FF9800"
+            android:textSize="9sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.136"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/birth"
+            tools:ignore="TouchTargetSizeCheck" />
+
+
+        <TextView
+            android:id="@+id/showDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:ems="10"
+            android:hint="입력된 생일"
+            android:textColorHint="#787878"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.165"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/selectDateBtn" />
+
+        <TextView
+            android:id="@+id/brithIs"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="36dp"
+            android:layout_marginTop="12dp"
+            android:text="입니다."
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/showDate"
+            app:layout_constraintTop_toBottomOf="@+id/selectDateBtn" />
+
+        <TextView
+            android:id="@+id/sex"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="56dp"
+            android:text="성별은"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.11"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/showDate" />
+
+        <RadioGroup
+            android:id="@+id/sexGroup"
+            android:layout_width="304dp"
+            android:layout_height="71dp"
+            android:layout_marginTop="32dp"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.383"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/sex">
+
+            <RadioButton
+                android:id="@+id/sexM"
+                android:layout_width="153dp"
+                android:layout_height="wrap_content"
+                android:text="남자"
+                tools:layout_editor_absoluteX="52dp"
+                tools:layout_editor_absoluteY="432dp" />
+
+            <RadioButton
+                android:id="@+id/sexF"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="여자" />
+        </RadioGroup>
+
+        <Button
+            android:id="@+id/signCompleteBtn"
+            android:layout_width="91dp"
+            android:layout_height="38dp"
+            android:text="회원가입"
+            android:textSize="10sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.489"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/sexGroup"
+            app:layout_constraintVertical_bias="1.0"
+            tools:ignore="TouchTargetSizeCheck" />
+
+        <Button
+            android:id="@+id/confirmDateBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="날짜 선택 완료"
+            android:textSize="10sp"
+            android:textColor="#FFFFFF"
+            android:textColorHighlight="#FFFFFF"
+            android:textColorLink="#FF9800"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/birthDatePicker"
+            android:visibility="gone" />
+
+        <DatePicker
+            android:id="@+id/birthDatePicker"
+            android:layout_width="409dp"
+            android:layout_height="286dp"
+            android:calendarTextColor="#FF9800"
+            android:calendarViewShown="false"
+            android:datePickerMode="spinner"
+            android:visibility="gone"
+            android:background="#F0F0F0"
+            android:yearListSelectorColor="#FF9800"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.553" />
+
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</ScrollView>

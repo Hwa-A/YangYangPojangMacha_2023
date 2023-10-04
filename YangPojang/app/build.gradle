@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'com.google.gms.google-services'
+    id 'com.google.firebase.crashlytics'
 }
 
     //local.properties 불러오기
@@ -46,20 +47,34 @@ android {
 }
 
 dependencies {
-    implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.9.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    testImplementation 'junit:junit:4.13.2'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 
     implementation 'io.reactivex.rxjava2:rxjava:2.2.21'
     implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
 
+    //firebase 인증을 위한 implementation
+    implementation("com.google.firebase:firebase-crashlytics")
+    implementation("com.google.android.gms:play-services-auth:20.7.0")
+    implementation("com.google.firebase:firebase-auth")
+    implementation("com.google.firebase:firebase-analytics")
+    implementation("com.google.firebase:firebase-database")
+    implementation 'com.google.firebase:firebase-auth'
+    implementation("com.google.android.gms:play-services-auth:20.6.0")
+    implementation(platform("com.google.firebase:firebase-bom:32.2.3"))
+    implementation(platform("com.google.firebase:firebase-bom:32.3.1"))
+    implementation platform('com.google.firebase:firebase-bom:32.2.2')
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'com.google.android.material:material:1.5.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation 'com.google.firebase:firebase-database:20.1.0'
+    implementation("com.google.firebase:firebase-firestore")
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+
     //firebase 이용을 위한 implematation
     implementation(platform("com.google.firebase:firebase-bom:32.2.2")) //여러 firebase 라이브러리를 사용하는 경우 모든 버전이 호환되도록 BoM을 사용하여 라이브러리 버전을 관리하는것 추천
     implementation 'com.google.firebase:firebase-analytics'
-    implementation 'com.google.firebase:firebase-auth:22.1.1'
     implementation 'com.google.firebase:firebase-auth-ktx:22.1.1'
     implementation 'com.google.firebase:firebase-database-ktx:20.2.2'
     implementation 'com.google.firebase:firebase-database:20.2.2'
