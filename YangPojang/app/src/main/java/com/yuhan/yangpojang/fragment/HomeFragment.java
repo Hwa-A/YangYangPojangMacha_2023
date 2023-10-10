@@ -22,6 +22,7 @@ import android.content.pm.PackageManager;
 import android.graphics.PointF;
 import android.location.Address;
 import android.location.Geocoder;
+import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -57,6 +58,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 //https://navermaps.github.io/android-map-sdk/guide-ko/4-1.html
 //https://asong-study-record.tistory.com/69
@@ -243,9 +245,31 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
                 if (result.getResultCode() == RESULT_OK){
                     // 서브 액티비티의 입력 값을 메인에서 받아서 텍스트뷰에 표시 ...!
                     basemap(); // 기본 지도 형태(이전에 생성되었던 지도 상의 이벤트 원상복구)
-                    Log.d("MainActivity", "받은 주소: " + result.getData().getStringExtra("select_address"));
-                    searchAdd.setText(result.getData().getStringExtra("select_address")); // 주소검색창에 받아온 값 set
-                    searchplace(mNaverMap);
+
+                    String select_recent_address;
+                    String select_recent_name;
+                    Location select_autocomplete;
+
+                    select_recent_name = result.getData().getStringExtra("select_recent_name");
+                    select_recent_address = result.getData().getStringExtra("select_recent_address");
+
+                    select_autocomplete = result.getData().getParcelableExtra("select_autocomplete_location");
+                    String select_autocomplete_address = result.getData().getStringExtra("select_autocomplete_address");
+
+                    if(select_recent_name != null){
+                        Log.d("MainActivity", "받은 주소(최근검색어): " + select_recent_name + select_recent_address);
+                        searchAdd.setText(searchplace_recent(select_recent_address, select_recent_name));
+                        select_recent_name = null;
+                    }
+                    else if(select_autocomplete != null){
+                        Log.d("MainActivity", "받은 주소(자동완성): " + select_autocomplete + "(" + select_autocomplete_address + ")");
+                        searchAdd.setText(select_autocomplete_address);
+                        searchplace_autocomplete(select_autocomplete);
+                        select_autocomplete = null;
+                    }
+                    else{
+                        Toast.makeText(getActivity(), "주소값 받아오기 실패", Toast.LENGTH_SHORT).show();
+                    }
 
                     //주소 검색창의 x버튼 리스너 구현
                     ImageButton search_close_btn = homeview.findViewById(R.id.search_close_btn);
@@ -255,6 +279,9 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
                             if(searchPlaceMarker != null){
                                 searchPlaceMarker.setMap(null);
                                 searchAdd.setText("");
+                                for(Marker marker : pochas){
+                                    marker.setMap(null);
+                                }
                             }
                         }
                     });
@@ -336,51 +363,109 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
 
 
     // Geocoder : 텍스트로 입력된 주소의 경도, 위도 추출
-    public void searchplace(NaverMap naverMap){
+    public String searchplace_recent(String select_recent_address, String select_recent_name) {
+
         double latitude = 0, longitude = 0;
-        String add = searchAdd.getText().toString(); //입력된 주소 가져오기
-        List<Address> address = null; //주소 정보를 담을 리스트
+        List<Address> address = null; // 주소 정보를 담을 리스트
         searchPlaceMarker.setMap(null); // 마커 초기화
         Geocoder geocoder = new Geocoder(getActivity(), new Locale("ko", "KR"));
+        String fullAddress = null;
+        String fullAddress1 = null;
 
-        try {
-            address = geocoder.getFromLocationName(add, 5); //주소 텍스트에서 위도, 경도 추출(1 : 검색 결과 중에서 몇 개의 결과를 가져올지)
-            if(address != null && address.size() > 0){ //주소가 올바르게 변환되었다면
-                latitude = address.get(0).getLatitude();
-                longitude = address.get(0).getLongitude();
-
-
-                //StoreData에 위치값 보내기
-                StoreData storeData = new StoreData();
-                storeData.addLocation(latitude, longitude, 1500);
-                loadStoreData(); //주소 검색 후 검색한 주소 기준으로 데이터 로드
+        if(Objects.equals(select_recent_address, "No address")){ //주소가 No address일 경우
+            Toast.makeText(getActivity(), "주소를 바르게 입력하세요", Toast.LENGTH_LONG).show();
+            searchAdd.setText("");
+            if(pochas != null){
+                for(Marker marker : pochas){
+                    marker.setMap(null);
+                }
             }
 
-            // 프래그먼트 내의 Toast메세지 처리 https://edudeveloper.tistory.com/103
-            if(latitude == 0 && longitude == 0){ // 잘못된 주소 입력 시
-                Toast.makeText(getActivity(), "주소를 바르게 입력하세요", Toast.LENGTH_LONG).show();
-                searchAdd.setText("");
+        }else {
+
+            try {
+                if (select_recent_name != null && !select_recent_name.isEmpty()) {
+                    address = geocoder.getFromLocationName(select_recent_name, 1);
+                }
+
+                if (address != null && address.size() > 0) {
+                    // name으로 검색 성공한 경우
+                    latitude = address.get(0).getLatitude();
+                    longitude = address.get(0).getLongitude();
+                    fullAddress = address.get(0).getAddressLine(0);
+                    fullAddress1 = fullAddress.replace("대한민국", "");
+                } else {
+
+                    if (select_recent_address != null && !select_recent_address.isEmpty()) {
+                        address = geocoder.getFromLocationName(select_recent_address, 1);
+                    }
+
+                    if (address != null && address.size() > 0) {
+                        latitude = address.get(0).getLatitude();
+                        longitude = address.get(0).getLongitude();
+                        fullAddress = address.get(0).getAddressLine(0);
+                        fullAddress1 = fullAddress.replace("대한민국", "");
+                    } else {
+                        // 두 번의 검색 모두 실패한 경우
+                        Toast.makeText(getActivity(), "주소를 바르게 입력하세요", Toast.LENGTH_LONG).show();
+                        searchAdd.setText("");
+                    }
+                }
+
+                // 주소 검색 성공할 경우
+                if (latitude != 0 && longitude != 0) {
+                    //StoreData에 위치값 보내기
+                    StoreData mainStoreData = new StoreData();
+                    mainStoreData.addLocation(latitude, longitude, 1500);
+                    loadStoreData(); //주소 검색 후 검색한 주소 기준으로 데이터 로드
+
+                    searchSuccess(latitude, longitude);
+                }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
-            else { //잘못된 주소가 아니라면
-                Toast.makeText(getActivity(), "경도 : " + latitude + " 위도 : " + longitude, Toast.LENGTH_LONG).show();
-                CameraUpdate cameralocationUpdate = CameraUpdate.scrollTo(new LatLng(latitude, longitude)); // 해당 위치로 카메라 이동
-                //CameraUpdate camerazoomUpdate = CameraUpdate.zoomTo(14l); // 줌 레벨 증가시킴
-                naverMap.moveCamera(cameralocationUpdate);
-                //naverMap.moveCamera(camerazoomUpdate);
-
-                searchPlaceMarker.setPosition(new LatLng(latitude, longitude));
-                searchPlaceMarker.setZIndex(1); // 마커 겹칠 시 우선순위
-                searchPlaceMarker.setWidth(70);
-                searchPlaceMarker.setHeight(90);
-                searchPlaceMarker.setIcon(MarkerIcons.GRAY);
-                searchPlaceMarker.setMap(naverMap); // 해당 위치에 마커 설정
-            }
-
-
-        } catch (IOException e) {
-            throw new RuntimeException(e);
         }
-    } // searchplace() 끝
+
+        return fullAddress1;
+    } // searchplace_recent() 끝
+
+    public void searchplace_autocomplete(Location select_autocomplete){
+        if(select_autocomplete != null){
+            // 받아온 location에서 위도, 경도 추출
+            double latitude = select_autocomplete.getLatitude();
+            double longitude = select_autocomplete.getLongitude();
+
+            //StoreData에 위치값 보내기
+            StoreData mainStoreData = new StoreData();
+            mainStoreData.addLocation(latitude, longitude, 1500);
+            loadStoreData(); //주소 검색 후 검색한 주소 기준으로 데이터 로드
+
+            searchSuccess(latitude, longitude); // 검색 성공 - 카메라 이동, 마커 설정
+
+        }else{
+            Toast.makeText(getActivity(), "주소검색 중 오류가 발생했습니다.", Toast.LENGTH_LONG).show();
+            searchAdd.setText("");
+        }
+    } // searchplace_autocomplete() 끝
+
+    // 검색 성공 시 카메라 이동, 마커 설정
+    public void searchSuccess(double latitude, double longitude){
+
+        // 해당 위치로 카메라 이동, 줌 레벨 증가
+        CameraUpdate cameralocationUpdate = CameraUpdate.scrollTo(new LatLng(latitude, longitude));
+        CameraUpdate camerazoomUpdate = CameraUpdate.zoomTo(14L);
+        mNaverMap.moveCamera(cameralocationUpdate);
+        mNaverMap.moveCamera(camerazoomUpdate);
+
+        // 검색 마커 설정
+        searchPlaceMarker.setMap(null); // 마커 초기화
+        searchPlaceMarker.setPosition(new LatLng(latitude, longitude));
+        //searchPlaceMarker.setZIndex(1); // 마커 겹칠 시 우선순위
+        searchPlaceMarker.setWidth(70);
+        searchPlaceMarker.setHeight(90);
+        searchPlaceMarker.setIcon(MarkerIcons.GRAY);
+        searchPlaceMarker.setMap(mNaverMap); // 해당 위치에 마커 설정
+    } // searchSuccess() 끝
 
 
     // 지도 클릭 리스너 구현

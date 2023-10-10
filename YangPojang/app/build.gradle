@@ -102,8 +102,8 @@ dependencies {
     implementation 'androidx.recyclerview:recyclerview:1.3.1' // RecyclerView 의존성 추가
     implementation 'com.firebase:geofire-android-common:3.1.0' //파이어베이스 - Geohash : 중심 위치와 반경 기반으로 Geohash범위 계산
     implementation 'ch.hsr:geohash:1.3.0' // 지오해시(Geohash) 알고리즘을 구현하는 라이브러리
-    implementation 'com.github.bumptech.glide:glide:4.12.0' //Glide를 사용하여 이미지 로딩 및 표시 기능 활용
-    annotationProcessor 'com.github.bumptech.glide:compiler:4.12.0' //이미지 로딩에 필요한 코드 생성
-
+    implementation 'com.github.bumptech.glide:glide:4.13.0' //Glide를 사용하여 이미지 로딩 및 표시 기능 활용
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.13.0' //이미지 로딩에 필요한 코드 생성
+    implementation 'org.locationtech.proj4j:proj4j:1.2.2' // 좌표계 변환(EPSG:5179 -> WGS84)
     implementation 'com.squareup.okhttp3:okhttp:4.10.0' //HTTP통신 라이브러리(국토정보플랫폼 검색 api 사용)
 }
