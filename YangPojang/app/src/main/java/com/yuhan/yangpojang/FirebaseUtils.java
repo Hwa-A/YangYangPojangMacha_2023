@@ -7,11 +7,16 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.yuhan.yangpojang.model.Shop;
 
 public class FirebaseUtils {
 
     private static ShopDataListener shopDataListener;
+    private static StorageReference storageRef; // FirebaseStorage.getInstance().getReference();
+    private static StorageReference shopImagesRef; // = storageRef.child("shops").child(shopKey).child("images");
+    Shop shop;
+
     public static void setShopDataListener(ShopDataListener listener) {
         shopDataListener = listener;
     }
@@ -31,119 +36,86 @@ public class FirebaseUtils {
                     // 가게 데이터 저장 성공
                     Log.d("FirebaseUtils", "가게 데이터가(이미지 제외) 성공적으로 저장되었습니다.");
 
-
                     // Firebase 스토리지 레퍼런스 얻기
-                    StorageReference storageRef = FirebaseStorage.getInstance().getReference();
-                    StorageReference shopImagesRef = storageRef.child("shops").child(shopKey).child("images");
+                    storageRef = FirebaseStorage.getInstance().getReference();
+                    //shopImagesRef: [shops/shopkey/images 경로의 storage]
+                    shopImagesRef = storageRef.child("shops").child(shopKey).child("images");
+
 
                     // 외관 이미지 업로드
                     if (exteriorImageUri != null) {
-                        StorageReference exteriorImageRef = shopImagesRef.child("exterior.jpg");
-                        exteriorImageRef.putFile(exteriorImageUri)
-                                .addOnSuccessListener(taskSnapshot -> {
-                                    // 외관 이미지 업로드 성공
-                                    exteriorImageRef.getDownloadUrl()
-                                            .addOnSuccessListener(exteriorUri -> {
-                                                String exteriorImageUrl = exteriorUri.toString();
-                                                Log.d("FirebaseUtils", "Exterior Image URL: " + exteriorImageUrl);
-                                                shop.setExteriorImageUrl(exteriorImageUrl);
+                        Log.d("FirebaseUtils", "외관 이미지 업로드 시작");
+                        uploadImageToStorage(shopImagesRef, exteriorImageUri,shopRef.child("exteriorImagePath"));
 
-                                                // 메뉴 이미지 업로드
-                                                uploadMenuImage(shop, shopKey, menuImageUri);
-                                            })
-                                            .addOnFailureListener(exteriorImageException -> {
-                                                handleImageUploadFailure("외관 이미지", exteriorImageException);
-                                            });
-                                })
-                                .addOnFailureListener(exteriorImageUploadException -> {
-                                    handleImageUploadFailure("외관 이미지 업로드", exteriorImageUploadException);
-                                });
-                    } else {
-                        // 외관 이미지가 선택되지 않은 경우
-                        shop.setExteriorImageUrl(null);
+                        if(menuImageUri != null)
+                        {
+                            Log.d("FirebaseUtils", "메뉴 이미지 업로드 시작");
+                            uploadImageToStorage(shopImagesRef, menuImageUri, shopRef.child("menuImagePath"));
+                        }
+                        else
+                        {
+                            Log.d("FirebaseUtils", "메뉴 이미지 미선택");
 
-                        // 메뉴 이미지 업로드 처리만 진행
-                        uploadMenuImage(shop, shopKey, menuImageUri);
+                        }
+
                     }
+                    else {
+                        Log.d("외관이미지는 선택되지 않았습니다","외관이미지는 선택되지 않았습니다");
+                        if(menuImageUri != null)
+                        {
+                            Log.d("FirebaseUtils", "메뉴 이미지 업로드 시작");
+                            uploadImageToStorage(shopImagesRef, menuImageUri, shopRef.child("menuImagePath"));
+                        }
+                        else
+                        {
+                            Log.d("메뉴이미지도 선택되지  않았습니다","메뉴이미지도 선택되지  않았습니다");
+                        }
+
+
+                    }
+                    // 데이터 저장 실패 시에도 리스너 호출
+                    if (shopDataListener != null) {
+                        shopDataListener.onShopDataSaved();}
                 })
                 .addOnFailureListener(databaseException -> {
                     // 가게 데이터 저장 실패
                     Log.e("FirebaseUtils", "가게 데이터 저장 실패: " + databaseException.getMessage());
+                    if (shopDataListener != null) {
+                        shopDataListener.onShopDataSaved();}
 
 
                 });
     }
+    private static void uploadImageToStorage(StorageReference storageReference, Uri imageUri,DatabaseReference imagePathRef) {
+        // 파일 이름을 설정하거나 원하는 이름으로 저장할 수 있습니다.
+        // 여기서는 "exterior.jpg"라는 파일 이름을 사용합니다.
+        StorageReference imageRef = storageReference.child("exterior.jpg");
 
-    private static void uploadMenuImage(Shop shop, String shopKey, Uri menuImageUri) {
-        // 메뉴 이미지 업로드
-        if (menuImageUri != null) {
-            // Firebase 스토리지 레퍼런스 얻기
-            StorageReference menuImageRef = FirebaseStorage.getInstance().getReference()
-                    .child("shops").child(shopKey).child("images").child("menu.jpg");
-            menuImageRef.putFile(menuImageUri)
-                    .addOnSuccessListener(taskSnapshot1 -> {
-                        // 메뉴 이미지 업로드 성공
-                        menuImageRef.getDownloadUrl()
-                                .addOnSuccessListener(menuUri -> {
-                                    String menuImageUrl = menuUri.toString();
-                                    Log.d("FirebaseUtils", "Menu Image URL: " + menuImageUrl);
-                                    shop.setMenuImageUrl(menuImageUrl);
+        // 이미지를 업로드합니다.
+        UploadTask uploadTask = imageRef.putFile(imageUri);
 
-                                    // Firebase 실시간 데이터베이스에서 가게 데이터 업데이트
-                                    DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
-                                    DatabaseReference shopRef = databaseReference.child("shops").child(shopKey);
-                                    shopRef.setValue(shop)
-                                            .addOnSuccessListener(aVoid -> {
-                                                // 가게 데이터 업데이트 성공
-                                                Log.d("FirebaseUtils", "가게 데이터가 성공적으로 업데이트되었습니다.");
-                                                Log.d("Fdsfdsfsadfs", shopDataListener.toString());
-                                                if (shopDataListener != null) {
-                                                    Log.d("cooginef","cooginef");
-                                                    shopDataListener.onShopDataSaved();
-                                                }
+        // 업로드 상태를 모니터링하고 업로드 완료 후 동작을 수행할 수 있습니다.
+        uploadTask.addOnSuccessListener(taskSnapshot -> {
+            // 이미지 업로드 성공
+            Log.d("FirebaseUtils", "이미지가 성공적으로 업로드되었습니다.");
 
-                                            })
-                                            .addOnFailureListener(databaseUpdateException -> {
-                                                // 가게 데이터 업데이트 실패
-                                                Log.e("FirebaseUtils", "가게 데이터 업데이트 실패: " + databaseUpdateException.getMessage());
+            // 이미지 경로를 firebase realtime db에 삽입
+            String imagePath = imageRef.getPath(); // 이미지 경로 가져오기
+            imagePathRef.setValue(imagePath); // 이미지 경로를 Realtime Database에 저장
+            Log.d("ff","Ff");
+            if (shopDataListener != null) {
+                Log.d("cooginef","cooginef");
+                shopDataListener.onShopDataSaved();
+            }
 
+        }).addOnFailureListener(exception -> {
+            // 이미지 업로드 실패
+//            handleImageUploadFailure();
+            Log.e("FirebaseUtils", "이미지 업로드 실패: " + exception.getMessage());
 
-                                            });
-                                })
-                                .addOnFailureListener(menuImageException -> {
-                                    handleImageUploadFailure("메뉴 이미지", menuImageException);
-                                });
-                    })
-                    .addOnFailureListener(menuImageUploadException -> {
-                        handleImageUploadFailure("메뉴 이미지 업로드", menuImageUploadException);
-                    });
-        } else {
-            // 메뉴 이미지가 선택되지 않은 경우
-            shop.setMenuImageUrl(null);
-
-            // Firebase 실시간 데이터베이스에서 가게 데이터 업데이트
-            DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
-            DatabaseReference shopRef = databaseReference.child("shops").child(shopKey);
-            shopRef.setValue(shop)
-                    .addOnSuccessListener(aVoid -> {
-                        // 가게 데이터 업데이트 성공
-                        Log.d("FirebaseUtils", "가게 데이터가(이미지 포함) 성공적으로 업데이트되었습니다.");
-                        Log.d("Fdsfdsfsadfs", shopDataListener.toString());
-
-                        if (shopDataListener != null) {
-                            Log.d("cooginef","cooginef");
-                            shopDataListener.onShopDataSaved();
-                        }
-
-                    })
-                    .addOnFailureListener(databaseUpdateException -> {
-                        // 가게 데이터 업데이트 실패
-                        Log.e("FirebaseUtils", "가게 데이터 업데이트 실패: " + databaseUpdateException.getMessage());
-
-
-                    });
-        }
+        });
     }
+
 
     private static void handleImageUploadFailure(String imageType, Exception exception) {
         // 이미지 업로드 실패 처리

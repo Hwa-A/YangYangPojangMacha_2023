@@ -32,7 +32,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.naver.maps.geometry.LatLng;
-//import com.naver.maps.map.BuildConfig;
 import com.naver.maps.map.CameraAnimation;
 import com.naver.maps.map.CameraUpdate;
 import com.naver.maps.map.MapFragment;
@@ -42,13 +41,10 @@ import com.naver.maps.map.UiSettings;
 import com.naver.maps.map.util.FusedLocationSource;
 import com.naver.maps.map.overlay.Marker;
 import com.naver.maps.map.overlay.OverlayImage;
-import com.yuhan.yangpojang.BuildConfig;
 import com.yuhan.yangpojang.R;
 import com.yuhan.yangpojang.model.Shop;
 
 import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -57,7 +53,6 @@ public class MapLocationPopupFragment extends Fragment implements OnMapReadyCall
 
 
     // FusedLocationSource: 현재위치 얻기 | 위치 권한 관리 | 위치 변경 감지 | 위치 업데이트 설정
-
     private FusedLocationSource popLocationSource;
 
     // NaverMap 객체: 지도 자체를 표시하는 역할 | ui설정 | 마커및 오버레이 관리 | 카메라 이동 | 지도 데이터(좌표) 등 요청
@@ -69,11 +64,6 @@ public class MapLocationPopupFragment extends Fragment implements OnMapReadyCall
             Manifest.permission.ACCESS_COARSE_LOCATION
     };
 
-    // Asset 파일명
-//    private static final String API_KEYS_FILE = "api_keys.properties";
-    // 네이버 api 사용에 필요한 client ID 와 secret key
-//    private String Client_id = BuildConfig.NAVER_CLIENT_ID;
-//    private String Client_secret= BuildConfig.NAVER_CLIENT_SECRET;
 
     // xml(ui)관련 요소 변수
     private EditText locationSearchEditText; // 주소 검색지를 입력하는 칸
@@ -97,20 +87,20 @@ public class MapLocationPopupFragment extends Fragment implements OnMapReadyCall
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
+
         View view = inflater.inflate(R.layout.popup_map_location, container, false);
-//        showXY = view.findViewById(R.id.showXY);
-        locationSearchEditText = view.findViewById(R.id.locationSearchEditText);
-        searchButton = view.findViewById(R.id.searchButton);
-        selectLocationButton = view.findViewById(R.id.selectLocationBtn);
-        cancelLocationButton = view.findViewById(R.id.cancelLocationButton);
-        bottomNavigationView = getActivity().findViewById(R.id.bottomNavigationView);
+        locationSearchEditText = view.findViewById(R.id.locationSearchEditText); // 주소검색하는 글씨창 부분
+        searchButton = view.findViewById(R.id.searchButton); // 검색버튼
+        selectLocationButton = view.findViewById(R.id.selectLocationBtn);  // (위치 선택후) 선택 버튼
+        cancelLocationButton = view.findViewById(R.id.cancelLocationButton); // 취소 버튼
+        bottomNavigationView = getActivity().findViewById(R.id.bottomNavigationView); 
 //        addressTextView = view.findViewById(R.id.addressTextView);
 //        // ListView 및 어댑터 초기화
 //        locationListView= view.findViewById(R.id.locationListView) ;
 //        locationAdapter =  new ArrayAdapter<>(requireContext(), android.R.layout.simple_list_item_1);
 //        locationListView.setAdapter(locationAdapter);
 
-        // enter 키보드를 눌러도 searchButton을 누른것과 같은 효과를 주기위한 로직
+        // enter 키보드를 눌러도 searchButton을 누른것과 같은 효과를 주기위함
         locationSearchEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             // enter 키인지 판별하는 boolean  두가지 변수
@@ -124,12 +114,11 @@ public class MapLocationPopupFragment extends Fragment implements OnMapReadyCall
                     // ENTER 를 눌렀을때 실행되는 메서드 호출
                     performSearch();
                     return  true;
-
                 }
                 return false;
             }
         });
-        // 위치 선태 취소 버튼을 누르면 작동
+        // 위치 선택 취소 버튼을 누르면 작동 -> 다시 제보화면으로 돌아감
         cancelLocationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -138,33 +127,40 @@ public class MapLocationPopupFragment extends Fragment implements OnMapReadyCall
             }
         });
 
-
         // 위치 선택 (완료) 버튼을 누르면 작동
-        selectLocationButton.setOnClickListener(new View.OnClickListener() {
+        selectLocationButton.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v) 
+            {
                 // 만약 위치를 선택하지 않았다면 경고창 띄우기
-                if (selectedMarker == null) {
+                if (selectedMarker == null) 
+                {
                     Toast.makeText(getActivity(), "위치를 선택해주세요.", Toast.LENGTH_SHORT).show();
                     return; // 위치 선택이 되지 않았으므로 함수를 빠져나감
-                } else {
+                } 
+                else 
+                {
                     // 50미터 근방에 샵이 있는지 확인
                     LatLng selectedLatLng = selectedMarker.getPosition();
                     boolean shopsWithinRadius = false;
-                    for (Marker shopMarker : shopMarkers) {
+                    for (Marker shopMarker : shopMarkers) 
+                    {
                         LatLng shopLatLng = shopMarker.getPosition();
                         double distance = calculateDistance(selectedLatLng.latitude, selectedLatLng.longitude, shopLatLng.latitude, shopLatLng.longitude);
-                        if (distance <= 50.0) {
+                        if (distance <= 50.0) //50 미터가 너무 좁다고 판단되면 이 부분을 수정하면 됌
+                        {
                             shopsWithinRadius = true;
                             break;
                         }
                     }
-
-                    if (shopsWithinRadius) {
+                    if (shopsWithinRadius)
+                    {
                         // 주변에 가게가 존재하면 Yes/No AlertDialog 띄우기
                         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                         builder.setMessage("주변에 가게가 있습니다. 그래도 선택하시겠습니까?")
-                                .setPositiveButton("예", new DialogInterface.OnClickListener() {
+                                .setPositiveButton("예", new DialogInterface.OnClickListener()
+                                {
                                     public void onClick(DialogInterface dialog, int id) {
                                         // Yes를 클릭하면 선택한 위치 주소 정보를 가져오고 팝업을 닫음
                                         Bundle resultBundle = new Bundle();
@@ -175,8 +171,10 @@ public class MapLocationPopupFragment extends Fragment implements OnMapReadyCall
                                         bottomNavigationView.setVisibility(View.VISIBLE);
                                     }
                                 })
-                                .setNegativeButton("아니요", new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int id) {
+                                .setNegativeButton("아니요", new DialogInterface.OnClickListener()
+                                {
+                                    public void onClick(DialogInterface dialog, int id)
+                                    {
                                         // 아니요를 클릭하면 아무 동작도 하지 않음
                                         dialog.dismiss();
                                     }
@@ -184,7 +182,9 @@ public class MapLocationPopupFragment extends Fragment implements OnMapReadyCall
                         // AlertDialog 객체 생성 및 표시
                         AlertDialog alertDialog = builder.create();
                         alertDialog.show();
-                    } else {
+                    }
+                    else
+                    {
                         // 주변에 가게가 없으면 선택한 위치 주소 정보를 가져오고 팝업을 닫음
                         Bundle resultBundle = new Bundle();
                         resultBundle.putDouble("latitude", selectedLatLng.latitude);
@@ -196,12 +196,6 @@ public class MapLocationPopupFragment extends Fragment implements OnMapReadyCall
                 }
             }
         });
-
-
-
-
-
-
 
         // 위치 검색 버튼을 클릭했을때 작동
         searchButton.setOnClickListener(new View.OnClickListener()
@@ -279,7 +273,6 @@ public class MapLocationPopupFragment extends Fragment implements OnMapReadyCall
         return distance;
     }
 
-
     @Override
     public void onMapReady(@NonNull NaverMap naverMap)
     {
@@ -312,7 +305,7 @@ public class MapLocationPopupFragment extends Fragment implements OnMapReadyCall
         });
     }
 
-    // Firebase Realtime Database에서 가게 데이터 가져오기
+    // Firebase Realtime Database에서 가게 데이터 가져오기 (기존 가게들 지도에 찍기 위함)
     private void fetchShopDataFromFirebase() {
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("shops");
 
@@ -330,14 +323,16 @@ public class MapLocationPopupFragment extends Fragment implements OnMapReadyCall
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
+            public void onCancelled(@NonNull DatabaseError databaseError)
+            {
                 // 데이터 가져오기 실패 시 처리
                 Log.e("Firebase", "Failed to fetch shop data: " + databaseError.getMessage());
             }
 
         });
     }
-    public void addShopMarker(Shop shop) {
+    public void addShopMarker(Shop shop)
+    {
         if (shop != null) {
             LatLng shopLatLng = new LatLng(shop.getLatitude(), shop.getLongitude());
             Marker shopMarker = new Marker();
@@ -348,23 +343,29 @@ public class MapLocationPopupFragment extends Fragment implements OnMapReadyCall
         }
     }
     // 모든 가게 마커를 지도에 추가
-    private void addAllShopMarkers() {
-        for (Marker marker : shopMarkers) {
+    private void addAllShopMarkers()
+    {
+        for (Marker marker : shopMarkers)
+        {
             marker.setMap(popNaverMap);
         }
     }
 
     // 검색 기능 수행 - enter로도 검색버튼 누른것과 같은 효과를 위해 작성한 파트
-    private void performSearch(){
+    private void performSearch()
+    {
         hideKeyboard();
-        new Thread(new Runnable() {
+        new Thread(new Runnable()
+        {
             @Override
-            public void run() {
+            public void run()
+            {
                 final String addr = locationSearchEditText.getText().toString();
                 LatLng searchedLatLng = getCoordinatesFromAddress(addr);
                 if(searchedLatLng!=null)
                 {
-                    getActivity().runOnUiThread(new Runnable() {
+                    getActivity().runOnUiThread(new Runnable()
+                    {
                         @Override
                         public void run() {
                             updateMapWithLatLng(searchedLatLng);
@@ -381,7 +382,8 @@ public class MapLocationPopupFragment extends Fragment implements OnMapReadyCall
     private void updateMapWithLatLng(LatLng latLng)
     {
         popNaverMap.moveCamera(CameraUpdate.scrollTo(latLng));
-        if (selectedMarker != null) {
+        if (selectedMarker != null)
+        {
             selectedMarker.setMap(null);
             selectedMarker = null;
         }
@@ -442,16 +444,6 @@ public class MapLocationPopupFragment extends Fragment implements OnMapReadyCall
         InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(locationSearchEditText.getWindowToken(), 0);
     }
-    // 네트워크를 요청하는  메서드 - requestgeocode, requestreversegeocode 사용시 필요
-    private HttpURLConnection createConnection(String url) throws IOException {
-        HttpURLConnection conn = (HttpURLConnection) new URL(url).openConnection();
-        conn.setConnectTimeout(5000);
-        conn.setReadTimeout(5000);
-        conn.setRequestMethod("GET");
-//        conn.setRequestProperty("X-NCP-APIGW-API-KEY-ID", Client_id);
-//        conn.setRequestProperty("X-NCP-APIGW-API-KEY", Client_secret);
-        conn.setDoInput(true);
-        return conn;
-    }
+
 
 }
