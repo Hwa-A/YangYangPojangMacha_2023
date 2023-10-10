@@ -1,74 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="130dp"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="130dp">
 
     <ImageView
         android:id="@+id/pochalist_image"
         android:layout_width="100dp"
         android:layout_height="50dp"
-        android:src="@drawable/pocha"
-        android:layout_marginLeft = "-10dp"
+        android:layout_marginLeft="-10dp"
         android:layout_marginTop="20dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"/>
+        android:src="@drawable/pocha"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <TextView
         android:id="@+id/pochalist_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
         android:text="고구려 포차"
         android:textSize="25sp"
         android:textStyle="bold"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toRightOf="@id/pochalist_image"
-        android:layout_marginTop="20dp"/>
+        app:layout_constraintTop_toTopOf="parent" />
+
     <TextView
         android:id="@+id/pochalist_category"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="#A4A3A3"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="36dp"
+        android:layout_marginEnd="136dp"
         android:text="카테고리"
-        app:layout_constraintTop_toTopOf="parent"
+        android:textColor="#A4A3A3"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintLeft_toRightOf="@+id/pochalist_name"
-        android:layout_marginTop="30dp"
-        android:layout_marginLeft="10dp"/>
+        app:layout_constraintTop_toTopOf="parent" />
+
     <TextView
         android:id="@+id/pochalist_add"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:text="경기 부천시 경인로 590"
-        app:layout_constraintTop_toBottomOf="@id/pochalist_name"
         app:layout_constraintLeft_toRightOf="@id/pochalist_image"
-        android:layout_marginTop="8dp"/>
+        app:layout_constraintTop_toBottomOf="@id/pochalist_name" />
+
     <RatingBar
         android:id="@+id/pochalist_rating"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         style="@style/Widget.AppCompat.RatingBar.Small"
-        app:layout_constraintTop_toBottomOf="@id/pochalist_add"
-        app:layout_constraintLeft_toRightOf="@id/pochalist_image"
-        android:layout_marginLeft="-2dp"
-        android:layout_marginTop="8dp"/>
-    <ImageButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="#00000000"
-        android:visibility="invisible"
-        android:src="@drawable/full_heart"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginLeft="-2dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintLeft_toRightOf="@id/pochalist_image"
+        app:layout_constraintTop_toBottomOf="@id/pochalist_add" />
+
+    <ImageButton
+        android:id="@+id/imageButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginLeft="370dp"
-        android:layout_marginTop="15dp"/>
+        android:layout_marginTop="15dp"
+        android:background="#00000000"
+        android:src="@drawable/full_heart"
+        android:visibility="invisible"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <ImageButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="#00000000"
         android:src="@drawable/empty_heart"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.956"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginLeft="370dp"
-        android:layout_marginTop="15dp"/>
+        app:layout_constraintVertical_bias="0.15" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
