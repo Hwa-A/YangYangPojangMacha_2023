@@ -37,11 +37,11 @@ public class PochaListAdapter extends RecyclerView.Adapter<PochaListAdapter.View
         ViewHolder(View itemview){
             super(itemview);
 
-            pochalist_image = itemview.findViewById(R.id.pochalist_image);
-            pochalist_name = itemview.findViewById(R.id.pochalist_name);
-            pochalist_category = itemview.findViewById(R.id.pochalist_category);
-            pochalist_add = itemview.findViewById(R.id.pochalist_add);
-            pochalist_rating = itemview.findViewById(R.id.pochalist_rating);
+            pochalist_image = itemview.findViewById(R.id.pocha_image);
+            pochalist_name = itemview.findViewById(R.id.pocha_name);
+            pochalist_category = itemview.findViewById(R.id.pocha_category);
+            pochalist_add = itemview.findViewById(R.id.pocha_add);
+            pochalist_rating = itemview.findViewById(R.id.pocha_rating);
         }
     }
 

@@ -21,8 +21,7 @@
             <LinearLayout
                 android:id="@+id/topLinearLayout"
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:layout_weight="3"
+                android:layout_height="150dp"
                 android:background="#696969"
                 android:orientation="vertical">
 
@@ -80,46 +79,14 @@
                             android:text="성별 : "
                             android:textStyle="bold" />
 
+                        <Button
+                            android:id="@+id/settingButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="설정"
+                            android:textStyle="bold" />
+
                     </LinearLayout>
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/buttonLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="228dp"
-                    android:layout_weight="1"
-                    android:orientation="horizontal">
-
-                    <Button
-                        android:id="@+id/editButton"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:backgroundTint="#C0C0C0"
-                        android:text="정보 수정"
-                        android:textColor="#000000"
-                        android:textStyle="bold" />
-
-                    <Button
-                        android:id="@+id/logoutButton"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:backgroundTint="#C0C0C0"
-                        android:text="로그아웃"
-                        android:textColor="#000000"
-                        android:textStyle="bold" />
-
-                    <Button
-                        android:id="@+id/deleteButton"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:backgroundTint="#C0C0C0"
-                        android:text="회원 탈퇴"
-                        android:textColor="#000000"
-                        android:textStyle="bold" />
 
                 </LinearLayout>
 

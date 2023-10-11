@@ -29,7 +29,7 @@ import java.util.Calendar;
 
 public class LogindetailAct extends AppCompatActivity {
 
-    private String user_uid = null;
+    private String user_info_uid = null;
     private DatabaseReference mDatabase;
     TextView datetext;
     DatePickerDialog datePickerDialog;
@@ -48,7 +48,7 @@ public class LogindetailAct extends AppCompatActivity {
         mDatabase = FirebaseDatabase.getInstance().getReference();
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
-            user_uid = user.getUid();
+            user_info_uid = user.getUid();
         }
 
         datetext = findViewById(R.id.showDate);
@@ -106,15 +106,15 @@ public class LogindetailAct extends AppCompatActivity {
                 String getUserSex = sexchecked.getText().toString();
 
                 usr_nick = getUserName;
-                writeNewUser(getUserName,getUserDate,getUserSex);
+                writeNewUser(getUserName,getUserDate,getUserSex,user_info_uid);
 
             }
         });
     }
 
-    private void writeNewUser(String name, String birthday, String sex) {
-        User user = new User(name, birthday,sex);
-        mDatabase.child("user-info").child(user_uid).setValue(user)
+    private void writeNewUser(String name, String birthday, String sex, String uid) {
+        User user = new User(name, birthday,sex,uid);
+        mDatabase.child("user-info").child(user_info_uid).setValue(user)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {

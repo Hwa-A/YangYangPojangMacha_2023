@@ -2,6 +2,7 @@ package com.yuhan.yangpojang;
 
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentTransaction;
 
 
 import android.app.AlertDialog;
@@ -41,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
 
+
 //        String naverMapsClientId = BuildConfig.NAVER_CLIENT_ID;
 
         // 프래그먼트 생성
@@ -78,6 +80,7 @@ public class MainActivity extends AppCompatActivity {
                 });
 
     }
+
 
 
 }
