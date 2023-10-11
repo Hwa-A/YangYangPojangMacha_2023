@@ -29,17 +29,19 @@ public class Shop implements Serializable {
     private boolean hasMeeting; //번개 여부
     private float rating; //가게 별점
     private String geohash;
+    private String uid;
 
 
     //중요" firebase 이용을 위해서는 기본생성자 필수
     public Shop() {
     }
 
-    public Shop(String shopName,double latitude, double longitude ,String  addressName, boolean pwayMobile, boolean pwayCard,
+    public Shop(String uid,String shopName,double latitude, double longitude ,String  addressName, boolean pwayMobile, boolean pwayCard,
                 boolean pwayAccount, boolean pwayCash, boolean openMon, boolean openTue,
                 boolean openWed, boolean openThu, boolean openFri, boolean openSat,
                 boolean openSun, String category ,String storeImageUri, String menuImageUri,
                 boolean isVerified, boolean hasMeeting, float rating, String geohash ) {
+        this.uid= uid;
         this.shopName=shopName;
         this.latitude = latitude;
         this.longitude= longitude;
@@ -64,6 +66,9 @@ public class Shop implements Serializable {
         this.geohash = geohash;
     }
 
+    public String getUid() {  return uid; }
+
+    public void setUid(String uid) { this.uid = uid; }
 
     public double getLatitude() {
         return latitude;

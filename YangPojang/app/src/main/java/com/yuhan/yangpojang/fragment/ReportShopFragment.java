@@ -42,6 +42,8 @@ import androidx.fragment.app.FragmentTransaction;
 import com.firebase.geofire.GeoFireUtils;
 import com.firebase.geofire.GeoLocation;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.naver.maps.map.MapFragment;
 import com.yuhan.yangpojang.FirebaseUtils;
 import com.yuhan.yangpojang.R;
@@ -81,6 +83,8 @@ public class ReportShopFragment extends Fragment implements ShopDataListener
     private Uri storeExteriorImageUri; // 가게 외관 이미지의 URI
     private Uri menuBoardImageUri; // 가게 메뉴 이미지의 URI
 
+    private String uid; // uid
+
     private TextView storePhotoTextView; // 가게 사진 선택하기 글씨
     private TextView menuPhotoTextView; // 메뉴사진 선택하기 글씨
     private Button reportBtn;  // 가게 정보를 제보하는 버튼
@@ -96,7 +100,6 @@ public class ReportShopFragment extends Fragment implements ShopDataListener
     private Fragment mapFragment;
     private ShopDataListener shopDataListener;
     private MapLocationPopupFragment mapLocationPopupFragment;
-    private  CheckBox[] dayCheckBoxes = {monCheckBox, tueCheckBox, wedCheckBox, thuCheckBox, friCheckBox, satCheckBox, sunCheckBox};
     private boolean isVerified;
     private boolean hasMeeting;
     private float rating;
@@ -136,8 +139,20 @@ public class ReportShopFragment extends Fragment implements ShopDataListener
         menuPhotoTextView= viewReprotShop.findViewById(R.id.menuBoardText);  // 메뉴 사진 선택하기 글씨
         bottomNavigationView= getActivity().findViewById(R.id.bottomNavigationView); // 하단 네비게이션 바
         //hash= GeoFireUtils.getGeoHashForLocation(new GeoLocation(latitude,longitude));  // 나은 언니 hash 넣을 때 사용
-
+        uid=null;
         FirebaseUtils.setShopDataListener(this);  // FirebaseUtils 클래스: 제보파트의 파이어베이스에 값을 넣는 부분을 빼기 위해 작성함(모든 부분의 파이어베이스가 아닌 제보부분만입니다)
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        Log.d("dsljfkldsjfklsdjfk", String.valueOf(user));
+        if(user!=null)
+        {
+            uid=user.getUid();
+            Log.d("dsljfkldsjfklsdjfk", String.valueOf(user));
+
+        }
+        else
+        {
+            Log.d("dsljfkldsjfklsdjfk", String.valueOf(user));
+        }
 
         // Spinner에 카테고리 목록 설정 -> res/values/strings에 목록있음
         ArrayAdapter<CharSequence> categoryAdapter = ArrayAdapter.createFromResource(requireContext(), R.array.category_array, android.R.layout.simple_spinner_item);
@@ -230,6 +245,7 @@ public class ReportShopFragment extends Fragment implements ShopDataListener
             @Override
             public void onClick(View v)
             {
+                reportBtn.setClickable(false);
                 saveShopData();
 
             }
@@ -343,8 +359,7 @@ public class ReportShopFragment extends Fragment implements ShopDataListener
         }
         else // 제보에 필요한 정보를 모두 입력했을시
         {
-            Shop shop = new Shop(
-                    shopName, latitude,longitude,addressName,isPwayMobile, isPwayCard, isPwayAccount, isPwayCash,
+            Shop shop = new Shop(uid,shopName, latitude,longitude,addressName,isPwayMobile, isPwayCard, isPwayAccount, isPwayCash,
                     isOpenMon, isOpenTue, isOpenWed, isOpenThu, isOpenFri, isOpenSat, isOpenSun,selectedCategory,
                     (storeExteriorImageUri != null) ? storeExteriorImageUri.toString() : "",
                     (menuBoardImageUri != null) ? menuBoardImageUri.toString() : "" ,
@@ -375,6 +390,7 @@ public class ReportShopFragment extends Fragment implements ShopDataListener
 
     public void clearForm()  // 제보화면에 작성폼 초기화
     {
+        reportBtn.setClickable(false);
         scrollView.setBackgroundColor(Color.parseColor("#ffffff")); // 배경색을 원래대로 하얀색으로
         textboard.setVisibility(View.GONE);  //  [✨✨가게 정보가 업로드 중입니다✨✨] - TOAST 감춤
 
@@ -396,6 +412,8 @@ public class ReportShopFragment extends Fragment implements ShopDataListener
         // ImageView 초기화
         storeExteriorPhoto.setImageDrawable(null);
         menuBoardPhoto.setImageDrawable(null);
+        storeExteriorPhoto.setBackgroundResource(R.drawable.border_rounded_coner);
+        menuBoardPhoto.setBackgroundResource(R.drawable.border_rounded_coner);
         menuBoardImageUri = null;
         storeExteriorImageUri=null;
         categorySpinner.setSelection(0); // Spinner 초기화 (카테고리 선택을 "선택 안함"으로)

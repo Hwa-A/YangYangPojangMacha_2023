@@ -88,6 +88,15 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
         // NaverMap 객체 받아서 NaverMap 객체에 위치 소스 지정
         mNaverMap = naverMap;
         mNaverMap.setLocationSource(locationSource); // NaverMap객체에 위치 소스를 지정 - 현재 위치 사용
+        // 권한이 얻어져있는 경우 현재 위치를 표시 가능하므로 시작할때 내 위치로 뜨게 설정
+        if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            mNaverMap.setLocationTrackingMode(LocationTrackingMode.Follow);
+        }
+        // 권한 부여가 되지 않은 경우 권한 부여 메세지 생성
+        else
+        {
+            Toast.makeText(getActivity(), "설정> 애플리케이션 > YangPojag > 권한에서 지도 권한을 부여하세요", Toast.LENGTH_SHORT).show();
+        }
         // 권한 확인, onRequestPermissionResult 콜백 메서드 호출 - 앱에서 위치 권한을 얻기 위해 권한 요청 대화상자를 표시하는 역할
         ActivityCompat.requestPermissions(getActivity(), PERMISSIONS, PERMISSION_REQUEST_CODE);
 
@@ -109,6 +118,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
         }*/
         // 카메라 줌레벨 설정
         //mNaverMap.setCameraPosition(new CameraPosition(new LatLng(0, 0), 14)); //기본값=14;
+
 
 
         // 맵 시작 시 현재 위치를 기준으로 데이터 로드
@@ -153,7 +163,6 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
         pochalist_view.setVisibility(View.VISIBLE);
         PochaListAdapter pochaListAdapter = new PochaListAdapter(pochas); // 어댑터
         pochalist_view.setAdapter(pochaListAdapter); //리사이클러뷰에 어댑터 장착
-
         pochalist_view.setLayoutManager(new LinearLayoutManager(getActivity())); //레이아웃 매니저 지정
 
     }

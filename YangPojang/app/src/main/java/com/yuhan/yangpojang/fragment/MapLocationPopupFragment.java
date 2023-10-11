@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.pm.PackageManager;
 import android.graphics.PointF;
 import android.location.Address;
 import android.location.Geocoder;
@@ -34,6 +35,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.naver.maps.geometry.LatLng;
 import com.naver.maps.map.CameraAnimation;
 import com.naver.maps.map.CameraUpdate;
+import com.naver.maps.map.LocationTrackingMode;
 import com.naver.maps.map.MapFragment;
 import com.naver.maps.map.NaverMap;
 import com.naver.maps.map.OnMapReadyCallback;
@@ -54,6 +56,7 @@ public class MapLocationPopupFragment extends Fragment implements OnMapReadyCall
 
     // FusedLocationSource: 현재위치 얻기 | 위치 권한 관리 | 위치 변경 감지 | 위치 업데이트 설정
     private FusedLocationSource popLocationSource;
+
 
     // NaverMap 객체: 지도 자체를 표시하는 역할 | ui설정 | 마커및 오버레이 관리 | 카메라 이동 | 지도 데이터(좌표) 등 요청
     private NaverMap popNaverMap;
@@ -93,7 +96,7 @@ public class MapLocationPopupFragment extends Fragment implements OnMapReadyCall
         searchButton = view.findViewById(R.id.searchButton); // 검색버튼
         selectLocationButton = view.findViewById(R.id.selectLocationBtn);  // (위치 선택후) 선택 버튼
         cancelLocationButton = view.findViewById(R.id.cancelLocationButton); // 취소 버튼
-        bottomNavigationView = getActivity().findViewById(R.id.bottomNavigationView); 
+        bottomNavigationView = getActivity().findViewById(R.id.bottomNavigationView);
 //        addressTextView = view.findViewById(R.id.addressTextView);
 //        // ListView 및 어댑터 초기화
 //        locationListView= view.findViewById(R.id.locationListView) ;
@@ -124,9 +127,11 @@ public class MapLocationPopupFragment extends Fragment implements OnMapReadyCall
             public void onClick(View v) {
                 // 팝업(자식 fragment인 MapLocationPopupFragment)을 닫는 코드
                 getParentFragmentManager().popBackStack();
+
+                // bottomNavigationView를 다시 표시
+                bottomNavigationView.setVisibility(View.VISIBLE);
             }
         });
-
         // 위치 선택 (완료) 버튼을 누르면 작동
         selectLocationButton.setOnClickListener(new View.OnClickListener()
         {
@@ -282,12 +287,25 @@ public class MapLocationPopupFragment extends Fragment implements OnMapReadyCall
         popNaverMap.setLocationSource(popLocationSource);
         // 위치 권환 요청
         ActivityCompat.requestPermissions(requireActivity(), PERMISSIONS, PERMISSION_REQUEST_CODE);
+
+        // 권한이 얻어져있는 경우 현재 위치를 표시 가능하므로 시작할때 내 위치로 뜨게 설정
+        if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+
+            popNaverMap.setLocationTrackingMode(LocationTrackingMode.Follow);
+        }
+        // 권한 부여가 되지 않은 경우 권한 부여 메세지 생성
+        else
+        {
+            Toast.makeText(getActivity(), "설정> 애플리케이션 > YangPojag > 권한에서 지도 권한을 부여하세요", Toast.LENGTH_SHORT).show();
+            //어플 종료도 넣어야할지..
+        }
         // 지도 UI 설정 구성
         UiSettings uiSettings = naverMap.getUiSettings();
         uiSettings.setLocationButtonEnabled(true);
         uiSettings.setScaleBarEnabled(true);
         uiSettings.setCompassEnabled(true);
         uiSettings.setZoomControlEnabled(true);
+
 
         // 샵들 정보를 firebase 에서 불러오는 코드
         fetchShopDataFromFirebase();

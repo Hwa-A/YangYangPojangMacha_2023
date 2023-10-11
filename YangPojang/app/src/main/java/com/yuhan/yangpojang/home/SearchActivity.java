@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class SearchActivity extends AppCompatActivity {
+    public class SearchActivity extends AppCompatActivity {
 
     SearchView searchView; // 검색창
     LinearLayout recentIsempty_linear; // "최근 검색어가 없습니다" 창
