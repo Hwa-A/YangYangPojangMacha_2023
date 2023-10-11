@@ -41,6 +41,7 @@ import com.naver.maps.map.LocationTrackingMode;
 import com.naver.maps.map.NaverMap;
 import com.naver.maps.map.OnMapReadyCallback;
 import com.naver.maps.map.UiSettings;
+import com.naver.maps.map.overlay.LocationOverlay;
 import com.naver.maps.map.overlay.Marker;
 import com.naver.maps.map.overlay.Overlay;
 import com.naver.maps.map.overlay.OverlayImage;
@@ -90,8 +91,9 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
         // NaverMap 객체 받아서 NaverMap 객체에 위치 소스 지정
         mNaverMap = naverMap;
         mNaverMap.setLocationSource(locationSource); // NaverMap객체에 위치 소스를 지정 - 현재 위치 사용
-
         // 권한 확인, onRequestPermissionResult 콜백 메서드 호출 - 앱에서 위치 권한을 얻기 위해 권한 요청 대화상자를 표시하는 역할
+        ActivityCompat.requestPermissions(getActivity(), PERMISSIONS, PERMISSION_REQUEST_CODE);
+
         if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             mNaverMap.setLocationTrackingMode(LocationTrackingMode.Follow);
         }
@@ -107,6 +109,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
         uiSettings.setScaleBarEnabled(false); // 축적바
         uiSettings.setCompassEnabled(false); //나침반
         uiSettings.setZoomControlEnabled(false); // 줌 버튼
+
 
         //앱 시작 시 줌레벨 설정
         /*double mapLatitude = 0; //초기 위치 변수 초기화
@@ -500,6 +503,16 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
             pochalist_view.setVisibility(INVISIBLE); //포차리스트 닫기
     }
 
+    //Overlay.OnClickListener : 네이버 지도 API에서 제동하는 인터페이스로, 오버레이(지도 위에 그려지는 그래픽 요소) 객체를 클릭했을 때 발생하는 이벤트 처리하는 메소드 정의
+    @Override
+    public boolean onClick(@NonNull Overlay overlay) {
+        if(overlay instanceof LocationOverlay){
+            Toast.makeText(getActivity(), "설정> 애플리케이션 > YangPojag > 권한에서 지도 권한을 부여하세요", Toast.LENGTH_SHORT).show();
+            return true;
+        }
+        return false;
+    }
+
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         // request code와 권한 획득 여부 확인
@@ -509,18 +522,6 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
             }
         }// onRequestPermissionsResult()메서드는 권한 요청 결과를 처리하고, 권한이 획득되었을 경우에만 NaverMap객체의 위치 추적 모드를 설정하는 역할을 함
 
-    }
-
-
-    //Overlay.OnClickListener : 네이버 지도 API에서 제동하는 인터페이스로, 오버레이(지도 위에 그려지는 그래픽 요소) 객체를 클릭했을 때 발생하는 이벤트 처리하는 메소드 정의
-    @Override
-    public boolean onClick(@NonNull Overlay overlay) {
-        if(overlay instanceof Marker){
-            //Intent intent = new Intent(MainActivity.this, MainActivity2.class);
-            //startActivity(intent);
-            return true;
-        }
-        return false;
     }
 
     // 인증, 번개 버튼 리스너
