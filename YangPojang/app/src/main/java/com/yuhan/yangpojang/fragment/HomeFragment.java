@@ -90,8 +90,16 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
         // NaverMap 객체 받아서 NaverMap 객체에 위치 소스 지정
         mNaverMap = naverMap;
         mNaverMap.setLocationSource(locationSource); // NaverMap객체에 위치 소스를 지정 - 현재 위치 사용
+
         // 권한 확인, onRequestPermissionResult 콜백 메서드 호출 - 앱에서 위치 권한을 얻기 위해 권한 요청 대화상자를 표시하는 역할
-        ActivityCompat.requestPermissions(getActivity(), PERMISSIONS, PERMISSION_REQUEST_CODE);
+        if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            mNaverMap.setLocationTrackingMode(LocationTrackingMode.Follow);
+        }
+        // 권한 부여가 되지 않은 경우 권한 부여 메세지 생성
+        else
+        {
+            Toast.makeText(getActivity(), "설정> 애플리케이션 > YangPojag > 권한에서 지도 권한을 부여하세요", Toast.LENGTH_SHORT).show();
+        }
 
         //UiSettings 클래스 - 지도 컨트롤 객체 관리
         uiSettings = mNaverMap.getUiSettings();

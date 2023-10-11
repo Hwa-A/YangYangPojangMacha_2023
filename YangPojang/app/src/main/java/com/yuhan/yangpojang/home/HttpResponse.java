@@ -53,39 +53,35 @@ public class HttpResponse {
 
                         // "contents"객체 안에 있는 "poi" 배열을 가져옴
                         JSONArray poiArray = jsonObject.getJSONObject("search").getJSONObject("contents").getJSONArray("poi"); //하나의 데이터 항목 저장
+                        Log.d("HttpResponse", "리스폰스된 poiArray : " + poiArray);
 
                         HashMap<String, String> address_hash = new HashMap<>();
 
                         for (int i = 0; i < poiArray.length(); i++) {
                             JSONObject poiObject = poiArray.getJSONObject(i); //poiArray의 데이터 항목을 JSONObject로 추출 -> 각 데이터 항목의 필드에 접근
-                            Log.d("HttpResponse", "리스폰스된 poiObject : ");
-                            String typeName = poiObject.getString("typeName"); //분류
+                            Log.d("HttpResponse", "리스폰스된 poiObject : " + poiObject);
+                            String name = poiObject.getString("name"); // 지명
+                            String roadAdd = poiObject.getString("roadAdres"); // 도로명
+                            String jibunAdd = poiObject.getString("jibunAdres"); // 지번
+                            String latitude = poiObject.getString("x"); // x좌표
+                            String longitude = poiObject.getString("y"); // y좌표
 
-                            if(!typeName.contains("버스정류장")){
-                                Log.d("HttpResponse", "리스폰스된 poiObject(without버정) : " + poiObject);
-                                String name = poiObject.getString("name"); // 지명
-                                String roadAdd = poiObject.getString("roadAdres"); // 도로명
-                                String jibunAdd = poiObject.getString("jibunAdres"); // 지번
-                                String latitude = poiObject.getString("x"); // x좌표
-                                String longitude = poiObject.getString("y"); // y좌표
+                            if (jibunAdd.endsWith("도") || jibunAdd.endsWith("대")) {
+                                // "도" 글자가 있는 경우, 맨 끝의 "도" 글자를 제외한 부분을 추출
+                                jibunAdd = jibunAdd.substring(0, jibunAdd.length() - 1);
+                            }
 
-                                if (jibunAdd.endsWith("도") || jibunAdd.endsWith("대")) {
-                                    // "도" 글자가 있는 경우, 맨 끝의 "도" 글자를 제외한 부분을 추출
-                                    jibunAdd = jibunAdd.substring(0, jibunAdd.length() - 1);
+
+                            if (name.contains(keyword) || roadAdd.contains(keyword) || jibunAdd.contains(keyword)) {
+                                String address;
+
+                                if (roadAdd.equals(" ")) {
+                                    address = jibunAdd + "/" + latitude + "/" + longitude;
+                                } else {
+                                    address = roadAdd + "/" + latitude + "/" + longitude;
                                 }
 
-
-                                if (name.contains(keyword) || roadAdd.contains(keyword) || jibunAdd.contains(keyword)) {
-                                    String address;
-
-                                    if (roadAdd.equals(" ")) {
-                                        address = jibunAdd + "/" + latitude + "/" + longitude;
-                                    } else {
-                                        address = roadAdd + "/" + latitude + "/" + longitude;
-                                    }
-
-                                    address_hash.put(name, address);
-                                }
+                                address_hash.put(name, address);
                             }
 
 
