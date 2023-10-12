@@ -33,6 +33,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.naver.maps.geometry.LatLng;
+import com.naver.maps.geometry.LatLngBounds;
 import com.naver.maps.map.CameraAnimation;
 import com.naver.maps.map.CameraUpdate;
 import com.naver.maps.map.LocationTrackingMode;
@@ -82,6 +83,9 @@ public class MapLocationPopupFragment extends Fragment implements OnMapReadyCall
 
     private List<Marker> shopMarkers = new ArrayList<>();
 
+    private DatabaseReference shopDatabaseReference;
+    private ValueEventListener shopValueEventListener;
+
     // 중요 메서드 설명
     // 1. requestGeocode: 주소를 받아 위치 좌표 찾음:  지도이동, 좌표에 핀찍는 용도로 사용
     // 2. requestReverseGedocode: 좌표값으로 주소(서울 10-1) 찾음
@@ -97,11 +101,6 @@ public class MapLocationPopupFragment extends Fragment implements OnMapReadyCall
         selectLocationButton = view.findViewById(R.id.selectLocationBtn);  // (위치 선택후) 선택 버튼
         cancelLocationButton = view.findViewById(R.id.cancelLocationButton); // 취소 버튼
         bottomNavigationView = getActivity().findViewById(R.id.bottomNavigationView);
-//        addressTextView = view.findViewById(R.id.addressTextView);
-//        // ListView 및 어댑터 초기화
-//        locationListView= view.findViewById(R.id.locationListView) ;
-//        locationAdapter =  new ArrayAdapter<>(requireContext(), android.R.layout.simple_list_item_1);
-//        locationListView.setAdapter(locationAdapter);
 
         // enter 키보드를 눌러도 searchButton을 누른것과 같은 효과를 주기위함
         locationSearchEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -127,7 +126,6 @@ public class MapLocationPopupFragment extends Fragment implements OnMapReadyCall
             public void onClick(View v) {
                 // 팝업(자식 fragment인 MapLocationPopupFragment)을 닫는 코드
                 getParentFragmentManager().popBackStack();
-
                 // bottomNavigationView를 다시 표시
                 bottomNavigationView.setVisibility(View.VISIBLE);
             }
@@ -232,14 +230,6 @@ public class MapLocationPopupFragment extends Fragment implements OnMapReadyCall
 //                              지우셈      popNaverMap.moveCamera(CameraUpdate.scrollTo(searchedLatLng));
                                     // 이전에 표시된 마커는 지우고 초기화
                                     updateMapWithLatLng(searchedLatLng);
-//                                    // requestGeocode로 요청한 x,y 값이 searchLatLng에 담겨있음
-//                                    double latitude = searchedLatLng.latitude;
-//                                    double longitude = searchedLatLng.longitude;
-//                                    showXY.setText("  x: " + longitude + "y: " + latitude);
-//                                    // 선택한 좌표를 주소로 변환 요청 이거 굳이 해야하나?
-//                                    addr이 검색한 주소일텐데 또 requestReverseGeocode() 해야하나 테스트 해보기;
-//                                    requestReverseGeocode(latitude, longitude);
-//
                                 }
                             });
                         }
@@ -305,10 +295,16 @@ public class MapLocationPopupFragment extends Fragment implements OnMapReadyCall
         uiSettings.setScaleBarEnabled(true);
         uiSettings.setCompassEnabled(true);
         uiSettings.setZoomControlEnabled(true);
-
-
+        // 보이는 부분의 경계
         // 샵들 정보를 firebase 에서 불러오는 코드
         fetchShopDataFromFirebase();
+
+        popNaverMap.addOnCameraChangeListener((reason, animated) -> {
+            if (reason == CameraUpdate.REASON_GESTURE) {
+                // Load shop data based on the current visible region
+                loadShopDataForVisibleRegion();
+            }
+        });
 
         // 지도 클릭을 위한 클릭 리스너 설정 => 지도를 클릭하면 그 위치의 주소와 핀을 찍기 위한 리스너
         popNaverMap.setOnMapClickListener(new NaverMap.OnMapClickListener()
@@ -323,11 +319,63 @@ public class MapLocationPopupFragment extends Fragment implements OnMapReadyCall
         });
     }
 
+
+
+    private void loadShopDataForVisibleRegion() {
+        LatLngBounds visibleBounds = popNaverMap.getContentBounds();
+        double north = visibleBounds.getNorthLatitude();
+        double south = visibleBounds.getSouthLatitude();
+        double east = visibleBounds.getEastLongitude();
+        double west = visibleBounds.getWestLongitude();
+
+        shopValueEventListener = shopDatabaseReference
+                .orderByChild("latitude")
+                .startAt(south)
+                .endAt(north)
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        // Clear existing shop markers
+                        clearShopMarkers();
+
+                        // Load and display shop data for the visible region
+                        for (DataSnapshot shopSnapshot : dataSnapshot.getChildren()) {
+                            Shop shop = shopSnapshot.getValue(Shop.class);
+                            addShopMarker(shop);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        // Handle data loading errors
+                        Log.e("Firebase", "Failed to fetch shop data: " + databaseError.getMessage());
+                    }
+                });
+    }
+
+
+    private void clearShopMarkers() {
+        for (Marker marker : shopMarkers) {
+            marker.setMap(null);
+        }
+        shopMarkers.clear();
+    }
+
+    @Override
+    public void onDestroyView() {
+        // Remove the ValueEventListener when the fragment is destroyed
+        if (shopValueEventListener != null) {
+            shopDatabaseReference.removeEventListener(shopValueEventListener);
+        }
+
+        // ... (other cleanup code)
+
+        super.onDestroyView();
+    }
     // Firebase Realtime Database에서 가게 데이터 가져오기 (기존 가게들 지도에 찍기 위함)
     private void fetchShopDataFromFirebase() {
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("shops");
-
-        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+        shopDatabaseReference= FirebaseDatabase.getInstance().getReference("shops");
+        shopDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot shopSnapshot : dataSnapshot.getChildren()) {
@@ -422,22 +470,7 @@ public class MapLocationPopupFragment extends Fragment implements OnMapReadyCall
         popNaverMap.moveCamera(cameraUpdate);
     }
 
-//    private List<String> getMatchingAddresses(String input) {
-//        Geocoder geocoder = new Geocoder(requireContext(), new Locale("ko", "KR"));
-//        List<String> matchingAddresses = new ArrayList<>();
-//        try {
-//            List<Address> addresses = geocoder.getFromLocationName(input, 5); // 최대 5개 결과 반환
-//            if (addresses != null && !addresses.isEmpty()) {
-//                for (Address address : addresses) {
-//                    matchingAddresses.add(address.getAddressLine(0)); // 첫 번째 결과만 사용
-//                }
-//            }
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        return matchingAddresses;
-//    }
-
+//    p
     // 주소로부터 좌표를 가져올 새로운 메서드를 추가
 
     public LatLng getCoordinatesFromAddress(String address) {
@@ -451,7 +484,6 @@ public class MapLocationPopupFragment extends Fragment implements OnMapReadyCall
                 return new LatLng(latitude, longitude);
             }
         } catch (IOException e) {
-            Log.d("ffff","Fff");
             e.printStackTrace();
         }
         return null;

@@ -52,6 +52,7 @@ import com.yuhan.yangpojang.model.Shop;
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
+import androidx.lifecycle.ViewModel;
 public class ReportShopFragment extends Fragment implements ShopDataListener
 {
     ScrollView scrollView; // 스크롤뷰
@@ -105,6 +106,7 @@ public class ReportShopFragment extends Fragment implements ShopDataListener
     private float rating;
     private String geohash;
 
+    private  String addressText;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
@@ -180,6 +182,7 @@ public class ReportShopFragment extends Fragment implements ShopDataListener
             @Override
             public void onClick(View v)
             {
+                Log.d("Ff",String.valueOf(addressName));
                 requestCode=PICK_EXTERIOR_IMAGE_REQUEST;
                 openGallery();
             }
@@ -244,7 +247,7 @@ public class ReportShopFragment extends Fragment implements ShopDataListener
             @Override
             public void onClick(View v)
             {
-                reportBtn.setClickable(false);
+                Log.d("Fzzzzzzzzf",String.valueOf(addressName));
                 saveShopData();
 
             }
@@ -252,7 +255,6 @@ public class ReportShopFragment extends Fragment implements ShopDataListener
         //가게위치 선택하기 글자를 누르면 지도가 뜨게 구현 + 하단 네비게이션 바 감춤
         editShopPlaceBtn.setOnClickListener(v ->
         {
-            bottomNavigationView.setVisibility(View.GONE);
             showMapLocationPopup(); // 위치선택용 지도 pop
         });
         // 화면 아무대나 눌러도 키보드가 사라지게 구현을 위해 작성 - enter 키로만 키보드가 사라지면 굉장히 불편하여 추가함
@@ -292,14 +294,14 @@ public class ReportShopFragment extends Fragment implements ShopDataListener
                     addresses = geocoder.getFromLocation(latitude, longitude, 1);
                     if (addresses.size() > 0) {
                         Address address = addresses.get(0);
-                        String addressText = address.getAddressLine(0); // 주소 문자열 가져오기
+                        addressText = address.getAddressLine(0).replace("대한민국","").trim(); // 주소 문자열 가져오기
                         shopLocationText.setText(addressText);
                     } else {
-                        shopLocationText.setText("위치 선택하기");
+                        shopLocationText.setText("위치를 선택하세요");
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
-                    shopLocationText.setText("주소 변환 오류");
+                    shopLocationText.setText("주소 변환 오류 - 다시 설정하세요");
                 }
             }
         });
@@ -315,6 +317,7 @@ public class ReportShopFragment extends Fragment implements ShopDataListener
 
     private void saveShopData()
     {
+        scrollView.setBackgroundColor(Color.parseColor("#339933")); // 제보버튼 누르면 배경색이 약간 어두어지게 연출
         String shopName = shopNameEditText.getText().toString();
         boolean isPwayMobile = pwayMobileCheckBox.isChecked();
         boolean isPwayCard = pwayCardCheckBox.isChecked();
@@ -334,19 +337,22 @@ public class ReportShopFragment extends Fragment implements ShopDataListener
 
         addressName= shopLocationText.getText().toString();
 
-        if (latitude == 0.0 && longitude == 0.0)
-        {
-            Toast.makeText(getContext(), "위치를 설정해주세요.", Toast.LENGTH_SHORT).show();
-        }
-        else if(addressName=="위치 선택하기")
-        {
-            // 가게 이름이 빈 문자열인 경우 처리
-            Toast.makeText(getContext(), "위치를 설정해주세요.", Toast.LENGTH_SHORT).show();
+        Log.d("bibi",addressName);
 
+        if (addressName.equals("위치를 선택하세요"))
+        {
+            Log.d("tjqls",addressName);
+            Toast.makeText(getContext(), "위ffff치를 설정해주세요.", Toast.LENGTH_SHORT).show();
         }
-        else if (shopName.isEmpty()) {
+        else if(addressName=="null") {
+            Toast.makeText(getContext(), "ffff위치를 설정해주세요.", Toast.LENGTH_SHORT).show();
+        }
+        else if(latitude == 0.0 && longitude == 0.0) {
+            Toast.makeText(getContext(), "위치를fff 설정해주세요.", Toast.LENGTH_SHORT).show();
+        }
+
+        else if ((shopName.isEmpty())||shopName=="위치를 선택하세요") {
             Toast.makeText(getContext(), "가게이름을 작성해주세요.", Toast.LENGTH_SHORT).show();
-
         }
         else if (!(isPwayMobile || isPwayCard || isPwayAccount || isPwayCash))
         {
@@ -358,11 +364,13 @@ public class ReportShopFragment extends Fragment implements ShopDataListener
         }
         else // 제보에 필요한 정보를 모두 입력했을시
         {
+            textboard.setVisibility(View.VISIBLE);
             Shop shop = new Shop(uid,shopName, latitude,longitude,addressName,isPwayMobile, isPwayCard, isPwayAccount, isPwayCash,
                     isOpenMon, isOpenTue, isOpenWed, isOpenThu, isOpenFri, isOpenSat, isOpenSun,selectedCategory,
                     (storeExteriorImageUri != null) ? storeExteriorImageUri.toString() : "",
                     (menuBoardImageUri != null) ? menuBoardImageUri.toString() : "" ,
                     isVerified,  hasMeeting, rating ,geohash);
+            scrollView.setBackgroundColor(Color.parseColor("#336633")); // 제보버튼 누르면 배경색이 약간 어두어지게 연출
             FirebaseUtils.saveShopData(shop, storeExteriorImageUri, menuBoardImageUri);
         }
     }
@@ -370,19 +378,19 @@ public class ReportShopFragment extends Fragment implements ShopDataListener
     public void onShopDataSaved()
     {
         Toast.makeText(getContext(), "가게가 정상적으로 등록되었습니다! ", Toast.LENGTH_SHORT).show();
+        reportBtn.setClickable(false);
         clearForm();
-
 
     }
 
     public void clearForm()  // 제보화면에 작성폼 초기화
     {
-        reportBtn.setClickable(false);
+        Log.d("coogie","ccojsdifjdso");
+        reportBtn.setClickable(true);
         scrollView.setBackgroundColor(Color.parseColor("#ffffff")); // 배경색을 원래대로 하얀색으로
-        textboard.setVisibility(View.GONE);  //  [✨✨가게 정보가 업로드 중입니다✨✨] - TOAST 감춤
-
         // 폼 초기화 코드 작성
         shopNameEditText.setText(""); // 가게 이름 입력란 초기화
+        textboard.setVisibility(View.GONE);
         // 다른 요소들도 초기화
         pwayMobileCheckBox.setChecked(false);
         pwayCardCheckBox.setChecked(false);
@@ -395,7 +403,7 @@ public class ReportShopFragment extends Fragment implements ShopDataListener
         friCheckBox.setChecked(false);
         satCheckBox.setChecked(false);
         sunCheckBox.setChecked(false);
-
+        addressName="위치를 선택하세요";
         // ImageView 초기화
         storeExteriorPhoto.setImageDrawable(null);
         menuBoardPhoto.setImageDrawable(null);
@@ -404,20 +412,15 @@ public class ReportShopFragment extends Fragment implements ShopDataListener
         menuBoardImageUri = null;
         storeExteriorImageUri=null;
         categorySpinner.setSelection(0); // Spinner 초기화 (카테고리 선택을 "선택 안함"으로)
-        shopLocationText.setText("위치 선택하기");  // 주소 텍스트 초기화
+        shopLocationText.setText("위치를 선택하세요");  // 주소 텍스트 초기화
         latitude = 0.0; // 위도 초기화
         longitude = 0.0; //경도
         storePhotoTextView.setVisibility(View.VISIBLE);
         menuPhotoTextView.setVisibility(View.VISIBLE);
-
         isVerified=false;
         hasMeeting=false;
         geohash="";
 
-
-        // 스크롤하기 맨 상단으로 초기화
-//        ScrollView scrollView = requireView().findViewById(R.id.scrollView2); // 스크롤 뷰 ID를 설정하세요.
-//        scrollView.smoothScrollTo(0, 0); // 스크롤을 맨 위로 이동
     }
 
     // 키보드 숨기는 메서드
