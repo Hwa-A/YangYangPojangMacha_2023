@@ -1,4 +1,6 @@
 package com.yuhan.yangpojang.fragment;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.app.Activity;
 import android.content.Context;
@@ -55,6 +57,7 @@ import java.util.Locale;
 import androidx.lifecycle.ViewModel;
 public class ReportShopFragment extends Fragment implements ShopDataListener
 {
+    private boolean shouldClearForm = true;
     ScrollView scrollView; // 스크롤뷰
     ActivityResultLauncher<Intent> galleryLauncher; // 갤러리 오픈을 위한 intent launcher
     private static final int PICK_EXTERIOR_IMAGE_REQUEST = 1;    // 가게-외관이미지 선택
@@ -267,11 +270,16 @@ public class ReportShopFragment extends Fragment implements ShopDataListener
                 return false;
             }
         });
+
         return viewReprotShop;
+
     }
+
+
 
     // 위치 선택 지도 팝업을 띄우는 메서드
     private void showMapLocationPopup() {
+        shouldClearForm = false; // Set the flag to skip form clearing
         FragmentManager fragmentManager = getParentFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         MapLocationPopupFragment popupFragment = new MapLocationPopupFragment();
@@ -306,7 +314,18 @@ public class ReportShopFragment extends Fragment implements ShopDataListener
             }
         });
     }
-
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (!shouldClearForm) {
+          Log.d("f","F");
+          shouldClearForm=true;
+        }
+        else if(shouldClearForm) {
+            clearForm();
+        }
+        super.onPause();
+    }
 
 
     // 핸드폰 갤러리 여는 역할
@@ -317,7 +336,6 @@ public class ReportShopFragment extends Fragment implements ShopDataListener
 
     private void saveShopData()
     {
-        scrollView.setBackgroundColor(Color.parseColor("#339933")); // 제보버튼 누르면 배경색이 약간 어두어지게 연출
         String shopName = shopNameEditText.getText().toString();
         boolean isPwayMobile = pwayMobileCheckBox.isChecked();
         boolean isPwayCard = pwayCardCheckBox.isChecked();
@@ -370,7 +388,7 @@ public class ReportShopFragment extends Fragment implements ShopDataListener
                     (storeExteriorImageUri != null) ? storeExteriorImageUri.toString() : "",
                     (menuBoardImageUri != null) ? menuBoardImageUri.toString() : "" ,
                     isVerified,  hasMeeting, rating ,geohash);
-            scrollView.setBackgroundColor(Color.parseColor("#336633")); // 제보버튼 누르면 배경색이 약간 어두어지게 연출
+            scrollView.setBackgroundColor(Color.parseColor("#339933")); // 제보버튼 누르면 배경색이 약간 어두어지게 연출
             FirebaseUtils.saveShopData(shop, storeExteriorImageUri, menuBoardImageUri);
         }
     }
@@ -385,7 +403,6 @@ public class ReportShopFragment extends Fragment implements ShopDataListener
 
     public void clearForm()  // 제보화면에 작성폼 초기화
     {
-        Log.d("coogie","ccojsdifjdso");
         reportBtn.setClickable(true);
         scrollView.setBackgroundColor(Color.parseColor("#ffffff")); // 배경색을 원래대로 하얀색으로
         // 폼 초기화 코드 작성

@@ -13,12 +13,13 @@ import android.widget.TextView;
 import com.yuhan.yangpojang.R;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class SearchAdapter_RecentSearch extends BaseAdapter {
-    private ArrayList<String> recentsearches;
+    private ArrayList<HashMap<String, String>> recentsearches;
     private LinearLayout recentIsEmpty_linear;
     private View footer;
-    public SearchAdapter_RecentSearch(ArrayList<String> recentSearches, LinearLayout recentIsemtpy_linear, View footer){
+    public SearchAdapter_RecentSearch(ArrayList<HashMap<String, String>> recentSearches, LinearLayout recentIsemtpy_linear, View footer){
         this.recentsearches = recentSearches;
         this.recentIsEmpty_linear = recentIsemtpy_linear;
         this.footer = footer;
@@ -48,9 +49,17 @@ public class SearchAdapter_RecentSearch extends BaseAdapter {
             convertView = inflater.inflate(R.layout.recentview_item, parent, false);
         }
 
-        TextView text = (TextView) convertView.findViewById(R.id.recent_name);
-        String item = (String) getItem(position);
-        text.setText(item);
+        TextView recent_name = (TextView) convertView.findViewById(R.id.recent_name);
+        TextView recent_add = (TextView) convertView.findViewById(R.id.recent_add);
+
+        // HashMap에서 값을 추출하여 TextView에 설정
+        HashMap<String, String> adds = recentsearches.get(position);
+        String name = adds.keySet().iterator().next();
+        String add = adds.get(name);
+
+        recent_name.setText(name);
+        recent_add.setText(add);
+
 
         ImageView xbtn = (ImageView) convertView.findViewById(R.id.xbtn);
         xbtn.setOnClickListener(new View.OnClickListener() {

@@ -49,12 +49,12 @@ public class PochaListAdapter extends RecyclerView.Adapter<PochaListAdapter.View
     Context context;
     @NonNull
     @Override
-    public PochaListAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         context = parent.getContext(); //부모의 context 얻어옴 - 각 아이템들을 담을 recyclerview를 의미
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE); //레이아웃(XML파일)을 실제 뷰 객체로 변환하는데 사용되는 LayoutInflater를 가져옴
 
         View view = inflater.inflate(R.layout.pochalist_item, parent, false); //xml레이아웃 파일을 뷰 객체로 인스턴스화
-        PochaListAdapter.ViewHolder viewHolder = new PochaListAdapter.ViewHolder(view); // 아이템 뷰의 뷰홀더를 생성하고, 이를 해당 아이템 뷰에 연결
+        ViewHolder viewHolder = new ViewHolder(view); // 아이템 뷰의 뷰홀더를 생성하고, 이를 해당 아이템 뷰에 연결
 
         return viewHolder;
     }
