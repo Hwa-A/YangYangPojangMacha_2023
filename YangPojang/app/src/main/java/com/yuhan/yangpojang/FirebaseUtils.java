@@ -8,6 +8,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.yuhan.yangpojang.fragment.ReportShopFragment;
 import com.yuhan.yangpojang.model.Shop;
 
 public class FirebaseUtils {
@@ -121,7 +122,10 @@ public class FirebaseUtils {
         // 이미지 업로드 실패 처리
         Log.e("FirebaseUtils", imageType + " 업로드 실패: " + exception.getMessage());
         // 여기에서 실패 처리를 원하는 방식으로 수행하십시오.
-        // 폼클리어 하기? -주석 지우기
+
+        // 다음 코드는 없앨가능성이 큽니다 확인하시오.
+        ReportShopFragment reportShopFragment= new ReportShopFragment();
+        reportShopFragment.clearForm();
     }
 
 

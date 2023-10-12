@@ -5,6 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
     <com.naver.maps.map.widget.LocationButtonView
         android:id="@+id/locationButton"
         android:layout_width="wrap_content"
@@ -14,7 +15,6 @@
         app:layout_constraintStart_toStartOf="@+id/PopMapFragment"
         app:layout_constraintTop_toTopOf="@+id/PopMapFragment"
         tools:ignore="MissingConstraints" />
-
 
     <fragment
         android:id="@+id/PopMapFragment"

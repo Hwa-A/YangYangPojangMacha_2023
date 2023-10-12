@@ -136,20 +136,20 @@ public class MapLocationPopupFragment extends Fragment implements OnMapReadyCall
         selectLocationButton.setOnClickListener(new View.OnClickListener()
         {
             @Override
-            public void onClick(View v) 
+            public void onClick(View v)
             {
                 // 만약 위치를 선택하지 않았다면 경고창 띄우기
-                if (selectedMarker == null) 
+                if (selectedMarker == null)
                 {
                     Toast.makeText(getActivity(), "위치를 선택해주세요.", Toast.LENGTH_SHORT).show();
                     return; // 위치 선택이 되지 않았으므로 함수를 빠져나감
-                } 
-                else 
+                }
+                else
                 {
                     // 50미터 근방에 샵이 있는지 확인
                     LatLng selectedLatLng = selectedMarker.getPosition();
                     boolean shopsWithinRadius = false;
-                    for (Marker shopMarker : shopMarkers) 
+                    for (Marker shopMarker : shopMarkers)
                     {
                         LatLng shopLatLng = shopMarker.getPosition();
                         double distance = calculateDistance(selectedLatLng.latitude, selectedLatLng.longitude, shopLatLng.latitude, shopLatLng.longitude);

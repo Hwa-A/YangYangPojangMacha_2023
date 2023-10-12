@@ -4,11 +4,10 @@ plugins {
     id 'com.google.firebase.crashlytics'
 }
 
-    //local.properties 불러오기
-    Properties properties = new Properties()
-    properties.load(project.rootProject.file('local.properties').newDataInputStream())
-    def MAP_API_KEY = properties.getProperty('MAP_API_KEY')
-
+//local.properties 불러오기
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+def MAP_API_KEY = properties.getProperty('MAP_API_KEY')
 android {
     namespace 'com.yuhan.yangpojang'
     compileSdk 33
@@ -25,6 +24,7 @@ android {
         buildConfigField("String","POI_API_KEY", properties.getProperty("poi_api_key"))
 
         manifestPlaceholders = [MAP_API_KEY : MAP_API_KEY]
+
 
     }
 
@@ -106,4 +106,6 @@ dependencies {
     annotationProcessor 'com.github.bumptech.glide:compiler:4.12.0' //이미지 로딩에 필요한 코드 생성
 
     implementation 'com.squareup.okhttp3:okhttp:4.10.0' //HTTP통신 라이브러리(국토정보플랫폼 검색 api 사용)
+
+
 }

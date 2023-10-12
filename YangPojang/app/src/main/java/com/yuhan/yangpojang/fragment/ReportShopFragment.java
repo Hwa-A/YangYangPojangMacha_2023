@@ -105,7 +105,6 @@ public class ReportShopFragment extends Fragment implements ShopDataListener
     private float rating;
     private String geohash;
 
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
@@ -139,10 +138,8 @@ public class ReportShopFragment extends Fragment implements ShopDataListener
         menuPhotoTextView= viewReprotShop.findViewById(R.id.menuBoardText);  // 메뉴 사진 선택하기 글씨
         bottomNavigationView= getActivity().findViewById(R.id.bottomNavigationView); // 하단 네비게이션 바
         //hash= GeoFireUtils.getGeoHashForLocation(new GeoLocation(latitude,longitude));  // 나은 언니 hash 넣을 때 사용
-        uid=null;
-        FirebaseUtils.setShopDataListener(this);  // FirebaseUtils 클래스: 제보파트의 파이어베이스에 값을 넣는 부분을 빼기 위해 작성함(모든 부분의 파이어베이스가 아닌 제보부분만입니다)
+        uid=null; // FIREBASE에 USERID
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        Log.d("dsljfkldsjfklsdjfk", String.valueOf(user));
         if(user!=null)
         {
             uid=user.getUid();
@@ -151,8 +148,10 @@ public class ReportShopFragment extends Fragment implements ShopDataListener
         }
         else
         {
-            Log.d("dsljfkldsjfklsdjfk", String.valueOf(user));
+            Log.d("ReportShopFragment userid 오류", "userid 값이 없음");
         }
+        FirebaseUtils.setShopDataListener(this);  // FirebaseUtils 클래스: 제보한 가게를 파이어베이스에 넣는 로직을 별도 class로 작성함(모든 부분의 파이어베이스가 아닌 제보부분만입니다)
+
 
         // Spinner에 카테고리 목록 설정 -> res/values/strings에 목록있음
         ArrayAdapter<CharSequence> categoryAdapter = ArrayAdapter.createFromResource(requireContext(), R.array.category_array, android.R.layout.simple_spinner_item);
@@ -363,19 +362,7 @@ public class ReportShopFragment extends Fragment implements ShopDataListener
                     isOpenMon, isOpenTue, isOpenWed, isOpenThu, isOpenFri, isOpenSat, isOpenSun,selectedCategory,
                     (storeExteriorImageUri != null) ? storeExteriorImageUri.toString() : "",
                     (menuBoardImageUri != null) ? menuBoardImageUri.toString() : "" ,
-                    isVerified,  hasMeeting, rating ,geohash
-            );
-            scrollView.setBackgroundColor(Color.parseColor("#D8D8D8")); // 제보버튼 누르면 배경색이 약간 어두어지게 연출
-            textboard.setVisibility(View.VISIBLE);  //[✨✨가게 정보가 업로드 중입니다✨✨] 토스트 나타남
-            // 나은언니 hash 넣을때 넣을 코드
-            //  Shop shop = new Shop(
-            //                    shopName, latitude,longitude,hash,addressName,isPwayMobile, isPwayCard, isPwayAccount, isPwayCash,
-            //                    isOpenMon, isOpenTue, isOpenWed, isOpenThu, isOpenFri, isOpenSat, isOpenSun,selectedCategory,
-            //                    (storeExteriorImageUri != null) ? storeExteriorImageUri.toString() : "",
-            //                    (menuBoardImageUri != null) ? menuBoardImageUri.toString() : ""
-            //            );
-            //            //
-            //모든 필수 입력 사항이 제대로 입력되었을 경우 Firebase에 데이터 저장을 위해 FirebaseUtils.saveShopData 호출
+                    isVerified,  hasMeeting, rating ,geohash);
             FirebaseUtils.saveShopData(shop, storeExteriorImageUri, menuBoardImageUri);
         }
     }
@@ -444,4 +431,3 @@ public class ReportShopFragment extends Fragment implements ShopDataListener
         }
     }
 }
-
