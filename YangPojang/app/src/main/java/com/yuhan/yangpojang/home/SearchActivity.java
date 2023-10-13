@@ -1,5 +1,10 @@
 package com.yuhan.yangpojang.home;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
+import androidx.appcompat.widget.Toolbar;
+
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Address;
@@ -17,26 +22,24 @@ import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.SearchView;
-import androidx.appcompat.widget.Toolbar;
 
 import com.yuhan.yangpojang.R;
 
 import org.locationtech.proj4j.CRSFactory;
 import org.locationtech.proj4j.CoordinateReferenceSystem;
+import org.locationtech.proj4j.ProjCoordinate;
 import org.locationtech.proj4j.CoordinateTransform;
 import org.locationtech.proj4j.CoordinateTransformFactory;
-import org.locationtech.proj4j.ProjCoordinate;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+
 
 public class SearchActivity extends AppCompatActivity {
 
@@ -56,7 +59,10 @@ public class SearchActivity extends AppCompatActivity {
     ListView autoComplete_listView; // 자동완성 목록 - 리스트뷰
 
     String savefile = "recentsearch_file"; //SharedPreferences파일의 이름("recentsearch_file"이라는 이름으로 SharedPreferences파일 생성)
-    SharedPreferences sharedPreferences; //SharedPreferences 인스턴스 생성
+    SharedPreferences sharedPreferences; //SharedPreferences 인스턴스 생성    private static double currentLatitude;
+    private static double currentLatitude;
+    private static double currentLongitude;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,12 +75,12 @@ public class SearchActivity extends AppCompatActivity {
         ArrayList<HashMap<String, String>> allValues = new ArrayList<>();
 
         // 파일에서 받아온 값을 list형태로 저장
-        for (Map.Entry<String, ?> entry : allEntries.entrySet()) { //allEntries의 값 부분을 allValues에 추가
+        for(Map.Entry<String, ?> entry : allEntries.entrySet()){ //allEntries의 값 부분을 allValues에 추가
             String value = (String) entry.getValue(); //Object형식으로 반환되기 때문에 String으로 형 변환해줌
-            if (value != null) {
+            if(value != null){
                 String[] parts = value.split("&");
                 String name = parts[0];
-                String add = parts[1];
+                String add=  parts[1];
                 HashMap<String, String> addSet = new HashMap<>();
                 addSet.put(name, add);
 
@@ -153,13 +159,13 @@ public class SearchActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String auto_address = null;
-                String address = (String) parent.getItemAtPosition(position);
+                String address = (String)parent.getItemAtPosition(position);
                 Location location = new Location("map.ngii");
 
                 HashMap<String, String> hashMap = new HashMap<>();
 
-                for (int i = 0; i < autoCompletes_name.size(); i++) {
-                    if (address == autoCompletes_name.get(i)) {
+                for(int i = 0; i < autoCompletes_name.size(); i++){
+                    if(address == autoCompletes_name.get(i)){
                         location.setLatitude(autoCompletes_latitude.get(i));
                         location.setLongitude(autoCompletes_longitude.get(i));
                         auto_address = autoCompletes_add.get(i);
@@ -192,7 +198,6 @@ public class SearchActivity extends AppCompatActivity {
                 performSearch(query);
                 return true;
             }
-
             @Override
             public boolean onQueryTextChange(String newText) {
                 // 검색어가 변경될 때 처리할 작업을 여기에 작성
@@ -200,8 +205,9 @@ public class SearchActivity extends AppCompatActivity {
 
                 if (!TextUtils.isEmpty(newText)) { // 주소 검색창이 비어있지 않을 때만 호출
                     HttpResponse.sendData(newText, new HttpResponse.DataCallback() {
+
                         @Override
-                        public void onDataLoaded(HashMap<String, String> address_hash) {
+                        public void onDataLoaded(LinkedHashMap<String, ArrayList<String>> address_hash) {
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
@@ -210,28 +216,28 @@ public class SearchActivity extends AppCompatActivity {
                                     autoCompletes_latitude.clear();
                                     autoCompletes_longitude.clear();
 
-                                    for (String key : address_hash.keySet()) {
-                                        String values = address_hash.get(key);
+                                    for(String key : address_hash.keySet()){
                                         autoCompletes_name.add(key);
 
-                                        String[] parts = values.split("/");
-                                        autoCompletes_add.add(parts[0]); //주소(도로명 or 지번)
-                                        coordinateTransformation(Double.parseDouble(parts[1]), Double.parseDouble(parts[2]));
-                                        //autoCompletes_latitude.add(Double.parseDouble(parts[1])); // x좌표
-                                        //autoCompletes_longitude.add(Double.parseDouble(parts[2])); // y좌표
+                                        ArrayList<String> values = address_hash.get(key);
+                                        if(values != null && !values.isEmpty()){
+                                            autoCompletes_add.add(values.get(0));
+                                            autoCompletes_latitude.add(Double.valueOf(values.get(1)));
+                                            autoCompletes_longitude.add(Double.valueOf(values.get(2)));
+                                        }
+
                                     }
 
                                     autoadapter.notifyDataSetChanged();
-                                    for (int i = 0; i < address_hash.size(); i++) {
-                                        Log.d("SearchAdapter", "받은 주소목록: " + "[" + autoCompletes_name.get(i) + " && " + autoCompletes_add.get(i) + " && " + autoCompletes_latitude.get(i) + " && " + autoCompletes_longitude.get(i) + "]");
+                                    for(int i = 0; i < address_hash.size(); i++){
+                                        Log.d("SearchActivity", "받은 주소 지명 : " + autoCompletes_name.get(i) + "   주소 : " + autoCompletes_add.get(i) + "   좌표 : " + autoCompletes_latitude.get(i) + ", " + autoCompletes_longitude.get(i));
                                     }
-
                                 }
                             });
-
                         }
+
                     });
-                } else {
+                }else{
                     settingVisibility(recentSearches);
                 }
                 return true;
@@ -240,48 +246,12 @@ public class SearchActivity extends AppCompatActivity {
         });
     }
 
-    // 좌표계 변환
-    public void coordinateTransformation(double xCoord, double yCoord) {
-        // CRS(좌표 참조 시스템) 객체 생성
-        CRSFactory crsFactory = new CRSFactory();
-
-        // WGS84 system 정의
-        String wgsName = "WGS84"; // 좌표 참조 시스템 이름
-        String wgsProj = "+proj=longlat +datum=WGS84 +no_defs"; // 좌표 참조 시스템 세부 정보 정의( +proj=longlat : 위도, 경도 사용함을 의미 / +datum=WGS84 : 데이터텀을 WGS84로 설정함 / +no_defs : 정의 파일 사용 x )
-        CoordinateReferenceSystem wgsSystem = crsFactory.createFromParameters(wgsName, wgsProj); // WGS84 좌표 참조 시스템 객체 생성
-
-        // UTMK system 정의
-        String utmName = "UTMk";
-        String utmProj = "+proj=tmerc +lat_0=38 +lon_0=127.5 +k=0.9996 +x_0=1000000 +y_0=2000000 +ellps=GRS80 +units=m +no_defs";
-        CoordinateReferenceSystem utmkSystem = crsFactory.createFromParameters(utmName, utmProj);
-
-        // 변환할 좌표계 정보 생성
-        ProjCoordinate p = new ProjCoordinate(); // PrijCoorinate : 좌표를 저장하고 관리하기 위한 클래스
-        p.x = xCoord; // 변환할 좌표 입력
-        p.y = yCoord;
-
-        // 변환된 좌표를 담을 객체 생성
-        ProjCoordinate p2 = new ProjCoordinate(); // 변환된 좌표를 담을 객체 생성
-
-        // 좌표 변환
-        CoordinateTransformFactory ctFactory = new CoordinateTransformFactory(); // CoordinateTransformFactory : 좌표변환 수행
-        CoordinateTransform coodinateTransform = ctFactory.createTransform(utmkSystem, wgsSystem); // UTMK -> WGS 좌표 변환 정의
-        ProjCoordinate projCoordinate = coodinateTransform.transform(p, p2); // 좌표변환 수행
-
-        // 변환된 좌표
-        //double longitude = projCoordinate.x; // 변환된 경도
-        //double latitude = projCoordinate.y; // 변환된 위도
-        autoCompletes_latitude.add(projCoordinate.y); // x좌표
-        autoCompletes_longitude.add(projCoordinate.x); // y좌표
-        Log.d("SearchActivity", "위도 : " + autoCompletes_latitude + ", " + "경도 : " + autoCompletes_longitude);
-    }
-
     // 스크롤 시 리스너 설정
     AbsListView.OnScrollListener scrollL = new AbsListView.OnScrollListener() {
         @Override
         public void onScrollStateChanged(AbsListView view, int scrollState) {
             // 키보드 내리기
-            if (scrollState == SCROLL_STATE_TOUCH_SCROLL) {
+            if(scrollState == SCROLL_STATE_TOUCH_SCROLL){
                 View currentFocus = getCurrentFocus();
                 if (currentFocus != null) {
                     InputMethodManager manager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
@@ -296,8 +266,9 @@ public class SearchActivity extends AppCompatActivity {
         }
     };
 
+
     //기본 레이아웃 visibility설정
-    public void settingVisibility(ArrayList<HashMap<String, String>> recent_searches) {
+    public void settingVisibility(ArrayList<HashMap<String,String>> recent_searches){
 
         recentSearch_listView = findViewById(R.id.recentsearch_listView);
         recentIsempty_linear = findViewById(R.id.recentIsempty_linear);
@@ -305,11 +276,11 @@ public class SearchActivity extends AppCompatActivity {
         autoComplete_listView = findViewById(R.id.autocomplete_listView);
         autoComplete_listView.setVisibility(View.INVISIBLE);
 
-        if (!recent_searches.isEmpty()) {
+        if(!recent_searches.isEmpty()){
             recentSearch_listView.setVisibility(View.VISIBLE);
             recentIsempty_linear.setVisibility(View.INVISIBLE);
             footer.setVisibility(View.VISIBLE);
-        } else {
+        }else{
             recentSearch_listView.setVisibility(View.INVISIBLE);
             recentIsempty_linear.setVisibility(View.VISIBLE);
             footer.setVisibility(View.INVISIBLE);
@@ -317,7 +288,7 @@ public class SearchActivity extends AppCompatActivity {
     }
 
     //검색어 제출 시 레이아웃 visibility설정
-    public void settingVisibility_change() {
+    public void settingVisibility_change(){
 
         autoComplete_listView = findViewById(R.id.autocomplete_listView);
         recentIsempty_linear = findViewById(R.id.recentIsempty_linear);
@@ -332,19 +303,19 @@ public class SearchActivity extends AppCompatActivity {
     }
 
     // 주소가 No address인지 여부를 파악해서 PlaceName으로 어떤값을 보낼지 정하는 메서드
-    public String getAddress(HashMap<String, String> addressInfo) {
+    public String getAddress(HashMap<String, String> addressInfo){
         String addressName = null;
 
         // HashMap의 첫 번째 요소를 추출하여 주소 문자열을 가져옴
-        if (!addressInfo.isEmpty()) {
+        if(!addressInfo.isEmpty()){
             Map.Entry<String, String> entry = addressInfo.entrySet().iterator().next();
             addressName = entry.getValue();
         }
         // 가져온 주소값이 No address일 경우에만 주소 추출
-        if (addressName != null && addressName.equals("No address")) {
+        if(addressName != null && addressName.equals("No address")){
             return transformPlaceNameToAddress(addressName);
 
-        } else {
+        }else{
             return addressName;
         }
 
@@ -352,22 +323,23 @@ public class SearchActivity extends AppCompatActivity {
 
 
     // 지명 -> 주소 추출
-    public String transformPlaceNameToAddress(String addressName) {
+    public String transformPlaceNameToAddress(String addressName){
         List<Address> address;
         Geocoder geocoder = new Geocoder(this, new Locale("ko", "KR"));
         String fullAddress = null;
 
-        try {
+        try{
             address = geocoder.getFromLocationName(addressName, 1);
             Log.d("SearchActivity", "어드레스 : " + address);
-            if (address != null && address.size() > 0) {
+            if(address != null && address.size() > 0){
                 fullAddress = address.get(0).getAddressLine(0);
-                if (fullAddress.startsWith("대한민국")) { // 대한민국 인 것만 저장
+                if(fullAddress.startsWith("대한민국")){ // 대한민국 인 것만 저장
                     fullAddress = fullAddress.replace("대한민국", "");
-                } else { // 아닐 경우 No address
+                }
+                else{ // 아닐 경우 No address
                     fullAddress = "No address";
                 }
-            } else { // 변환 실패 시 No address
+            }else{ // 변환 실패 시 No address
                 fullAddress = "No address";
             }
         } catch (IOException e) {
@@ -411,7 +383,7 @@ public class SearchActivity extends AppCompatActivity {
     }
 
     // 최근검색어 목록에 아이템 추가
-    public void addRecentSearches(HashMap<String, String> query) {
+    public void addRecentSearches(HashMap<String, String> query){
 
         String queryKey = query.keySet().iterator().next();
 
@@ -419,13 +391,13 @@ public class SearchActivity extends AppCompatActivity {
         removeByKey(queryKey);
 
         //최근 검색어 list가 용량을 초과하지 않고, list내부에 같은 값이 없을 경우
-        if (recentSearches.size() < initialCapacity) {
+        if(recentSearches.size() < initialCapacity){
             recentSearches.add(0, query); //해당 쿼리 추가
         }
         //최근 검색어 list가 최대 용량과 같거나 초과하고, list내부에 같은 값이 없을 경우
-        else {
-            recentSearches.remove(initialCapacity - 1); //맨 마지막 요소 삭제
-            recentSearches.add(0, query); //첫번째 요소에 해당 쿼리 추가
+        else{
+            recentSearches.remove(initialCapacity -1); //맨 마지막 요소 삭제
+            recentSearches.add(0,query); //첫번째 요소에 해당 쿼리 추가
         }
 
     }
@@ -457,12 +429,12 @@ public class SearchActivity extends AppCompatActivity {
     }
 
     //종료하기 전에 recent_searches 저장
-    public void saveRecentSearchesToSharedPreferences() {
+    public void saveRecentSearchesToSharedPreferences(){
         sharedPreferences = getSharedPreferences(savefile, 0); //savefile이라는 이름의 SharedPreferences파일을 가져옴
         SharedPreferences.Editor editor = sharedPreferences.edit(); //파일의 데이터를 수정, 저장하기 위한 Editore객체 생성
 
         editor.clear();
-        for (int i = 0; i < recentSearches.size(); i++) {
+        for(int i = 0; i < recentSearches.size(); i++){
             HashMap<String, String> adds = recentSearches.get(i);
             String name = adds.keySet().iterator().next();
             String add = adds.get(name);

@@ -41,6 +41,7 @@ import com.naver.maps.map.MapFragment;
 import com.naver.maps.map.NaverMap;
 import com.naver.maps.map.OnMapReadyCallback;
 import com.naver.maps.map.UiSettings;
+import com.naver.maps.map.overlay.LocationOverlay;
 import com.naver.maps.map.util.FusedLocationSource;
 import com.naver.maps.map.overlay.Marker;
 import com.naver.maps.map.overlay.OverlayImage;
@@ -146,6 +147,7 @@ public class MapLocationPopupFragment extends Fragment implements OnMapReadyCall
                 {
                     // 50미터 근방에 샵이 있는지 확인
                     LatLng selectedLatLng = selectedMarker.getPosition();
+                    Log.d("fdsfsadfsadfsd", String.valueOf(selectedLatLng));
                     boolean shopsWithinRadius = false;
                     for (Marker shopMarker : shopMarkers)
                     {
@@ -169,6 +171,9 @@ public class MapLocationPopupFragment extends Fragment implements OnMapReadyCall
                                         Bundle resultBundle = new Bundle();
                                         resultBundle.putDouble("latitude", selectedLatLng.latitude);
                                         resultBundle.putDouble("longitude", selectedLatLng.longitude);
+                                        Log.d("fdsfsdaf", String.valueOf(selectedLatLng.latitude));
+                                        Log.d("fdsfsdaf", String.valueOf(selectedLatLng.longitude));
+
                                         getParentFragmentManager().setFragmentResult("locationResult", resultBundle);
                                         getParentFragmentManager().popBackStack();
                                         bottomNavigationView.setVisibility(View.VISIBLE);

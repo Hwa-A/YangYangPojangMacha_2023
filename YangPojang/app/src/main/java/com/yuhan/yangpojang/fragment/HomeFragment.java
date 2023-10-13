@@ -41,6 +41,7 @@ import com.naver.maps.map.LocationTrackingMode;
 import com.naver.maps.map.NaverMap;
 import com.naver.maps.map.OnMapReadyCallback;
 import com.naver.maps.map.UiSettings;
+import com.naver.maps.map.overlay.LocationOverlay;
 import com.naver.maps.map.overlay.Marker;
 import com.naver.maps.map.overlay.Overlay;
 import com.naver.maps.map.overlay.OverlayImage;
@@ -49,6 +50,7 @@ import com.naver.maps.map.util.MarkerIcons;
 import com.naver.maps.map.widget.CompassView;
 import com.naver.maps.map.widget.LocationButtonView;
 import com.yuhan.yangpojang.R;
+import com.yuhan.yangpojang.home.HttpResponse;
 import com.yuhan.yangpojang.home.PochaListAdapter;
 import com.yuhan.yangpojang.home.SearchActivity;
 import com.yuhan.yangpojang.model.Store;
@@ -94,6 +96,13 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
         // 권한 확인, onRequestPermissionResult 콜백 메서드 호출 - 앱에서 위치 권한을 얻기 위해 권한 요청 대화상자를 표시하는 역할
         if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             mNaverMap.setLocationTrackingMode(LocationTrackingMode.Follow);
+
+            LocationOverlay locationOverlay = mNaverMap.getLocationOverlay();
+            LatLng currentLatLng = locationOverlay.getPosition();
+            double currentLatitude = currentLatLng.latitude;
+            double currentLongitude = currentLatLng.longitude;
+            Log.d("sfjsdkfjsdklfjlsd;djfl;s",currentLongitude+""+currentLatitude);
+            HttpResponse.setCurrentLocation(currentLatitude, currentLongitude);
         }
         // 권한 부여가 되지 않은 경우 권한 부여 메세지 생성
         else

@@ -106,6 +106,6 @@ dependencies {
     annotationProcessor 'com.github.bumptech.glide:compiler:4.12.0' //이미지 로딩에 필요한 코드 생성
     implementation 'org.locationtech.proj4j:proj4j:1.2.2' // 좌표계 변환(EPSG:5179 -> WGS84)
     implementation 'com.squareup.okhttp3:okhttp:4.10.0' //HTTP통신 라이브러리(국토정보플랫폼 검색 api 사용)
-
+    implementation 'org.locationtech.proj4j:proj4j:1.2.2' // 좌표계 변환(EPSG:5179 -> WGS84
 
 }

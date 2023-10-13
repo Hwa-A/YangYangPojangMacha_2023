@@ -11,6 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.yuhan.yangpojang.R;
+import com.yuhan.yangpojang.home.SearchActivity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
