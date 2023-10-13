@@ -154,10 +154,9 @@
         <ImageView
             android:id="@+id/pocha_image"
             android:layout_width="80dp"
-            android:layout_height="50dp"
-            android:src="@drawable/pocha"
-            android:scaleType="centerCrop"
-            android:layout_marginLeft="10dp"
+            android:layout_height="100dp"
+            android:scaleType="center"
+            android:layout_marginStart="10dp"
             android:layout_marginTop="20dp"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"/>
@@ -165,9 +164,10 @@
             android:id="@+id/pocha_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="고구려 포차"
+            android:text="가게 이름"
             android:textSize="25sp"
             android:textStyle="bold"
+            android:layout_marginStart="20dp"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintLeft_toRightOf="@id/pocha_image"
             android:layout_marginTop="20dp"/>
@@ -180,14 +180,15 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintLeft_toRightOf="@+id/pocha_name"
             android:layout_marginTop="30dp"
-            android:layout_marginLeft="10dp"/>
+            android:layout_marginStart="10dp"/>
         <TextView
             android:id="@+id/pocha_add"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="경기 부천시 경인로 590"
+            android:text="가게 주소"
             app:layout_constraintTop_toBottomOf="@id/pocha_name"
             app:layout_constraintLeft_toRightOf="@id/pocha_image"
+            app:layout_constraintStart_toStartOf="@+id/pocha_name"
             android:layout_marginTop="8dp"/>
         <RatingBar
             android:id="@+id/pocha_rating"
@@ -196,6 +197,7 @@
             style="@style/Widget.AppCompat.RatingBar.Small"
             app:layout_constraintTop_toBottomOf="@id/pocha_add"
             app:layout_constraintLeft_toRightOf="@id/pocha_image"
+            app:layout_constraintStart_toStartOf="@+id/pocha_name"
             android:layout_marginLeft="-2dp"
             android:layout_marginTop="8dp"/>
         <ImageButton

@@ -66,7 +66,7 @@ public class StoreData {
                                 mainStore.setAddressName(dataSnapshot.child("addressName").getValue(String.class));
                                 mainStore.setCategory(dataSnapshot.child("category").getValue(String.class));
                                 mainStore.setHasMeeting(dataSnapshot.child("hasMeeting").getValue(Boolean.class));
-                                mainStore.setImageUrl(dataSnapshot.child("imageUrl").getValue(String.class));
+                                mainStore.setExteriorImagePath(dataSnapshot.child("exteriorImagePath").getValue(String.class));
                                 mainStore.setVerified(dataSnapshot.child("verified").getValue(Boolean.class));
                                 mainStore.setLatitude(dataSnapshot.child("latitude").getValue(Double.class));
                                 mainStore.setLongitude(dataSnapshot.child("longitude").getValue(Double.class));

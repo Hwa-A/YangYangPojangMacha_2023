@@ -17,12 +17,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.PointF;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -35,6 +37,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.naver.maps.geometry.LatLng;
 import com.naver.maps.map.CameraUpdate;
 import com.naver.maps.map.LocationTrackingMode;
@@ -352,7 +357,8 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
                                 pocha_category.setText(stores.get(index).getCategory());
                                 pocha_add.setText(stores.get(index).getAddressName());
                                 pocha_rating.setRating(stores.get(index).getRating());
-                                Glide.with(getActivity()).load(stores.get(index).getImageUrl()).placeholder(getActivity().getDrawable(R.drawable.pocha)).into(pocha_image);
+                                downloadFireStorage(getActivity(), stores.get(index).getExteriorImagePath(),pocha_image);
+
                                 pocha_info = getView().findViewById(R.id.pocha_info);
                                 pocha_info.setVisibility(VISIBLE);
 
@@ -367,6 +373,32 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
             }
         });
     }   // loadStoreData() 끝
+
+    // 파이어베이스 스토리지에 저장된 이미지 다운로드
+    public void downloadFireStorage(Context context, String ExteriorImagePath, ImageView pocha_image){
+
+        if (ExteriorImagePath == null || ExteriorImagePath.isEmpty()) {
+            // 경로가 유효하지 않을 때 예외 처리
+            pocha_image.setImageResource(R.drawable.pocha);
+            Log.e("HomeFragment", "Invalid path");
+            return;
+        }
+
+        FirebaseStorage storage = FirebaseStorage.getInstance(); //FirebaseStorage 인스턴스 얻기
+        StorageReference storageRef = storage.getReference().child(ExteriorImagePath); // 이미지 경로
+        pocha_image.setImageResource(R.drawable.loading); //imageview 초기화
+        storageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) { //uri : 위 이미지 파일에 대한 다운로드 uri
+                String imageUrl = uri.toString(); //다운로드 url을 문자열로 변환
+                Glide.with(context)
+                        .load(imageUrl) // 이미지 다운로드 url
+                        .error(R.drawable.error) // 이미지 로딩 오류 시 표시할 이미지
+                        .into(pocha_image);
+            }
+        });
+
+    }
 
 
     // Geocoder : 텍스트로 입력된 주소의 경도, 위도 추출

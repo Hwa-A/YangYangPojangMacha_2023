@@ -6,10 +6,10 @@
 
     <ImageView
         android:id="@+id/pochalist_image"
-        android:layout_width="100dp"
-        android:layout_height="50dp"
-        android:src="@drawable/pocha"
-        android:layout_marginLeft = "-10dp"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:scaleType="center"
+        android:layout_marginStart="10dp"
         android:layout_marginTop="20dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"/>
@@ -17,9 +17,10 @@
         android:id="@+id/pochalist_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="고구려 포차"
-        android:textSize="25sp"
+        android:text="가게 이름"
+        android:textSize="20sp"
         android:textStyle="bold"
+        android:layout_marginStart="20dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toRightOf="@id/pochalist_image"
         android:layout_marginTop="20dp"/>
@@ -29,17 +30,19 @@
         android:layout_height="wrap_content"
         android:textColor="#A4A3A3"
         android:text="카테고리"
+        android:textSize="12sp"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintLeft_toRightOf="@+id/pochalist_name"
-        android:layout_marginTop="30dp"
-        android:layout_marginLeft="10dp"/>
+        app:layout_constraintStart_toEndOf="@+id/pochalist_name"
+        android:layout_marginTop="28dp"
+        android:layout_marginStart="10dp"/>
     <TextView
         android:id="@+id/pochalist_add"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="경기 부천시 경인로 590"
+        android:text="가게 주소"
         app:layout_constraintTop_toBottomOf="@id/pochalist_name"
         app:layout_constraintLeft_toRightOf="@id/pochalist_image"
+        app:layout_constraintStart_toStartOf="@+id/pochalist_name"
         android:layout_marginTop="8dp"/>
     <RatingBar
         android:id="@+id/pochalist_rating"
@@ -48,6 +51,7 @@
         style="@style/Widget.AppCompat.RatingBar.Small"
         app:layout_constraintTop_toBottomOf="@id/pochalist_add"
         app:layout_constraintLeft_toRightOf="@id/pochalist_image"
+        app:layout_constraintStart_toStartOf="@+id/pochalist_name"
         android:layout_marginLeft="-2dp"
         android:layout_marginTop="8dp"/>
     <ImageButton
@@ -69,6 +73,15 @@
         app:layout_constraintLeft_toLeftOf="parent"
         android:layout_marginLeft="370dp"
         android:layout_marginTop="15dp"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="#B5B5B5"
+        android:layout_marginStart="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

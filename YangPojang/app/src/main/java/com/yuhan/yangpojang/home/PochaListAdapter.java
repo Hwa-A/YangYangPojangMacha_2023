@@ -12,7 +12,9 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.yuhan.yangpojang.MainActivity;
 import com.yuhan.yangpojang.R;
+import com.yuhan.yangpojang.fragment.HomeFragment;
 import com.yuhan.yangpojang.model.Store;
 
 import java.util.ArrayList;
@@ -64,10 +66,10 @@ public class PochaListAdapter extends RecyclerView.Adapter<PochaListAdapter.View
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) { //holder : onCreateViewHolder에서 생성한 ViewHolder객체(아이템 뷰 내 요소들에 대한 참조를 갖고있음), position : 현재 아이템의 위치를 나타내는 인덱스
         Store mainStore = mData.get(position);
 
-        String imageUrlString = mainStore.getImageUrl(); // URL 문자열을 가져옴
-        Glide.with(context)
-                .load(imageUrlString)
-                .into(holder.pochalist_image);
+        String ExteriorImagePath = mainStore.getExteriorImagePath(); // URL 문자열을 가져옴
+        HomeFragment homeFragment = new HomeFragment();
+        homeFragment.downloadFireStorage(context, ExteriorImagePath, holder.pochalist_image);
+
         holder.pochalist_name.setText(mainStore.getShopName());
         holder.pochalist_category.setText(mainStore.getCategory());
         holder.pochalist_add.setText(mainStore.getAddressName());

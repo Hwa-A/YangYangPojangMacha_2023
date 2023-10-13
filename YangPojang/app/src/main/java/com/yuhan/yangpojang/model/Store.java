@@ -10,7 +10,7 @@ public class Store {
     String addressName; //가게 주소
     float rating; //가게 별점
     String category; //카테고리
-    String imageUrl; //가게이미지 url
+    String exteriorImagePath; //가게이미지 url
     String geohash; //가게 위치에 대한 지오해쉬값
 
     public Store(){}
@@ -75,12 +75,12 @@ public class Store {
         this.category = category;
     }
 
-    public String getImageUrl() {
-        return imageUrl;
+    public String getExteriorImagePath() {
+        return exteriorImagePath;
     }
 
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
+    public void setExteriorImagePath(String exteriorImagePath) {
+        this.exteriorImagePath = exteriorImagePath;
     }
 
     public String getGeohash() {
