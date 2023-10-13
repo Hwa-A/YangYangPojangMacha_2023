@@ -171,12 +171,63 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
 
     }
 
+    private ActivityResultLauncher<Intent> getSearchActivityResult;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         //위치를 반환하는 구현체인 FusedLocationSource 생성
         locationSource = new FusedLocationSource(this, PERMISSION_REQUEST_CODE);
+
+        getSearchActivityResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    // SearchActivity로부터 돌아올 때 어떤 결과 값을 받아올 수 있는 통로
+                    if (result.getResultCode() == RESULT_OK){
+                        // 서브 액티비티의 입력 값을 메인에서 받아서 텍스트뷰에 표시 ...!
+                        basemap(); // 기본 지도 형태(이전에 생성되었던 지도 상의 이벤트 원상복구)
+
+                        String select_recent_address;
+                        String select_recent_name;
+                        Location select_autocomplete;
+
+                        select_recent_name = result.getData().getStringExtra("select_recent_name");
+                        select_recent_address = result.getData().getStringExtra("select_recent_address");
+
+                        select_autocomplete = result.getData().getParcelableExtra("select_autocomplete_location");
+                        String select_autocomplete_address = result.getData().getStringExtra("select_autocomplete_address");
+
+                        if(select_recent_name != null){
+                            Log.d("MainActivity", "받은 주소(최근검색어): " + select_recent_name + select_recent_address);
+                            searchAdd.setText(searchplace_recent(select_recent_address, select_recent_name));
+                            select_recent_name = null;
+                        }
+                        else if(select_autocomplete != null){
+                            Log.d("MainActivity", "받은 주소(자동완성): " + select_autocomplete + "(" + select_autocomplete_address + ")");
+                            searchAdd.setText(select_autocomplete_address);
+                            searchplace_autocomplete(select_autocomplete);
+                            select_autocomplete = null;
+                        }
+                        else{
+                            Toast.makeText(getActivity(), "주소값 받아오기 실패", Toast.LENGTH_SHORT).show();
+                        }
+
+                        //주소 검색창의 x버튼 리스너 구현
+                        ImageButton search_close_btn = homeview.findViewById(R.id.search_close_btn);
+                        search_close_btn.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                if(searchPlaceMarker != null){
+                                    searchPlaceMarker.setMap(null);
+                                    searchAdd.setText("");
+                                    for(Marker marker : pochas){
+                                        marker.setMap(null);
+                                    }
+                                }
+                            }
+                        });
+                    }
+                });
+
     }
 
 
@@ -223,16 +274,12 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
         return homeview;
     } // onCreateView 끝
 
-
-
     @Override
     public void onStart() {
         super.onStart();
 
         //위치를 반환하는 구현체인 FusedLocationSource 생성
         locationSource = new FusedLocationSource(this, PERMISSION_REQUEST_CODE);
-
-        //RecyclerView();
 
         //주소 창 클릭 시 SearchActivity로 이동 후 검색 값 받아오기
         searchAdd = homeview.findViewById(R.id.searchAdd);
@@ -248,57 +295,6 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
     }
 
     Marker searchPlaceMarker = new Marker(); // Geocoding - 검색 위치 마커
-
-    private final ActivityResultLauncher<Intent> getSearchActivityResult = registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(),
-            result -> {
-                // SearchActivity로부터 돌아올 때 어떤 결과 값을 받아올 수 있는 통로
-                if (result.getResultCode() == RESULT_OK){
-                    // 서브 액티비티의 입력 값을 메인에서 받아서 텍스트뷰에 표시 ...!
-                    basemap(); // 기본 지도 형태(이전에 생성되었던 지도 상의 이벤트 원상복구)
-
-                    String select_recent_address;
-                    String select_recent_name;
-                    Location select_autocomplete;
-
-                    select_recent_name = result.getData().getStringExtra("select_recent_name");
-                    select_recent_address = result.getData().getStringExtra("select_recent_address");
-
-                    select_autocomplete = result.getData().getParcelableExtra("select_autocomplete_location");
-                    String select_autocomplete_address = result.getData().getStringExtra("select_autocomplete_address");
-
-                    if(select_recent_name != null){
-                        Log.d("MainActivity", "받은 주소(최근검색어): " + select_recent_name + select_recent_address);
-                        searchAdd.setText(searchplace_recent(select_recent_address, select_recent_name));
-                        select_recent_name = null;
-                    }
-                    else if(select_autocomplete != null){
-                        Log.d("MainActivity", "받은 주소(자동완성): " + select_autocomplete + "(" + select_autocomplete_address + ")");
-                        searchAdd.setText(select_autocomplete_address);
-                        searchplace_autocomplete(select_autocomplete);
-                        select_autocomplete = null;
-                    }
-                    else{
-                        Toast.makeText(getActivity(), "주소값 받아오기 실패", Toast.LENGTH_SHORT).show();
-                    }
-
-                    //주소 검색창의 x버튼 리스너 구현
-                    ImageButton search_close_btn = homeview.findViewById(R.id.search_close_btn);
-                    search_close_btn.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            if(searchPlaceMarker != null){
-                                searchPlaceMarker.setMap(null);
-                                searchAdd.setText("");
-                                for(Marker marker : pochas){
-                                    marker.setMap(null);
-                                }
-                            }
-                        }
-                    });
-                }
-            }
-    );
 
     ArrayList<Store> stores;
     Marker[] pochas;
