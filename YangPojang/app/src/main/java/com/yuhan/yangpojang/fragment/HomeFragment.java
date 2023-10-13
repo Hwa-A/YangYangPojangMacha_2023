@@ -54,11 +54,13 @@ import com.naver.maps.map.util.FusedLocationSource;
 import com.naver.maps.map.util.MarkerIcons;
 import com.naver.maps.map.widget.CompassView;
 import com.naver.maps.map.widget.LocationButtonView;
+import com.yuhan.yangpojang.PochainfoActivity;
 import com.yuhan.yangpojang.R;
 import com.yuhan.yangpojang.home.PochaListAdapter;
 import com.yuhan.yangpojang.home.SearchActivity;
 import com.yuhan.yangpojang.model.Store;
 import com.yuhan.yangpojang.model.StoreData;
+import com.yuhan.yangpojang.onPochaListItemClickListener;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -69,7 +71,7 @@ import java.util.Objects;
 //https://navermaps.github.io/android-map-sdk/guide-ko/4-1.html
 //https://asong-study-record.tistory.com/69
 
-public class HomeFragment extends Fragment implements OnMapReadyCallback, Overlay.OnClickListener {
+public class HomeFragment extends Fragment implements OnMapReadyCallback, Overlay.OnClickListener, onPochaListItemClickListener {
 
     //OnMapReadyCallback : 지도가 준비되었을 때 호출되는 콜백을 처리, onMapReady()메서드 구현해야 함
 
@@ -165,14 +167,33 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
     }
 
     RecyclerView pochalist_view;
+    ArrayList<Store> pochaListPochas = new ArrayList<>();
     //포차리스트 구현
     public void PochaListView(ArrayList<Store> pochas){
+        pochaListPochas = pochas;
         pochalist_view = getActivity().findViewById(R.id.pocha_list); //리사이클러 뷰
         pochalist_view.setVisibility(View.VISIBLE);
-        PochaListAdapter pochaListAdapter = new PochaListAdapter(pochas); // 어댑터
+        PochaListAdapter pochaListAdapter = new PochaListAdapter(pochaListPochas, this); // 어댑터
         pochalist_view.setAdapter(pochaListAdapter); //리사이클러뷰에 어댑터 장착
 
         pochalist_view.setLayoutManager(new LinearLayoutManager(getActivity())); //레이아웃 매니저 지정
+
+    }
+
+    // 포차리스트 아이템 리스너
+    @Override
+    public void onPochaListItemClick(View v, int position) {
+        try{
+            String className = "com.yuhan.yangpojang.PochainfoActivity";
+            Class<?> activityClass = Class.forName(className);
+
+            String primaryKey = pochaListPochas.get(position).getPrimaryKey();
+            Intent intent = new Intent(v.getContext(), activityClass);
+            intent.putExtra("primaryKey", primaryKey);
+            v.getContext().startActivity(intent);
+        }catch (ClassNotFoundException e){
+            Toast.makeText(v.getContext(), "클래스 찾을 수 없음: PochainfoActivity", Toast.LENGTH_SHORT).show();
+        }
 
     }
 
@@ -363,6 +384,16 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
 
                                 pocha_info = getView().findViewById(R.id.pocha_info);
                                 pocha_info.setVisibility(VISIBLE);
+                                // 하단 탭 클릭 시 가게 상세정보 페이지로 이동(기본키 함께 보냄)
+                                pocha_info.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        String primaryKey = stores.get(index).getPrimaryKey();
+                                        Intent intent = new Intent(v.getContext(), PochainfoActivity.class);
+                                        intent.putExtra("primaryKey", primaryKey);
+                                        v.getContext().startActivity(intent);
+                                    }
+                                });
 
                                 //마커 클릭 시 하단 상세정보 탭이 생성되면서 인증,번개 버튼의 위치가 가려지지 않도록 위치 변경
                                 ButtonPosition(uiSettings);
@@ -687,7 +718,4 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
             uiSettings.setLogoMargin(30, 0, 0, 30);
         }
     }
-
-
-
 }   // 끝

@@ -16,14 +16,18 @@ import com.yuhan.yangpojang.MainActivity;
 import com.yuhan.yangpojang.R;
 import com.yuhan.yangpojang.fragment.HomeFragment;
 import com.yuhan.yangpojang.model.Store;
+import com.yuhan.yangpojang.onPochaListItemClickListener;
 
 import java.util.ArrayList;
 
 public class PochaListAdapter extends RecyclerView.Adapter<PochaListAdapter.ViewHolder> {
     private ArrayList<Store> mData = new ArrayList<Store>();
+    private static onPochaListItemClickListener mItemListener;
+
     // 생성자에서 데이터리스트 객체를 전달받음
-    public PochaListAdapter(ArrayList<Store> list){
-        mData = list;
+    public PochaListAdapter(ArrayList<Store> list, onPochaListItemClickListener listener){
+        this.mData = list;
+        mItemListener = listener;
     }
 
     // 아이템 뷰를 저장하는 뷰홀더 클래스
@@ -38,6 +42,14 @@ public class PochaListAdapter extends RecyclerView.Adapter<PochaListAdapter.View
         // 각 아이템 뷰의 구성 요소에 대한 참조 보관
         ViewHolder(View itemview){
             super(itemview);
+
+            // 아이템 뷰가 클릭됐을 때 onPochaListItemClick()메서드 호출하도록 설정
+            itemview.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mItemListener.onPochaListItemClick(v, getBindingAdapterPosition());
+                }
+            });
 
             pochalist_image = itemview.findViewById(R.id.pochalist_image);
             pochalist_name = itemview.findViewById(R.id.pochalist_name);

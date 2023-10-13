@@ -32,6 +32,11 @@
             android:exported="true">
         </activity>
 
+        <activity
+            android:name=".PochainfoActivity"
+            android:exported="true">
+        </activity>
+
         <activity android:name=".MainActivity"/>
         <activity android:name=".login.LogindetailAct"/>
 

@@ -63,6 +63,7 @@ public class StoreData {
                             DataSnapshot snap = task1.getResult(); //task1 작업의 결과로 DataSnapshot이 저장 -- 하나의 레코드
                             for(DataSnapshot dataSnapshot : snap.getChildren()){ // 하나의 레코드의 각 필드에 접근
                                 Store mainStore = new Store();
+                                mainStore.setPrimaryKey(dataSnapshot.getKey());
                                 mainStore.setAddressName(dataSnapshot.child("addressName").getValue(String.class));
                                 mainStore.setCategory(dataSnapshot.child("category").getValue(String.class));
                                 mainStore.setHasMeeting(dataSnapshot.child("hasMeeting").getValue(Boolean.class));

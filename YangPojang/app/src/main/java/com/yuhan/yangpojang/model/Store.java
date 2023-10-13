@@ -2,6 +2,8 @@ package com.yuhan.yangpojang.model;
 
 //Store 클래스 - 가게 정보를 저장하는 모델 클래스
 public class Store {
+
+    private String primaryKey; //기본키
     double latitude; //위도
     double longitude; //경도
     boolean verified; //인증 여부
@@ -14,6 +16,10 @@ public class Store {
     String geohash; //가게 위치에 대한 지오해쉬값
 
     public Store(){}
+
+    public String getPrimaryKey() { return primaryKey; }
+
+    public void setPrimaryKey(String primaryKey) { this.primaryKey = primaryKey; }
 
     public double getLatitude() { return latitude; }
 
