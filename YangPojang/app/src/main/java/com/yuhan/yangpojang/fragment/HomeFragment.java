@@ -299,10 +299,10 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
 
     }
 
-    Marker searchPlaceMarker = new Marker(); // Geocoding - 검색 위치 마커
+
 
     ArrayList<Store> stores;
-    Marker[] pochas;
+    ArrayList<Marker> pochas;
     Marker currentClickedMarker; //현재 클릭한 마커를 추적하기 위한 변수
     ConstraintLayout pocha_info; //가게 정보 탭
 
@@ -320,16 +320,18 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
                             marker.setMap(null);
                         }
                     }
-                    pochas = new Marker[stores.size()];
+                    pochas = new ArrayList<>(stores.size());
 
                     for(int i = 0; i < stores.size(); i++){
-                        pochas[i] = new Marker();
-                        pochas[i].setIcon(OverlayImage.fromResource(R.drawable.all_off));
-                        pochas[i].setPosition(new LatLng(stores.get(i).getLatitude(), stores.get(i).getLongitude()));
-                        pochas[i].setMap(mNaverMap);
+                        Marker pochas_marker = new Marker();
+                        visibilityMarker(pochas_marker, stores.get(i));
+                        pochas_marker.setPosition(new LatLng(stores.get(i).getLatitude(), stores.get(i).getLongitude()));
+                        pochas_marker.setMap(mNaverMap);
+
+                        pochas.add(pochas_marker);
                         int index = i;
                         // 마커 클릭 이벤트 처리
-                        pochas[i].setOnClickListener(new Overlay.OnClickListener() {
+                        pochas.get(i).setOnClickListener(new Overlay.OnClickListener() {
                             @Override
                             public boolean onClick(@NonNull Overlay overlay) {
                                 // 마커 클릭 시 크기 조절
@@ -337,10 +339,10 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
                                     currentClickedMarker.setWidth(80);
                                     currentClickedMarker.setHeight(80); //이전에 클릭한 마커가 존재하는 경우, 해당 마커의 크기를 원래대로 복구
                                 }
-                                pochas[index].setWidth(120);
-                                pochas[index].setHeight(120);
-                                pochas[index].setZIndex(1); // 클릭한 마커 우선순위 1
-                                currentClickedMarker = pochas[index]; //현재 클릭한 마커 저장
+                                pochas.get(index).setWidth(120);
+                                pochas.get(index).setHeight(120);
+                                pochas.get(index).setZIndex(1); // 클릭한 마커 우선순위 1
+                                currentClickedMarker = pochas.get(index); //현재 클릭한 마커 저장
 
                                 //클릭한 마커 기준으로 카메라 이동
                                 CameraUpdate cameralocationUpdate = CameraUpdate.scrollTo(new LatLng(stores.get(index).getLatitude(), stores.get(index).getLongitude()));
@@ -400,6 +402,8 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
 
     }
 
+
+    Marker searchPlaceMarker = new Marker(); // Geocoding - 검색 위치 마커
 
     // Geocoder : 텍스트로 입력된 주소의 경도, 위도 추출
     public String searchplace_recent(String select_recent_address, String select_recent_name) {
@@ -519,8 +523,8 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
     public void basemap(){
         if(stores != null){
             for(int i = 0; i < stores.size(); i++){
-                pochas[i].setWidth(80); //마커 사이즈 복구
-                pochas[i].setHeight(80);
+                pochas.get(i).setWidth(80); //마커 사이즈 복구
+                pochas.get(i).setHeight(80);
             }
         }
         if (pocha_info != null) {
@@ -570,8 +574,12 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
                 meeting = false;
             }
             updateButtonVisibility();
-            updateMarker();
 
+            if(pochas != null){
+                for(int i = 0; i < pochas.size(); i++){
+                    updateMarker(pochas.get(i), stores.get(i));
+                }
+            }
         }
     };
 
@@ -589,47 +597,59 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
     }
 
     //버튼 상태에 따라 표시되는 마커를 재설정하는 메서드
-    public void updateMarker(){
-        if(stores != null){
-            if(auth == true && meeting == false){
-                for(int i = 0; i < stores.size(); i++){
-                    if(stores.get(i).getVerified() == auth && stores.get(i).getHasMeeting() == meeting){
-                        pochas[i].setIcon(OverlayImage.fromResource(R.drawable.authon_meetingoff));
-                    }
-                    else{
-                        pochas[i].setIcon(null);
-                    }
-                }
+    public void updateMarker(Marker pochas_marker, Store mainStores){
+        if(auth && !meeting){
+            if(mainStores.getVerified() == auth && mainStores.getHasMeeting() == meeting){
+                pochas_marker.setIcon(OverlayImage.fromResource(R.drawable.authon_meetingoff));
             }
-            else if(auth == true && meeting == true){
-                for(int i = 0; i < stores.size(); i++){
-                    if(stores.get(i).getVerified() == auth && stores.get(i).getHasMeeting() == meeting){
-                        pochas[i].setIcon(OverlayImage.fromResource(R.drawable.all_on));
-                    }
-                    else{
-                        pochas[i].setIcon(null);
-                    }
-                }
-            }
-            else if(auth == false && meeting == true){
-                for(int i = 0; i < stores.size(); i++){
-                    if(stores.get(i).getVerified() == auth && stores.get(i).getHasMeeting() == meeting){
-                        pochas[i].setIcon(OverlayImage.fromResource(R.drawable.authoff_meetingon));
-                    }
-                    else{
-                        pochas[i].setIcon(null);
-                    }
-                }
+            else if(mainStores.getVerified() == auth && mainStores.getHasMeeting()){
+                pochas_marker.setIcon(OverlayImage.fromResource(R.drawable.all_on));
             }
             else{
-                for(int i = 0; i < stores.size(); i++){
-                    pochas[i].setIcon(OverlayImage.fromResource(R.drawable.all_off));
-
-                }
+                pochas_marker.setIcon(null);
             }
+        }
+        else if(auth == true && meeting == true){
+            if(mainStores.getVerified() == auth && mainStores.getHasMeeting() == meeting){
+                pochas_marker.setIcon(OverlayImage.fromResource(R.drawable.all_on));
+            }
+            else{
+                pochas_marker.setIcon(null);
+            }
+        }
+        else if(auth == false && meeting == true){
+            if(mainStores.getVerified() == auth && mainStores.getHasMeeting() == meeting){
+                pochas_marker.setIcon(OverlayImage.fromResource(R.drawable.authoff_meetingon));
+            }
+            else if(mainStores.getVerified() == true && mainStores.getHasMeeting() == meeting){
+                pochas_marker.setIcon(OverlayImage.fromResource(R.drawable.all_on));
+            }
+            else{
+                pochas_marker.setIcon(null);
+            }
+        }
+        else{
+            visibilityMarker(pochas_marker, mainStores);
+        }
+    }
+
+    // 인증 off, 번개 off 상태일 때(기본 상태) 마커 설정 메서드
+    public void visibilityMarker(Marker pochas_marker, Store mainStores){
+        if(mainStores.getVerified() == true && mainStores.getHasMeeting() == false){
+            pochas_marker.setIcon(OverlayImage.fromResource(R.drawable.authon_meetingoff));
+        }
+        else if(mainStores.getVerified() == true && mainStores.getHasMeeting() == true){
+            pochas_marker.setIcon(OverlayImage.fromResource(R.drawable.all_on));
+        }
+        else if(mainStores.getVerified() == false && mainStores.getHasMeeting() == true){
+            pochas_marker.setIcon(OverlayImage.fromResource(R.drawable.authoff_meetingon));
+        }
+        else if(mainStores.getVerified() == false && mainStores.getHasMeeting() == false) {
+            pochas_marker.setIcon(OverlayImage.fromResource(R.drawable.all_off));
         }
 
     }
+
 
 
 
