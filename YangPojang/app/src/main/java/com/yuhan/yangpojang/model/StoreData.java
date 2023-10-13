@@ -19,13 +19,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ch.hsr.geohash.GeoHash;
-import ch.hsr.geohash.WGS84Point;
 
 
 //StoreData 클래스 - 가게 데이터 초기화 및 반환하는 클래스
 public class StoreData {
     private static ArrayList<Store> mainStores;
-    static DatabaseReference db_shop = FirebaseDatabase.getInstance().getReference("store"); // 파이어베이스 연동
+    static DatabaseReference db_shop = FirebaseDatabase.getInstance().getReference("shops"); // 파이어베이스 연동
     static GeoLocation centerLocation; // 기준 위치의 GeoLocation
     static float searchRadiusInMeters; // 검색 기준 반경
 
@@ -68,7 +67,7 @@ public class StoreData {
                                 mainStore.setCategory(dataSnapshot.child("category").getValue(String.class));
                                 mainStore.setHasMeeting(dataSnapshot.child("hasMeeting").getValue(Boolean.class));
                                 mainStore.setImageUrl(dataSnapshot.child("imageUrl").getValue(String.class));
-                                mainStore.setisVerified(dataSnapshot.child("isVerified").getValue(Boolean.class));
+                                mainStore.setVerified(dataSnapshot.child("verified").getValue(Boolean.class));
                                 mainStore.setLatitude(dataSnapshot.child("latitude").getValue(Double.class));
                                 mainStore.setLongitude(dataSnapshot.child("longitude").getValue(Double.class));
                                 mainStore.setRating(dataSnapshot.child("rating").getValue(Float.class));

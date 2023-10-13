@@ -561,7 +561,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
         if(stores != null){
             if(auth == true && meeting == false){
                 for(int i = 0; i < stores.size(); i++){
-                    if(stores.get(i).getisVerified() == auth && stores.get(i).getHasMeeting() == meeting){
+                    if(stores.get(i).getVerified() == auth && stores.get(i).getHasMeeting() == meeting){
                         pochas[i].setIcon(OverlayImage.fromResource(R.drawable.authon_meetingoff));
                     }
                     else{
@@ -571,7 +571,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
             }
             else if(auth == true && meeting == true){
                 for(int i = 0; i < stores.size(); i++){
-                    if(stores.get(i).getisVerified() == auth && stores.get(i).getHasMeeting() == meeting){
+                    if(stores.get(i).getVerified() == auth && stores.get(i).getHasMeeting() == meeting){
                         pochas[i].setIcon(OverlayImage.fromResource(R.drawable.all_on));
                     }
                     else{
@@ -581,7 +581,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
             }
             else if(auth == false && meeting == true){
                 for(int i = 0; i < stores.size(); i++){
-                    if(stores.get(i).getisVerified() == auth && stores.get(i).getHasMeeting() == meeting){
+                    if(stores.get(i).getVerified() == auth && stores.get(i).getHasMeeting() == meeting){
                         pochas[i].setIcon(OverlayImage.fromResource(R.drawable.authoff_meetingon));
                     }
                     else{

@@ -4,7 +4,7 @@ package com.yuhan.yangpojang.model;
 public class Store {
     double latitude; //위도
     double longitude; //경도
-    boolean isVerified; //인증 여부
+    boolean verified; //인증 여부
     boolean hasMeeting; //번개 여부
     String shopName; //가게 이름
     String addressName; //가게 주소
@@ -29,12 +29,12 @@ public class Store {
         this.longitude = longitude;
     }
 
-    public boolean getisVerified() {
-        return isVerified;
+    public boolean getVerified() {
+        return verified;
     }
 
-    public void setisVerified(boolean verified) {
-        isVerified = verified;
+    public void setVerified(boolean verified) {
+        this.verified = verified;
     }
 
     public boolean getHasMeeting() {
