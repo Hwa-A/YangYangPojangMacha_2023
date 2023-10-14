@@ -12,9 +12,9 @@ import com.yuhan.yangpojang.R;
 import java.util.List;
 
 public class SearchAdapter_AutoComplete extends BaseAdapter {
-    private Context context;
-    private List<String> nameList;
-    private List<String> addressList;
+    private final Context context;
+    private final List<String> nameList;
+    private final List<String> addressList;
 
     public SearchAdapter_AutoComplete(Context context, List<String> nameList, List<String> addressList){
         this.context = context;
