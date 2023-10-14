@@ -87,7 +87,7 @@
                 android:ems="10"
                 android:gravity="center_vertical"
                 android:paddingLeft="40dp"
-                android:text="위치를 선택하세요"
+                android:text="위치를 선택하세요fdfdfdf"
                 android:textSize="16dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.421"
@@ -95,7 +95,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/shopAddIs" />
 
 
-            <Button
+            <android.widget.Button
                 android:id="@+id/editShopplace"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -400,12 +400,12 @@
                 app:layout_constraintTop_toTopOf="@id/menuBoardPhoto" />
 
 
-            <Button
+            <android.widget.Button
                 android:id="@+id/reportBtn"
                 android:layout_width="88dp"
                 android:layout_height="40dp"
                 android:layout_marginTop="12dp"
-                android:background="#FF5722"
+                android:background="@drawable/register_btn"
                 android:text="등록"
                 android:textColor="#ffffff"
                 android:textSize="11dp"

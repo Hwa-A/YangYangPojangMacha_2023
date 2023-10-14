@@ -68,6 +68,8 @@ public class MapLocationPopupFragment extends Fragment implements OnMapReadyCall
             android.Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.ACCESS_COARSE_LOCATION
     };
+    private double latitude;
+    private double longitude;
 
 
     // xml(ui)관련 요소 변수
@@ -95,8 +97,9 @@ public class MapLocationPopupFragment extends Fragment implements OnMapReadyCall
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-
         View view = inflater.inflate(R.layout.popup_map_location, container, false);
+
+
         locationSearchEditText = view.findViewById(R.id.locationSearchEditText); // 주소검색하는 글씨창 부분
         searchButton = view.findViewById(R.id.searchButton); // 검색버튼
         selectLocationButton = view.findViewById(R.id.selectLocationBtn);  // (위치 선택후) 선택 버튼
@@ -169,10 +172,12 @@ public class MapLocationPopupFragment extends Fragment implements OnMapReadyCall
                                     public void onClick(DialogInterface dialog, int id) {
                                         // Yes를 클릭하면 선택한 위치 주소 정보를 가져오고 팝업을 닫음
                                         Bundle resultBundle = new Bundle();
-                                        resultBundle.putDouble("latitude", selectedLatLng.latitude);
-                                        resultBundle.putDouble("longitude", selectedLatLng.longitude);
-                                        Log.d("fdsfsdaf", String.valueOf(selectedLatLng.latitude));
-                                        Log.d("fdsfsdaf", String.valueOf(selectedLatLng.longitude));
+                                        latitude=selectedLatLng.latitude;
+                                        longitude=selectedLatLng.longitude;
+                                        resultBundle.putDouble("latitude", latitude);
+                                        resultBundle.putDouble("longitude", longitude);
+                                        Log.d("fdsfsdaf", String.valueOf(latitude));
+                                        Log.d("fdsfsdaf", String.valueOf(longitude));
 
                                         getParentFragmentManager().setFragmentResult("locationResult", resultBundle);
                                         getParentFragmentManager().popBackStack();
@@ -235,6 +240,7 @@ public class MapLocationPopupFragment extends Fragment implements OnMapReadyCall
 //                              지우셈      popNaverMap.moveCamera(CameraUpdate.scrollTo(searchedLatLng));
                                     // 이전에 표시된 마커는 지우고 초기화
                                     updateMapWithLatLng(searchedLatLng);
+                                    Log.d("고릴라", String.valueOf(searchedLatLng));
                                 }
                             });
                         }
@@ -247,6 +253,7 @@ public class MapLocationPopupFragment extends Fragment implements OnMapReadyCall
         MapFragment mapFragment = (MapFragment) getChildFragmentManager().findFragmentById(R.id.PopMapFragment);
         if (mapFragment == null)
         {
+            Log.d("개똥", String.valueOf(mapFragment));
             // mapFragment가 없을 경우 새 MapFragment 인스턴스 생성
             mapFragment = MapFragment.newInstance();
             // 자식 프래그먼트 매니저에 MapFragment 추가
@@ -254,10 +261,10 @@ public class MapLocationPopupFragment extends Fragment implements OnMapReadyCall
                     .add(R.id.fragment_container, mapFragment)
                     .commit();
         }
+        Log.d("개똥2", String.valueOf(mapFragment));
         // getMapAsync: 지도가 준비되면 onMapReady 콜백 호출
         mapFragment.getMapAsync(this);
-
-        return view;
+                return view;
     }
 
     //50M 근방에 가게 있는지 계산하는 메서드
@@ -277,6 +284,21 @@ public class MapLocationPopupFragment extends Fragment implements OnMapReadyCall
     public void onMapReady(@NonNull NaverMap naverMap)
     {
         popNaverMap = naverMap;
+        Bundle args = getArguments();
+        if (args != null) {
+            latitude = args.getDouble("latitude", 0.0);
+            longitude = args.getDouble("longitude", 0.0);
+            // Check if latitude and longitude values are provided
+            if (latitude != 0.0 && longitude != 0.0) {
+                // Use the provided coordinates to set the initial map location
+                LatLng initialLatLng = new LatLng(latitude, longitude);
+                Log.d("오", String.valueOf(initialLatLng));
+                updateMapWithLatLng(initialLatLng);
+                moveMapToLocation(initialLatLng);
+
+            }
+        }
+        Log.d("소똥", popNaverMap.toString());
         popLocationSource = new FusedLocationSource(requireActivity(), PERMISSION_REQUEST_CODE);
         // 지도에 위치 소스를 설정합니다
         popNaverMap.setLocationSource(popLocationSource);
@@ -284,9 +306,13 @@ public class MapLocationPopupFragment extends Fragment implements OnMapReadyCall
         ActivityCompat.requestPermissions(requireActivity(), PERMISSIONS, PERMISSION_REQUEST_CODE);
 
         // 권한이 얻어져있는 경우 현재 위치를 표시 가능하므로 시작할때 내 위치로 뜨게 설정
-        if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
+        {
+            if(selectedMarker==null)
+            {
+                popNaverMap.setLocationTrackingMode(LocationTrackingMode.Follow);
 
-            popNaverMap.setLocationTrackingMode(LocationTrackingMode.Follow);
+            }
         }
         // 권한 부여가 되지 않은 경우 권한 부여 메세지 생성
         else
@@ -300,7 +326,7 @@ public class MapLocationPopupFragment extends Fragment implements OnMapReadyCall
         uiSettings.setScaleBarEnabled(true);
         uiSettings.setCompassEnabled(true);
         uiSettings.setZoomControlEnabled(true);
-        // 보이는 부분의 경계
+        
         // 샵들 정보를 firebase 에서 불러오는 코드
         fetchShopDataFromFirebase();
 
@@ -452,9 +478,17 @@ public class MapLocationPopupFragment extends Fragment implements OnMapReadyCall
 
     private void updateMapWithLatLng(LatLng latLng)
     {
-        popNaverMap.moveCamera(CameraUpdate.scrollTo(latLng));
+        Log.d("일", String.valueOf(latLng));
+        Log.d("이","ASDfjdskfkldsjfklsdjfklsd");
+        if(popNaverMap!=null)
+        {
+            Log.d("칠칠","ASDfjdskfkldsjfklsdjfklsd");
+            popNaverMap.moveCamera(CameraUpdate.scrollTo(latLng));
+        }
         if (selectedMarker != null)
         {
+            Log.d("삼","ASDfjdskfkldsjfklsdjfklsd");
+
             selectedMarker.setMap(null);
             selectedMarker = null;
         }
@@ -470,9 +504,14 @@ public class MapLocationPopupFragment extends Fragment implements OnMapReadyCall
     // 마커 표시된 곳이 항상 가운데를 유지하기 위해 호출되는 메서드
     private void moveMapToLocation(LatLng latLng)
     {
-        CameraUpdate cameraUpdate = CameraUpdate.scrollTo(latLng)
-                .animate(CameraAnimation.Fly,1000);
-        popNaverMap.moveCamera(cameraUpdate);
+        if(popNaverMap!=null)
+        {
+            Log.d("사.","ㄹㄹ");
+            CameraUpdate cameraUpdate = CameraUpdate.scrollTo(latLng)
+                    .animate(CameraAnimation.Fly,1000);
+            popNaverMap.moveCamera(cameraUpdate);
+        }
+
     }
 
 //    p
@@ -499,6 +538,7 @@ public class MapLocationPopupFragment extends Fragment implements OnMapReadyCall
         InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(locationSearchEditText.getWindowToken(), 0);
     }
+
 
 
 }
