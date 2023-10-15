@@ -11,16 +11,15 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.yuhan.yangpojang.R;
-import com.yuhan.yangpojang.home.SearchActivity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public class SearchAdapter_RecentSearch extends BaseAdapter {
-    private ArrayList<HashMap<String, String>> recentsearches;
-    private LinearLayout recentIsEmpty_linear;
-    private View footer;
-    public SearchAdapter_RecentSearch(ArrayList<HashMap<String, String>> recentSearches, LinearLayout recentIsemtpy_linear, View footer){
+    private final ArrayList<HashMap<String, ArrayList<String>>> recentsearches;
+    private final LinearLayout recentIsEmpty_linear;
+    private final View footer;
+    public SearchAdapter_RecentSearch(ArrayList<HashMap<String, ArrayList<String>>> recentSearches, LinearLayout recentIsemtpy_linear, View footer){
         this.recentsearches = recentSearches;
         this.recentIsEmpty_linear = recentIsemtpy_linear;
         this.footer = footer;
@@ -54,9 +53,10 @@ public class SearchAdapter_RecentSearch extends BaseAdapter {
         TextView recent_add = (TextView) convertView.findViewById(R.id.recent_add);
 
         // HashMap에서 값을 추출하여 TextView에 설정
-        HashMap<String, String> adds = recentsearches.get(position);
+        HashMap<String, ArrayList<String>> adds = recentsearches.get(position);
         String name = adds.keySet().iterator().next();
-        String add = adds.get(name);
+        ArrayList<String> values = adds.get(name);
+        String add = values.get(0);
 
         recent_name.setText(name);
         recent_add.setText(add);

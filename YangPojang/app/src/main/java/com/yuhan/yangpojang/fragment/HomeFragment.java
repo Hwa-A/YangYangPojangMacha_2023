@@ -17,12 +17,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.PointF;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -35,6 +37,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.naver.maps.geometry.LatLng;
 import com.naver.maps.map.CameraUpdate;
 import com.naver.maps.map.LocationTrackingMode;
@@ -49,12 +54,14 @@ import com.naver.maps.map.util.FusedLocationSource;
 import com.naver.maps.map.util.MarkerIcons;
 import com.naver.maps.map.widget.CompassView;
 import com.naver.maps.map.widget.LocationButtonView;
+import com.yuhan.yangpojang.PochainfoActivity;
 import com.yuhan.yangpojang.R;
 import com.yuhan.yangpojang.home.HttpResponse;
 import com.yuhan.yangpojang.home.PochaListAdapter;
 import com.yuhan.yangpojang.home.SearchActivity;
 import com.yuhan.yangpojang.model.Store;
 import com.yuhan.yangpojang.model.StoreData;
+import com.yuhan.yangpojang.onPochaListItemClickListener;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -65,7 +72,7 @@ import java.util.Objects;
 //https://navermaps.github.io/android-map-sdk/guide-ko/4-1.html
 //https://asong-study-record.tistory.com/69
 
-public class HomeFragment extends Fragment implements OnMapReadyCallback, Overlay.OnClickListener {
+public class HomeFragment extends Fragment implements OnMapReadyCallback, Overlay.OnClickListener, onPochaListItemClickListener, NaverMap.OnLocationChangeListener {
 
     //OnMapReadyCallback : 지도가 준비되었을 때 호출되는 콜백을 처리, onMapReady()메서드 구현해야 함
 
@@ -92,21 +99,17 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
         // NaverMap 객체 받아서 NaverMap 객체에 위치 소스 지정
         mNaverMap = naverMap;
         mNaverMap.setLocationSource(locationSource); // NaverMap객체에 위치 소스를 지정 - 현재 위치 사용
-
         // 권한 확인, onRequestPermissionResult 콜백 메서드 호출 - 앱에서 위치 권한을 얻기 위해 권한 요청 대화상자를 표시하는 역할
+        ActivityCompat.requestPermissions(getActivity(), PERMISSIONS, PERMISSION_REQUEST_CODE);
+
         if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             mNaverMap.setLocationTrackingMode(LocationTrackingMode.Follow);
-
-            LocationOverlay locationOverlay = mNaverMap.getLocationOverlay();
-            LatLng currentLatLng = locationOverlay.getPosition();
-            double currentLatitude = currentLatLng.latitude;
-            double currentLongitude = currentLatLng.longitude;
-            Log.d("sfjsdkfjsdklfjlsd;djfl;s",currentLongitude+""+currentLatitude);
-            HttpResponse.setCurrentLocation(currentLatitude, currentLongitude);
+            mNaverMap.addOnLocationChangeListener(this);
         }
         // 권한 부여가 되지 않은 경우 권한 부여 메세지 생성
         else
         {
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_REQUEST_CODE);
             Toast.makeText(getActivity(), "설정> 애플리케이션 > YangPojag > 권한에서 지도 권한을 부여하세요", Toast.LENGTH_SHORT).show();
         }
 
@@ -116,6 +119,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
         uiSettings.setScaleBarEnabled(false); // 축적바
         uiSettings.setCompassEnabled(false); //나침반
         uiSettings.setZoomControlEnabled(false); // 줌 버튼
+
 
         //앱 시작 시 줌레벨 설정
         /*double mapLatitude = 0; //초기 위치 변수 초기화
@@ -166,23 +170,89 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
     }
 
     RecyclerView pochalist_view;
+    ArrayList<Store> pochaListPochas = new ArrayList<>();
     //포차리스트 구현
     public void PochaListView(ArrayList<Store> pochas){
+        pochaListPochas = pochas;
         pochalist_view = getActivity().findViewById(R.id.pocha_list); //리사이클러 뷰
         pochalist_view.setVisibility(View.VISIBLE);
-        PochaListAdapter pochaListAdapter = new PochaListAdapter(pochas); // 어댑터
+        PochaListAdapter pochaListAdapter = new PochaListAdapter(pochaListPochas, this); // 어댑터
         pochalist_view.setAdapter(pochaListAdapter); //리사이클러뷰에 어댑터 장착
 
         pochalist_view.setLayoutManager(new LinearLayoutManager(getActivity())); //레이아웃 매니저 지정
 
     }
 
+    // 포차리스트 아이템 리스너
+    @Override
+    public void onPochaListItemClick(View v, int position) {
+        try{
+            String className = "com.yuhan.yangpojang.PochainfoActivity";
+            Class<?> activityClass = Class.forName(className);
+
+            String primaryKey = pochaListPochas.get(position).getPrimaryKey();
+            Intent intent = new Intent(v.getContext(), activityClass);
+            intent.putExtra("primaryKey", primaryKey);
+            v.getContext().startActivity(intent);
+        }catch (ClassNotFoundException e){
+            Toast.makeText(v.getContext(), "클래스 찾을 수 없음: PochainfoActivity", Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
+    private ActivityResultLauncher<Intent> getSearchActivityResult;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         //위치를 반환하는 구현체인 FusedLocationSource 생성
         locationSource = new FusedLocationSource(this, PERMISSION_REQUEST_CODE);
+
+        getSearchActivityResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    // SearchActivity로부터 돌아올 때 어떤 결과 값을 받아올 수 있는 통로
+                    if (result.getResultCode() == RESULT_OK){
+                        // 서브 액티비티의 입력 값을 메인에서 받아서 텍스트뷰에 표시 ...!
+                        basemap(); // 기본 지도 형태(이전에 생성되었던 지도 상의 이벤트 원상복구)
+
+
+                        Location recentLocation = result.getData().getParcelableExtra("select_recent_location"); //최근검색 - 위치값
+                        String recentAddress = result.getData().getStringExtra("select_recent_address"); //최근검색 - 주소값
+
+                        Location autocompleteLocation = result.getData().getParcelableExtra("select_autocomplete_location"); //자동완성 - 위치값
+                        String autocompleteAddress = result.getData().getStringExtra("select_autocomplete_address"); //자동완성 - 주소값
+
+                        if(recentLocation != null){
+                            Log.d("MainActivity", "받은 주소(최근검색어): " + recentLocation + recentAddress);
+                            searchAdd.setText(recentAddress);
+                            searchplace_recent(recentAddress, recentLocation);
+                            recentLocation = null;
+                        } else if(autocompleteLocation != null){
+                            Log.d("MainActivity", "받은 주소(자동완성): " + autocompleteLocation + "(" + autocompleteAddress + ")");
+                            searchAdd.setText(autocompleteAddress);
+                            searchplaceAutocomplete(autocompleteLocation);
+                            autocompleteLocation = null;
+                        } else{
+                            Toast.makeText(getActivity(), "주소값 받아오기 실패", Toast.LENGTH_SHORT).show();
+                        }
+
+                        //주소 검색창의 x버튼 리스너 구현
+                        ImageButton search_close_btn = homeview.findViewById(R.id.search_close_btn);
+                        search_close_btn.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                if(searchPlaceMarker != null){
+                                    searchPlaceMarker.setMap(null);
+                                    searchAdd.setText("");
+                                    for(Marker marker : pochas){
+                                        marker.setMap(null);
+                                    }
+                                }
+                            }
+                        });
+                    }
+                });
+
     }
 
 
@@ -229,16 +299,12 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
         return homeview;
     } // onCreateView 끝
 
-
-
     @Override
     public void onStart() {
         super.onStart();
 
         //위치를 반환하는 구현체인 FusedLocationSource 생성
         locationSource = new FusedLocationSource(this, PERMISSION_REQUEST_CODE);
-
-        //RecyclerView();
 
         //주소 창 클릭 시 SearchActivity로 이동 후 검색 값 받아오기
         searchAdd = homeview.findViewById(R.id.searchAdd);
@@ -253,61 +319,10 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
 
     }
 
-    Marker searchPlaceMarker = new Marker(); // Geocoding - 검색 위치 마커
 
-    private final ActivityResultLauncher<Intent> getSearchActivityResult = registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(),
-            result -> {
-                // SearchActivity로부터 돌아올 때 어떤 결과 값을 받아올 수 있는 통로
-                if (result.getResultCode() == RESULT_OK){
-                    // 서브 액티비티의 입력 값을 메인에서 받아서 텍스트뷰에 표시 ...!
-                    basemap(); // 기본 지도 형태(이전에 생성되었던 지도 상의 이벤트 원상복구)
-
-                    String select_recent_address;
-                    String select_recent_name;
-                    Location select_autocomplete;
-
-                    select_recent_name = result.getData().getStringExtra("select_recent_name");
-                    select_recent_address = result.getData().getStringExtra("select_recent_address");
-
-                    select_autocomplete = result.getData().getParcelableExtra("select_autocomplete_location");
-                    String select_autocomplete_address = result.getData().getStringExtra("select_autocomplete_address");
-
-                    if(select_recent_name != null){
-                        Log.d("MainActivity", "받은 주소(최근검색어): " + select_recent_name + select_recent_address);
-                        searchAdd.setText(searchplace_recent(select_recent_address, select_recent_name));
-                        select_recent_name = null;
-                    }
-                    else if(select_autocomplete != null){
-                        Log.d("MainActivity", "받은 주소(자동완성): " + select_autocomplete + "(" + select_autocomplete_address + ")");
-                        searchAdd.setText(select_autocomplete_address);
-                        searchplace_autocomplete(select_autocomplete);
-                        select_autocomplete = null;
-                    }
-                    else{
-                        Toast.makeText(getActivity(), "주소값 받아오기 실패", Toast.LENGTH_SHORT).show();
-                    }
-
-                    //주소 검색창의 x버튼 리스너 구현
-                    ImageButton search_close_btn = homeview.findViewById(R.id.search_close_btn);
-                    search_close_btn.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            if(searchPlaceMarker != null){
-                                searchPlaceMarker.setMap(null);
-                                searchAdd.setText("");
-                                for(Marker marker : pochas){
-                                    marker.setMap(null);
-                                }
-                            }
-                        }
-                    });
-                }
-            }
-    );
 
     ArrayList<Store> stores;
-    Marker[] pochas;
+    ArrayList<Marker> pochas;
     Marker currentClickedMarker; //현재 클릭한 마커를 추적하기 위한 변수
     ConstraintLayout pocha_info; //가게 정보 탭
 
@@ -325,16 +340,18 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
                             marker.setMap(null);
                         }
                     }
-                    pochas = new Marker[stores.size()];
+                    pochas = new ArrayList<>(stores.size());
 
                     for(int i = 0; i < stores.size(); i++){
-                        pochas[i] = new Marker();
-                        pochas[i].setIcon(OverlayImage.fromResource(R.drawable.all_off));
-                        pochas[i].setPosition(new LatLng(stores.get(i).getLatitude(), stores.get(i).getLongitude()));
-                        pochas[i].setMap(mNaverMap);
+                        Marker pochas_marker = new Marker();
+                        visibilityMarker(pochas_marker, stores.get(i));
+                        pochas_marker.setPosition(new LatLng(stores.get(i).getLatitude(), stores.get(i).getLongitude()));
+                        pochas_marker.setMap(mNaverMap);
+
+                        pochas.add(pochas_marker);
                         int index = i;
                         // 마커 클릭 이벤트 처리
-                        pochas[i].setOnClickListener(new Overlay.OnClickListener() {
+                        pochas.get(i).setOnClickListener(new Overlay.OnClickListener() {
                             @Override
                             public boolean onClick(@NonNull Overlay overlay) {
                                 // 마커 클릭 시 크기 조절
@@ -342,10 +359,10 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
                                     currentClickedMarker.setWidth(80);
                                     currentClickedMarker.setHeight(80); //이전에 클릭한 마커가 존재하는 경우, 해당 마커의 크기를 원래대로 복구
                                 }
-                                pochas[index].setWidth(120);
-                                pochas[index].setHeight(120);
-                                pochas[index].setZIndex(1); // 클릭한 마커 우선순위 1
-                                currentClickedMarker = pochas[index]; //현재 클릭한 마커 저장
+                                pochas.get(index).setWidth(120);
+                                pochas.get(index).setHeight(120);
+                                pochas.get(index).setZIndex(1); // 클릭한 마커 우선순위 1
+                                currentClickedMarker = pochas.get(index); //현재 클릭한 마커 저장
 
                                 //클릭한 마커 기준으로 카메라 이동
                                 CameraUpdate cameralocationUpdate = CameraUpdate.scrollTo(new LatLng(stores.get(index).getLatitude(), stores.get(index).getLongitude()));
@@ -362,9 +379,20 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
                                 pocha_category.setText(stores.get(index).getCategory());
                                 pocha_add.setText(stores.get(index).getAddressName());
                                 pocha_rating.setRating(stores.get(index).getRating());
-                                Glide.with(getActivity()).load(stores.get(index).getImageUrl()).placeholder(getActivity().getDrawable(R.drawable.pocha)).into(pocha_image);
+                                downloadFireStorage(getActivity(), stores.get(index).getExteriorImagePath(),pocha_image);
+
                                 pocha_info = getView().findViewById(R.id.pocha_info);
                                 pocha_info.setVisibility(VISIBLE);
+                                // 하단 탭 클릭 시 가게 상세정보 페이지로 이동(기본키 함께 보냄)
+                                pocha_info.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        String primaryKey = stores.get(index).getPrimaryKey();
+                                        Intent intent = new Intent(v.getContext(), PochainfoActivity.class);
+                                        intent.putExtra("primaryKey", primaryKey);
+                                        v.getContext().startActivity(intent);
+                                    }
+                                });
 
                                 //마커 클릭 시 하단 상세정보 탭이 생성되면서 인증,번개 버튼의 위치가 가려지지 않도록 위치 변경
                                 ButtonPosition(uiSettings);
@@ -378,79 +406,69 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
         });
     }   // loadStoreData() 끝
 
+    // 파이어베이스 스토리지에 저장된 이미지 다운로드
+    public void downloadFireStorage(Context context, String ExteriorImagePath, ImageView pocha_image){
 
-    // Geocoder : 텍스트로 입력된 주소의 경도, 위도 추출
-    public String searchplace_recent(String select_recent_address, String select_recent_name) {
-
-        double latitude = 0, longitude = 0;
-        List<Address> address = null; // 주소 정보를 담을 리스트
-        searchPlaceMarker.setMap(null); // 마커 초기화
-        Geocoder geocoder = new Geocoder(getActivity(), new Locale("ko", "KR"));
-        String fullAddress = null;
-        String fullAddress1 = null;
-
-        if(Objects.equals(select_recent_address, "No address")){ //주소가 No address일 경우
-            Toast.makeText(getActivity(), "주소를 바르게 입력하세요", Toast.LENGTH_LONG).show();
-            searchAdd.setText("");
-            if(pochas != null){
-                for(Marker marker : pochas){
-                    marker.setMap(null);
-                }
-            }
-
-        }else {
-
-            try {
-                if (select_recent_name != null && !select_recent_name.isEmpty()) {
-                    address = geocoder.getFromLocationName(select_recent_name, 1);
-                }
-
-                if (address != null && address.size() > 0) {
-                    // name으로 검색 성공한 경우
-                    latitude = address.get(0).getLatitude();
-                    longitude = address.get(0).getLongitude();
-                    fullAddress = address.get(0).getAddressLine(0);
-                    fullAddress1 = fullAddress.replace("대한민국", "");
-                } else {
-
-                    if (select_recent_address != null && !select_recent_address.isEmpty()) {
-                        address = geocoder.getFromLocationName(select_recent_address, 1);
-                    }
-
-                    if (address != null && address.size() > 0) {
-                        latitude = address.get(0).getLatitude();
-                        longitude = address.get(0).getLongitude();
-                        fullAddress = address.get(0).getAddressLine(0);
-                        fullAddress1 = fullAddress.replace("대한민국", "");
-                    } else {
-                        // 두 번의 검색 모두 실패한 경우
-                        Toast.makeText(getActivity(), "주소를 바르게 입력하세요", Toast.LENGTH_LONG).show();
-                        searchAdd.setText("");
-                    }
-                }
-
-                // 주소 검색 성공할 경우
-                if (latitude != 0 && longitude != 0) {
-                    //StoreData에 위치값 보내기
-                    StoreData mainStoreData = new StoreData();
-                    mainStoreData.addLocation(latitude, longitude, 1500);
-                    loadStoreData(); //주소 검색 후 검색한 주소 기준으로 데이터 로드
-
-                    searchSuccess(latitude, longitude);
-                }
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+        if (ExteriorImagePath == null || ExteriorImagePath.isEmpty()) {
+            // 경로가 유효하지 않을 때 예외 처리
+            pocha_image.setImageResource(R.drawable.pocha);
+            Log.e("HomeFragment", "Invalid path");
+            return;
         }
 
-        return fullAddress1;
-    } // searchplace_recent() 끝
+        FirebaseStorage storage = FirebaseStorage.getInstance(); //FirebaseStorage 인스턴스 얻기
+        StorageReference storageRef = storage.getReference().child(ExteriorImagePath); // 이미지 경로
+        pocha_image.setImageResource(R.drawable.loading); //imageview 초기화
+        storageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) { //uri : 위 이미지 파일에 대한 다운로드 uri
+                String imageUrl = uri.toString(); //다운로드 url을 문자열로 변환
+                Glide.with(context)
+                        .load(imageUrl) // 이미지 다운로드 url
+                        .error(R.drawable.error) // 이미지 로딩 오류 시 표시할 이미지
+                        .into(pocha_image);
+            }
+        });
 
-    public void searchplace_autocomplete(Location select_autocomplete){
-        if(select_autocomplete != null){
+    }
+
+
+    Marker searchPlaceMarker = new Marker(); // Geocoding - 검색 위치 마커
+
+    public void searchplace_recent(String recentAddress, Location recentLocation) {
+        if(recentLocation != null){
+            if(Objects.equals(recentAddress, "No address")){
+                Toast.makeText(getActivity(), "주소를 바르게 입력하세요", Toast.LENGTH_LONG).show();
+                searchAdd.setText("");
+                if(pochas != null){
+                    for(Marker marker : pochas){
+                        marker.setMap(null);
+                    }
+                }
+            } else{
+                // 받아온 location에서 위도, 경도 추출
+                double latitude = recentLocation.getLatitude();
+                double longitude = recentLocation.getLongitude();
+
+                //StoreData에 위치값 보내기
+                StoreData mainStoreData = new StoreData();
+                mainStoreData.addLocation(latitude, longitude, 1500);
+                loadStoreData(); //주소 검색 후 검색한 주소 기준으로 데이터 로드
+
+                searchSuccess(latitude, longitude); // 검색 성공 - 카메라 이동, 마커 설정
+            }
+        }else{
+            Toast.makeText(getActivity(), "주소검색 중 오류가 발생했습니다.", Toast.LENGTH_LONG).show();
+            searchAdd.setText("");
+        }
+
+    }
+
+    public void searchplaceAutocomplete(Location autocompleteLocation){
+        if(autocompleteLocation != null){
             // 받아온 location에서 위도, 경도 추출
-            double latitude = select_autocomplete.getLatitude();
-            double longitude = select_autocomplete.getLongitude();
+            double latitude = autocompleteLocation.getLatitude();
+            double longitude = autocompleteLocation.getLongitude();
 
             //StoreData에 위치값 보내기
             StoreData mainStoreData = new StoreData();
@@ -463,7 +481,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
             Toast.makeText(getActivity(), "주소검색 중 오류가 발생했습니다.", Toast.LENGTH_LONG).show();
             searchAdd.setText("");
         }
-    } // searchplace_autocomplete() 끝
+    }
 
     // 검색 성공 시 카메라 이동, 마커 설정
     public void searchSuccess(double latitude, double longitude){
@@ -497,8 +515,8 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
     public void basemap(){
         if(stores != null){
             for(int i = 0; i < stores.size(); i++){
-                pochas[i].setWidth(80); //마커 사이즈 복구
-                pochas[i].setHeight(80);
+                pochas.get(i).setWidth(80); //마커 사이즈 복구
+                pochas.get(i).setHeight(80);
             }
         }
         if (pocha_info != null) {
@@ -509,27 +527,44 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
             pochalist_view.setVisibility(INVISIBLE); //포차리스트 닫기
     }
 
+    //Overlay.OnClickListener : 네이버 지도 API에서 제동하는 인터페이스로, 오버레이(지도 위에 그려지는 그래픽 요소) 객체를 클릭했을 때 발생하는 이벤트 처리하는 메소드 정의
+    @Override
+    public boolean onClick(@NonNull Overlay overlay) {
+        if(overlay instanceof LocationOverlay){
+            Toast.makeText(getActivity(), "설정> 애플리케이션 > YangPojag > 권한에서 지도 권한을 부여하세요", Toast.LENGTH_SHORT).show();
+            return true;
+        }
+        return false;
+    }
+
+    private boolean locationChanged = false; // 위치를 한번만 보내기 위한 플래그 변수
+    // 위치가 업데이트 될때마다 호출됨
+    @Override
+    public void onLocationChange(@NonNull Location location) {
+        if(!locationChanged){
+            double latitude = location.getLatitude();
+            double longitude = location.getLongitude();
+            Log.d("MainAcitivity", "현 위치 좌표 : " + latitude + ", " + longitude);
+            HttpResponse.setCurrentLocation(getActivity(), latitude, longitude);
+
+            locationChanged = true;
+
+        }
+
+    }
+
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         // request code와 권한 획득 여부 확인
         if(requestCode == PERMISSION_REQUEST_CODE){ // onMapReady()메서드에 요청한 권한 요청과 일치하는지 확인
             if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                mNaverMap.setLocationSource(locationSource);
                 mNaverMap.setLocationTrackingMode(LocationTrackingMode.Follow); //지도에서 현재 위치를 추적하여 따라가는 모드를 의미
+            }else{
+                Toast.makeText(getActivity(), "설정> 애플리케이션 > YangPojag > 권한에서 지도 권한을 부여하세요", Toast.LENGTH_SHORT).show();
             }
         }// onRequestPermissionsResult()메서드는 권한 요청 결과를 처리하고, 권한이 획득되었을 경우에만 NaverMap객체의 위치 추적 모드를 설정하는 역할을 함
 
-    }
-
-
-    //Overlay.OnClickListener : 네이버 지도 API에서 제동하는 인터페이스로, 오버레이(지도 위에 그려지는 그래픽 요소) 객체를 클릭했을 때 발생하는 이벤트 처리하는 메소드 정의
-    @Override
-    public boolean onClick(@NonNull Overlay overlay) {
-        if(overlay instanceof Marker){
-            //Intent intent = new Intent(MainActivity.this, MainActivity2.class);
-            //startActivity(intent);
-            return true;
-        }
-        return false;
     }
 
     // 인증, 번개 버튼 리스너
@@ -550,8 +585,12 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
                 meeting = false;
             }
             updateButtonVisibility();
-            updateMarker();
 
+            if(pochas != null){
+                for(int i = 0; i < pochas.size(); i++){
+                    updateMarker(pochas.get(i), stores.get(i));
+                }
+            }
         }
     };
 
@@ -569,47 +608,59 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
     }
 
     //버튼 상태에 따라 표시되는 마커를 재설정하는 메서드
-    public void updateMarker(){
-        if(stores != null){
-            if(auth == true && meeting == false){
-                for(int i = 0; i < stores.size(); i++){
-                    if(stores.get(i).getisVerified() == auth && stores.get(i).getHasMeeting() == meeting){
-                        pochas[i].setIcon(OverlayImage.fromResource(R.drawable.authon_meetingoff));
-                    }
-                    else{
-                        pochas[i].setIcon(null);
-                    }
-                }
+    public void updateMarker(Marker pochas_marker, Store mainStores){
+        if(auth && !meeting){
+            if(mainStores.getVerified() == auth && mainStores.getHasMeeting() == meeting){
+                pochas_marker.setIcon(OverlayImage.fromResource(R.drawable.authon_meetingoff));
             }
-            else if(auth == true && meeting == true){
-                for(int i = 0; i < stores.size(); i++){
-                    if(stores.get(i).getisVerified() == auth && stores.get(i).getHasMeeting() == meeting){
-                        pochas[i].setIcon(OverlayImage.fromResource(R.drawable.all_on));
-                    }
-                    else{
-                        pochas[i].setIcon(null);
-                    }
-                }
-            }
-            else if(auth == false && meeting == true){
-                for(int i = 0; i < stores.size(); i++){
-                    if(stores.get(i).getisVerified() == auth && stores.get(i).getHasMeeting() == meeting){
-                        pochas[i].setIcon(OverlayImage.fromResource(R.drawable.authoff_meetingon));
-                    }
-                    else{
-                        pochas[i].setIcon(null);
-                    }
-                }
+            else if(mainStores.getVerified() == auth && mainStores.getHasMeeting()){
+                pochas_marker.setIcon(OverlayImage.fromResource(R.drawable.all_on));
             }
             else{
-                for(int i = 0; i < stores.size(); i++){
-                    pochas[i].setIcon(OverlayImage.fromResource(R.drawable.all_off));
-
-                }
+                pochas_marker.setIcon(null);
             }
+        }
+        else if(auth == true && meeting == true){
+            if(mainStores.getVerified() == auth && mainStores.getHasMeeting() == meeting){
+                pochas_marker.setIcon(OverlayImage.fromResource(R.drawable.all_on));
+            }
+            else{
+                pochas_marker.setIcon(null);
+            }
+        }
+        else if(auth == false && meeting == true){
+            if(mainStores.getVerified() == auth && mainStores.getHasMeeting() == meeting){
+                pochas_marker.setIcon(OverlayImage.fromResource(R.drawable.authoff_meetingon));
+            }
+            else if(mainStores.getVerified() == true && mainStores.getHasMeeting() == meeting){
+                pochas_marker.setIcon(OverlayImage.fromResource(R.drawable.all_on));
+            }
+            else{
+                pochas_marker.setIcon(null);
+            }
+        }
+        else{
+            visibilityMarker(pochas_marker, mainStores);
+        }
+    }
+
+    // 인증 off, 번개 off 상태일 때(기본 상태) 마커 설정 메서드
+    public void visibilityMarker(Marker pochas_marker, Store mainStores){
+        if(mainStores.getVerified() == true && mainStores.getHasMeeting() == false){
+            pochas_marker.setIcon(OverlayImage.fromResource(R.drawable.authon_meetingoff));
+        }
+        else if(mainStores.getVerified() == true && mainStores.getHasMeeting() == true){
+            pochas_marker.setIcon(OverlayImage.fromResource(R.drawable.all_on));
+        }
+        else if(mainStores.getVerified() == false && mainStores.getHasMeeting() == true){
+            pochas_marker.setIcon(OverlayImage.fromResource(R.drawable.authoff_meetingon));
+        }
+        else if(mainStores.getVerified() == false && mainStores.getHasMeeting() == false) {
+            pochas_marker.setIcon(OverlayImage.fromResource(R.drawable.all_off));
         }
 
     }
+
 
 
 
@@ -647,7 +698,4 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
             uiSettings.setLogoMargin(30, 0, 0, 30);
         }
     }
-
-
-
 }   // 끝

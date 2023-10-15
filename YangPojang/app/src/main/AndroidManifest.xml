@@ -32,7 +32,14 @@
             android:exported="true">
         </activity>
 
-        <activity android:name=".MainActivity"/>
+        <activity
+            android:name=".PochainfoActivity"
+            android:exported="true">
+        </activity>
+
+        <activity android:name=".MainActivity"
+            android:windowSoftInputMode="adjustPan"/>
+
         <activity android:name=".login.LogindetailAct"/>
 
         <meta-data

@@ -1,1 +1,11 @@
 10/08  제보 합침
+
+
+10/16
+  1. bottomnavigation 고정을 위해 androidmenifest 수정
+        <activity android:name=".MainActivity"
+            android:windowSoftInputMode="adjustPan"/> 해당 줄 추가
+
+    2. 제보할 가게 선택 지도에 검색기능 (httpresoponse 이용) 추가
+
+   해야할것 : 코드 정리

@@ -19,13 +19,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ch.hsr.geohash.GeoHash;
-import ch.hsr.geohash.WGS84Point;
 
 
 //StoreData 클래스 - 가게 데이터 초기화 및 반환하는 클래스
 public class StoreData {
     private static ArrayList<Store> mainStores;
-    static DatabaseReference db_shop = FirebaseDatabase.getInstance().getReference("store"); // 파이어베이스 연동
+    static DatabaseReference db_shop = FirebaseDatabase.getInstance().getReference("shops"); // 파이어베이스 연동
     static GeoLocation centerLocation; // 기준 위치의 GeoLocation
     static float searchRadiusInMeters; // 검색 기준 반경
 
@@ -64,11 +63,12 @@ public class StoreData {
                             DataSnapshot snap = task1.getResult(); //task1 작업의 결과로 DataSnapshot이 저장 -- 하나의 레코드
                             for(DataSnapshot dataSnapshot : snap.getChildren()){ // 하나의 레코드의 각 필드에 접근
                                 Store mainStore = new Store();
+                                mainStore.setPrimaryKey(dataSnapshot.getKey());
                                 mainStore.setAddressName(dataSnapshot.child("addressName").getValue(String.class));
                                 mainStore.setCategory(dataSnapshot.child("category").getValue(String.class));
                                 mainStore.setHasMeeting(dataSnapshot.child("hasMeeting").getValue(Boolean.class));
-                                mainStore.setImageUrl(dataSnapshot.child("imageUrl").getValue(String.class));
-                                mainStore.setisVerified(dataSnapshot.child("isVerified").getValue(Boolean.class));
+                                mainStore.setExteriorImagePath(dataSnapshot.child("exteriorImagePath").getValue(String.class));
+                                mainStore.setVerified(dataSnapshot.child("verified").getValue(Boolean.class));
                                 mainStore.setLatitude(dataSnapshot.child("latitude").getValue(Double.class));
                                 mainStore.setLongitude(dataSnapshot.child("longitude").getValue(Double.class));
                                 mainStore.setRating(dataSnapshot.child("rating").getValue(Float.class));

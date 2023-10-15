@@ -4,25 +4,35 @@ import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.PointF;
 import android.location.Address;
 import android.location.Geocoder;
+import android.location.Location;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.Toolbar;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
@@ -46,10 +56,14 @@ import com.naver.maps.map.util.FusedLocationSource;
 import com.naver.maps.map.overlay.Marker;
 import com.naver.maps.map.overlay.OverlayImage;
 import com.yuhan.yangpojang.R;
+import com.yuhan.yangpojang.home.HttpResponse;
+import com.yuhan.yangpojang.home.SearchAdapter_AutoComplete;
 import com.yuhan.yangpojang.model.Shop;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 
@@ -73,21 +87,28 @@ public class MapLocationPopupFragment extends Fragment implements OnMapReadyCall
 
 
     // xml(ui)관련 요소 변수
-    private EditText locationSearchEditText; // 주소 검색지를 입력하는 칸
-    private Button searchButton;  // 주소 검색버튼
+    private SearchView  locationSearchView; // 주소 검색지를 입력하는 칸
     private Button selectLocationButton; // 위치 선택 버튼
     private Button cancelLocationButton ; // 위치 선택 취소 버튼
     private TextView showXY;  // xy 좌표가 잘잡히는지 보기위해 임시로(?) 넣어둔 xy 좌표 출력용 텍스트뷰
     private Marker selectedMarker; // 선택된 좌표에 표시될 핀 마커
     private TextView addressTextView; // 보류 - 지금 위치를 팝업 지도에 제대로 찍히는지 확인 하기 위해 임의로 적은 값
     private BottomNavigationView bottomNavigationView;
-    //    private ListView locationListView;  // 주소 검색 결과를 표시할 ListView
-    private ArrayAdapter<String> locationAdapter; // 검색결과를 ListView에 연결할 어댑터
+    private ListView locationListView;  // 주소 검색 결과를 표시할 ListView
+
+    private ArrayList<String> autoCompletes_name = new ArrayList<>();
+    private ArrayList<String> autoCompletes_add = new ArrayList<>();
+    private ArrayList<Double> autoCompletes_latitude = new ArrayList<>();
+    private ArrayList<Double> autoCompletes_longitude = new ArrayList<>();
 
     private List<Marker> shopMarkers = new ArrayList<>();
 
     private DatabaseReference shopDatabaseReference;
     private ValueEventListener shopValueEventListener;
+
+    private SearchAdapter_AutoComplete autoadapter; // 자동완성 목록 - 어댑터
+    private InputMethodManager inputMethodManager;
+
 
     // 중요 메서드 설명
     // 1. requestGeocode: 주소를 받아 위치 좌표 찾음:  지도이동, 좌표에 핀찍는 용도로 사용
@@ -99,31 +120,13 @@ public class MapLocationPopupFragment extends Fragment implements OnMapReadyCall
     {
         View view = inflater.inflate(R.layout.popup_map_location, container, false);
 
-
-        locationSearchEditText = view.findViewById(R.id.locationSearchEditText); // 주소검색하는 글씨창 부분
-        searchButton = view.findViewById(R.id.searchButton); // 검색버튼
+        locationListView = view.findViewById(R.id.search_listView) ;  // 검색하면 보여질 창
+        locationSearchView = view.findViewById(R.id.locationSearchsearchView); // 주소검색하는 글씨창 부분
         selectLocationButton = view.findViewById(R.id.selectLocationBtn);  // (위치 선택후) 선택 버튼
         cancelLocationButton = view.findViewById(R.id.cancelLocationButton); // 취소 버튼
         bottomNavigationView = getActivity().findViewById(R.id.bottomNavigationView);
-
-        // enter 키보드를 눌러도 searchButton을 누른것과 같은 효과를 주기위함
-        locationSearchEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            // enter 키인지 판별하는 boolean  두가지 변수
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                boolean isEnterKeyPressed = (event != null && event.getKeyCode() == KeyEvent.KEYCODE_ENTER &&
-                        event.getAction() == KeyEvent.ACTION_DOWN);
-                boolean isSearchAction = (actionId == EditorInfo.IME_ACTION_SEARCH);
-
-                if(isEnterKeyPressed || isSearchAction)
-                {
-                    // ENTER 를 눌렀을때 실행되는 메서드 호출
-                    performSearch();
-                    return  true;
-                }
-                return false;
-            }
-        });
+        bottomNavigationView.setVisibility(View.GONE);
+        inputMethodManager = (InputMethodManager) requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         // 위치 선택 취소 버튼을 누르면 작동 -> 다시 제보화면으로 돌아감
         cancelLocationButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -210,44 +213,138 @@ public class MapLocationPopupFragment extends Fragment implements OnMapReadyCall
             }
         });
 
-        // 위치 검색 버튼을 클릭했을때 작동
-        searchButton.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                hideKeyboard();
-                new Thread(new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        // 검색한 주소를  addr 변수에 가져옴
-                        final String addr = locationSearchEditText.getText().toString();
+        locationSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+          @Override
+          public boolean onQueryTextSubmit(String query) {
+              // 검색어가 제출되었을 때 처리할 작업을 여기에 작성
+//              performSearch(query);
+              Log.d("querysearch1","fjd");
+              hideKeyboard();
+              return true;
+          }
 
-                        //searchedLatLng: 위도 경도 저장
-                        // getCoordinatesFromeAddress로 검색한 주소를 좌표로 변환 -> 검색한 부분으로 지도 이동, 핀 찍기 위함
-                        LatLng searchedLatLng = getCoordinatesFromAddress(addr);
-                        // 주소검색한 내용이 null이 아니면 ( 검색한 내용이 있으면 ) =>
-                        if (searchedLatLng != null)
-                        {
-                            getActivity().runOnUiThread(new Runnable()
-                            {
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                Log.d("querysearch2","fjd");
+                // 검색어가 변경될 때 처리할 작업을 여기에 작성
+//                settingVisibility_change();
+                if(!TextUtils.isEmpty(newText))
+                {
+                    Log.d("cign","cign");
+                    HttpResponse.sendData(requireContext(), newText, new HttpResponse.DataCallback() {
+                        @Override
+                        public void onDataLoaded(LinkedHashMap<String, ArrayList<String>> address_hash) {
+                            settingVisibility_change();
+                            Log.d("test출력","1");
+                            requireActivity().runOnUiThread(new Runnable() {
                                 @Override
-                                public void run()
-                                {
-                                    // => 검색한 위치로  지도 이동
-//                              지우셈      popNaverMap.moveCamera(CameraUpdate.scrollTo(searchedLatLng));
-                                    // 이전에 표시된 마커는 지우고 초기화
-                                    updateMapWithLatLng(searchedLatLng);
-                                    Log.d("고릴라", String.valueOf(searchedLatLng));
+                                public void run() {
+                                    autoCompletes_name.clear();
+                                    autoCompletes_add.clear();
+                                    autoCompletes_latitude.clear();
+                                    autoCompletes_longitude.clear();
+                                    for(String key : address_hash.keySet()){
+                                        autoCompletes_name.add(key);
+
+                                        ArrayList<String> values = address_hash.get(key);
+                                        if(values != null && !values.isEmpty()){
+                                            autoCompletes_add.add(values.get(0));
+                                            autoCompletes_latitude.add(Double.valueOf(values.get(1)));
+                                            autoCompletes_longitude.add(Double.valueOf(values.get(2)));
+                                        }
+                                    }
+                                 //Toolbar 설정
+                                    androidx.appcompat.widget.Toolbar toolbar = view.findViewById(R.id.toolbar);
+                                    ((AppCompatActivity) requireActivity()).setSupportActionBar(toolbar);
+                                    ((AppCompatActivity) requireActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+                                    toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                           locationListView.setVisibility(View.GONE);
+                                            ((AppCompatActivity) requireActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+                                            locationSearchView.setQuery("", false); // Clear the search text
+                                            hideKeyboard();
+                                        }
+                                    });
+
+
+                                    autoadapter = new SearchAdapter_AutoComplete(requireContext(), autoCompletes_name, autoCompletes_add);
+                                    locationListView.setAdapter(autoadapter);
+                                    locationListView.setOnScrollListener(scrollL); // 스크롤 시 리스너 등록
+                                    Log.d("apple", autoadapter.toString());
+                                    autoadapter.notifyDataSetChanged();
+                                    for(int i = 0; i < address_hash.size(); i++){
+                                        Log.d("SearchActivity", "받은 주소 지명 : " + autoCompletes_name.get(i) + "   주소 : " + autoCompletes_add.get(i) + "   좌표 : " + autoCompletes_latitude.get(i) + ", " + autoCompletes_longitude.get(i));
+                                    }
                                 }
                             });
                         }
-                    }
-                }).start();
+
+                    });
+                }
+                return false;
             }
         });
+
+        locationListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Log.d("F","F");
+                double selectedLatitude = autoCompletes_latitude.get(position);
+                double selectedLongitude = autoCompletes_longitude.get(position);
+                LatLng selectedLatLng = new LatLng(selectedLatitude,selectedLongitude);
+                updateMapWithLatLng(selectedLatLng);
+                moveMapToLocation(selectedLatLng);
+                ((AppCompatActivity) requireActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+                locationSearchView.setQuery("", false); // Clear the search text
+                locationListView.setVisibility(View.GONE);
+                hideKeyboard();
+
+
+
+            }
+        });
+
+
+//        // 위치 검색 버튼을 클릭했을때 작동
+//        searchButton.setOnClickListener(new View.OnClickListener()
+//        {
+//            @Override
+//            public void onClick(View v)
+//            {
+////                hideKeyboard();
+//                new Thread(new Runnable()
+//                {
+//                    @Override
+//                    public void run()
+//                    {
+//
+//                        // 검색한 주소를  addr 변수에 가져옴
+//                        final String addr = null;
+//                        //searchedLatLng: 위도 경도 저장
+//                        // getCoordinatesFromeAddress로 검색한 주소를 좌표로 변환 -> 검색한 부분으로 지도 이동, 핀 찍기 위함
+//                        LatLng searchedLatLng = getCoordinatesFromAddress(addr);
+//                        // 주소검색한 내용이 null이 아니면 ( 검색한 내용이 있으면 ) =>
+//                        if (searchedLatLng != null)
+//                        {
+//                            getActivity().runOnUiThread(new Runnable()
+//                            {
+//                                @Override
+//                                public void run()
+//                                {
+//                                    // => 검색한 위치로  지도 이동
+////                              지우셈      popNaverMap.moveCamera(CameraUpdate.scrollTo(searchedLatLng));
+//                                    // 이전에 표시된 마커는 지우고 초기화
+//                                    updateMapWithLatLng(searchedLatLng);
+//                                    Log.d("고릴라", String.valueOf(searchedLatLng));
+//                                }
+//                            });
+//                        }
+//                    }
+//                }).start();
+//            }
+//        });
         // MapFragment를 초기화하고 뷰에 추가
         // getChildFragMent  _ 부모 fragment 위에 자식 fragment를 다루기 위해 getChldFragmentManager 사용( 팝업처럼 뜨는 창이여서 이렇게 작동시킴)
         MapFragment mapFragment = (MapFragment) getChildFragmentManager().findFragmentById(R.id.PopMapFragment);
@@ -266,6 +363,50 @@ public class MapLocationPopupFragment extends Fragment implements OnMapReadyCall
         mapFragment.getMapAsync(this);
                 return view;
     }
+
+    // 스크롤 시 리스너 설정
+    AbsListView.OnScrollListener scrollL = new AbsListView.OnScrollListener() {
+        @Override
+        public void onScrollStateChanged(AbsListView view, int scrollState) {
+            // 키보드 내리기
+            if (scrollState == SCROLL_STATE_TOUCH_SCROLL) {
+                View currentFocus = getActivity().getCurrentFocus();
+                if (currentFocus != null) {
+                    InputMethodManager manager = (InputMethodManager) requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    manager.hideSoftInputFromWindow(currentFocus.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+                }
+            }
+        }
+        @Override
+        public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+
+        }
+    };
+
+
+
+    public void settingVisibility_change() {
+        Log.d("ro", "rori");
+        locationListView.post(new Runnable() {
+            @Override
+            public void run() {
+                locationListView.setVisibility(View.VISIBLE);
+            }
+        });
+        cancelLocationButton.post(new Runnable() {
+            @Override
+            public void run() {
+                cancelLocationButton.setVisibility(View.GONE);
+            }
+        });
+        selectLocationButton.post(new Runnable() {
+            @Override
+            public void run() {
+                selectLocationButton.setVisibility(View.GONE);
+            }
+        });
+    }
+
 
     //50M 근방에 가게 있는지 계산하는 메서드
     private double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
@@ -326,7 +467,7 @@ public class MapLocationPopupFragment extends Fragment implements OnMapReadyCall
         uiSettings.setScaleBarEnabled(true);
         uiSettings.setCompassEnabled(true);
         uiSettings.setZoomControlEnabled(true);
-        
+
         // 샵들 정보를 firebase 에서 불러오는 코드
         fetchShopDataFromFirebase();
 
@@ -349,8 +490,6 @@ public class MapLocationPopupFragment extends Fragment implements OnMapReadyCall
             }
         });
     }
-
-
 
     private void loadShopDataForVisibleRegion() {
         LatLngBounds visibleBounds = popNaverMap.getContentBounds();
@@ -392,6 +531,9 @@ public class MapLocationPopupFragment extends Fragment implements OnMapReadyCall
         shopMarkers.clear();
     }
 
+
+
+
     @Override
     public void onDestroyView() {
         // Remove the ValueEventListener when the fragment is destroyed
@@ -428,6 +570,61 @@ public class MapLocationPopupFragment extends Fragment implements OnMapReadyCall
 
         });
     }
+
+
+    private void updateMapWithLatLng(LatLng latLng)
+    {
+        Log.d("일", String.valueOf(latLng));
+        Log.d("이","ASDfjdskfkldsjfklsdjfklsd");
+        if(popNaverMap!=null)
+        {
+            Log.d("칠칠","ASDfjdskfkldsjfklsdjfklsd");
+            popNaverMap.moveCamera(CameraUpdate.scrollTo(latLng));
+        }
+        if (selectedMarker != null)
+        {
+            Log.d("삼","ASDfjdskfkldsjfklsdjfklsd");
+            selectedMarker.setMap(null);
+            selectedMarker = null;
+        }
+
+        selectedMarker = new Marker();
+        selectedMarker.setPosition(latLng);
+        selectedMarker.setIcon(OverlayImage.fromResource(R.drawable.pin_black));
+        selectedMarker.setMap(popNaverMap);
+        selectLocationButton.setVisibility(View.VISIBLE);
+        cancelLocationButton.setVisibility(View.VISIBLE);
+    }
+
+    // 마커 표시된 곳이 항상 가운데를 유지하기 위해 호출되는 메서드
+    private void moveMapToLocation(LatLng latLng)
+    {
+        if(popNaverMap!=null)
+        {
+            Log.d("사.","ㄹㄹ");
+            CameraUpdate cameraUpdate = CameraUpdate.scrollTo(latLng)
+                    .animate(CameraAnimation.Fly,1000);
+            popNaverMap.moveCamera(cameraUpdate);
+        }
+
+    }
+//    p
+    // 주소로부터 좌표를 가져올 새로운 메서드를 추가
+    public LatLng getCoordinatesFromAddress(String address) {
+        Geocoder geocoder = new Geocoder(requireContext(), new Locale("ko", "KR"));
+        try {
+            List<Address> addresses = geocoder.getFromLocationName(address, 1);
+            if (addresses != null && !addresses.isEmpty()) {
+                Address foundAddress = addresses.get(0);
+                double latitude = foundAddress.getLatitude();
+                double longitude = foundAddress.getLongitude();
+                return new LatLng(latitude, longitude);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
     public void addShopMarker(Shop shop)
     {
         if (shop != null) {
@@ -448,95 +645,12 @@ public class MapLocationPopupFragment extends Fragment implements OnMapReadyCall
         }
     }
 
-    // 검색 기능 수행 - enter로도 검색버튼 누른것과 같은 효과를 위해 작성한 파트
-    private void performSearch()
-    {
-        hideKeyboard();
-        new Thread(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                final String addr = locationSearchEditText.getText().toString();
-                LatLng searchedLatLng = getCoordinatesFromAddress(addr);
-                if(searchedLatLng!=null)
-                {
-                    getActivity().runOnUiThread(new Runnable()
-                    {
-                        @Override
-                        public void run() {
-                            updateMapWithLatLng(searchedLatLng);
-                            Log.d("fdfj","dfkdf");
-                        }
-                    });
-                }
-            }
-        }).start();
-    }
-
-
-
-    private void updateMapWithLatLng(LatLng latLng)
-    {
-        Log.d("일", String.valueOf(latLng));
-        Log.d("이","ASDfjdskfkldsjfklsdjfklsd");
-        if(popNaverMap!=null)
-        {
-            Log.d("칠칠","ASDfjdskfkldsjfklsdjfklsd");
-            popNaverMap.moveCamera(CameraUpdate.scrollTo(latLng));
-        }
-        if (selectedMarker != null)
-        {
-            Log.d("삼","ASDfjdskfkldsjfklsdjfklsd");
-
-            selectedMarker.setMap(null);
-            selectedMarker = null;
-        }
-
-        selectedMarker = new Marker();
-        selectedMarker.setPosition(latLng);
-        selectedMarker.setIcon(OverlayImage.fromResource(R.drawable.pin_black));
-        selectedMarker.setMap(popNaverMap);
-    }
-
-
-
-    // 마커 표시된 곳이 항상 가운데를 유지하기 위해 호출되는 메서드
-    private void moveMapToLocation(LatLng latLng)
-    {
-        if(popNaverMap!=null)
-        {
-            Log.d("사.","ㄹㄹ");
-            CameraUpdate cameraUpdate = CameraUpdate.scrollTo(latLng)
-                    .animate(CameraAnimation.Fly,1000);
-            popNaverMap.moveCamera(cameraUpdate);
-        }
-
-    }
-
-//    p
-    // 주소로부터 좌표를 가져올 새로운 메서드를 추가
-
-    public LatLng getCoordinatesFromAddress(String address) {
-        Geocoder geocoder = new Geocoder(requireContext(), new Locale("ko", "KR"));
-        try {
-            List<Address> addresses = geocoder.getFromLocationName(address, 1);
-            if (addresses != null && !addresses.isEmpty()) {
-                Address foundAddress = addresses.get(0);
-                double latitude = foundAddress.getLatitude();
-                double longitude = foundAddress.getLongitude();
-                return new LatLng(latitude, longitude);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    // 키보드를 숨기는 메서드
+    // Implement the hideKeyboard method
     private void hideKeyboard() {
-        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(locationSearchEditText.getWindowToken(), 0);
+        View view = requireActivity().getCurrentFocus();
+        if (view != null) {
+            inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
     }
 
 

@@ -2,18 +2,24 @@ package com.yuhan.yangpojang.model;
 
 //Store 클래스 - 가게 정보를 저장하는 모델 클래스
 public class Store {
+
+    private String primaryKey; //기본키
     double latitude; //위도
     double longitude; //경도
-    boolean isVerified; //인증 여부
+    boolean verified; //인증 여부
     boolean hasMeeting; //번개 여부
     String shopName; //가게 이름
     String addressName; //가게 주소
     float rating; //가게 별점
     String category; //카테고리
-    String imageUrl; //가게이미지 url
+    String exteriorImagePath; //가게이미지 url
     String geohash; //가게 위치에 대한 지오해쉬값
 
     public Store(){}
+
+    public String getPrimaryKey() { return primaryKey; }
+
+    public void setPrimaryKey(String primaryKey) { this.primaryKey = primaryKey; }
 
     public double getLatitude() { return latitude; }
 
@@ -29,12 +35,12 @@ public class Store {
         this.longitude = longitude;
     }
 
-    public boolean getisVerified() {
-        return isVerified;
+    public boolean getVerified() {
+        return verified;
     }
 
-    public void setisVerified(boolean verified) {
-        isVerified = verified;
+    public void setVerified(boolean verified) {
+        this.verified = verified;
     }
 
     public boolean getHasMeeting() {
@@ -75,12 +81,12 @@ public class Store {
         this.category = category;
     }
 
-    public String getImageUrl() {
-        return imageUrl;
+    public String getExteriorImagePath() {
+        return exteriorImagePath;
     }
 
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
+    public void setExteriorImagePath(String exteriorImagePath) {
+        this.exteriorImagePath = exteriorImagePath;
     }
 
     public String getGeohash() {

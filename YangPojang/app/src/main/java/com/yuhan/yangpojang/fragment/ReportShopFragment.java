@@ -252,16 +252,17 @@ public class ReportShopFragment extends Fragment implements ShopDataListener
                 });
 
         // 제보버튼 눌렀을때 발생
-        reportBtn.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                saveShopData();
+                reportBtn.setOnClickListener(new View.OnClickListener()
+                {
+                    @Override
+                    public void onClick(View v)
+                    {
+                        saveShopData();
 
-            }
-        });
-        //가게위치 선택하기 글자를 누르면 지도가 뜨게 구현 + 하단 네비게이션 바 감춤
+
+                    }
+                });
+            //가게위치 선택하기 글자를 누르면 지도가 뜨게 구현 + 하단 네비게이션 바 감춤
         editShopPlaceBtn.setOnClickListener(v ->
         {
             showMapLocationPopup(); // 위치선택용 지도 pop
@@ -317,7 +318,7 @@ public class ReportShopFragment extends Fragment implements ShopDataListener
                         Address address = addresses.get(0);
                         addressName = address.getAddressLine(0).replace("대한민국","").trim(); // 주소 문자열 가져오기
                         shopLocationText.setText(addressName);
-                    } 
+                    }
                     else {
                         shopLocationText.setText("오류: 위치를 가져올 수 없음");
                     }

@@ -12,16 +12,22 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.yuhan.yangpojang.MainActivity;
 import com.yuhan.yangpojang.R;
+import com.yuhan.yangpojang.fragment.HomeFragment;
 import com.yuhan.yangpojang.model.Store;
+import com.yuhan.yangpojang.onPochaListItemClickListener;
 
 import java.util.ArrayList;
 
 public class PochaListAdapter extends RecyclerView.Adapter<PochaListAdapter.ViewHolder> {
     private ArrayList<Store> mData = new ArrayList<Store>();
+    private static onPochaListItemClickListener mItemListener;
+
     // 생성자에서 데이터리스트 객체를 전달받음
-    public PochaListAdapter(ArrayList<Store> list){
-        mData = list;
+    public PochaListAdapter(ArrayList<Store> list, onPochaListItemClickListener listener){
+        this.mData = list;
+        mItemListener = listener;
     }
 
     // 아이템 뷰를 저장하는 뷰홀더 클래스
@@ -36,6 +42,14 @@ public class PochaListAdapter extends RecyclerView.Adapter<PochaListAdapter.View
         // 각 아이템 뷰의 구성 요소에 대한 참조 보관
         ViewHolder(View itemview){
             super(itemview);
+
+            // 아이템 뷰가 클릭됐을 때 onPochaListItemClick()메서드 호출하도록 설정
+            itemview.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mItemListener.onPochaListItemClick(v, getBindingAdapterPosition());
+                }
+            });
 
             pochalist_image = itemview.findViewById(R.id.pochalist_image);
             pochalist_name = itemview.findViewById(R.id.pochalist_name);
@@ -64,10 +78,10 @@ public class PochaListAdapter extends RecyclerView.Adapter<PochaListAdapter.View
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) { //holder : onCreateViewHolder에서 생성한 ViewHolder객체(아이템 뷰 내 요소들에 대한 참조를 갖고있음), position : 현재 아이템의 위치를 나타내는 인덱스
         Store mainStore = mData.get(position);
 
-        String imageUrlString = mainStore.getImageUrl(); // URL 문자열을 가져옴
-        Glide.with(context)
-                .load(imageUrlString)
-                .into(holder.pochalist_image);
+        String ExteriorImagePath = mainStore.getExteriorImagePath(); // URL 문자열을 가져옴
+        HomeFragment homeFragment = new HomeFragment();
+        homeFragment.downloadFireStorage(context, ExteriorImagePath, holder.pochalist_image);
+
         holder.pochalist_name.setText(mainStore.getShopName());
         holder.pochalist_category.setText(mainStore.getCategory());
         holder.pochalist_add.setText(mainStore.getAddressName());
