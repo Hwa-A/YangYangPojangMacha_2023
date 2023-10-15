@@ -5,7 +5,8 @@
         tv: TextView
         edt: EditText
         imgv: ImageView
-        lin: LinearLayout              -->
+        lin: LinearLayout
+        txtLay: TextInputLayout     -->
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -74,18 +75,29 @@
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@id/constraintContainer"
-                app:layout_constraintBottom_toTopOf="@id/edt_meetingwrite_title"/>
-            <EditText
-                android:id="@+id/edt_meetingwrite_title"
+                app:layout_constraintBottom_toTopOf="@id/txtLay_meetingwrite_titleContainer"/>
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/txtLay_meetingwrite_titleContainer"
                 android:layout_width="0dp"
-                android:layout_height="48dp"
-                android:hint="20자 이내로 입력해주세요"
-                android:textSize="18sp"
-                android:maxLength="20"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:counterEnabled="true"
+                app:counterMaxLength="20"
+                app:errorEnabled="true"
+                app:endIconMode="clear_text"
+                android:hint="소개글(20자 이내)"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tv_meetingwrite_titleLabel"
-                app:layout_constraintBottom_toTopOf="@id/tv_meetingwrite_dateLabel"/>
+                app:layout_constraintBottom_toTopOf="@id/tv_meetingwrite_dateLabel">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edt_meetingwrite_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="55dp"
+                    android:maxLength="20"
+                    android:textSize="18sp"/>
+            </com.google.android.material.textfield.TextInputLayout>
             <TextView
                 android:id="@+id/tv_meetingwrite_dateLabel"
                 android:layout_width="wrap_content"
@@ -95,7 +107,7 @@
                 android:textSize="20sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/edt_meetingwrite_title"
+                app:layout_constraintTop_toBottomOf="@id/txtLay_meetingwrite_titleContainer"
                 app:layout_constraintBottom_toTopOf="@id/tv_meetingwrite_date"
                 android:layout_marginTop="10dp"/>
             <TextView
@@ -109,15 +121,6 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tv_meetingwrite_dateLabel"
                 app:layout_constraintBottom_toTopOf="@id/tv_meetingwrite_timeLabel"/>
-            <ImageView
-                android:id="@+id/imgv_meetingwrite_calenderButton"
-                android:layout_width="40dp"
-                android:layout_height="wrap_content"
-                android:src="@drawable/meetingwrite_calender"
-                android:adjustViewBounds="true"
-                app:layout_constraintStart_toEndOf="@id/tv_meetingwrite_date"
-                app:layout_constraintTop_toTopOf="@id/tv_meetingwrite_date"
-                app:layout_constraintBottom_toBottomOf="@id/tv_meetingwrite_date"/>
             <TextView
                 android:id="@+id/tv_meetingwrite_timeLabel"
                 android:layout_width="wrap_content"
