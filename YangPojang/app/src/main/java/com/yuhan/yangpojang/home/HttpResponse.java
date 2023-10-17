@@ -86,7 +86,7 @@ public class HttpResponse {
 
                         Log.d(MotionEffect.TAG, "placeInfo 값(키워드) :  :" + keyword);
 
-                        LinkedHashMap<String, ArrayList<String>> placeInfo0 = new LinkedHashMap<>();
+                        /*LinkedHashMap<String, ArrayList<String>> placeInfo0 = new LinkedHashMap<>();
                         // 0순위 : 같은 지역에 있는 데이터 우선
                         for(int i = 0; i < poiArray.length(); i++){
 
@@ -298,13 +298,62 @@ public class HttpResponse {
                                     Log.d(MotionEffect.TAG, "placeInfo 값(3순위) :  :" + placeInfo3);
                                 }
                             }
+                        }*/
+
+                        LinkedHashMap<String, ArrayList<String>> placeInfo4 = new LinkedHashMap<>();
+                        // 3순위 : keyword가 주소에 포함
+                        for (int i = 0; i < poiArray.length(); i++) {
+                            JSONObject poiObject = poiArray.getJSONObject(i); //poiArray의 데이터 항목을 JSONObject로 추출 -> 각 데이터 항목의 필드에 접근
+                            Log.d(MotionEffect.TAG, "poi오브젝트 :" + poiObject);
+
+                            String typeName = poiObject.optString("typeName", ""); // 버스 정류장 제외
+                            if(!typeName.endsWith("정류장")){
+                                Log.d(MotionEffect.TAG, "poi오브젝트(필터링) :" + poiObject);
+
+                                String placeName = poiObject.getString("name"); //지명
+                                String roadAdd = poiObject.getString("roadAdres"); //도로명
+                                String jibunAdd = poiObject.getString("jibunAdres"); //지번
+                                double xCoord = poiObject.getDouble("x"); //x좌표
+                                double yCoord = poiObject.getDouble("y"); //y좌표
+                                double[] Coord = coordinateTransformation(xCoord, yCoord); // x,y좌표 -> 위도, 경도
+
+                                // 주소 끝에 "도", "대", "철" 글자가 출력되는 데이터들에 해당 글자 삭제함
+                                if (jibunAdd.endsWith("도") || jibunAdd.endsWith("대") || jibunAdd.endsWith("철")) {
+                                    // "도" 글자가 있는 경우, 맨 끝의 "도" 글자를 제외한 부분을 추출
+                                    jibunAdd = jibunAdd.substring(0, jibunAdd.length() - 1);
+                                }
+
+                                // 키워드, 주소에 띄어쓰기 제거 - 사용자 입력 시 띄어쓰기에 상관없이 데이터 검색 가능하도록 함
+                                String road = roadAdd.replace(" ", "");
+                                String jibun = jibunAdd.replace(" ", "");
+                                keyword = keyword.replace(" ", "");
+
+                                String address;
+
+                                // 도로명이 비어있는 데이터들이 있으면 지번으로
+                                if (roadAdd.equals(" ")) {
+                                    address = jibunAdd;
+                                } else {
+                                    address = roadAdd;
+                                }
+
+                                // 키 : 지명, 값 : 주소, 위도, 경도
+                                ArrayList<String> values = new ArrayList<>();
+                                values.add(address);
+                                values.add(String.valueOf(Coord[0]));
+                                values.add(String.valueOf(Coord[1]));
+                                placeInfo4.put(placeName, values);
+
+                                placeInfoCnt++;
+
+
+
+                                Log.d(MotionEffect.TAG, "placeInfo 값(4순위) :  :" + placeInfo4);
+                            }
                         }
 
                         LinkedHashMap<String, ArrayList<String>> placeInfo = new LinkedHashMap<>(); // 메인으로 데이터를 보낼 hashMap
-                        placeInfo.putAll(placeInfo0);
-                        placeInfo.putAll(placeInfo1);
-                        placeInfo.putAll(placeInfo2);
-                        placeInfo.putAll(placeInfo3);
+                        placeInfo.putAll(placeInfo4);
                         Log.d(MotionEffect.TAG, "placeInfo 값(최종) :  :" + placeInfo);
 
 

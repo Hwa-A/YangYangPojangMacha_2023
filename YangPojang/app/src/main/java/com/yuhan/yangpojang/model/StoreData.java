@@ -23,7 +23,7 @@ import ch.hsr.geohash.GeoHash;
 
 //StoreData 클래스 - 가게 데이터 초기화 및 반환하는 클래스
 public class StoreData {
-    private static ArrayList<Store> mainStores;
+    private static ArrayList<Shop> stores;
     static DatabaseReference db_shop = FirebaseDatabase.getInstance().getReference("shops"); // 파이어베이스 연동
     static GeoLocation centerLocation; // 기준 위치의 GeoLocation
     static float searchRadiusInMeters; // 검색 기준 반경
@@ -58,28 +58,20 @@ public class StoreData {
                 .addOnCompleteListener(new OnCompleteListener<List<Object>>() {
                     @Override
                     public void onComplete(@NonNull Task<List<Object>> task) {
-                        mainStores = new ArrayList<>();
+                        stores = new ArrayList<>();
                         for(Task<DataSnapshot> task1 : tasks){
                             DataSnapshot snap = task1.getResult(); //task1 작업의 결과로 DataSnapshot이 저장 -- 하나의 레코드
                             for(DataSnapshot dataSnapshot : snap.getChildren()){ // 하나의 레코드의 각 필드에 접근
-                                Store mainStore = new Store();
-                                mainStore.setPrimaryKey(dataSnapshot.getKey());
-                                mainStore.setAddressName(dataSnapshot.child("addressName").getValue(String.class));
-                                mainStore.setCategory(dataSnapshot.child("category").getValue(String.class));
-                                mainStore.setHasMeeting(dataSnapshot.child("hasMeeting").getValue(Boolean.class));
-                                mainStore.setExteriorImagePath(dataSnapshot.child("exteriorImagePath").getValue(String.class));
-                                mainStore.setVerified(dataSnapshot.child("verified").getValue(Boolean.class));
-                                mainStore.setLatitude(dataSnapshot.child("latitude").getValue(Double.class));
-                                mainStore.setLongitude(dataSnapshot.child("longitude").getValue(Double.class));
-                                mainStore.setRating(dataSnapshot.child("rating").getValue(Float.class));
-                                mainStore.setShopName(dataSnapshot.child("shopName").getValue(String.class));
-                                mainStore.setGeohash(dataSnapshot.child("geohash").getValue(String.class));
+                                Shop mainStore = dataSnapshot.getValue(Shop.class); // 모든 필드를 Shop.class와 한번에 매핑
+                                if(mainStore != null){
+                                    mainStore.setPrimaryKey(dataSnapshot.getKey()); // 가게 기본키 얻기
+                                }
 
-                                mainStores.add(mainStore);
+                                stores.add(mainStore);
                                 Log.d("MainStoreData" , "쿼리 결과 : " + mainStore.getGeohash() + "  " + mainStore.getShopName());
                             }
                         }
-                        ArrayList<Store> filteredStores = filterStoresByRadius(mainStores, centerLocation, searchRadiusInMeters);
+                        ArrayList<Shop> filteredStores = filterStoresByRadius(stores, centerLocation, searchRadiusInMeters);
                         callback.onDataLoaded(filteredStores);
 
                         /*String hash = GeoFireUtils.getGeoHashForLocation(new GeoLocation(37.550097461351605, 126.84768605742251));
@@ -100,9 +92,9 @@ public class StoreData {
     }
 
     // 반경에 맞게 데이터 필터링하는 메서드
-    private static ArrayList<Store> filterStoresByRadius(ArrayList<Store> stores, GeoLocation centerLocation, double searchRadiusInMeters) {
-        ArrayList<Store> filteredStores = new ArrayList<>();
-        for (Store store : stores) {
+    private static ArrayList<Shop> filterStoresByRadius(ArrayList<Shop> stores, GeoLocation centerLocation, double searchRadiusInMeters) {
+        ArrayList<Shop> filteredStores = new ArrayList<>();
+        for (Shop store : stores) {
             GeoLocation storeLocation = new GeoLocation(store.getLatitude(), store.getLongitude());
             double distanceInMeters = GeoFireUtils.getDistanceBetween(centerLocation, storeLocation);
             if (distanceInMeters <= searchRadiusInMeters) {
@@ -120,7 +112,7 @@ public class StoreData {
     }
 
     public interface dataLoadedCallback{
-        void onDataLoaded(ArrayList<Store> mainStores);
+        void onDataLoaded(ArrayList<Shop> mainStores);
     }
 
 }

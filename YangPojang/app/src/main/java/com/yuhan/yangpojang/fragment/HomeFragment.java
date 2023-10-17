@@ -59,7 +59,7 @@ import com.yuhan.yangpojang.R;
 import com.yuhan.yangpojang.home.HttpResponse;
 import com.yuhan.yangpojang.home.PochaListAdapter;
 import com.yuhan.yangpojang.home.SearchActivity;
-import com.yuhan.yangpojang.model.Store;
+import com.yuhan.yangpojang.model.Shop;
 import com.yuhan.yangpojang.model.StoreData;
 import com.yuhan.yangpojang.onPochaListItemClickListener;
 
@@ -158,7 +158,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
             @Override
             public void onClick(View v) {
                 if (stores != null && !stores.isEmpty()) {
-                    ArrayList<Store> pochas = new ArrayList<>(stores);
+                    ArrayList<Shop> pochas = new ArrayList<>(stores);
 
                     PochaListView(pochas);
                 } else {
@@ -170,9 +170,9 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
     }
 
     RecyclerView pochalist_view;
-    ArrayList<Store> pochaListPochas = new ArrayList<>();
+    ArrayList<Shop> pochaListPochas = new ArrayList<>();
     //포차리스트 구현
-    public void PochaListView(ArrayList<Store> pochas){
+    public void PochaListView(ArrayList<Shop> pochas){
         pochaListPochas = pochas;
         pochalist_view = getActivity().findViewById(R.id.pocha_list); //리사이클러 뷰
         pochalist_view.setVisibility(View.VISIBLE);
@@ -190,10 +190,10 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
             String className = "com.yuhan.yangpojang.PochainfoActivity";
             Class<?> activityClass = Class.forName(className);
 
-            String primaryKey = pochaListPochas.get(position).getPrimaryKey();
             Intent intent = new Intent(v.getContext(), activityClass);
-            intent.putExtra("primaryKey", primaryKey);
+            intent.putExtra("shopInfo", stores.get(position));
             v.getContext().startActivity(intent);
+
         }catch (ClassNotFoundException e){
             Toast.makeText(v.getContext(), "클래스 찾을 수 없음: PochainfoActivity", Toast.LENGTH_SHORT).show();
         }
@@ -321,7 +321,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
 
 
 
-    ArrayList<Store> stores;
+    ArrayList<Shop> stores;
     ArrayList<Marker> pochas;
     Marker currentClickedMarker; //현재 클릭한 마커를 추적하기 위한 변수
     ConstraintLayout pocha_info; //가게 정보 탭
@@ -329,7 +329,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
     public void loadStoreData(){
         StoreData.initializeStores(new StoreData.dataLoadedCallback() {
             @Override
-            public void onDataLoaded(ArrayList<Store> getStore) {
+            public void onDataLoaded(ArrayList<Shop> getStore) {
                 if(getStore != null){
                     stores = getStore;
                     Log.d("MainActivity","받아온 가게 수 : " + stores.size());
@@ -387,9 +387,8 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
                                 pocha_info.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
-                                        String primaryKey = stores.get(index).getPrimaryKey();
                                         Intent intent = new Intent(v.getContext(), PochainfoActivity.class);
-                                        intent.putExtra("primaryKey", primaryKey);
+                                        intent.putExtra("shopInfo", stores.get(index));
                                         v.getContext().startActivity(intent);
                                     }
                                 });
@@ -608,7 +607,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
     }
 
     //버튼 상태에 따라 표시되는 마커를 재설정하는 메서드
-    public void updateMarker(Marker pochas_marker, Store mainStores){
+    public void updateMarker(Marker pochas_marker, Shop mainStores){
         if(auth && !meeting){
             if(mainStores.getVerified() == auth && mainStores.getHasMeeting() == meeting){
                 pochas_marker.setIcon(OverlayImage.fromResource(R.drawable.authon_meetingoff));
@@ -645,7 +644,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
     }
 
     // 인증 off, 번개 off 상태일 때(기본 상태) 마커 설정 메서드
-    public void visibilityMarker(Marker pochas_marker, Store mainStores){
+    public void visibilityMarker(Marker pochas_marker, Shop mainStores){
         if(mainStores.getVerified() == true && mainStores.getHasMeeting() == false){
             pochas_marker.setIcon(OverlayImage.fromResource(R.drawable.authon_meetingoff));
         }

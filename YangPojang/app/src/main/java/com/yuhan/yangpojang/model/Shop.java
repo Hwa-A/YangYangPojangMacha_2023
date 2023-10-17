@@ -25,21 +25,24 @@ public class Shop implements Serializable {
     private String fbStoreImgurl; // 파이어베이스에 들어간 이미지 url [https://firebasestorage.googleapis.com///] 형태
     private String fbMenuImgurl;  // 파이어베이스에 들어간 이미지 url [https://firebasestorage.googleapis.com///] 형태
 
-    private boolean isVerified; //인증 여부
+    private boolean verified; //인증 여부
     private boolean hasMeeting; //번개 여부
     private float rating; //가게 별점
     private String geohash;
+    private String exteriorImagePath;
+    private String primaryKey;
+    private String uid;
 
 
     //중요" firebase 이용을 위해서는 기본생성자 필수
     public Shop() {
     }
 
-    public Shop(String shopName,double latitude, double longitude ,String  addressName, boolean pwayMobile, boolean pwayCard,
+    public Shop(String shopName, double latitude, double longitude , String  addressName, boolean pwayMobile, boolean pwayCard,
                 boolean pwayAccount, boolean pwayCash, boolean openMon, boolean openTue,
                 boolean openWed, boolean openThu, boolean openFri, boolean openSat,
-                boolean openSun, String category ,String storeImageUri, String menuImageUri,
-                boolean isVerified, boolean hasMeeting, float rating, String geohash ) {
+                boolean openSun, String category , String storeImageUri, String menuImageUri,
+                boolean verified, boolean hasMeeting, float rating, String geohash ) {
         this.shopName=shopName;
         this.latitude = latitude;
         this.longitude= longitude;
@@ -58,7 +61,7 @@ public class Shop implements Serializable {
         this.category = category;
         this.storeImageUri = storeImageUri;
         this.menuImageUri = menuImageUri;
-        this.isVerified = isVerified;
+        this.verified = verified;
         this.hasMeeting =hasMeeting;
         this.rating= rating;
         this.geohash = geohash;
@@ -149,11 +152,11 @@ public class Shop implements Serializable {
         return fbMenuImgurl;
     }
 
-    public boolean isVerified() {
-        return isVerified;
+    public boolean getVerified() {
+        return verified;
     }
 
-    public boolean isHasMeeting() {
+    public boolean getHasMeeting() {
         return hasMeeting;
     }
 
@@ -164,6 +167,11 @@ public class Shop implements Serializable {
     public String getGeohash() {
         return geohash;
     }
+    public String getExteriorImagePath() {
+        return exteriorImagePath;
+    }
+    public String getPrimaryKey() { return primaryKey; }
+    public String getUid() { return uid;}
 
 
     public void setLatitude(double latitude) {
@@ -250,8 +258,8 @@ public class Shop implements Serializable {
         this.fbMenuImgurl = fbMenuImgurl;
     }
 
-    public void setVerified(boolean isverified) {
-        isVerified = isverified;
+    public void setVerified(boolean verified) {
+        this.verified = verified;
     }
 
     public void setHasMeeting(boolean hasMeeting) {
@@ -265,5 +273,9 @@ public class Shop implements Serializable {
     public void setGeohash(String geohash) {
         this.geohash = geohash;
     }
+    public void setExteriorImagePath(String exteriorImagePath) { this.exteriorImagePath = exteriorImagePath;}
+    public void setPrimaryKey(String primaryKey) { this.primaryKey = primaryKey; }
+
+    public void setUid(String uid) { this.uid = uid; }
 }
 
