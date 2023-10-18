@@ -65,6 +65,7 @@ import com.yuhan.yangpojang.onPochaListItemClickListener;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
@@ -112,6 +113,8 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
             ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_REQUEST_CODE);
             Toast.makeText(getActivity(), "설정> 애플리케이션 > YangPojag > 권한에서 지도 권한을 부여하세요", Toast.LENGTH_SHORT).show();
         }
+
+
 
         //UiSettings 클래스 - 지도 컨트롤 객체 관리
         uiSettings = mNaverMap.getUiSettings();
@@ -450,8 +453,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
                 double longitude = recentLocation.getLongitude();
 
                 //StoreData에 위치값 보내기
-                StoreData mainStoreData = new StoreData();
-                mainStoreData.addLocation(latitude, longitude, 1500);
+                StoreData.addLocation(latitude, longitude, 1500);
                 loadStoreData(); //주소 검색 후 검색한 주소 기준으로 데이터 로드
 
                 searchSuccess(latitude, longitude); // 검색 성공 - 카메라 이동, 마커 설정
@@ -470,8 +472,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
             double longitude = autocompleteLocation.getLongitude();
 
             //StoreData에 위치값 보내기
-            StoreData mainStoreData = new StoreData();
-            mainStoreData.addLocation(latitude, longitude, 1500);
+            StoreData.addLocation(latitude, longitude, 1500);
             loadStoreData(); //주소 검색 후 검색한 주소 기준으로 데이터 로드
 
             searchSuccess(latitude, longitude); // 검색 성공 - 카메라 이동, 마커 설정
@@ -543,6 +544,9 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
         if(!locationChanged){
             double latitude = location.getLatitude();
             double longitude = location.getLongitude();
+            StoreData.addLocation(latitude, longitude, 1500);
+            loadStoreData();
+
             Log.d("MainAcitivity", "현 위치 좌표 : " + latitude + ", " + longitude);
             HttpResponse.setCurrentLocation(getActivity(), latitude, longitude);
 
@@ -565,6 +569,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
         }// onRequestPermissionsResult()메서드는 권한 요청 결과를 처리하고, 권한이 획득되었을 경우에만 NaverMap객체의 위치 추적 모드를 설정하는 역할을 함
 
     }
+
 
     // 인증, 번개 버튼 리스너
     View.OnClickListener authmeetingL = new View.OnClickListener() {

@@ -29,7 +29,7 @@ public class StoreData {
     static float searchRadiusInMeters; // 검색 기준 반경
 
     // 검색한 주소 위치 받아오기
-    public void addLocation(double latitude, double longitude, float searchRadiusInMeters){
+    public static void addLocation(double latitude, double longitude, float searchRadiusInMeters){
         centerLocation = new GeoLocation(latitude, longitude);
         StoreData.searchRadiusInMeters = searchRadiusInMeters;
         GeoHash geoHash = GeoHash.withCharacterPrecision(latitude, longitude, 12);

@@ -230,13 +230,14 @@ public class SearchActivity extends AppCompatActivity {
                                     autoCompletes_longitude.clear();
 
                                     for(String key : address_hash.keySet()){
-                                        autoCompletes_name.add(key);
+                                        String[] keys = key.split("&");
+                                        autoCompletes_name.add(keys[0]);
+                                        autoCompletes_add.add(keys[1]);
 
                                         ArrayList<String> values = address_hash.get(key);
                                         if(values != null && !values.isEmpty()){
-                                            autoCompletes_add.add(values.get(0));
-                                            autoCompletes_latitude.add(Double.valueOf(values.get(1)));
-                                            autoCompletes_longitude.add(Double.valueOf(values.get(2)));
+                                            autoCompletes_latitude.add(Double.valueOf(values.get(0)));
+                                            autoCompletes_longitude.add(Double.valueOf(values.get(1)));
                                         }
 
                                     }
