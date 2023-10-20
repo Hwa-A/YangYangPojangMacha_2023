@@ -7,17 +7,86 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.yuhan.yangpojang.R;
+import com.yuhan.yangpojang.mypage.Model.MyLikeShopModel;
+import com.yuhan.yangpojang.mypage.Model.MyReportShopModel;
+
+import java.util.ArrayList;
 
 
 public class ProfileShowFragment extends Fragment
 {
+    private String user_info_uid = null;
+    private RecyclerView likeRecyclerView, reportRecyclerView, reviewRecyclerView, meetingRecyclerView;
+
+    private ArrayList<MyLikeShopModel> likeShops;   // 내가 좋아요한 가게
+    private ArrayList<MyReportShopModel> reportShops;   //내가 제보한 가게
+
+    private FirebaseDatabase likeDB, reportDB;
+    private DatabaseReference likeRef, reportRef;
+
+    View view;
 
     @Nullable  // null 체크유도, 경고를 통해 누락된 체크를 알려줄수 있음
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = (ViewGroup) inflater.inflate(R.layout.fragment_profile, container, false);
+         view = (ViewGroup) inflater.inflate(R.layout.fragment_profile, container, false);
+
+        //myLikeRecyclerView (내가 좋아요한 가게)
+        likeRecyclerView = view.findViewById(R.id.myLikeRecycle);
+        likeRecyclerView.setHasFixedSize(true);
+        likeRecyclerView.setLayoutManager(new LinearLayoutManager(view.getContext(), LinearLayoutManager.HORIZONTAL, false)); //리사이클 뷰의 아이템 배치 결정 (가로 스크롤 목록을 생성, 역방향 스크롤 비활성화)
+        likeShops = new ArrayList<>();
+
+
+
+        //myReportRecyclerView (내가 제보한 가게)
+        reportRecyclerView = view.findViewById(R.id.myReportRecycle);
+        reportRecyclerView.setHasFixedSize(true);
+        reportRecyclerView.setLayoutManager(new LinearLayoutManager(view.getContext(), LinearLayoutManager.HORIZONTAL, false));
+        reportShops = new ArrayList<>();
+
+        // 파이어베이스 데이터베이스 연동
+        likeDB = FirebaseDatabase.getInstance();
+        reportDB = FirebaseDatabase.getInstance();
+
+        //DB테이블 연결
+        likeRef = likeDB.getReference("likeShop");
+        reportRef = reportDB.getReference("shops");
+
+
+
+//
+//        // myReviewRecyclerView (내가 작성한 리뷰)
+//        reviewRecyclerView = view.findViewById(R.id.myReviewRecycle);
+//        reviewRecyclerView.setHasFixedSize(true);
+//        reviewRecyclerView.setLayoutManager(new LinearLayoutManager(view.getContext(), LinearLayoutManager.HORIZONTAL, false));
+//
+//
+//        //myMeetingRecyclerView (내 번개)
+//        meetingRecyclerView = view.findViewById(R.id.myMeetingRecycle);
+//        meetingRecyclerView.setHasFixedSize(true);
+//        meetingRecyclerView.setLayoutManager(new LinearLayoutManager(view.getContext(), LinearLayoutManager.HORIZONTAL, false));
         return view;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        //UID 가져오기
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            user_info_uid = user.getUid();
+        }
+
 
     }
 }

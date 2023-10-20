@@ -57,23 +57,24 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:text="test user"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/showUserImg" />
+                app:layout_constraintTop_toBottomOf="@+id/showUserImg"
+                app:layout_constraintVertical_bias="0.0" />
 
             <ImageButton
                 android:id="@+id/changeImg"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="136dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="104dp"
                 android:background="@drawable/set_button_round"
                 android:src="@drawable/settings"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toEndOf="@+id/showUserImg"
-                app:layout_constraintTop_toBottomOf="@+id/logout"
-                app:layout_constraintVertical_bias="0.0" />
+                app:layout_constraintTop_toTopOf="@+id/showUserImg" />
 
             <TextView
                 android:id="@+id/myLike"
@@ -98,7 +99,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/myLike"
-                app:layout_constraintVertical_bias="0.0" />
+                app:layout_constraintVertical_bias="0.021" />
 
             <TextView
                 android:id="@+id/myReport"
@@ -116,22 +117,22 @@
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/myReportRecycle"
-                android:layout_width="384dp"
-                android:layout_height="234dp"
+                android:layout_width="369dp"
+                android:layout_height="149dp"
                 android:layout_marginTop="4dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.481"
+                app:layout_constraintHorizontal_bias="0.38"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/myReport"
-                app:layout_constraintVertical_bias="0.0" />
+                app:layout_constraintVertical_bias="0.027" />
 
             <TextView
-                android:id="@+id/myMeeting"
+                android:id="@+id/myReview"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="28dp"
-                android:text="나의 번개"
+                android:text="내가 작성한 리뷰"
                 android:textSize="20dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -141,15 +142,40 @@
                 app:layout_constraintVertical_bias="0.0" />
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/myMeetingRecycle"
-                android:layout_width="384dp"
-                android:layout_height="234dp"
-                android:layout_marginTop="36dp"
+                android:id="@+id/myReviewRecycle"
+                android:layout_width="386dp"
+                android:layout_height="170dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.592"
+                app:layout_constraintHorizontal_bias="0.64"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/myMeeting" />
+                app:layout_constraintTop_toBottomOf="@+id/myReview"
+                app:layout_constraintVertical_bias="0.042" />
+
+            <TextView
+                android:id="@+id/myMeeting"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="28dp"
+                android:text="내 번개"
+                android:textSize="20dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.048"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/myReviewRecycle"
+                app:layout_constraintVertical_bias="0.0" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/myMeetingRecycle"
+                android:layout_width="386dp"
+                android:layout_height="170dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.64"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/myMeeting"
+                app:layout_constraintVertical_bias="1.0" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
