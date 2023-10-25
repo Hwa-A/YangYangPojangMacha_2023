@@ -52,6 +52,7 @@ import com.yuhan.yangpojang.home.PochaListAdapter;
 import com.yuhan.yangpojang.home.SearchActivity;
 import com.yuhan.yangpojang.model.Store;
 import com.yuhan.yangpojang.model.StoreData;
+import com.yuhan.yangpojang.mypage.GetList.MyLikeShopGetList;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -230,7 +231,6 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
                 getSearchActivityResult.launch(intent); // startActivityForResult랑 동일한 기능
             }
         });
-
 
     }
 
@@ -545,7 +545,10 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
             uiSettings.setLogoMargin(30, 0, 0, 30);
         }
     }
-
+    
+    
+ 
+    
 
 
 }   // 끝

@@ -66,7 +66,7 @@ public class MyLikeShopAdapter extends RecyclerView.Adapter<MyLikeShopAdapter.My
 
         holder.myshop_name.setText(likeList.get(position).getShopName());
         holder.myshop_category.setText(likeList.get(position).getCategory());
-        holder.myshop_add.setText(likeList.get(position).getAdd());
+        holder.myshop_add.setText(likeList.get(position).getAddressName());
     }
 
 

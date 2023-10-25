@@ -1,6 +1,9 @@
 package com.yuhan.yangpojang.fragment;
 
+import static com.google.firebase.crashlytics.internal.Logger.TAG;
+
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,11 +13,15 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ValueEventListener;
 import com.yuhan.yangpojang.R;
+import com.yuhan.yangpojang.mypage.GetList.MyLikeShopGetList;
 import com.yuhan.yangpojang.mypage.Model.MyLikeShopModel;
 import com.yuhan.yangpojang.mypage.Model.MyReportShopModel;
 
@@ -32,12 +39,15 @@ public class ProfileShowFragment extends Fragment
     private FirebaseDatabase likeDB, reportDB;
     private DatabaseReference likeRef, reportRef;
 
+    private MyLikeShopGetList myLikeShopGetList = null;
+
+
     View view;
 
     @Nullable  // null 체크유도, 경고를 통해 누락된 체크를 알려줄수 있음
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-         view = (ViewGroup) inflater.inflate(R.layout.fragment_profile, container, false);
+        view = (ViewGroup) inflater.inflate(R.layout.fragment_profile, container, false);
 
         //myLikeRecyclerView (내가 좋아요한 가게)
         likeRecyclerView = view.findViewById(R.id.myLikeRecycle);
@@ -53,13 +63,24 @@ public class ProfileShowFragment extends Fragment
         reportRecyclerView.setLayoutManager(new LinearLayoutManager(view.getContext(), LinearLayoutManager.HORIZONTAL, false));
         reportShops = new ArrayList<>();
 
-        // 파이어베이스 데이터베이스 연동
-        likeDB = FirebaseDatabase.getInstance();
-        reportDB = FirebaseDatabase.getInstance();
 
-        //DB테이블 연결
-        likeRef = likeDB.getReference("likeShop");
-        reportRef = reportDB.getReference("shops");
+        MyLikeShopGetList myLikeShopGetList = new MyLikeShopGetList();
+
+        myLikeShopGetList.GetMyLikeShopList("yOW6NztCIaTqmopS5gSXUom0BOB3", new MyLikeShopGetList.dataLoadedCallback() {
+            @Override
+            public void onDataLoaded(ArrayList<MyLikeShopModel> shopDatas) {
+                if(shopDatas != null ){
+                    ArrayList<MyLikeShopModel> lists = new ArrayList<MyLikeShopModel>();
+                    lists = shopDatas;
+
+                    for(int i = 0; i < lists.size(); i++){
+                        Log.d("코로나 아니야", String.valueOf(lists.get(i).getAddressName()));
+                    }
+//                    Log.d("테스트", "테스트 플레그먼트: " + lists.);
+                }
+            }
+        });
+
 
 
 
@@ -76,6 +97,7 @@ public class ProfileShowFragment extends Fragment
 //        meetingRecyclerView.setLayoutManager(new LinearLayoutManager(view.getContext(), LinearLayoutManager.HORIZONTAL, false));
         return view;
     }
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
