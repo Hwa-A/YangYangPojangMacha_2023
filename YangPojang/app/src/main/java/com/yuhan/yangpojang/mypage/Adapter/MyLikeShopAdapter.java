@@ -1,6 +1,7 @@
 package com.yuhan.yangpojang.mypage.Adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,10 +25,10 @@ public class MyLikeShopAdapter extends RecyclerView.Adapter<MyLikeShopAdapter.My
     //어댑터에서 액티비티 액션을 가져올 때 context가 필요한데 어댑터에는 context가 없다.
     //선택한 액티비티에 대한 context를 가져올 때 필요하다.
 
-    public MyLikeShopAdapter(ArrayList<MyLikeShopModel> likeList) {
+    public MyLikeShopAdapter(ArrayList<MyLikeShopModel> likeList, Context context) {
+        Log.d("LikeAdapter", "MyLikeShopAdapter: 진입");
         this.likeList = likeList;
-        this.context = context;
-
+        this.context = this.context;
     }
 
 
@@ -50,10 +51,7 @@ public class MyLikeShopAdapter extends RecyclerView.Adapter<MyLikeShopAdapter.My
     @NonNull
     @Override
     public MyLikeShopAdapter.MyLikeShopHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        context = parent.getContext();
-        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
-        View view = inflater.inflate(R.layout.profile_shop_item_view, parent, false); //xml레이아웃 파일을 뷰 객체로 인스턴스화
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.profile_shop_item_view, parent, false);
         MyLikeShopAdapter.MyLikeShopHolder likeShopHolder = new MyLikeShopAdapter.MyLikeShopHolder(view);
         return likeShopHolder;
     }
@@ -63,7 +61,7 @@ public class MyLikeShopAdapter extends RecyclerView.Adapter<MyLikeShopAdapter.My
     @Override
     public void onBindViewHolder(@NonNull MyLikeShopAdapter.MyLikeShopHolder holder, int position) {
         MyLikeShopModel myLikeShopModel = likeList.get(position);
-
+        Log.d("LikeAdapter", "MyLikeShopAdapter: ViewHolder진입");
         holder.myshop_name.setText(likeList.get(position).getShopName());
         holder.myshop_category.setText(likeList.get(position).getCategory());
         holder.myshop_add.setText(likeList.get(position).getAddressName());
@@ -74,4 +72,5 @@ public class MyLikeShopAdapter extends RecyclerView.Adapter<MyLikeShopAdapter.My
     public int getItemCount() {
         return (likeList != null ? likeList.size() : 0);
     }
+
 }

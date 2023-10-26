@@ -21,6 +21,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ValueEventListener;
 import com.yuhan.yangpojang.R;
+import com.yuhan.yangpojang.mypage.Adapter.MyLikeShopAdapter;
 import com.yuhan.yangpojang.mypage.GetList.MyLikeShopGetList;
 import com.yuhan.yangpojang.mypage.Model.MyLikeShopModel;
 import com.yuhan.yangpojang.mypage.Model.MyReportShopModel;
@@ -30,14 +31,17 @@ import java.util.ArrayList;
 
 public class ProfileShowFragment extends Fragment
 {
-    private String user_info_uid = null;
+//    private String user_info_uid = null;
+    private String user_info_uid = "yOW6NztCIaTqmopS5gSXUom0BOB3";
+    private RecyclerView.LayoutManager likeLayoutManger;
+
     private RecyclerView likeRecyclerView, reportRecyclerView, reviewRecyclerView, meetingRecyclerView;
+
+    private RecyclerView.Adapter likeAdapter, reportAdapter;
 
     private ArrayList<MyLikeShopModel> likeShops;   // 내가 좋아요한 가게
     private ArrayList<MyReportShopModel> reportShops;   //내가 제보한 가게
 
-    private FirebaseDatabase likeDB, reportDB;
-    private DatabaseReference likeRef, reportRef;
 
     private MyLikeShopGetList myLikeShopGetList = null;
 
@@ -49,40 +53,39 @@ public class ProfileShowFragment extends Fragment
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = (ViewGroup) inflater.inflate(R.layout.fragment_profile, container, false);
 
+
         //myLikeRecyclerView (내가 좋아요한 가게)
         likeRecyclerView = view.findViewById(R.id.myLikeRecycle);
         likeRecyclerView.setHasFixedSize(true);
         likeRecyclerView.setLayoutManager(new LinearLayoutManager(view.getContext(), LinearLayoutManager.HORIZONTAL, false)); //리사이클 뷰의 아이템 배치 결정 (가로 스크롤 목록을 생성, 역방향 스크롤 비활성화)
         likeShops = new ArrayList<>();
 
-
-
-        //myReportRecyclerView (내가 제보한 가게)
-        reportRecyclerView = view.findViewById(R.id.myReportRecycle);
-        reportRecyclerView.setHasFixedSize(true);
-        reportRecyclerView.setLayoutManager(new LinearLayoutManager(view.getContext(), LinearLayoutManager.HORIZONTAL, false));
-        reportShops = new ArrayList<>();
-
-
         MyLikeShopGetList myLikeShopGetList = new MyLikeShopGetList();
 
-        myLikeShopGetList.GetMyLikeShopList("yOW6NztCIaTqmopS5gSXUom0BOB3", new MyLikeShopGetList.dataLoadedCallback() {
+        myLikeShopGetList.GetMyLikeShopList(user_info_uid , new MyLikeShopGetList.dataLoadedCallback() {
             @Override
             public void onDataLoaded(ArrayList<MyLikeShopModel> shopDatas) {
                 if(shopDatas != null ){
-                    ArrayList<MyLikeShopModel> lists = new ArrayList<MyLikeShopModel>();
-                    lists = shopDatas;
 
-                    for(int i = 0; i < lists.size(); i++){
-                        Log.d("코로나 아니야", String.valueOf(lists.get(i).getAddressName()));
-                    }
-//                    Log.d("테스트", "테스트 플레그먼트: " + lists.);
+                    Log.d(TAG, "onDataLoaded: in main");
+                    likeAdapter = new MyLikeShopAdapter(shopDatas,getContext());
+                    likeRecyclerView.setAdapter(likeAdapter);
                 }
             }
         });
 
 
+        //myReportRecyclerView (내가 제보한 가게)
+        reportRecyclerView = view.findViewById(R.id.myReportRecycle);
+        reportRecyclerView.setHasFixedSize(true);
+        likeLayoutManger = new LinearLayoutManager(getContext());
+        reportRecyclerView.setLayoutManager(likeLayoutManger);
+        reportShops = new ArrayList<>();
 
+
+
+
+        
 
 //
 //        // myReviewRecyclerView (내가 작성한 리뷰)
