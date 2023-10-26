@@ -22,7 +22,9 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ValueEventListener;
 import com.yuhan.yangpojang.R;
 import com.yuhan.yangpojang.mypage.Adapter.MyLikeShopAdapter;
+import com.yuhan.yangpojang.mypage.Adapter.MyReportShopAdapter;
 import com.yuhan.yangpojang.mypage.GetList.MyLikeShopGetList;
+import com.yuhan.yangpojang.mypage.GetList.MyReportShopGetList;
 import com.yuhan.yangpojang.mypage.Model.MyLikeShopModel;
 import com.yuhan.yangpojang.mypage.Model.MyReportShopModel;
 
@@ -31,8 +33,8 @@ import java.util.ArrayList;
 
 public class ProfileShowFragment extends Fragment
 {
-//    private String user_info_uid = null;
-    private String user_info_uid = "yOW6NztCIaTqmopS5gSXUom0BOB3";
+    //    private String user_info_uid = null;
+    private String user_info_uid;
     private RecyclerView.LayoutManager likeLayoutManger;
 
     private RecyclerView likeRecyclerView, reportRecyclerView, reviewRecyclerView, meetingRecyclerView;
@@ -58,7 +60,7 @@ public class ProfileShowFragment extends Fragment
         likeRecyclerView = view.findViewById(R.id.myLikeRecycle);
         likeRecyclerView.setHasFixedSize(true);
         likeRecyclerView.setLayoutManager(new LinearLayoutManager(view.getContext(), LinearLayoutManager.HORIZONTAL, false)); //리사이클 뷰의 아이템 배치 결정 (가로 스크롤 목록을 생성, 역방향 스크롤 비활성화)
-        likeShops = new ArrayList<>();
+
 
         MyLikeShopGetList myLikeShopGetList = new MyLikeShopGetList();
 
@@ -78,14 +80,25 @@ public class ProfileShowFragment extends Fragment
         //myReportRecyclerView (내가 제보한 가게)
         reportRecyclerView = view.findViewById(R.id.myReportRecycle);
         reportRecyclerView.setHasFixedSize(true);
-        likeLayoutManger = new LinearLayoutManager(getContext());
-        reportRecyclerView.setLayoutManager(likeLayoutManger);
-        reportShops = new ArrayList<>();
+        reportRecyclerView.setLayoutManager(new LinearLayoutManager(view.getContext(), LinearLayoutManager.HORIZONTAL, false));
+
+        MyReportShopGetList myReportShopGetList = new MyReportShopGetList();
+
+        myReportShopGetList.GetMyReportShopList(user_info_uid , new MyReportShopGetList.dataLoadedCallback() {
+            @Override
+            public void onDataLoaded(ArrayList<MyReportShopModel> shopDatas) {
+                if(shopDatas != null ){
+
+                    Log.d(TAG, "onDataLoaded: myReportRecycle");
+                    reportAdapter = new MyReportShopAdapter(shopDatas,getContext());
+                    reportRecyclerView.setAdapter(reportAdapter);
+                }
+            }
+        });
 
 
 
 
-        
 
 //
 //        // myReviewRecyclerView (내가 작성한 리뷰)

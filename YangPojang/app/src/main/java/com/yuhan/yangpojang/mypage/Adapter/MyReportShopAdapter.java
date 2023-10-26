@@ -14,7 +14,7 @@ import com.yuhan.yangpojang.mypage.Model.MyReportShopModel;
 
 import java.util.ArrayList;
 
-public abstract class MyReportShopAdapter extends RecyclerView.Adapter<MyReportShopAdapter.MyReportShopHolder> {
+public class MyReportShopAdapter extends RecyclerView.Adapter<MyReportShopAdapter.MyReportShopHolder> {
 
     private ArrayList<MyReportShopModel> reportList = new ArrayList<>();
     private Context context;
@@ -57,7 +57,7 @@ public abstract class MyReportShopAdapter extends RecyclerView.Adapter<MyReportS
 
         holder.myshop_name.setText(reportList.get(position).getShopName());
         holder.myshop_category.setText(reportList.get(position).getCategory());
-        holder.myshop_add.setText(reportList.get(position).getAdd());
+        holder.myshop_add.setText(reportList.get(position).getAddressName());
     }
 
     @Override

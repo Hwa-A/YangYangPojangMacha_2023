@@ -11,29 +11,30 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.yuhan.yangpojang.mypage.Model.MyLikeShopModel;
+import com.yuhan.yangpojang.mypage.Model.MyReportShopModel;
+import com.yuhan.yangpojang.mypage.Model.MyReportShopModel;
 
 import java.util.ArrayList;
 
-public class MyLikeShopGetList {
+public class MyReportShopGetList {
     private String UID;
 
-    private ArrayList<MyLikeShopModel> shopDatas = new ArrayList<>();   // 가게 정보 전송용
+    private ArrayList<MyReportShopModel> shopDatas = new ArrayList<>();   // 가게 정보 전송용
     private ArrayList bflist = new ArrayList<>(); // 가게 리스트
     private FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
     private DatabaseReference databaseReference;
 
-    public MyLikeShopGetList() {
-        Log.d("테스트like", "MyLikeShopGetList: 진입");
+    public MyReportShopGetList() {
+        Log.d("테스트report", "MyReportShopGetList: 진입");
     }
 
-    public void GetMyLikeShopList(String UID, final dataLoadedCallback callback)
+    public void GetMyReportShopList(String UID, final dataLoadedCallback callback)
     {
         this.UID = UID;     //UID 연결
 
         //DB테이블 연결
-        databaseReference = firebaseDatabase.getReference("likeShop/"+UID);
-        Log.d(TAG, "GetMyLikeShopList: 테스트like 값 likeShop/" + UID );
+        databaseReference = firebaseDatabase.getReference("reportShop/"+UID);
+        Log.d(TAG, "GetMyReportShopList: 테스트report 값 reportShop/" + UID );
 
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -42,7 +43,7 @@ public class MyLikeShopGetList {
 
                     // 해당 UID의 like가게 리스트 저장
                     bflist.add(snap.getKey());
-                    Log.d(TAG, "onDataChange: bflist");
+                    Log.d(TAG, "테스트report onDataChange: bflist");
                 }
 
                 // bflist에 있는 가게 정보를 가져오기 위한 루프
@@ -52,28 +53,28 @@ public class MyLikeShopGetList {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot shopSnapshot) {
                             if (shopSnapshot.exists()) {
-                                Log.d("테스트like", "onDataChange: 2");
+                                Log.d("테스트report", "onDataChange: 2");
                                 // 가게 정보 불러오기
                                 String category = shopSnapshot.child("category").getValue(String.class);
                                 String addressName = shopSnapshot.child("addressName").getValue(String.class);
                                 String shopName = shopSnapshot.child("shopName").getValue(String.class);
 
-                                // MyLikeShopModel 객체 생성 및 값 설정
-                                MyLikeShopModel shop = new MyLikeShopModel();
+                                // MyReportShopModel 객체 생성 및 값 설정
+                                MyReportShopModel shop = new MyReportShopModel();
                                 shop.setCategory(category);
                                 shop.setAddressName(addressName);
                                 shop.setShopName(shopName);
 
                                 shopDatas.add(shop); // 가져온 가게 정보를 likeShops 리스트에 추가
-                                Log.d("테스트like", "Category: " + category);
-                                Log.d("테스트like", "Address Name: " + addressName);
-                                Log.d("테스트like", "Shop Name: " + shopName);
+                                Log.d("테스트report", "Category: " + category);
+                                Log.d("테스트report", "Address Name: " + addressName);
+                                Log.d("테스트report", "Shop Name: " + shopName);
 
 
                                 if(bflist.size() == shopDatas.size()){
                                     callback.onDataLoaded(shopDatas);
                                 }
-                                Log.d("테스트like", "shop size-----: " + shopDatas.size());
+                                Log.d("테스트report", "shop size-----: " + shopDatas.size());
                             }
 
                         }
@@ -88,7 +89,7 @@ public class MyLikeShopGetList {
                 }
 
 
-                Log.d("테스트like bf", String.valueOf(bflist));
+                Log.d("테스트report bf", String.valueOf(bflist));
                 
             }
 
@@ -106,7 +107,7 @@ public class MyLikeShopGetList {
         //return shopDatas;
     }
     public interface dataLoadedCallback{
-        void onDataLoaded(ArrayList<MyLikeShopModel> shopDatas);
+        void onDataLoaded(ArrayList<MyReportShopModel> shopDatas);
 
     }
 
