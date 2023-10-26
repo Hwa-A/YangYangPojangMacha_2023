@@ -17,15 +17,15 @@
 
             <ImageView
                 android:id="@+id/showUserImg"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="130dp"
+                android:layout_height="130dp"
                 android:layout_marginBottom="468dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.498"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/logout"
-                app:layout_constraintVertical_bias="0.052"
+                app:layout_constraintVertical_bias="0.025"
                 tools:srcCompat="@tools:sample/avatars" />
 
             <Button
@@ -37,7 +37,7 @@
                 android:backgroundTint="#FFFFFF"
                 android:drawablePadding="0dp"
                 android:padding="0dp"
-                android:text="로그아웃"
+                android:text="계정 설정"
                 android:textColor="#3A3838"
                 app:icon="@drawable/profile__user_logout"
                 app:iconSize="22dp"

@@ -3,8 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="225dp"
-    android:layout_height="180dp"
-    android:background="@drawable/border_rounded_coner"
+    android:layout_height="140dp"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="10dp"
+    android:background="@drawable/border_rounded_coner_gray"
     android:backgroundTint="#656565">
 
 
@@ -33,8 +35,8 @@
     <TextView
         android:id="@+id/shopAdd"
         android:layout_width="187dp"
-        android:layout_height="51dp"
-        android:layout_marginTop="16dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="10dp"
         android:text="address"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
