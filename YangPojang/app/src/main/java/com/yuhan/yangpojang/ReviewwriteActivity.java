@@ -75,8 +75,8 @@ public class ReviewwriteActivity extends AppCompatActivity {
         // 전달 받은 데이터로 변수 초기화
         Intent intent = getIntent();
         String pchName = intent.getStringExtra("pchName");      // 포차 이름
-        String uid = intent.getStringExtra("uid");              // 회원 ID
-
+        // String uid = intent.getStringExtra("uid");              // 회원 ID
+        String uid = "나나";
         // 객체 생성 및 초기화
         pchNameTv = (TextView) findViewById(R.id.tv_reviewwrite_pochaName);
         revRegisterBtn = (Button) findViewById(R.id.btn_reviewwrite_register);

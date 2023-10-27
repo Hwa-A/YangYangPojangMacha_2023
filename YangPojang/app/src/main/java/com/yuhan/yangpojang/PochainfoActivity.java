@@ -1,5 +1,6 @@
 package com.yuhan.yangpojang;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.FragmentManager;
@@ -8,12 +9,17 @@ import androidx.fragment.app.FragmentTransaction;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 // pch: pojangmacha
 // frg: fragment
@@ -28,7 +34,9 @@ public class PochainfoActivity extends AppCompatActivity {
     FragmentManager frgManager;       // Fragment 관리자
     FragmentTransaction frgTransaction;        // Fragment 트랜잭션 : Fragment 작업을 처리
     Bundle bundle;              // Fragment에 포차 이름, 회원ID를 담아 전달할 객체
-    String clickTab;
+//    FirebaseDatabase ref = FirebaseDatabase.getInstance();
+//    DatabaseReference shops = ref.getReference("shops");
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,13 +47,29 @@ public class PochainfoActivity extends AppCompatActivity {
         // String pchName = intent.getStringExtra("pchName");      // 포차 이름
         // String uid = intent.getStringExtra("uid");              // 회원 ID
         // 임의 값 넣어 테스트
-         String pchName = "성성이";
-         String uid = "롤로";
+        String pchName = "양양";
+        String uid = "롤로";
+
+//        shops.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                num = snapshot.getChildrenCount();
+//                strNum = String.valueOf(num);
+//                Log.e("test", "onDataChange: "+strNum);
+//                pchNameTv.setText(strNum);
+//
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//
+//            }
+//        });
 
         // 객체 생성 및 초기화
-        pchDetailBtn = (Button) findViewById(R.id.btn_pochainfo_detailTab);
-        pchReviewBtn = (Button) findViewById(R.id.btn_pochainfo_reviewTab);
-        pchMeetingBtn = (Button)findViewById(R.id.btn_pochainfo_meetingTab);
+        pchDetailBtn = findViewById(R.id.btn_pochainfo_detailTab);
+        pchReviewBtn = findViewById(R.id.btn_pochainfo_reviewTab);
+        pchMeetingBtn = findViewById(R.id.btn_pochainfo_meetingTab);
         TextView pchNameTv = findViewById(R.id.tv_pochainfo_pochaname);     // 포차 이름
         pchDetailFrg = new PochadetailFragment();
         pchReviewFrg = new PochareviewFragment();
@@ -55,7 +79,7 @@ public class PochainfoActivity extends AppCompatActivity {
         // ▼ fragment에 데이터 전달 코드
         bundle = new Bundle();              // 전달하기 위해 포차 이름과 회원ID 담을 객체
         bundle.putString("pchName", pchName);
-        bundle.putString("uid", uid);
+        // bundle.putString("uid", uid);
         // 프래그먼트에 데이터(포차 이름, 회원id) 넘기기
         pchReviewFrg.setArguments(bundle);
         pchMeetingFrg.setArguments(bundle);
@@ -79,7 +103,7 @@ public class PochainfoActivity extends AppCompatActivity {
                     // 객체 생성 및 초기화
                     frgTransaction = frgManager.beginTransaction();
                     // 포차 상세정보 Fragment로 화면 전환
-                    frgTransaction.replace(R.id.frg_pochainfo_mainFragment, pchDetailFrg).commit();
+                    frgTransaction.replace(R.id.frg_pochainfo_mainFragment, pchDetailFrg).commitNow();
                     // 버튼 탭의 색 변경
                     pchDetailBtn.setTextColor(Color.WHITE);
                     pchDetailBtn.setBackgroundResource(R.drawable.pochainfo_allbutton_selected);
@@ -92,7 +116,7 @@ public class PochainfoActivity extends AppCompatActivity {
                     // 객체 생성 및 초기화
                     frgTransaction = frgManager.beginTransaction();
                     // 포차 리뷰 Fragment로 화면 전환
-                    frgTransaction.replace(R.id.frg_pochainfo_mainFragment, pchReviewFrg).commit();
+                    frgTransaction.replace(R.id.frg_pochainfo_mainFragment, pchReviewFrg).commitNow();
                     // 버튼 탭의 색 변경
                     pchDetailBtn.setTextColor(Color.BLACK);
                     pchDetailBtn.setBackgroundResource(R.drawable.pochainfo_allbutton_unselected);
@@ -105,7 +129,7 @@ public class PochainfoActivity extends AppCompatActivity {
                     // 객체 생성 및 초기화
                     frgTransaction = frgManager.beginTransaction();
                     // 포차 번개 Fragment로 화면 전환
-                    frgTransaction.replace(R.id.frg_pochainfo_mainFragment, pchMeetingFrg).commit();
+                    frgTransaction.replace(R.id.frg_pochainfo_mainFragment, pchMeetingFrg).commitNow();
                     // 버튼 탭의 색 변경
                     pchDetailBtn.setTextColor(Color.BLACK);
                     pchDetailBtn.setBackgroundResource(R.drawable.pochainfo_allbutton_unselected);

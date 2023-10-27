@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">YangPojang</string>
+
+    <!-- activity_meetingwrite.xml의 번개 정원 Drop Menu로 사용할 item -->
+    <string-array name="maxMembers">
+        <item>5명</item>
+        <item>4명</item>
+        <item>3명</item>
+        <item>2명</item>
+        <item>1명</item>
+    </string-array>
 </resources>

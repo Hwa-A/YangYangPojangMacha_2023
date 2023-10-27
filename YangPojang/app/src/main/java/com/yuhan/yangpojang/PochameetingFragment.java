@@ -20,7 +20,7 @@ public class PochameetingFragment extends Fragment {
 
         // 넘어온 데이터(포차 이름, 회원 ID) 변수에 담기
         String pchName = this.getArguments().getString("pchName");
-        String uid = this.getArguments().getString("uid");
+        // String uid = this.getArguments().getString("uid");
 
         // ▼ 번개 작성 activity에 상단 포차 이름과 회원 ID 값을 주기 위한 코드
         // 객체 생성 및 초기화
@@ -34,7 +34,7 @@ public class PochameetingFragment extends Fragment {
                 Intent intent = new Intent(getActivity(), MeetingwriteActivity.class);
                 // intent에 MeetingwriteActivity에 전달할 데이터 추가
                 intent.putExtra("pchName", pchName);     // 포차 이름(추후 변경)
-                intent.putExtra("uid", uid);         // 회원 ID(추후 변경)
+                // intent.putExtra("uid", uid);         // 회원 ID(추후 변경)
                 // Activity로 전환 및 데이터 전달
                 startActivity(intent);
             }

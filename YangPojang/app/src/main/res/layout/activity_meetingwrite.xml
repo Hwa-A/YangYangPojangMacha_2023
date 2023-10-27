@@ -6,7 +6,8 @@
         edt: EditText
         imgv: ImageView
         lin: LinearLayout
-        txtLay: TextInputLayout     -->
+        txtLay: TextInputLayout
+        autoTxt: AutoCompleteTextView  -->
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -64,7 +65,8 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_meetingwrite_pochaBottomLine"
-            android:padding="15dp">
+            android:paddingRight="15dp"
+            android:paddingLeft="15dp">
             <TextView
                 android:id="@+id/tv_meetingwrite_titleLabel"
                 android:layout_width="wrap_content"
@@ -90,7 +92,6 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tv_meetingwrite_titleLabel"
                 app:layout_constraintBottom_toTopOf="@id/tv_meetingwrite_dateLabel">
-
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/edt_meetingwrite_title"
                     android:layout_width="match_parent"
@@ -110,6 +111,7 @@
                 app:layout_constraintTop_toBottomOf="@id/txtLay_meetingwrite_titleContainer"
                 app:layout_constraintBottom_toTopOf="@id/tv_meetingwrite_date"
                 android:layout_marginTop="10dp"/>
+
             <TextView
                 android:id="@+id/tv_meetingwrite_date"
                 android:layout_width="120dp"
@@ -118,9 +120,10 @@
                 android:textColor="@color/black"
                 android:textSize="20sp"
                 android:textStyle="bold"
+                app:layout_constraintBottom_toTopOf="@id/tv_meetingwrite_timeLabel"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tv_meetingwrite_dateLabel"
-                app:layout_constraintBottom_toTopOf="@id/tv_meetingwrite_timeLabel"/>
+                app:layout_constraintTop_toBottomOf="@id/tv_meetingwrite_dateLabel" />
+
             <TextView
                 android:id="@+id/tv_meetingwrite_timeLabel"
                 android:layout_width="wrap_content"
@@ -148,13 +151,13 @@
                 android:id="@+id/tv_meetingwrite_memberCountLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="번개 인원"
+                android:text="번개 모집 정원"
                 android:textColor="@color/black"
                 android:textSize="20sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tv_meetingwrite_time"
-                app:layout_constraintBottom_toTopOf="@id/tv_meetingwrite_memberMaxLabel"
+                app:layout_constraintBottom_toTopOf="@id/txtLay_meetingwrite_maxMemberContainer"
                 android:layout_marginTop="10dp"/>
             <TextView
                 android:id="@+id/tv_meetingwrite_memberMaxLabel"
@@ -165,19 +168,28 @@
                 android:textSize="18sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/edt_meetingwrite_member"
-                app:layout_constraintBottom_toTopOf="@id/edt_meetingwrite_member"/>
-            <EditText
-                android:id="@+id/edt_meetingwrite_member"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:hint="5"
-                android:textSize="18sp"
-                android:maxLength="20"
+                app:layout_constraintTop_toBottomOf="@id/txtLay_meetingwrite_maxMemberContainer"
+                app:layout_constraintBottom_toTopOf="@id/txtLay_meetingwrite_maxMemberContainer" />
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                android:id="@+id/txtLay_meetingwrite_maxMemberContainer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 app:layout_constraintStart_toEndOf="@id/tv_meetingwrite_memberMaxLabel"
                 app:layout_constraintTop_toBottomOf="@id/tv_meetingwrite_memberCountLabel"
                 app:layout_constraintBottom_toTopOf="@id/lin_meetingwrite_registerButtonContainer"
-                android:layout_marginLeft="5dp"/>
+                android:layout_marginLeft="5dp">
+                <AutoCompleteTextView
+                    android:id="@+id/autoTxt_meetingwrite_member"
+                    android:layout_width="wrap_content"
+                    android:layout_height="60dp"
+                    android:gravity="center"
+                    android:inputType="none"
+                    android:text="5명"
+                    android:textSize="18sp"
+                    android:textColor="@color/black" />
+            </com.google.android.material.textfield.TextInputLayout>
+
             <LinearLayout
                 android:id="@+id/lin_meetingwrite_registerButtonContainer"
                 android:layout_width="0dp"
@@ -189,7 +201,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/edt_meetingwrite_member"
+                app:layout_constraintTop_toBottomOf="@id/txtLay_meetingwrite_maxMemberContainer"
                 app:layout_constraintVertical_bias="0.0">
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/btn_meetingwrite_register"
