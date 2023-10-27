@@ -24,19 +24,6 @@
             android:layout_height="wrap_content"
             android:text="위치권한 서비스" />
 
-        <!-- 첫 번째 스위치 버튼 -->
-        <Switch
-            android:id="@+id/locationswitch"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:enabled="false"/>
-
-        <Button
-            android:id="@+id/requestLocationPermission"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="위치권한 허용"/>
-
     </LinearLayout>
 
     <!-- 두 번째 묶음 -->
@@ -50,19 +37,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="갤러리 권한 서비스" />
-
-        <!-- 두 번째 스위치 버튼 -->
-        <Switch
-            android:id="@+id/galleryswitch"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:enabled="false"/>
-
-        <Button
-            android:id="@+id/requestGalleryPermission"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="갤러리권한 허용"/>
     </LinearLayout>
 
     <!-- 확인 버튼 -->
