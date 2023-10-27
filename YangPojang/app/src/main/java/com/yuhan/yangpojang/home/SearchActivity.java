@@ -216,6 +216,7 @@ public class SearchActivity extends AppCompatActivity {
             public boolean onQueryTextChange(String newText) {
                 // 검색어가 변경될 때 처리할 작업을 여기에 작성
                 settingVisibility_change();
+                Log.d("SerachActivity", "검색어 : " + newText);
 
                 if (!TextUtils.isEmpty(newText)) { // 주소 검색창이 비어있지 않을 때만 호출
                     HttpResponse.sendData(getApplicationContext(), newText, new HttpResponse.DataCallback() {

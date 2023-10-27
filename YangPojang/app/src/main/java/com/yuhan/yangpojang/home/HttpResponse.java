@@ -3,6 +3,7 @@ package com.yuhan.yangpojang.home;
 import android.content.Context;
 import android.location.Address;
 import android.location.Geocoder;
+import android.location.LocationManager;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -45,9 +46,10 @@ public class HttpResponse {
     public static void sendData(Context context, String newText, DataCallback callback1){
         dataCallback = callback1; //SearchActivity.class로 데이터를 보내기 위한 콜백
         keyword = newText; //검색어 업데이트
+        Log.d("HttpResponse", "검색어 : " + keyword);
         new Thread(){
             public void run(){
-                conn.requestWebServer(keyword, "http://localhost:8080", "20", "1", "0E895A6037E6B2A5478DFD072465A01B", "poi", callback);
+                conn.requestWebServer(keyword, "http://localhost:8080", "25", "1", "0E895A6037E6B2A5478DFD072465A01B", "poi", callback);
                 //HttpConnection 클래스의 requestWebServer 메서드를 호출하여 서버로 데이터 전달
             }
         }.start();
@@ -59,7 +61,7 @@ public class HttpResponse {
         currentLongitude = longitude;
 
         addressName = getAddressFromLocation(context,currentLatitude, currentLongitude); //받아온 위도 경도로 부터 행정구역 추출
-        Log.d("HttpResponse", "현재 위치 : " + addressName);
+        Log.d("HttpResponse", "현 위치 좌표(HttpResponse) : " + addressName);
 
     }
 
@@ -120,8 +122,9 @@ public class HttpResponse {
                                 }
                                 String key = placeName + "&" + address;
 
+
                                 // 1순위 : 같은 행정구역 and 검색어 일치
-                                if ((roadAdd.startsWith(addressName) || jibunAdd.startsWith(addressName)) && placeName.equals(keyword)) {
+                                if (((!roadAdd.equals(" ") && roadAdd.startsWith(addressName)) || !jibunAdd.equals(" ") && jibunAdd.startsWith(addressName)) && placeName.equals(keyword)) {
 
                                     // 키 : 지명, 값 : 주소, 위도, 경도
                                     ArrayList<String> values = new ArrayList<>();
@@ -132,7 +135,7 @@ public class HttpResponse {
                                     Log.d("HttpResponse", "placeInfo 값(1순위) : " + placeInfo1);
                                 }
                                 // 2순위 : 같은 행정구역
-                                else if((roadAdd.startsWith(addressName) || jibunAdd.startsWith(addressName))){
+                                else if((!roadAdd.equals(" ") && roadAdd.startsWith(addressName))  || !jibunAdd.equals(" ") && jibunAdd.startsWith(addressName)){
                                     // 키 : 지명, 값 : 주소, 위도, 경도
                                     ArrayList<String> values = new ArrayList<>();
                                     values.add(String.valueOf(Coord[0]));
@@ -200,7 +203,7 @@ public class HttpResponse {
     // 위도, 경도 -> 주소
     public static String getAddressFromLocation(Context context, double latitude, double longitude){
         Geocoder geocoder = new Geocoder(context);
-        String result = null; // 기본값
+        String result = "서울특별시"; // 기본값
 
         try{
             List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);

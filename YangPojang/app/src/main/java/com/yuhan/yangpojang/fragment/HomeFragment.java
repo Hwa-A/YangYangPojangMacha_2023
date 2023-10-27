@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
+import androidx.core.location.LocationManagerCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -24,6 +25,7 @@ import android.graphics.PointF;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -37,6 +39,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -73,7 +78,7 @@ import java.util.Objects;
 //https://navermaps.github.io/android-map-sdk/guide-ko/4-1.html
 //https://asong-study-record.tistory.com/69
 
-public class HomeFragment extends Fragment implements OnMapReadyCallback, Overlay.OnClickListener, onPochaListItemClickListener, NaverMap.OnLocationChangeListener {
+public class HomeFragment extends Fragment implements OnMapReadyCallback, Overlay.OnClickListener, onPochaListItemClickListener{
 
     //OnMapReadyCallback : 지도가 준비되었을 때 호출되는 콜백을 처리, onMapReady()메서드 구현해야 함
 
@@ -93,10 +98,57 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
     boolean auth, meeting; //auth, meeting 상태를 확인하는 변수
     UiSettings uiSettings;
 
+
+
+    /*private final ActivityResultLauncher<String> requestPermissionLauncher = registerForActivityResult(
+            new ActivityResultContracts.RequestPermission(),
+            isGranted -> {
+                if(isGranted) {
+                    initializeMap();
+                }else{
+                    Toast.makeText(getActivity(), "설정> 애플리케이션 > YangPojag > 권한에서 지도 권한을 부여하세요", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+    );
+
+    private void initializeMap() {
+        // NaverMap 초기화 및 사용자 정의 작업 수행
+        mapFragment.getMapAsync(naverMap -> {
+            mNaverMap = naverMap;
+
+            mNaverMap.setLocationSource(locationSource);
+            mNaverMap.setLocationTrackingMode(LocationTrackingMode.Follow); //지도에서 현재 위치를 추적하여 따라가는 모드를 의미
+            mNaverMap.addOnLocationChangeListener(this);
+
+        });
+    }
+
+    private void requestLocationPermission() {
+        // 위치 권한 요청
+        requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION);
+    }*/
+
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        // request code와 권한 획득 여부 확인
+        if(requestCode == PERMISSION_REQUEST_CODE){ // onMapReady()메서드에 요청한 권한 요청과 일치하는지 확인
+            if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                mNaverMap.setLocationSource(locationSource);
+                mNaverMap.setLocationTrackingMode(LocationTrackingMode.Follow); //지도에서 현재 위치를 추적하여 따라가는 모드를 의미
+            } else if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_DENIED){
+                Toast.makeText(getActivity(), "설정> 애플리케이션 > YangPojag > 권한에서 지도 권한을 부여하세요", Toast.LENGTH_SHORT).show();
+            }
+        }// onRequestPermissionsResult()메서드는 권한 요청 결과를 처리하고, 권한이 획득되었을 경우에만 NaverMap객체의 위치 추적 모드를 설정하는 역할을 함
+
+    }
+
+
     /* onMapReady()메서드 - 지도가 준비되었을 때 호출되며, NaverMap 객체에 위치 소스를 설정하고 권한을 확인하는 작업 수행
                          - 지도 초기화 및 사용자 정의 작업 수행, 지도가 초기화되고 사용 가능한 상태일 때 호출되는 콜백 */
     @Override
     public void onMapReady(@NonNull NaverMap naverMap) {
+
         // NaverMap 객체 받아서 NaverMap 객체에 위치 소스 지정
         mNaverMap = naverMap;
         mNaverMap.setLocationSource(locationSource); // NaverMap객체에 위치 소스를 지정 - 현재 위치 사용
@@ -105,7 +157,15 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
 
         if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             mNaverMap.setLocationTrackingMode(LocationTrackingMode.Follow);
-            mNaverMap.addOnLocationChangeListener(this);
+
+            LocationManager locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+            Location currentLoc = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER); //마지막으로 알려진 사용자의 위치를 GPS를 이용하여 가져옴
+            Log.d("HomeFrament", "현 위치(GPS) : " + currentLoc.getLatitude() + ", " + currentLoc.getLongitude());
+
+            StoreData.addLocation(currentLoc.getLatitude(), currentLoc.getLongitude(), 1500);
+            loadStoreData(); // 맵 시작 시 현재 위치를 기준으로 데이터 로드
+            HttpResponse.setCurrentLocation(getActivity(), currentLoc.getLatitude(), currentLoc.getLongitude());
+
         }
         // 권한 부여가 되지 않은 경우 권한 부여 메세지 생성
         else
@@ -113,7 +173,6 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
             ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_REQUEST_CODE);
             Toast.makeText(getActivity(), "설정> 애플리케이션 > YangPojag > 권한에서 지도 권한을 부여하세요", Toast.LENGTH_SHORT).show();
         }
-
 
 
         //UiSettings 클래스 - 지도 컨트롤 객체 관리
@@ -135,10 +194,6 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
         }*/
         // 카메라 줌레벨 설정
         //mNaverMap.setCameraPosition(new CameraPosition(new LatLng(0, 0), 14)); //기본값=14;
-
-
-        // 맵 시작 시 현재 위치를 기준으로 데이터 로드
-        loadStoreData();
 
 
 
@@ -169,6 +224,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
                 }
             }
         });
+
 
     }
 
@@ -536,40 +592,6 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
         }
         return false;
     }
-
-    private boolean locationChanged = false; // 위치를 한번만 보내기 위한 플래그 변수
-    // 위치가 업데이트 될때마다 호출됨
-    @Override
-    public void onLocationChange(@NonNull Location location) {
-        if(!locationChanged){
-            double latitude = location.getLatitude();
-            double longitude = location.getLongitude();
-            StoreData.addLocation(latitude, longitude, 1500);
-            loadStoreData();
-
-            Log.d("MainAcitivity", "현 위치 좌표 : " + latitude + ", " + longitude);
-            HttpResponse.setCurrentLocation(getActivity(), latitude, longitude);
-
-            locationChanged = true;
-
-        }
-
-    }
-
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        // request code와 권한 획득 여부 확인
-        if(requestCode == PERMISSION_REQUEST_CODE){ // onMapReady()메서드에 요청한 권한 요청과 일치하는지 확인
-            if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
-                mNaverMap.setLocationSource(locationSource);
-                mNaverMap.setLocationTrackingMode(LocationTrackingMode.Follow); //지도에서 현재 위치를 추적하여 따라가는 모드를 의미
-            }else{
-                Toast.makeText(getActivity(), "설정> 애플리케이션 > YangPojag > 권한에서 지도 권한을 부여하세요", Toast.LENGTH_SHORT).show();
-            }
-        }// onRequestPermissionsResult()메서드는 권한 요청 결과를 처리하고, 권한이 획득되었을 경우에만 NaverMap객체의 위치 추적 모드를 설정하는 역할을 함
-
-    }
-
 
     // 인증, 번개 버튼 리스너
     View.OnClickListener authmeetingL = new View.OnClickListener() {

@@ -74,6 +74,7 @@ public class StoreData {
                         ArrayList<Shop> filteredStores = filterStoresByRadius(stores, centerLocation, searchRadiusInMeters);
                         callback.onDataLoaded(filteredStores);
 
+
                         /*String hash = GeoFireUtils.getGeoHashForLocation(new GeoLocation(37.550097461351605, 126.84768605742251));
                         Log.d("StoreData", "지오해시값(geofire) : " + hash);*/
 
