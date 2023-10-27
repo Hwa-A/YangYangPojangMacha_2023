@@ -36,6 +36,7 @@
         <activity android:name=".MainActivity"/>
         <activity android:name=".login.LogindetailAct"/>
         <activity android:name=".Profile_setting"/>
+        <activity android:name=".PermissionActivity"/>
 
         <meta-data
             android:name="com.naver.maps.map.CLIENT_ID"

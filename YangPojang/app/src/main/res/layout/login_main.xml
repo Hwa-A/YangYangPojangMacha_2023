@@ -7,30 +7,10 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <Switch
-        android:id="@+id/locationSwitch"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="50dp"
-        android:text="위치 권한"
-        android:enabled="false"/>
-
-    <Button
-        android:id="@+id/requestLocationPermissionButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/locationSwitch"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
-        android:text="위치 권한 요청"/>
-
-
     <com.google.android.gms.common.SignInButton
         android:id="@+id/btn_google_sign_in"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/requestLocationPermissionButton"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"/>
 </RelativeLayout>

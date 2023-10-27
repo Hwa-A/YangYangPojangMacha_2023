@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <!-- 상단 문구 -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="양양 포장마차 프로그램은 다음 권한을 필요로 합니다."
+        android:padding="16dp" />
+
+    <!-- 첫 번째 묶음 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <!-- 첫 번째 텍스트뷰 -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="위치권한 서비스" />
+
+        <!-- 첫 번째 스위치 버튼 -->
+        <Switch
+            android:id="@+id/locationswitch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:enabled="false"/>
+
+        <Button
+            android:id="@+id/requestLocationPermission"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="위치권한 허용"/>
+
+    </LinearLayout>
+
+    <!-- 두 번째 묶음 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <!-- 두 번째 텍스트뷰 -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="갤러리 권한 서비스" />
+
+        <!-- 두 번째 스위치 버튼 -->
+        <Switch
+            android:id="@+id/galleryswitch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:enabled="false"/>
+
+        <Button
+            android:id="@+id/requestGalleryPermission"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="갤러리권한 허용"/>
+    </LinearLayout>
+
+    <!-- 확인 버튼 -->
+    <Button
+        android:id="@+id/permissionAccess"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="확인" />
+</LinearLayout>

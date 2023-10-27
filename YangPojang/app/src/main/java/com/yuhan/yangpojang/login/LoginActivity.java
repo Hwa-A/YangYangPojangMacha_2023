@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Switch;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -21,12 +22,19 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.yuhan.yangpojang.MainActivity;
+import com.yuhan.yangpojang.PermissionActivity;
 import com.yuhan.yangpojang.R;
 
 public class LoginActivity extends AppCompatActivity {
@@ -48,6 +56,9 @@ public class LoginActivity extends AppCompatActivity {
 
     // 구글  로그인 버튼
     private SignInButton btnGoogleLogin;
+    private String user_info_uid = null;
+    private DatabaseReference mDatabase;
+    private String user_nickname;
 
 
     @Override
@@ -55,32 +66,40 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_main);
 
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            user_info_uid = user.getUid();
+        }
 
-
-        //로그인 전 위치 권한 서비스 권한 허용 하기
-        locationSwitch = findViewById(R.id.locationSwitch);
-        Button requestLocationPermissionButton = findViewById(R.id.requestLocationPermissionButton);
-
-        requestLocationPermissionButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // 위치 권한 요청
-                if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                    locationSwitch.setChecked(true); // 권한이 이미 허용된 경우
-                } else {
-                    requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
-                }
-            }
-        });
-
-
-        // 파이어베이스 인증 객체 선언
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser != null) {
-            Intent intent_main = new Intent(getApplication(), MainActivity.class);
-            startActivity(intent_main);
-            finish();
+            mDatabase.child("user-info").child(user_info_uid).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    User user_check = snapshot.getValue(User.class);
+
+                    if(user_check == null)
+                    {
+                        Intent intent_main = new Intent(getApplication(), LogindetailAct.class);
+                        startActivity(intent_main);
+                        finish();
+                    }
+                    else
+                    {
+                        Intent intent_main = new Intent(getApplication(), MainActivity.class);
+                        startActivity(intent_main);
+                        finish();
+                    }
+
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
         }
 
         // Google 로그인을 앱에 통합
@@ -94,48 +113,21 @@ public class LoginActivity extends AppCompatActivity {
 
         btnGoogleLogin = findViewById(R.id.btn_google_sign_in);
 
-        locationSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-
-                //권한이 허용된 경우
-                if (b){
                     btnGoogleLogin.setOnClickListener(view -> {
                         // 기존에 로그인 했던 계정을 확인한다.
                         gsa = GoogleSignIn.getLastSignedInAccount(LoginActivity.this);
 
                         if (gsa != null) {// 로그인 되있는 경우
                             Toast.makeText(LoginActivity.this, R.string.status_login , Toast.LENGTH_SHORT).show();
-                            Intent intent_main = new Intent(getApplicationContext(), LogindetailAct.class);
+                            Intent intent_main = new Intent(getApplicationContext(), PermissionActivity.class);
                             startActivity(intent_main);
-                            finish();}
+                            finish();
+                        }
                         else
                             signIn();
                     });
                 }
 
-                //권한이 허용되지 않은 경우
-                else {
-                    btnGoogleLogin.setOnClickListener(view -> {
-                        Toast.makeText(LoginActivity.this, R.string.failed_login, Toast.LENGTH_SHORT).show();
-                    });
-                }
-            }
-        });
-
-
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // 위치 권한이 허용된 경우
-                locationSwitch.setChecked(true);
-            }
-        }
-    }
 
     private void signIn(){
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
@@ -207,7 +199,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private void updateUI(FirebaseUser user) {
         if(user != null){
-            Intent intent_main = new Intent(getApplicationContext(), LogindetailAct.class);
+            Intent intent_main = new Intent(getApplicationContext(), PermissionActivity.class);
             startActivity(intent_main);
             finish();
         }
