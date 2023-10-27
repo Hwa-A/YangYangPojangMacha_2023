@@ -3,23 +3,35 @@ package com.yuhan.yangpojang.login;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.yuhan.yangpojang.MainActivity;
 import com.yuhan.yangpojang.R;
 
@@ -35,9 +47,7 @@ public class LogindetailAct extends AppCompatActivity {
     DatePickerDialog datePickerDialog;
     RadioGroup radioGroup;
     TextView sexchecked;
-
-    public String usr_nick = null;
-
+    ImageView profileImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +67,7 @@ public class LogindetailAct extends AppCompatActivity {
         Button signCompleteBtn = findViewById(R.id.signCompleteBtn);
         radioGroup = findViewById(R.id.sexGroup);
         sexchecked = findViewById(R.id.sex);
+        profileImage = findViewById(R.id.profileImagesetting);
 
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -105,15 +116,22 @@ public class LogindetailAct extends AppCompatActivity {
                 String getUserDate = datetext.getText().toString();
                 String getUserSex = sexchecked.getText().toString();
 
-                usr_nick = getUserName;
-                writeNewUser(getUserName,getUserDate,getUserSex,user_info_uid);
+                if(userNickname.length()==0){Toast.makeText(getApplicationContext(),"닉네임을 입력하세요",Toast.LENGTH_LONG).show();}
+                else {
+                    if(getUserDate == ""){Toast.makeText(getApplicationContext(),"날짜를 선택해주세요",Toast.LENGTH_LONG).show();}
+                    else {
+                        if(getUserSex == "남자" || getUserSex == "여자" ){writeNewUser(getUserName,getUserDate,getUserSex); }
+                        else { Toast.makeText(getApplicationContext(),"성별을 선택하여주세요",Toast.LENGTH_LONG).show(); }
+                    }
+                }
 
             }
         });
     }
 
-    private void writeNewUser(String name, String birthday, String sex, String uid) {
-        User user = new User(name, birthday,sex,uid);
+
+    private void writeNewUser(String name, String birthday, String sex) {
+        User user = new User(name, birthday,sex);
         mDatabase.child("user-info").child(user_info_uid).setValue(user)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override

@@ -6,7 +6,6 @@ public class User {
     private String User_birthday;
     private String User_sex;
     private String User_img;
-    private String User_profileuri;
 
 
     public User(){}
@@ -43,20 +42,11 @@ public class User {
         User_img = user_img;
     }
 
-    public String getUser_profileuri() {
-        return User_profileuri;
-    }
 
-    public void setUser_profileuri(String user_profileuri) {
-        User_profileuri = user_profileuri;
-    }
-
-
-    public User(String user_Nickname, String user_birthday, String user_sex, String User_profileuri) {
+    public User(String user_Nickname, String user_birthday, String user_sex) {
         this.User_Nickname = user_Nickname;
         this.User_birthday = user_birthday;
         this.User_sex = user_sex;
-        this.User_img = User_profileuri;
     }
 
 
