@@ -54,6 +54,7 @@ public class PochaListAdapter extends RecyclerView.Adapter<PochaListAdapter.View
             pochalist_category = itemview.findViewById(R.id.pochalist_category);
             pochalist_add = itemview.findViewById(R.id.pochalist_add);
             pochalist_rating = itemview.findViewById(R.id.pochalist_rating);
+
         }
     }
 

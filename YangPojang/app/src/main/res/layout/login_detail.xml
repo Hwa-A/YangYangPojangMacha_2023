@@ -139,6 +139,29 @@
                 android:text="여자" />
         </RadioGroup>
 
+        <ImageView
+            android:id="@+id/profileImagesetting"
+            android:layout_width="107dp"
+            android:layout_height="107dp"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/border_rounded_coner"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/sexGroup"
+            />
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="프로필 사진\n등록하기"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="@id/profileImagesetting"
+            app:layout_constraintEnd_toEndOf="@id/profileImagesetting"
+            app:layout_constraintStart_toStartOf="@id/profileImagesetting"
+            app:layout_constraintTop_toTopOf="@id/profileImagesetting" />
+
         <Button
             android:id="@+id/signCompleteBtn"
             android:layout_width="91dp"
@@ -147,42 +170,12 @@
             android:textSize="10sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.489"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/sexGroup"
+            app:layout_constraintTop_toBottomOf="@+id/profileImagesetting"
             app:layout_constraintVertical_bias="1.0"
             tools:ignore="TouchTargetSizeCheck" />
 
-        <Button
-            android:id="@+id/confirmDateBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="날짜 선택 완료"
-            android:textSize="10sp"
-            android:textColor="#FFFFFF"
-            android:textColorHighlight="#FFFFFF"
-            android:textColorLink="#FF9800"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/birthDatePicker"
-            android:visibility="gone" />
 
-        <DatePicker
-            android:id="@+id/birthDatePicker"
-            android:layout_width="409dp"
-            android:layout_height="286dp"
-            android:calendarTextColor="#FF9800"
-            android:calendarViewShown="false"
-            android:datePickerMode="spinner"
-            android:visibility="gone"
-            android:background="#F0F0F0"
-            android:yearListSelectorColor="#FF9800"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.553" />
 
 
 
