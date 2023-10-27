@@ -1,16 +1,197 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<!-- id 형식: view약자_속한xml명_view설명 -->
+<!-- view 약자
+        frg: FragmentContainerView
+        img: ImageView
+        imgbtn: ImageButton
+        btn: Button
+        lin: LinearLayout
+        tv: TextView                       -->
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".PochainfoActivity"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".PochainfoActivity">
+    android:fillViewport="true">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:maxWidth="310sp"
+                    android:text="양양포차"
+                    android:singleLine="true"
+                    android:ellipsize="marquee"
+                    android:marqueeRepeatLimit="marquee_forever"
+                    android:textColor="@color/black"
+                    android:textSize="25sp"
+                    android:textStyle="bold"
+                    android:letterSpacing="0.1"/>
+                <ImageView
+                    android:layout_width="35dp"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/pochainfo_verified"
+                    android:adjustViewBounds="true"
+                    android:layout_marginLeft="10dp"
+                    android:visibility="visible"/>
+            </LinearLayout>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="10dp"
+                android:background="@drawable/pochainfo_linearline_bottom"/>
+        </LinearLayout>
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+            <ImageView
+                android:id="@+id/img_pochainfo_pochaImage"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_constraintWidth_max="400dp"
+                app:layout_constraintWidth_default="percent"
+                app:layout_constraintWidth_percent="0.85"
+                app:layout_constraintDimensionRatio="H, 2:1"
+                android:background="@color/black"
+                android:layout_marginTop="10dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+            <TextView
+                android:id="@+id/tv_pochainfo_pochaname"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="양양포차"
+                android:textColor="@color/black"
+                android:textSize="25sp"
+                android:textStyle="bold"
+                android:letterSpacing="0.1"
+                app:layout_constraintStart_toStartOf="@id/img_pochainfo_pochaImage"
+                app:layout_constraintTop_toBottomOf="@id/img_pochainfo_pochaImage"
+                app:layout_constraintBottom_toBottomOf="@id/lin_pochainfo_goodContainer"/>
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="wrap_content"
+                android:src="@drawable/pochainfo_verified"
+                android:adjustViewBounds="true"
+                android:layout_marginLeft="5dp"
+                android:visibility="gone"
+                app:layout_constraintStart_toEndOf="@id/tv_pochainfo_pochaname"
+                app:layout_constraintTop_toBottomOf="@id/img_pochainfo_pochaImage"
+                app:layout_constraintBottom_toBottomOf="@id/lin_pochainfo_goodContainer"/>
+            <LinearLayout
+                android:id="@+id/lin_pochainfo_goodContainer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center_horizontal"
+                app:layout_constraintTop_toBottomOf="@id/img_pochainfo_pochaImage"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginTop="5dp"
+                android:layout_marginRight="10dp">
+                <ImageButton
+                    android:id="@+id/imgbtn_pochainfo_goodButton"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:src="@drawable/all_unselectgood"
+                    android:adjustViewBounds="true"
+                    android:scaleType="fitCenter"
+                    android:background="@android:color/transparent"
+                    tools:ignore="SpeakableTextPresentCheck" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="good"
+                    android:textColor="@color/black"
+                    android:textSize="15sp"
+                    android:layout_marginBottom="10dp"/>
+            </LinearLayout>
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="10dp"
+                android:background="@drawable/pochainfo_linearline_bottom"
+                app:layout_constraintTop_toBottomOf="@id/lin_pochainfo_goodContainer"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+            <android.widget.Button
+                android:id="@+id/btn_pochainfo_detailTab"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginRight="2dp"
+                app:layout_constraintWidth_max="133dp"
+                app:layout_constraintWidth_default="percent"
+                app:layout_constraintWidth_percent="0.33"
+                app:layout_constraintDimensionRatio="H, 2.8:1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/btn_pochainfo_reviewTab"
+                app:layout_constraintTop_toBottomOf="@id/lin_pochainfo_goodContainer"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                android:text="가게 정보"
+                android:textColor="@color/white"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:background="@drawable/pochainfo_allbutton_selected" />
+            <android.widget.Button
+                android:id="@+id/btn_pochainfo_reviewTab"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginRight="2dp"
+                app:layout_constraintWidth_max="133dp"
+                app:layout_constraintWidth_default="percent"
+                app:layout_constraintWidth_percent="0.33"
+                app:layout_constraintDimensionRatio="H, 2.8:1"
+                app:layout_constraintStart_toEndOf="@id/btn_pochainfo_detailTab"
+                app:layout_constraintEnd_toStartOf="@id/btn_pochainfo_meetingTab"
+                app:layout_constraintTop_toBottomOf="@id/lin_pochainfo_goodContainer"
+                android:text="리뷰"
+                android:textColor="@color/black"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:background="@drawable/pochainfo_allbutton_unselected" />
+            <android.widget.Button
+                android:id="@+id/btn_pochainfo_meetingTab"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginTop="20dp"
+                app:layout_constraintWidth_max="133dp"
+                app:layout_constraintWidth_default="percent"
+                app:layout_constraintWidth_percent="0.33"
+                app:layout_constraintDimensionRatio="H, 2.8:1"
+                app:layout_constraintStart_toEndOf="@id/btn_pochainfo_reviewTab"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/lin_pochainfo_goodContainer"
+                android:text="번개"
+                android:textColor="@color/black"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:background="@drawable/pochainfo_allbutton_unselected" />
+            <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/frg_pochainfo_mainFragment"
+                android:name="com.yuhan.yangpojang.PochadetailFragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/btn_pochainfo_detailTab"
+                app:layout_constraintBottom_toBottomOf="parent"
+                tools:layout="@layout/fragment_pochadetail" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
+</ScrollView>
 
-    <TextView
-        android:id="@+id/text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="텍스트"
-        android:textSize="25sp" />
-
-</LinearLayout>

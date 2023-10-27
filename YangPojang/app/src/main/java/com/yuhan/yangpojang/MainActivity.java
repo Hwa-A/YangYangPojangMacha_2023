@@ -2,10 +2,15 @@ package com.yuhan.yangpojang;
 
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatButton;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 
 import android.app.AlertDialog;
 import android.os.Bundle;
+<<<<<<< HEAD
 import android.widget.Button;
 import android.widget.ProgressBar;
 
@@ -20,6 +25,17 @@ import com.yuhan.yangpojang.fragment.ProfileShowFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 // description : 하단 버튼 바를 구성 및 클릭시 각 페이지 Home, Profile, Report로 이동
+=======
+import android.view.View;
+import android.widget.Button;
+import android.widget.LinearLayout;
+
+import com.google.firebase.database.FirebaseDatabase;
+
+
+import android.os.Bundle;
+import android.widget.Toast;
+>>>>>>> 성은
 
 public class MainActivity extends AppCompatActivity {
     //reportShopFragemnt 에서 사용할 제보버튼
@@ -39,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+<<<<<<< HEAD
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
 
 //        String naverMapsClientId = BuildConfig.NAVER_CLIENT_ID;
@@ -81,3 +98,9 @@ public class MainActivity extends AppCompatActivity {
 
 
 }
+=======
+
+
+    }
+}
+>>>>>>> 성은

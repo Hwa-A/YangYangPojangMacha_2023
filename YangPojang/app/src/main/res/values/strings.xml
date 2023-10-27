@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">YangPojang</string>
+    
     <string name="VALIDATION_SERVER_URL">http://localhost:8000</string>
     <string name="title_activity_report_shop">reportShop</string>
     <string name="large_text">
@@ -100,10 +101,19 @@
     <string name="status_login">이미 로그인 되어있습니다</string>
     <string name="default_web_client_id" />
 
-
     <string-array name="category_array">
         <item>카테고리 1</item>
         <item>카테고리 2</item>
         <item>카테고리 3</item>
+    </string-array>
+
+    <!-- activity_meetingwrite.xml의 번개 정원 Drop Menu로 사용할 item -->
+    <string-array name="maxMembers">
+        <item>5명</item>
+        <item>4명</item>
+        <item>3명</item>
+        <item>2명</item>
+        <item>1명</item>
+
     </string-array>
 </resources>
