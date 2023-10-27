@@ -10,6 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -31,6 +33,7 @@ import com.yuhan.yangpojang.mypage.GetList.MyLikeShopGetList;
 import com.yuhan.yangpojang.mypage.GetList.MyReportShopGetList;
 import com.yuhan.yangpojang.mypage.Model.MyLikeShopModel;
 import com.yuhan.yangpojang.mypage.Model.MyReportShopModel;
+import com.yuhan.yangpojang.mypage.UserProfile.LoadUserProfile;
 import com.yuhan.yangpojang.mypage.account.accountPage;
 
 import java.util.ArrayList;
@@ -40,7 +43,12 @@ public class ProfileShowFragment extends Fragment
 {
     private String user_info_uid;
 
+    private TextView userNick;
+    private ImageView userImg;
+    private LoadUserProfile loadUserProfile;
+
     private ImageButton accountBtn;
+    private ImageButton changeUserImg;
 
     private RecyclerView likeRecyclerView, reportRecyclerView, reviewRecyclerView, meetingRecyclerView;
     private RecyclerView.Adapter likeAdapter, reportAdapter,reviewAdapter, meetingAdapter;
@@ -53,6 +61,19 @@ public class ProfileShowFragment extends Fragment
 
         view = (ViewGroup) inflater.inflate(R.layout.fragment_profile, container, false);
 
+        userNick = view.findViewById(R.id.userNickname);
+        userImg = view.findViewById(R.id.showUserImg);
+
+        loadUserProfile = new LoadUserProfile(user_info_uid, new LoadUserProfile.dataLoadedCallback() {
+            @Override
+            public void onDataLoaded(String nick, String img) {
+                userNick.setText(nick);
+                Log.d("프로필", "변경되야 함" + nick + img);
+//                userImg.setImageResource(img);
+            }
+        });
+
+        // 화면 내의 활성화 되는 버튼들
         accountBtn = view.findViewById(R.id.accountBtn);
         accountBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -60,6 +81,14 @@ public class ProfileShowFragment extends Fragment
                 Intent intent = new Intent(getActivity(), accountPage.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                 startActivity(intent);
+            }
+        });
+
+        changeUserImg = view.findViewById(R.id.changeImg);
+        changeUserImg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d("프로필", "onClick: changeUserImg");
             }
         });
 
@@ -141,4 +170,5 @@ public class ProfileShowFragment extends Fragment
 
 
     }
+
 }
