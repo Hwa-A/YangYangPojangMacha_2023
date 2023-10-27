@@ -7,11 +7,15 @@ import androidx.fragment.app.FragmentTransaction;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.yuhan.yangpojang.R;
+import com.yuhan.yangpojang.model.Shop;
+import com.yuhan.yangpojang.model.Store;
 import com.yuhan.yangpojang.pochaInfo.meeting.PochameetingFragment;
 import com.yuhan.yangpojang.pochaInfo.review.PochareviewFragment;
 
@@ -28,6 +32,7 @@ public class PochainfoActivity extends AppCompatActivity {
     FragmentManager frgManager;       // Fragment 관리자
     FragmentTransaction frgTransaction;        // Fragment 트랜잭션 : Fragment 작업을 처리
     Bundle bundle;              // Fragment에 포차 이름, 회원ID를 담아 전달할 객체
+    private Shop shop;          // 포차 정보를 담을 객체
 //    FirebaseDatabase ref = FirebaseDatabase.getInstance();
 //    DatabaseReference shops = ref.getReference("shops");
 
@@ -36,12 +41,23 @@ public class PochainfoActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pochainfo);
 
-        // 전달 받은 데이터로 변수 초기화(나은 언니꺼에서 가게 클릭 시, 데이터 넣어서 주면 여기서 받아 처리)
+        String pchName = null;     // 포차 이름(값) 생성 및 초기화
+        TextView pchNameTv = findViewById(R.id.tv_pochainfo_pochaname);     // 포차 이름(위젯)
+
+        // ▼ HomeFragment에서 전달 받은 포차 객체 받아 처리
         Intent intent = getIntent();
+        if(intent != null){
+            shop = (Shop) intent.getSerializableExtra("shopInfo");  // 직렬화된 객체 수신
+            pchName = shop.getShopName();
+            // 포차 이름 변경
+            pchNameTv.setText(pchName);
+        }
+        if(pchName == null){
+            Toast.makeText(this, "해당 가게를 찾을 수 없습니다.", Toast.LENGTH_LONG);
+        }
         // String pchName = intent.getStringExtra("pchName");      // 포차 이름
         // String uid = intent.getStringExtra("uid");              // 회원 ID
         // 임의 값 넣어 테스트
-        String pchName = "양양";
         String uid = "롤로";
 
 //        shops.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -64,7 +80,6 @@ public class PochainfoActivity extends AppCompatActivity {
         pchDetailBtn = findViewById(R.id.btn_pochainfo_detailTab);
         pchReviewBtn = findViewById(R.id.btn_pochainfo_reviewTab);
         pchMeetingBtn = findViewById(R.id.btn_pochainfo_meetingTab);
-        TextView pchNameTv = findViewById(R.id.tv_pochainfo_pochaname);     // 포차 이름
         pchDetailFrg = new PochadetailFragment();
         pchReviewFrg = new PochareviewFragment();
         pchMeetingFrg = new PochameetingFragment();
@@ -77,9 +92,6 @@ public class PochainfoActivity extends AppCompatActivity {
         // 프래그먼트에 데이터(포차 이름, 회원id) 넘기기
         pchReviewFrg.setArguments(bundle);
         pchMeetingFrg.setArguments(bundle);
-
-        // 전달 받은 포차 이름으로 이름 변경
-        pchNameTv.setText(pchName);
 
         // 탭 버튼 클릭 시, 화면 전환 - 포차 상세 정보, 리뷰 리스트, 번개 리스트
         pchDetailBtn.setOnClickListener(onClickListener);       // 포차 상세 정보
