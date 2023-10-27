@@ -1,4 +1,4 @@
-package com.yuhan.yangpojang;
+package com.yuhan.yangpojang.pochaInfo.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -8,6 +8,9 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.yuhan.yangpojang.R;
+import com.yuhan.yangpojang.pochaInfo.model.ReviewDTO;
 
 import java.util.ArrayList;
 
@@ -36,8 +39,8 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewHold
     public void onBindViewHolder(@NonNull ReviewHolder holder, int position) {
 
         ReviewDTO reviewDTO = reviewDTOArrayList.get(position);
-        holder.writerNameTv.setText(reviewDTO.uid);
-        holder.contentTv.setText(reviewDTO.content);
+//        holder.writerNameTv.setText(reviewDTO.uid);
+//        holder.contentTv.setText(reviewDTO.content);
 
     }
 

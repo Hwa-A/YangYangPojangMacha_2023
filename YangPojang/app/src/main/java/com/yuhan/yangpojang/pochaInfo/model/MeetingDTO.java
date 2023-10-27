@@ -1,4 +1,4 @@
-package com.yuhan.yangpojang;
+package com.yuhan.yangpojang.pochaInfo.model;
 // pch: pojangmacha
 public class MeetingDTO {
     String uid;             // 회원 ID

@@ -1,4 +1,4 @@
-package com.yuhan.yangpojang;
+package com.yuhan.yangpojang.pochaInfo.model;
 
 // pch: pojangmacha
 public class ReviewDTO {
@@ -7,7 +7,7 @@ public class ReviewDTO {
     double rating;      // 별점
     String content;     // 내용
     String date;        // 작성 날짜
-    String picUrl;     // 사진 url
+    public String picUrl;     // 사진 url
 
     // 생성자
     public ReviewDTO() {

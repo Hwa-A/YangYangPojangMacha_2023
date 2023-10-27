@@ -1,37 +1,19 @@
-package com.yuhan.yangpojang;
-
-<<<<<<< HEAD
-import android.content.Intent;
-import android.os.Bundle;
-import android.util.Log;
-import android.widget.TextView;
+package com.yuhan.yangpojang.pochaInfo.info;
 
 import androidx.appcompat.app.AppCompatActivity;
-
-import com.yuhan.yangpojang.model.Shop;
-
-public class PochainfoActivity extends AppCompatActivity {
-=======
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+import com.yuhan.yangpojang.R;
+import com.yuhan.yangpojang.pochaInfo.meeting.PochameetingFragment;
+import com.yuhan.yangpojang.pochaInfo.review.PochareviewFragment;
 
 // pch: pojangmacha
 // frg: fragment
@@ -48,36 +30,12 @@ public class PochainfoActivity extends AppCompatActivity {
     Bundle bundle;              // Fragment에 포차 이름, 회원ID를 담아 전달할 객체
 //    FirebaseDatabase ref = FirebaseDatabase.getInstance();
 //    DatabaseReference shops = ref.getReference("shops");
->>>>>>> 성은
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pochainfo);
 
-<<<<<<< HEAD
-        Intent intent = getIntent();
-        Shop shop = (Shop) intent.getSerializableExtra("shopInfo");
-
-        if(shop != null){
-            TextView textView = findViewById(R.id.text);
-            textView.setText(shop.getPrimaryKey());
-
-        }
-
-        Log.d("PochainfoActivity", "좌표값 : " + shop.getLatitude() + ", " + shop.getLongitude());
-        Log.d("PochainfoActivity", "가게이름 : " + shop.getShopName());
-        Log.d("PochainfoActivity", "가게 주소 : " + shop.getAddressName());
-        Log.d("PochainfoActivity", "카테고리 : " + shop.getCategory());
-        Log.d("PochainfoActivity", "별점 : " + shop.getRating());
-        Log.d("PochainfoActivity", "제보 uid : " + shop.getUid());
-        Log.d("PochainfoActivity", "결제방법 : " + shop.isPwayMobile() + shop.isPwayCard() + shop.isPwayAccount() + shop.isPwayCash());
-        Log.d("PochainfoActivity", "요일 : " + shop.isOpenMon() + shop.isOpenTue() + shop.isOpenWed() + shop.isOpenThu() + shop.isOpenFri() + shop.isOpenSat() + shop.isOpenSun());
-
-
-    }
-}
-=======
         // 전달 받은 데이터로 변수 초기화(나은 언니꺼에서 가게 클릭 시, 데이터 넣어서 주면 여기서 받아 처리)
         Intent intent = getIntent();
         // String pchName = intent.getStringExtra("pchName");      // 포차 이름
@@ -111,7 +69,7 @@ public class PochainfoActivity extends AppCompatActivity {
         pchReviewFrg = new PochareviewFragment();
         pchMeetingFrg = new PochameetingFragment();
         frgManager = getSupportFragmentManager();
-        
+
         // ▼ fragment에 데이터 전달 코드
         bundle = new Bundle();              // 전달하기 위해 포차 이름과 회원ID 담을 객체
         bundle.putString("pchName", pchName);
@@ -178,4 +136,3 @@ public class PochainfoActivity extends AppCompatActivity {
         }
     };
 }
->>>>>>> 성은

@@ -21,8 +21,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.PointF;
-import android.location.Address;
-import android.location.Geocoder;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
@@ -54,7 +52,7 @@ import com.naver.maps.map.util.FusedLocationSource;
 import com.naver.maps.map.util.MarkerIcons;
 import com.naver.maps.map.widget.CompassView;
 import com.naver.maps.map.widget.LocationButtonView;
-import com.yuhan.yangpojang.PochainfoActivity;
+import com.yuhan.yangpojang.pochaInfo.info.PochainfoActivity;
 import com.yuhan.yangpojang.R;
 import com.yuhan.yangpojang.home.HttpResponse;
 import com.yuhan.yangpojang.home.PochaListAdapter;
@@ -63,10 +61,7 @@ import com.yuhan.yangpojang.model.Shop;
 import com.yuhan.yangpojang.model.StoreData;
 import com.yuhan.yangpojang.onPochaListItemClickListener;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
 import java.util.Objects;
 
 //https://navermaps.github.io/android-map-sdk/guide-ko/4-1.html
@@ -187,7 +182,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
     @Override
     public void onPochaListItemClick(View v, int position) {
         try{
-            String className = "com.yuhan.yangpojang.PochainfoActivity";
+            String className = "com.yuhan.yangpojang.pochaInfo.info.PochainfoActivity";
             Class<?> activityClass = Class.forName(className);
 
             Intent intent = new Intent(v.getContext(), activityClass);

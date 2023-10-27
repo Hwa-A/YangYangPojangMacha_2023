@@ -10,7 +10,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".PochainfoActivity"
+    tools:context=".pochaInfo.info.PochainfoActivity"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true">
@@ -183,7 +183,7 @@
                 android:background="@drawable/pochainfo_allbutton_unselected" />
             <androidx.fragment.app.FragmentContainerView
                 android:id="@+id/frg_pochainfo_mainFragment"
-                android:name="com.yuhan.yangpojang.PochadetailFragment"
+                android:name="com.yuhan.yangpojang.pochaInfo.info.PochadetailFragment"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 app:layout_constraintStart_toStartOf="parent"

@@ -1,4 +1,4 @@
-package com.yuhan.yangpojang;
+package com.yuhan.yangpojang.pochaInfo.meeting;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,6 +11,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.yuhan.yangpojang.R;
+import com.yuhan.yangpojang.pochaInfo.meeting.MeetingwriteActivity;
 
 public class PochameetingFragment extends Fragment {
     @Nullable
