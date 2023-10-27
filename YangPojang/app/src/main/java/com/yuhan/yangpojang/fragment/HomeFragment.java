@@ -260,7 +260,6 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         homeview = (ViewGroup) inflater.inflate(R.layout.fragment_home, container, false);
-
         //지도 객체 생성하기 (xml에 있는 지도와 연결 후, 지도 출력)
         // MapFragment를 다른 프래그먼트 내에 배치할 경우 supportFragmentManager
         // 대신 childFragmentManager()를 사용해 MapFragment를 자식 프래그먼트로 두어야 함.

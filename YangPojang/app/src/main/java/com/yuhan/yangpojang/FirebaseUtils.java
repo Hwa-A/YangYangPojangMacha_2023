@@ -9,6 +9,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.yuhan.yangpojang.fragment.ReportShopFragment;
+import com.yuhan.yangpojang.model.ReportShop;
 import com.yuhan.yangpojang.model.Shop;
 
 public class FirebaseUtils {
@@ -22,19 +23,30 @@ public class FirebaseUtils {
         shopDataListener = listener;
     }
 
-    public static void saveShopData(Shop shop, Uri exteriorImageUri, Uri menuImageUri) {
+    public static void saveShopData(Shop shop, ReportShop reportShop, Uri exteriorImageUri, Uri menuImageUri) {
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
         String shopKey = databaseReference.child("shops").push().getKey();
         DatabaseReference shopRef = databaseReference.child("shops").child(shopKey);
+        reportShop.setShopKey(shopKey);
+        DatabaseReference reportShopRef = databaseReference.child("reportShop").child(reportShop.getUid()).child(shopKey);
+
+
+
 
         shopRef.setValue(shop)
                 .addOnSuccessListener(aVoid -> {
+                    Log.d("bbbbbbbb", "가게 데이터가(이미지 제외) 성공적으로 저장되었습니다.");
+
+                    reportShop.setShopKey(shopKey);
+
+                    Log.d("bbbbddddddbbbb", "가게 데이터가(이미지 제외) 성공적으로 저장되었습니다.");
+
                     Log.d("FirebaseUtils", "가게 데이터가(이미지 제외) 성공적으로 저장되었습니다.");
 
                     storageRef = FirebaseStorage.getInstance().getReference();
                     shopImagesRef = storageRef.child("shops").child(shopKey).child("images");
 
-                    // 외관 이미지 업로드
+                    // 외관 이미지  업로드
                     if (exteriorImageUri != null) {
                         Log.d("FirebaseUtils", "외관 이미지 업로드 시작");
                         uploadImageToStorage(shopImagesRef, exteriorImageUri, shopRef.child("exteriorImagePath"), "exterior");
@@ -64,6 +76,29 @@ public class FirebaseUtils {
                         shopDataListener.onShopDataSaved();
                     }
                 });
+
+
+
+        // ReportShop 데이터를 저장
+        reportShopRef.setValue(true)
+                .addOnSuccessListener(aVoid -> {
+                    Log.d("FirebaseUtils", "ReportShop 데이터가 성공적으로 저장되었습니다.");
+                    if (shopDataListener != null) {
+                        shopDataListener.onShopDataSaved();
+                    }
+                })
+                .addOnFailureListener(databaseException -> {
+                    Log.e("FirebaseUtils", "ReportShop 데이터 저장 실패: " + databaseException.getMessage());
+                    if (shopDataListener != null) {
+                        shopDataListener.onShopDataSaved();
+                    }
+                });
+
+
+
+
+
+
     }
 
     private static void uploadImageToStorage(StorageReference storageReference, Uri imageUri, DatabaseReference imagePathRef, String imageType) {

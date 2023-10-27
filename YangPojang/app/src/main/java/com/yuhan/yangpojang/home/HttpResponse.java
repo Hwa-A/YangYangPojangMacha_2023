@@ -38,7 +38,7 @@ public class HttpResponse {
     // 현재 사용자 위치 정보
     static double currentLatitude;
     static double currentLongitude;
-    static String addressName = "";
+    static String addressName ="";
 
 
     //새로운 스레드에 네트워크 요청 보내는 메서드 -> 네트워크 작업이 백그라운드에서 수행

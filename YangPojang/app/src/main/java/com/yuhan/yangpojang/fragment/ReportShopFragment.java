@@ -45,6 +45,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.yuhan.yangpojang.FirebaseUtils;
 import com.yuhan.yangpojang.R;
 import com.yuhan.yangpojang.ShopDataListener;
+import com.yuhan.yangpojang.model.ReportShop;
 import com.yuhan.yangpojang.model.Shop;
 import java.io.IOException;
 import java.util.List;
@@ -53,7 +54,7 @@ import java.util.Locale;
 public class ReportShopFragment extends Fragment implements ShopDataListener
 {
     //shouldClearForm: MapLocationPopupFragment로 전환되는 경우에는 작성하던 폼이 초기화 되면 x | 그 외 화면으로 넘어가면 작성폼 초기화 해야함
-    private boolean shouldClearForm = true; // 작성 폼 초기화 여부를 판단하기 윟마  
+    private boolean shouldClearForm = true; // 작성 폼 초기화 여부를 판단하기 윟마
     ScrollView scrollView; // 스크롤 뷰
     ActivityResultLauncher<Intent> galleryLauncher; // 갤러리 오픈을 위한 intent launcher
     private static final int PICK_EXTERIOR_IMAGE_REQUEST = 1;    // 가게-외관이미지 선택
@@ -106,7 +107,11 @@ public class ReportShopFragment extends Fragment implements ShopDataListener
     private float rating; // 별점
     private String geohash;
 
-//    private  String addressText; // 주소 [경기도 고양시 덕양구 ~~]
+
+
+
+
+    //    private  String addressText; // 주소 [경기도 고양시 덕양구 ~~]
     @SuppressLint("ClickableViewAccessibility")
     @Nullable
     @Override
@@ -252,17 +257,17 @@ public class ReportShopFragment extends Fragment implements ShopDataListener
                 });
 
         // 제보버튼 눌렀을때 발생
-                reportBtn.setOnClickListener(new View.OnClickListener()
-                {
-                    @Override
-                    public void onClick(View v)
-                    {
-                        saveShopData();
+        reportBtn.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                saveShopData();
 
 
-                    }
-                });
-            //가게위치 선택하기 글자를 누르면 지도가 뜨게 구현 + 하단 네비게이션 바 감춤
+            }
+        });
+        //가게위치 선택하기 글자를 누르면 지도가 뜨게 구현 + 하단 네비게이션 바 감춤
         editShopPlaceBtn.setOnClickListener(v ->
         {
             showMapLocationPopup(); // 위치선택용 지도 pop
@@ -336,8 +341,8 @@ public class ReportShopFragment extends Fragment implements ShopDataListener
     public void onPause() {
         super.onPause();
         if (!shouldClearForm) {
-          Log.d("f","F");
-          shouldClearForm=true;
+            Log.d("f","F");
+            shouldClearForm=true;
         }
         else if(shouldClearForm) {
             clearForm();
@@ -402,12 +407,17 @@ public class ReportShopFragment extends Fragment implements ShopDataListener
                     (storeExteriorImageUri != null) ? storeExteriorImageUri.toString() : "",
                     (menuBoardImageUri != null) ? menuBoardImageUri.toString() : "" ,
                     isVerified,  hasMeeting, rating ,geohash);
-            FirebaseUtils.saveShopData(shop, storeExteriorImageUri, menuBoardImageUri); //FirebaseUtils에 별도로 firebase에 넣는 코드 작성함
+
+            ReportShop reportShop= new ReportShop(uid);
+            FirebaseUtils.saveShopData(shop, reportShop , storeExteriorImageUri, menuBoardImageUri); //FirebaseUtils에 별도로 firebase에 넣는 코드 작성함
             scrollView.setBackgroundColor(Color.parseColor("#000000")); // 제보버튼 누르면 배경색이 약간 어두어지게 연출
             textboard.setVisibility(View.VISIBLE);
 
         }
     }
+
+
+
     @Override
     public void onShopDataSaved()
     {
@@ -415,6 +425,9 @@ public class ReportShopFragment extends Fragment implements ShopDataListener
         reportBtn.setClickable(false); // 제보 여러번 연타 못하게 버튼 클릭 비활성화
         clearForm();  // 저장이 되는경우 기존에 작성된 폼 지움
     }
+
+
+
     public void clearForm()  // 제보화면에 작성폼 초기화
     {
         Log.d("개같은ㄱ거","개갑트알");

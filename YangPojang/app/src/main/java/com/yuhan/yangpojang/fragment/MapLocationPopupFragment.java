@@ -306,7 +306,6 @@ public class MapLocationPopupFragment extends Fragment implements OnMapReadyCall
             }
         });
 
-
 //        // 위치 검색 버튼을 클릭했을때 작동
 //        searchButton.setOnClickListener(new View.OnClickListener()
 //        {
