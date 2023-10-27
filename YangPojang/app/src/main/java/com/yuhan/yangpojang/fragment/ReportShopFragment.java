@@ -290,6 +290,10 @@ public class ReportShopFragment extends Fragment implements ShopDataListener
 
     // 위치 선택 지도 팝업을 띄우는 메서드
     private void showMapLocationPopup() {
+        // 이미지 URI 임시로 저장
+        Uri tempStoreExteriorImageUri = storeExteriorImageUri;
+        Uri tempMenuBoardImageUri = menuBoardImageUri;
+
         shouldClearForm = false; // Set the flag to skip form clearing
         FragmentManager fragmentManager = getParentFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -310,6 +314,7 @@ public class ReportShopFragment extends Fragment implements ShopDataListener
         getParentFragmentManager().setFragmentResultListener("locationResult", this, new FragmentResultListener() {
             @Override
             public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle bundle) {
+                shouldClearForm=false;
                 latitude = bundle.getDouble("latitude");
                 longitude = bundle.getDouble("longitude");
                 geohash= GeoFireUtils.getGeoHashForLocation(new GeoLocation(latitude, longitude));
@@ -330,6 +335,17 @@ public class ReportShopFragment extends Fragment implements ShopDataListener
                 } catch (IOException e) {
                     e.printStackTrace();
                     shopLocationText.setText("주소 변환 오류 - 다시 설정하세요");
+                }
+                // 이미지 URI를 다시 설정
+                storeExteriorImageUri = tempStoreExteriorImageUri;
+                menuBoardImageUri = tempMenuBoardImageUri;
+                // 이미지 설정
+                if (storeExteriorImageUri != null) {
+                    storeExteriorPhoto.setImageURI(storeExteriorImageUri);
+                }
+
+                if (menuBoardImageUri != null) {
+                    menuBoardPhoto.setImageURI(menuBoardImageUri);
                 }
             }
         });
