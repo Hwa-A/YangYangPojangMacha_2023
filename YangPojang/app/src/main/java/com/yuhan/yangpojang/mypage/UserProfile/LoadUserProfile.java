@@ -1,8 +1,6 @@
 package com.yuhan.yangpojang.mypage.UserProfile;
 
-import static com.google.firebase.crashlytics.internal.Logger.TAG;
 
-import android.annotation.SuppressLint;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -12,17 +10,18 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.yuhan.yangpojang.mypage.Model.MyLikeShopModel;
-
-import java.util.ArrayList;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 public class LoadUserProfile {
     private String UID;
     private String userNick;
     private String userImg;
 
+    // 닉네임을 위한 데이터베이스 연결
     private FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
     private DatabaseReference databaseReference;
+
 
 
     public LoadUserProfile(String UID, final dataLoadedCallback callback){
