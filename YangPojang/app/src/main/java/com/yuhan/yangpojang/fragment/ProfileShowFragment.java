@@ -38,6 +38,7 @@ import com.yuhan.yangpojang.mypage.GetList.MyLikeShopGetList;
 import com.yuhan.yangpojang.mypage.GetList.MyReportShopGetList;
 import com.yuhan.yangpojang.mypage.Model.MyLikeShopModel;
 import com.yuhan.yangpojang.mypage.Model.MyReportShopModel;
+import com.yuhan.yangpojang.mypage.UserProfile.ChangeImgDialog;
 import com.yuhan.yangpojang.mypage.UserProfile.LoadUserProfile;
 import com.yuhan.yangpojang.mypage.account.accountPage;
 
@@ -88,6 +89,9 @@ public class ProfileShowFragment extends Fragment
             @Override
             public void onClick(View view) {
                 Log.d("프로필", "onClick: changeUserImg");
+                ChangeImgDialog changeImgDialog = new ChangeImgDialog(getContext());
+                changeImgDialog.show();
+
             }
         });
         // 화면 내의 활성화 되는 버튼들
