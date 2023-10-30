@@ -8,9 +8,9 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
-import androidx.core.location.LocationManagerCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -18,20 +18,21 @@ import androidx.recyclerview.widget.RecyclerView;
 
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.PointF;
-import android.location.Address;
-import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RatingBar;
@@ -39,13 +40,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.naver.maps.geometry.LatLng;
+import com.naver.maps.geometry.LatLngBounds;
+import com.naver.maps.map.CameraPosition;
 import com.naver.maps.map.CameraUpdate;
 import com.naver.maps.map.LocationTrackingMode;
 import com.naver.maps.map.NaverMap;
@@ -68,11 +68,7 @@ import com.yuhan.yangpojang.model.Shop;
 import com.yuhan.yangpojang.model.StoreData;
 import com.yuhan.yangpojang.onPochaListItemClickListener;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Locale;
 import java.util.Objects;
 
 //https://navermaps.github.io/android-map-sdk/guide-ko/4-1.html
@@ -99,37 +95,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
     UiSettings uiSettings;
 
 
-
-    /*private final ActivityResultLauncher<String> requestPermissionLauncher = registerForActivityResult(
-            new ActivityResultContracts.RequestPermission(),
-            isGranted -> {
-                if(isGranted) {
-                    initializeMap();
-                }else{
-                    Toast.makeText(getActivity(), "설정> 애플리케이션 > YangPojag > 권한에서 지도 권한을 부여하세요", Toast.LENGTH_SHORT).show();
-                }
-            }
-
-    );
-
-    private void initializeMap() {
-        // NaverMap 초기화 및 사용자 정의 작업 수행
-        mapFragment.getMapAsync(naverMap -> {
-            mNaverMap = naverMap;
-
-            mNaverMap.setLocationSource(locationSource);
-            mNaverMap.setLocationTrackingMode(LocationTrackingMode.Follow); //지도에서 현재 위치를 추적하여 따라가는 모드를 의미
-            mNaverMap.addOnLocationChangeListener(this);
-
-        });
-    }
-
-    private void requestLocationPermission() {
-        // 위치 권한 요청
-        requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION);
-    }*/
-
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    /*public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         // request code와 권한 획득 여부 확인
         if(requestCode == PERMISSION_REQUEST_CODE){ // onMapReady()메서드에 요청한 권한 요청과 일치하는지 확인
@@ -141,37 +107,81 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
             }
         }// onRequestPermissionsResult()메서드는 권한 요청 결과를 처리하고, 권한이 획득되었을 경우에만 NaverMap객체의 위치 추적 모드를 설정하는 역할을 함
 
-    }
+    }*/
 
 
-    /* onMapReady()메서드 - 지도가 준비되었을 때 호출되며, NaverMap 객체에 위치 소스를 설정하고 권한을 확인하는 작업 수행
-                         - 지도 초기화 및 사용자 정의 작업 수행, 지도가 초기화되고 사용 가능한 상태일 때 호출되는 콜백 */
-    @Override
-    public void onMapReady(@NonNull NaverMap naverMap) {
-
-        // NaverMap 객체 받아서 NaverMap 객체에 위치 소스 지정
-        mNaverMap = naverMap;
-        mNaverMap.setLocationSource(locationSource); // NaverMap객체에 위치 소스를 지정 - 현재 위치 사용
-        // 권한 확인, onRequestPermissionResult 콜백 메서드 호출 - 앱에서 위치 권한을 얻기 위해 권한 요청 대화상자를 표시하는 역할
-        ActivityCompat.requestPermissions(getActivity(), PERMISSIONS, PERMISSION_REQUEST_CODE);
+    /*@Override
+    public void onResume() {
+        super.onResume();
+        // 현위치 버튼 -> 다른 액티비티 다녀오면 현위치 재검색 버튼 invisible
+        AppCompatButton re_searchbtn = homeview.findViewById(R.id.re_searchbtn);
+        re_searchbtn.setVisibility(INVISIBLE);
 
         if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            mNaverMap.setLocationTrackingMode(LocationTrackingMode.Follow);
 
-            LocationManager locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-            Location currentLoc = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER); //마지막으로 알려진 사용자의 위치를 GPS를 이용하여 가져옴
-            Log.d("HomeFrament", "현 위치(GPS) : " + currentLoc.getLatitude() + ", " + currentLoc.getLongitude());
+            if(mNaverMap != null ){
+                LocationButtonView locationButtonView = homeview.findViewById(R.id.location_btn);
+                locationButtonView.setMap(mNaverMap);
 
-            StoreData.addLocation(currentLoc.getLatitude(), currentLoc.getLongitude(), 1500);
-            loadStoreData(); // 맵 시작 시 현재 위치를 기준으로 데이터 로드
-            HttpResponse.setCurrentLocation(getActivity(), currentLoc.getLatitude(), currentLoc.getLongitude());
+                ImageButton location_btn_custom = homeview.findViewById(R.id.location_btn_custom);
+                location_btn_custom.setVisibility(INVISIBLE);
+
+                mNaverMap.setLocationSource(locationSource);
+                mNaverMap.setLocationTrackingMode(LocationTrackingMode.Follow);
+            }
 
         }
         // 권한 부여가 되지 않은 경우 권한 부여 메세지 생성
         else
         {
-            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_REQUEST_CODE);
-            Toast.makeText(getActivity(), "설정> 애플리케이션 > YangPojag > 권한에서 지도 권한을 부여하세요", Toast.LENGTH_SHORT).show();
+            if (mNaverMap != null) {
+                mNaverMap.setLocationTrackingMode(LocationTrackingMode.None); // 위치 추적 모드 중지
+            }
+
+            LocationButtonView locationButtonView = homeview.findViewById(R.id.location_btn);
+            locationButtonView.setMap(null);
+
+            ImageButton location_btn_custom = homeview.findViewById(R.id.location_btn_custom);
+            location_btn_custom.setVisibility(VISIBLE);
+            location_btn_custom.setOnClickListener(locationPermissionPopup);
+        }
+    }*/
+
+    /* onMapReady()메서드 - 지도가 준비되었을 때 호출되며, NaverMap 객체에 위치 소스를 설정하고 권한을 확인하는 작업 수행
+                             - 지도 초기화 및 사용자 정의 작업 수행, 지도가 초기화되고 사용 가능한 상태일 때 호출되는 콜백 */
+    @Override
+    public void onMapReady(@NonNull NaverMap naverMap) {
+
+        // NaverMap 객체 받아서 NaverMap 객체에 위치 소스 지정
+        mNaverMap = naverMap;
+
+
+        //mNaverMap.setLocationSource(locationSource); // NaverMap객체에 위치 소스를 지정 - 현재 위치 사용
+        // 권한 확인, onRequestPermissionResult 콜백 메서드 호출 - 앱에서 위치 권한을 얻기 위해 권한 요청 대화상자를 표시하는 역할
+        //ActivityCompat.requestPermissions(getActivity(), PERMISSIONS, PERMISSION_REQUEST_CODE);
+
+        if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+
+            mNaverMap.setLocationSource(locationSource);
+            mNaverMap.setLocationTrackingMode(LocationTrackingMode.Follow);
+
+            LocationButtonView locationButtonView = homeview.findViewById(R.id.location_btn);
+            locationButtonView.setMap(naverMap);
+
+        }
+        // 권한 부여가 되지 않은 경우 권한 부여 메세지 생성
+        else
+        {
+            LocationButtonView locationButtonView = homeview.findViewById(R.id.location_btn);
+            locationButtonView.setMap(null);
+
+            ImageButton location_btn_custom = homeview.findViewById(R.id.location_btn_custom);
+            location_btn_custom.setVisibility(VISIBLE);
+            location_btn_custom.setOnClickListener(locationPermissionPopup);
+
+            // 위치권한 거부 시 서울시청 중심으로 가게 데이터 요청
+            StoreData.addLocation(37.566585801211325, 126.9777104192369, calculateRadius());
+            loadStoreData();
         }
 
 
@@ -195,10 +205,11 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
         // 카메라 줌레벨 설정
         //mNaverMap.setCameraPosition(new CameraPosition(new LatLng(0, 0), 14)); //기본값=14;
 
-
-
         //지도 클릭 리스너 설정
         mNaverMap.setOnMapClickListener(mapL);
+
+        //지도 "이동" 리스너 설정
+        mNaverMap.addOnCameraChangeListener(cameraChangeListener);
 
         // 인증 및 번개 버튼 리스너 설정
         authoff = getActivity().findViewById(R.id.authoff);
@@ -225,8 +236,103 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
             }
         });
 
+        // 현 위치 좌표를 얻기 위한 리스너
+        mNaverMap.addOnLocationChangeListener(new NaverMap.OnLocationChangeListener() {
+            @Override
+            public void onLocationChange(@NonNull Location location) {
+                // 맵 시작 시 현재 위치를 기준으로 데이터 로드
+                StoreData.addLocation(location.getLatitude(), location.getLongitude(), calculateRadius());
+                loadStoreData();
 
+                // 현 위치 기준으로 키워드 검색 시 같은 행정구역의 데이터를 가져오기 위함
+                HttpResponse.setCurrentLocation(getActivity(), location.getLatitude(), location.getLongitude());
+
+                Log.d("Home", "현위치 : " + location);
+                mNaverMap.removeOnLocationChangeListener(this); // 리스너 해제
+            }
+        });
     }
+
+    // 위치 권한 거부 시 리스너 등록(팝업창)
+    View.OnClickListener locationPermissionPopup = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+
+            // 사용자 정의 레이아웃을 설정
+            LayoutInflater inflater = getLayoutInflater();
+            View customView = inflater.inflate(R.layout.location_permission_popup, null);
+            builder.setView(customView);
+            final AlertDialog dialog = builder.create();
+
+            Button cancel = customView.findViewById(R.id.cancel);
+            cancel.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialog.dismiss();
+                }
+            });
+
+            Button move = customView.findViewById(R.id.move);
+            move.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // 설정 화면으로 이동하는 인텐트 생성
+                    Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.fromParts("package", getActivity().getPackageName(), null));
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
+                    dialog.dismiss();
+                }
+            });
+
+            dialog.show();
+        }
+    };
+
+    //지도 "이동" 리스너 설정
+    NaverMap.OnCameraChangeListener cameraChangeListener = new NaverMap.OnCameraChangeListener() {
+        @Override
+        public void onCameraChange(int reason, boolean animated) {
+            if(reason == -1){ // -1 : 지도가 사용자 제스처에 의해 이동했을 경우
+                AppCompatButton re_searchbtn = homeview.findViewById(R.id.re_searchbtn);
+                re_searchbtn.setVisibility(VISIBLE);
+                re_searchbtn.setOnClickListener(re_searchbtnL);
+            }
+
+        }
+    };
+
+    // 현재 지도 화면 경계와 중심 좌표를 기준으로 반경을 계산하는 메서드
+    private float calculateRadius() {
+        LatLngBounds visibleBounds = mNaverMap.getContentBounds(); // 현재 지도 화면의 경계
+        LatLng center = visibleBounds.getCenter(); // 현재 지도 화면의 중심 좌표
+
+        float[] results = new float[1];
+        Location.distanceBetween(
+                center.latitude, center.longitude,
+                visibleBounds.getSouthLatitude(), center.longitude,
+                results
+        );
+
+        return results[0];
+    }
+
+    //현재 지도에서 가게 재검색 버튼 리스너 설정
+    View.OnClickListener re_searchbtnL = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            AppCompatButton re_searchbtn = homeview.findViewById(R.id.re_searchbtn);
+            re_searchbtn.setVisibility(INVISIBLE);
+
+            CameraPosition currentPosition = mNaverMap.getCameraPosition(); //현재 화면에 표시되고 있는 지도의 카메라 위치 정보를 가져옴
+            LatLng currentLatLng = currentPosition.target.toLatLng(); // currentPosition 위도, 경도값 추출, target : 현재 카메라의 중심 위치 -> LatLng객체로 변환
+
+            //StoreData에 위치값 보내기
+            StoreData mainStoreData = new StoreData();
+            StoreData.addLocation(currentLatLng.latitude, currentLatLng.longitude, calculateRadius());
+            loadStoreData(); //주소 검색 후 검색한 주소 기준으로 데이터 로드
+        }
+    };
 
     RecyclerView pochalist_view;
     ArrayList<Shop> pochaListPochas = new ArrayList<>();
@@ -264,7 +370,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        //위치를 반환하는 구현체인 FusedLocationSource 생성
+        //위치를 반환하는 구현체인 FusedLocationSource 생성, locationSource를 초기화 하는 시점에 권한 허용여부를 확인한다(PermissionActivity의 onRequestPermissionResult())
         locationSource = new FusedLocationSource(this, PERMISSION_REQUEST_CODE);
 
         getSearchActivityResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
@@ -331,17 +437,6 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
             com.naver.maps.map.MapFragment mapFragment = com.naver.maps.map.MapFragment.newInstance();
             fragmentManager.beginTransaction().add(R.id.map, mapFragment).commit();
 
-//            //getMapAsync 호출해 비동기로 onMapReady 콜백 메서드 호출
-//            mapFragment.getMapAsync(this);
-//
-//            //나침반 버튼, 현재 위치 버튼 재설정
-//            mapFragment.getMapAsync(naverMap -> {
-//                CompassView compassViewView = homeview.findViewById(R.id.compass);
-//                compassViewView.setMap(naverMap);
-//                LocationButtonView locationButtonView = homeview.findViewById(R.id.location_btn);
-//                locationButtonView.setMap(naverMap);
-//            });
-
         }else{
             Log.d("onCreateView","mapFragment else 진입");
             //getMapAsync 호출해 비동기로 onMapReady 콜백 메서드 호출
@@ -351,19 +446,18 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
             mapFragment.getMapAsync(naverMap -> {
                 CompassView compassViewView = homeview.findViewById(R.id.compass);
                 compassViewView.setMap(naverMap);
-                LocationButtonView locationButtonView = homeview.findViewById(R.id.location_btn);
-                locationButtonView.setMap(naverMap);
+                //LocationButtonView locationButtonView = homeview.findViewById(R.id.location_btn);
+                //locationButtonView.setMap(naverMap);
+
             });
         }
+
         return homeview;
     } // onCreateView 끝
 
     @Override
     public void onStart() {
         super.onStart();
-
-        //위치를 반환하는 구현체인 FusedLocationSource 생성
-        locationSource = new FusedLocationSource(this, PERMISSION_REQUEST_CODE);
 
         //주소 창 클릭 시 SearchActivity로 이동 후 검색 값 받아오기
         searchAdd = homeview.findViewById(R.id.searchAdd);
@@ -374,7 +468,6 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
                 getSearchActivityResult.launch(intent); // startActivityForResult랑 동일한 기능
             }
         });
-
 
     }
 
@@ -469,7 +562,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
 
         if (ExteriorImagePath == null || ExteriorImagePath.isEmpty()) {
             // 경로가 유효하지 않을 때 예외 처리
-            pocha_image.setImageResource(R.drawable.pocha);
+            pocha_image.setImageResource(R.drawable.pocha); //기본 이미지
             Log.e("HomeFragment", "Invalid path");
             return;
         }
@@ -509,7 +602,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
                 double longitude = recentLocation.getLongitude();
 
                 //StoreData에 위치값 보내기
-                StoreData.addLocation(latitude, longitude, 1500);
+                StoreData.addLocation(latitude, longitude, calculateRadius());
                 loadStoreData(); //주소 검색 후 검색한 주소 기준으로 데이터 로드
 
                 searchSuccess(latitude, longitude); // 검색 성공 - 카메라 이동, 마커 설정
@@ -528,7 +621,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
             double longitude = autocompleteLocation.getLongitude();
 
             //StoreData에 위치값 보내기
-            StoreData.addLocation(latitude, longitude, 1500);
+            StoreData.addLocation(latitude, longitude, calculateRadius());
             loadStoreData(); //주소 검색 후 검색한 주소 기준으로 데이터 로드
 
             searchSuccess(latitude, longitude); // 검색 성공 - 카메라 이동, 마커 설정
@@ -567,6 +660,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
         }
     };
 
+
     // 기본적인 지도 형태(마커 크기, 탭 원상복구용)
     public void basemap(){
         if(stores != null){
@@ -587,7 +681,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
     @Override
     public boolean onClick(@NonNull Overlay overlay) {
         if(overlay instanceof LocationOverlay){
-            Toast.makeText(getActivity(), "설정> 애플리케이션 > YangPojag > 권한에서 지도 권한을 부여하세요", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "클릭", Toast.LENGTH_SHORT).show();
             return true;
         }
         return false;
@@ -722,6 +816,14 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
             locationButtonView.setLayoutParams(layoutParams3);
 
             uiSettings.setLogoMargin(30, 0, 0, 30);
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (mNaverMap != null) {
+            mNaverMap.removeOnCameraChangeListener(cameraChangeListener); //리스너 해제(메모리 누수 방지)
         }
     }
 }   // 끝

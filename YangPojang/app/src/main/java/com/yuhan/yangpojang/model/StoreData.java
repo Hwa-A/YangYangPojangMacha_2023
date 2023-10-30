@@ -26,12 +26,13 @@ public class StoreData {
     private static ArrayList<Shop> stores;
     static DatabaseReference db_shop = FirebaseDatabase.getInstance().getReference("shops"); // 파이어베이스 연동
     static GeoLocation centerLocation; // 기준 위치의 GeoLocation
-    static float searchRadiusInMeters; // 검색 기준 반경
+    static double searchRadiusInMeters; // 검색 기준 반경
 
     // 검색한 주소 위치 받아오기
     public static void addLocation(double latitude, double longitude, float searchRadiusInMeters){
         centerLocation = new GeoLocation(latitude, longitude);
-        StoreData.searchRadiusInMeters = searchRadiusInMeters;
+        StoreData.searchRadiusInMeters = searchRadiusInMeters * 0.8;
+
         GeoHash geoHash = GeoHash.withCharacterPrecision(latitude, longitude, 12);
         // GeoHash 값을 문자열로 얻기
         String geohashString = geoHash.toBase32();

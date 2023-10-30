@@ -22,12 +22,26 @@
 
     <com.naver.maps.map.widget.LocationButtonView
         android:id="@+id/location_btn"
+        android:visibility="invisible"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="40dp"
         android:layout_marginLeft="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <ImageButton
+        android:id="@+id/location_btn_custom"
+        android:visibility="invisible"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/location_btn"
+        android:layout_marginBottom="44dp"
+        android:layout_marginLeft="12dp"
+        android:background="@drawable/location_btn_backgroud"
+        android:elevation="2dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
 
     <TextView
         android:id="@+id/searchAdd"
@@ -67,6 +81,20 @@
         app:layout_constraintEnd_toEndOf="@id/searchAdd"
         app:layout_constraintBottom_toBottomOf="@id/searchAdd"
         android:layout_marginEnd="10dp"/>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/re_searchbtn"
+        android:visibility="invisible"
+        android:layout_width="200dp"
+        android:layout_height="40dp"
+        android:text="현재 지도에서 가게 재검색"
+        android:textSize="12.5sp"
+        android:textColor="@color/white"
+        android:background="@drawable/re_searchbutton_custom"
+        android:layout_marginTop="45dp"
+        app:layout_constraintTop_toBottomOf="@id/searchAdd"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
 
     <ImageButton

@@ -122,6 +122,9 @@ public class HttpResponse {
                                 }
                                 String key = placeName + "&" + address;
 
+                                if(addressName == null){
+                                    addressName ="서울특별시";
+                                }
 
                                 // 1순위 : 같은 행정구역 and 검색어 일치
                                 if (((!roadAdd.equals(" ") && roadAdd.startsWith(addressName)) || !jibunAdd.equals(" ") && jibunAdd.startsWith(addressName)) && placeName.equals(keyword)) {

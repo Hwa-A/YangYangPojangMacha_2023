@@ -1,9 +1,13 @@
 package com.yuhan.yangpojang;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Switch;
@@ -21,12 +25,14 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.naver.maps.map.util.FusedLocationSource;
+import com.yuhan.yangpojang.fragment.HomeFragment;
 import com.yuhan.yangpojang.login.LogindetailAct;
 import com.yuhan.yangpojang.login.User;
 
 public class PermissionActivity extends AppCompatActivity {
 
-    private static final int REQUEST_LOCATION_PERMISSION_CODE = 1;
+    private static final int PERMISSION_REQUEST_CODE = 100;
 
     private Button permissionAccessButton;
     private String user_info_uid = null;
@@ -55,16 +61,13 @@ public class PermissionActivity extends AppCompatActivity {
         });
     }
 
-
-    private void requestLocationPermission() {
+    public void requestLocationPermission() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION_PERMISSION_CODE);
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_REQUEST_CODE);
         } else {
-
         }
     }
-
 
     // 사용자 권한 요청에 대한 응답 처리
     @Override
