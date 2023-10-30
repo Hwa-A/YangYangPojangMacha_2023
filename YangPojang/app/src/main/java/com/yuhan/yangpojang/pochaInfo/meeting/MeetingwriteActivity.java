@@ -3,11 +3,14 @@ package com.yuhan.yangpojang.pochaInfo.meeting;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -44,10 +47,11 @@ public class MeetingwriteActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_meetingwrite);
 
-        // 전달 받은 데이터로 변수 초기화
+
+        // ▼ Intent로 전달 받은 데이터로 변수 초기화
         Intent intent = getIntent();
         String pchName = intent.getStringExtra("pchName");      // 포차 이름
-        // String uid = intent.getStringExtra("uid");              // 회원 ID
+        String uid = intent.getStringExtra("uid");              // 회원 ID
 
         // 상단의 포차 이름 설정
         TextView pchNameTv = findViewById(R.id.tv_meetingwrite_pochaName);
@@ -146,6 +150,27 @@ public class MeetingwriteActivity extends AppCompatActivity {
             }
         });
     }
+    // ▼ 화면 터치 시, 키보드를 숨기는 코드
+    @Override //focusView의 화면에서 보이는 영역의 위치와 크기 정보
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        View focusView = getCurrentFocus();     // 현재 포커스를 가진 뷰를 가져옴
+        if(focusView != null){
+            Rect rect = new Rect();     // 포커스 뷰의 전역적인 가시영역을 가져옴
+            focusView.getGlobalVisibleRect(rect);   // 포커스 뷰의 화면에서 보이는 역영의 위치와 크기 등 정보를 rect에 포함
+            int x = (int)ev.getX();     // 현재 위치(x)
+            int y = (int)ev.getY();     // 현재 위치(y)
+            if(!rect.contains(x,y)){    // rect 객체의 위치가 현재 클릭 위치와 다른 경우
+                InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                    if(imm != null)
+                        // 키보드 숨김
+                        imm.hideSoftInputFromWindow(focusView.getWindowToken(), 0);
+                    // 포커스 제거
+                    focusView.clearFocus();
+            }
+        }
+        return super.dispatchTouchEvent(ev);
+    }
+
     // editText에 공백 입력 시, error message 출력 코드
     private void emptyError(EditText edt, TextInputLayout txtLayout){
         edt.addTextChangedListener(new TextWatcher() {
