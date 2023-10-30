@@ -21,6 +21,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -48,7 +49,8 @@ public class LogindetailAct extends AppCompatActivity {
     RadioGroup radioGroup;
     TextView sexchecked;
     ImageView profileImage;
-
+    private Uri User_profileuri;
+    private String User_img;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -68,6 +70,7 @@ public class LogindetailAct extends AppCompatActivity {
         radioGroup = findViewById(R.id.sexGroup);
         sexchecked = findViewById(R.id.sex);
         profileImage = findViewById(R.id.profileImagesetting);
+        User_img = "/profile/"+user_info_uid;
 
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -109,19 +112,30 @@ public class LogindetailAct extends AppCompatActivity {
         });
 
 
+        profileImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                select();
+            }
+        });
+
+
         signCompleteBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String getUserName = userNickname.getText().toString();
                 String getUserDate = datetext.getText().toString();
                 String getUserSex = sexchecked.getText().toString();
+                String getUserimg = User_img;
 
                 if(userNickname.length()==0){Toast.makeText(getApplicationContext(),"닉네임을 입력하세요",Toast.LENGTH_LONG).show();}
                 else {
                     if(getUserDate == ""){Toast.makeText(getApplicationContext(),"날짜를 선택해주세요",Toast.LENGTH_LONG).show();}
                     else {
-                        if(getUserSex == "남자" || getUserSex == "여자" ){writeNewUser(getUserName,getUserDate,getUserSex); }
-                        else { Toast.makeText(getApplicationContext(),"성별을 선택하여주세요",Toast.LENGTH_LONG).show(); }
+                        if(getUserSex != "남자" && getUserSex != "여자" ){Toast.makeText(getApplicationContext(),"성별을 선택하여주세요",Toast.LENGTH_LONG).show(); }
+                        else {
+                            writeNewUser(getUserName,getUserDate,getUserSex,getUserimg); upload();
+                        }
                     }
                 }
 
@@ -130,8 +144,40 @@ public class LogindetailAct extends AppCompatActivity {
     }
 
 
-    private void writeNewUser(String name, String birthday, String sex) {
-        User user = new User(name, birthday,sex);
+    private void select() {
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT );
+        intent.setType("image/*");
+        launcher.launch(intent);
+    }
+
+    private void upload() {
+        StorageReference storageReference = FirebaseStorage.getInstance().getReference("profile");
+        storageReference.child(user_info_uid).putFile(User_profileuri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                if(task.isSuccessful()) {
+                    Toast.makeText(LogindetailAct.this, "업로드에 성공했습니다", Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    Toast.makeText(LogindetailAct.this, "업로드에 실패했습니다", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
+    private final ActivityResultLauncher<Intent> launcher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    if(result.getResultCode() == RESULT_OK && result.getData() != null) {
+                        User_profileuri = result.getData().getData();
+                    }
+                }
+            });
+
+    private void writeNewUser(String name, String birthday, String sex, String img) {
+        User user = new User(name, birthday,sex, img);
         mDatabase.child("user-info").child(user_info_uid).setValue(user)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
