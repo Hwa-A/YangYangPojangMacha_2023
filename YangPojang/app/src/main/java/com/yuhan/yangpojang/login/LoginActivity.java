@@ -74,33 +74,6 @@ public class LoginActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
-        if (currentUser != null) {
-            mDatabase.child("user-info").child(user_info_uid).addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    User user_check = snapshot.getValue(User.class);
-
-                    if(user_check == null)
-                    {
-                        Intent intent_main = new Intent(getApplication(), LogindetailAct.class);
-                        startActivity(intent_main);
-                        finish();
-                    }
-                    else
-                    {
-                        Intent intent_main = new Intent(getApplication(), MainActivity.class);
-                        startActivity(intent_main);
-                        finish();
-                    }
-
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-
-                }
-            });
-        }
 
         // Google 로그인을 앱에 통합
         // GoogleSignInOptions 개체를 구성할 때 requestIdToken을 호출

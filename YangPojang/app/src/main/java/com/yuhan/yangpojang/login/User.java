@@ -43,10 +43,11 @@ public class User {
     }
 
 
-    public User(String user_Nickname, String user_birthday, String user_sex) {
+    public User(String user_Nickname, String user_birthday, String user_sex, String user_img){
         this.User_Nickname = user_Nickname;
         this.User_birthday = user_birthday;
         this.User_sex = user_sex;
+        this.User_img = user_img;
     }
 
 
