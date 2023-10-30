@@ -184,8 +184,6 @@ public class HttpResponse {
 
                                     placeInfoCnt++;
 
-
-
                                     Log.d(MotionEffect.TAG, "placeInfo 값(1순위) :  :" + placeInfo1);
                                 }
                             }

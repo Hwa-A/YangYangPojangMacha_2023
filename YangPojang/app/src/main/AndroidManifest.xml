@@ -17,8 +17,6 @@
         android:theme="@style/Theme.YangPojang"
         tools:targetApi="31">
 
-
-
         <activity
             android:name=".login.LoginActivity"
             android:exported="true">

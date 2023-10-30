@@ -30,6 +30,7 @@ import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.LongDef;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -105,9 +106,7 @@ public class ReportShopFragment extends Fragment implements ShopDataListener
     private boolean isVerified; // 인증된 가게인가
     private boolean hasMeeting;  // 번개가 잡힌 가게인가
     private float rating; // 별점
-    private String geohash;
-
-
+    private String geohash; // 지오해쉬
 
 
 
@@ -141,7 +140,7 @@ public class ReportShopFragment extends Fragment implements ShopDataListener
         reportBtn = viewReprotShop.findViewById(R.id.reportBtn); // 제보하기 버튼
         textboard = viewReprotShop.findViewById(R.id.textboard);  // 제보시 나오는 toast 메세지 [✨✨가게 정보가 업로드 중입니다✨✨]
         categorySpinner = viewReprotShop.findViewById(R.id.categorySpinner);  // 카테고리 스피너 -  res/values/strings에 카테고리 목록 지정해놓음
-        mapLocationPopupFragment = new MapLocationPopupFragment();
+        mapLocationPopupFragment = new MapLocationPopupFragment();  // 제보할 가게 위치 선택을 위한 지도
         storePhotoTextView= viewReprotShop.findViewById(R.id.storeBoardText); // 가게 사진 선택하기 글씨
         menuPhotoTextView= viewReprotShop.findViewById(R.id.menuBoardText);  // 메뉴 사진 선택하기 글씨
         bottomNavigationView= getActivity().findViewById(R.id.bottomNavigationView); // 하단 네비게이션 바
@@ -264,7 +263,6 @@ public class ReportShopFragment extends Fragment implements ShopDataListener
             {
                 saveShopData();
 
-
             }
         });
         //가게위치 선택하기 글자를 누르면 지도가 뜨게 구현 + 하단 네비게이션 바 감춤
@@ -295,16 +293,14 @@ public class ReportShopFragment extends Fragment implements ShopDataListener
         Uri tempMenuBoardImageUri = menuBoardImageUri;
 
         shouldClearForm = false; // Set the flag to skip form clearing
+
         FragmentManager fragmentManager = getParentFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         MapLocationPopupFragment popupFragment = new MapLocationPopupFragment();
+
         storeExteriorImageUri=null;
         menuBoardImageUri=null;
-        // Create a bundle to pass the selected location
-        Bundle bundle = new Bundle();
-        bundle.putDouble("latitude", latitude);
-        bundle.putDouble("longitude", longitude);
-        popupFragment.setArguments(bundle);
+
 
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.replace(R.id.fragment_container, popupFragment);
@@ -313,44 +309,66 @@ public class ReportShopFragment extends Fragment implements ShopDataListener
         // 위치 선택 결과를 처리하는 리스너 등록
         getParentFragmentManager().setFragmentResultListener("locationResult", this, new FragmentResultListener() {
             @Override
-            public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle bundle) {
+            public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle resultBundle) {
+                Log.d("pika","pikka");
                 shouldClearForm=false;
-                latitude = bundle.getDouble("latitude");
-                longitude = bundle.getDouble("longitude");
+                if (resultBundle != null) {
+                    addressName= resultBundle.getString("selectedLocationAdd");
+                    latitude= resultBundle.getDouble("selectedLatitude");
+                    longitude= resultBundle.getDouble("selectedLongitude");
+                    Log.d("kkkk","kkkkk");
+                    Log.d("coogine","ff"+addressName);
+
+                    Log.d("coo","ff"+longitude);
+                    Log.d("coo","ff"+latitude);
+
+                }
+
+
                 geohash= GeoFireUtils.getGeoHashForLocation(new GeoLocation(latitude, longitude));
 
-                // 역 지오코딩을 통해 좌표로 주소 가져오기
-                Geocoder geocoder = new Geocoder(getContext(), Locale.getDefault());
-                List<Address> addresses;
-                try {
-                    addresses = geocoder.getFromLocation(latitude, longitude, 1);
-                    if (addresses.size() > 0) {
-                        Address address = addresses.get(0);
-                        addressName = address.getAddressLine(0).replace("대한민국","").trim(); // 주소 문자열 가져오기
-                        shopLocationText.setText(addressName);
-                    }
-                    else {
+                 if(!(addressName==null) || !(addressName=="")) //"위치를 선택하세요 or로"
+                 {
+                     shopLocationText.setText(addressName);
+                     // 위치 정보를 번들에 추가
+                     Bundle locationBundle = new Bundle();
+                     locationBundle.putString("currentLocation",addressName);
+                     locationBundle.putDouble("currentLatitude",latitude);
+                     locationBundle.putDouble("currentLongtitude",longitude);
+                     Log.d("ㅂGg",addressName);
+                     Log.d("ㅂGg", String.valueOf(latitude));
+                     Log.d("ㅂGg", String.valueOf(longitude));
+
+                     popupFragment.setArguments(locationBundle);
+                     FragmentManager fragmentManager = getParentFragmentManager();
+                     FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                     fragmentTransaction.addToBackStack(null);
+                     fragmentTransaction.replace(R.id.fragment_container, popupFragment);
+                     fragmentTransaction.commit();
+                 }
+                    else
+                    {
                         shopLocationText.setText("오류: 위치를 가져올 수 없음");
+
                     }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    shopLocationText.setText("주소 변환 오류 - 다시 설정하세요");
-                }
+
                 // 이미지 URI를 다시 설정
                 storeExteriorImageUri = tempStoreExteriorImageUri;
                 menuBoardImageUri = tempMenuBoardImageUri;
                 // 이미지 설정
                 if (storeExteriorImageUri != null) {
                     storeExteriorPhoto.setImageURI(storeExteriorImageUri);
+                    storeExteriorPhoto.setBackground(null);
                 }
 
                 if (menuBoardImageUri != null) {
                     menuBoardPhoto.setImageURI(menuBoardImageUri);
+                    menuBoardPhoto.setBackground(null);
                 }
+                shouldClearForm=true;
             }
         });
     }
-
 
     // onPasue: 다른 화면으로 넘어갔을때 폼을 지울지 여부를 판단
     @Override
@@ -393,6 +411,7 @@ public class ReportShopFragment extends Fragment implements ShopDataListener
         rating = 0;
         addressName= shopLocationText.getText().toString();
 
+
         Log.d("bibi",addressName);
         if (addressName.equals("위치를 선택하세요"))
         {
@@ -433,7 +452,6 @@ public class ReportShopFragment extends Fragment implements ShopDataListener
     }
 
 
-
     @Override
     public void onShopDataSaved()
     {
@@ -441,7 +459,6 @@ public class ReportShopFragment extends Fragment implements ShopDataListener
         reportBtn.setClickable(false); // 제보 여러번 연타 못하게 버튼 클릭 비활성화
         clearForm();  // 저장이 되는경우 기존에 작성된 폼 지움
     }
-
 
 
     public void clearForm()  // 제보화면에 작성폼 초기화

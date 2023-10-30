@@ -35,6 +35,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.database.DataSnapshot;
@@ -84,6 +85,8 @@ public class MapLocationPopupFragment extends Fragment implements OnMapReadyCall
     };
     private double latitude;
     private double longitude;
+    private String selectedLocationAdd;
+
 
 
     // xml(ui)관련 요소 변수
@@ -96,18 +99,23 @@ public class MapLocationPopupFragment extends Fragment implements OnMapReadyCall
     private BottomNavigationView bottomNavigationView;
     private ListView locationListView;  // 주소 검색 결과를 표시할 ListView
 
-    private ArrayList<String> autoCompletes_name = new ArrayList<>();
-    private ArrayList<String> autoCompletes_add = new ArrayList<>();
-    private ArrayList<Double> autoCompletes_latitude = new ArrayList<>();
-    private ArrayList<Double> autoCompletes_longitude = new ArrayList<>();
+    private ArrayList<String> autoCompletes_name = new ArrayList<>();  // 검색한 위치 이름을 보유 [고양 스타필드]
+    private ArrayList<String> autoCompletes_add = new ArrayList<>();  // 검색한 위치 주소를 보유 [고양시 덕양구 ~~]
+    private ArrayList<Double> autoCompletes_latitude = new ArrayList<>(); // 검색한 위치의 경도를 보유
+    private ArrayList<Double> autoCompletes_longitude = new ArrayList<>(); // 검색한 위치의 위도 보유
 
-    private List<Marker> shopMarkers = new ArrayList<>();
+    private List<Marker> shopMarkers = new ArrayList<>();  // db에서 등록되있는 가게를 불러와 보유
 
     private DatabaseReference shopDatabaseReference;
     private ValueEventListener shopValueEventListener;
 
     private SearchAdapter_AutoComplete autoadapter; // 자동완성 목록 - 어댑터
     private InputMethodManager inputMethodManager;
+
+    private LatLng selectedLatlng ; // 선택한 마커의 위치를 얻음
+
+
+
 
 
     // 중요 메서드 설명
@@ -120,13 +128,38 @@ public class MapLocationPopupFragment extends Fragment implements OnMapReadyCall
     {
         View view = inflater.inflate(R.layout.popup_map_location, container, false);
 
-        locationListView = view.findViewById(R.id.search_listView) ;  // 검색하면 보여질 창
-        locationSearchView = view.findViewById(R.id.locationSearchsearchView); // 주소검색하는 글씨창 부분
+        locationListView = view.findViewById(R.id.search_listView) ;  // 검색 결과 리스트를 보여줌
+        locationSearchView = view.findViewById(R.id.locationSearchsearchView); // 주소 검색하는 (글씨창) 부분
         selectLocationButton = view.findViewById(R.id.selectLocationBtn);  // (위치 선택후) 선택 버튼
         cancelLocationButton = view.findViewById(R.id.cancelLocationButton); // 취소 버튼
         bottomNavigationView = getActivity().findViewById(R.id.bottomNavigationView);
         bottomNavigationView.setVisibility(View.GONE);
         inputMethodManager = (InputMethodManager) requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+
+        // 기본위치 받아와 설정
+        Bundle locationBundle = getArguments();
+        Log.d("abab", String.valueOf(locationBundle));
+//        String currentLocation = locationBundle.getString("currentLocation");
+//        double currentLatitude = locationBundle.getDouble("currentLatitude");
+//        double currentLongitude = locationBundle.getDouble("currentLongitude");
+//        Log.d("hihi",currentLocation);
+        if(locationBundle!=null)
+        {
+            Log.d("decaffaine", String.valueOf(locationBundle));
+
+//            Log.d("etttddd",currentLocation);
+//            Log.d("fdsfsda", String.valueOf(currentLatitude));
+//            Log.d("fdsfsda", String.valueOf(currentLongitude));
+
+            // 이 부분에서 받은 위치 값을 이용해 지도를 설정
+            // 여기서 popNaverMap은 지도 객체로 가정됨
+//            CameraUpdate cameraUpdate = CameraUpdate.scrollTo(new LatLng(currentLatitude, currentLongitude));
+//            popNaverMap.moveCamera(cameraUpdate);
+
+
+        }
+
+
         // 위치 선택 취소 버튼을 누르면 작동 -> 다시 제보화면으로 돌아감
         cancelLocationButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -143,22 +176,53 @@ public class MapLocationPopupFragment extends Fragment implements OnMapReadyCall
             @Override
             public void onClick(View v)
             {
+
                 // 만약 위치를 선택하지 않았다면 경고창 띄우기
                 if (selectedMarker == null)
                 {
                     Toast.makeText(getActivity(), "위치를 선택해주세요.", Toast.LENGTH_SHORT).show();
-                    return; // 위치 선택이 되지 않았으므로 함수를 빠져나감
+                    return;// 위치 선택이 되지 않았으므로 함수를 빠져나감
                 }
                 else
                 {
+                    selectedLatlng = selectedMarker.getPosition(); // 선택한 마커의 위치를 얻음
+
                     // 50미터 근방에 샵이 있는지 확인
-                    LatLng selectedLatLng = selectedMarker.getPosition();
-                    Log.d("fdsfsadfsadfsd", String.valueOf(selectedLatLng));
+                    Log.d("fdsfsadfsadfsd", String.valueOf( selectedLatlng));
+
+                    double selectedLatitude =  selectedLatlng.latitude;
+                    double selectedLongitude =  selectedLatlng.longitude;
+                    //역 지오코딩을 수행
+                    Geocoder geocoder = new Geocoder(requireContext(), new Locale("ko", "KR"));
+                    try {
+                        List<Address> addresses = geocoder.getFromLocation(selectedLatitude, selectedLongitude, 1);
+                        if (addresses != null && addresses.size() > 0) {
+                            Address address = addresses.get(0);
+                            String addressName = address.getAddressLine(0); // 추출된 주소
+                            Log.d("rlejfkl",addressName);
+                            // Bundle에 위도, 경도 및 주소 추가
+                            Bundle resultBundle = new Bundle();
+                            resultBundle.putDouble("selectedLatitude", selectedLatitude);
+                            resultBundle.putDouble("selectedLongitude", selectedLongitude);
+                            resultBundle.putString("selectedLocationAdd", addressName);
+
+                            getParentFragmentManager().setFragmentResult("locationResult",resultBundle);
+                            Log.d("ㄲ까", "Latitude: " + selectedLatitude + ", Longitude: " + selectedLongitude + ", Address: " + addressName);
+
+                        } else {
+                            Log.e("Address Fetch", "No address found for the location.");
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+
                     boolean shopsWithinRadius = false;
                     for (Marker shopMarker : shopMarkers)
                     {
                         LatLng shopLatLng = shopMarker.getPosition();
-                        double distance = calculateDistance(selectedLatLng.latitude, selectedLatLng.longitude, shopLatLng.latitude, shopLatLng.longitude);
+                        double distance = calculateDistance( selectedLatlng.latitude,  selectedLatlng.longitude, shopLatLng.latitude, shopLatLng.longitude);
                         if (distance <= 50.0) //50 미터가 너무 좁다고 판단되면 이 부분을 수정하면 됌
                         {
                             shopsWithinRadius = true;
@@ -173,16 +237,7 @@ public class MapLocationPopupFragment extends Fragment implements OnMapReadyCall
                                 .setPositiveButton("예", new DialogInterface.OnClickListener()
                                 {
                                     public void onClick(DialogInterface dialog, int id) {
-                                        // Yes를 클릭하면 선택한 위치 주소 정보를 가져오고 팝업을 닫음
-                                        Bundle resultBundle = new Bundle();
-                                        latitude=selectedLatLng.latitude;
-                                        longitude=selectedLatLng.longitude;
-                                        resultBundle.putDouble("latitude", latitude);
-                                        resultBundle.putDouble("longitude", longitude);
-                                        Log.d("fdsfsdaf", String.valueOf(latitude));
-                                        Log.d("fdsfsdaf", String.valueOf(longitude));
 
-                                        getParentFragmentManager().setFragmentResult("locationResult", resultBundle);
                                         getParentFragmentManager().popBackStack();
                                         bottomNavigationView.setVisibility(View.VISIBLE);
                                     }
@@ -201,16 +256,12 @@ public class MapLocationPopupFragment extends Fragment implements OnMapReadyCall
                     }
                     else
                     {
-                        // 주변에 가게가 없으면 선택한 위치 주소 정보를 가져오고 팝업을 닫음
-                        Bundle resultBundle = new Bundle();
-                        resultBundle.putDouble("latitude", selectedLatLng.latitude);
-                        resultBundle.putDouble("longitude", selectedLatLng.longitude);
-                        getParentFragmentManager().setFragmentResult("locationResult", resultBundle);
+//                        // 주변에 가게가 없으면 선택한 위치 주소 정보를 가져오고 팝업을 닫음
+//
                         getParentFragmentManager().popBackStack();
                         bottomNavigationView.setVisibility(View.VISIBLE);
                     }
                 }
-            }
         });
 
         locationSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -234,6 +285,7 @@ public class MapLocationPopupFragment extends Fragment implements OnMapReadyCall
                     HttpResponse.sendData(requireContext(), newText, new HttpResponse.DataCallback() {
                         @Override
                         public void onDataLoaded(LinkedHashMap<String, ArrayList<String>> address_hash) {
+
                             settingVisibility_change();
                             Log.d("test출력","1");
                             requireActivity().runOnUiThread(new Runnable() {
@@ -267,8 +319,6 @@ public class MapLocationPopupFragment extends Fragment implements OnMapReadyCall
                                             hideKeyboard();
                                         }
                                     });
-
-
                                     autoadapter = new SearchAdapter_AutoComplete(requireContext(), autoCompletes_name, autoCompletes_add);
                                     locationListView.setAdapter(autoadapter);
                                     locationListView.setOnScrollListener(scrollL); // 스크롤 시 리스너 등록
@@ -290,9 +340,11 @@ public class MapLocationPopupFragment extends Fragment implements OnMapReadyCall
         locationListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Log.d("F","F");
+                selectedLocationAdd= autoCompletes_add.get(position);
+                Log.d("rototrl",selectedLocationAdd);
                 double selectedLatitude = autoCompletes_latitude.get(position);
                 double selectedLongitude = autoCompletes_longitude.get(position);
+
                 LatLng selectedLatLng = new LatLng(selectedLatitude,selectedLongitude);
                 updateMapWithLatLng(selectedLatLng);
                 moveMapToLocation(selectedLatLng);
@@ -301,49 +353,21 @@ public class MapLocationPopupFragment extends Fragment implements OnMapReadyCall
                 locationListView.setVisibility(View.GONE);
                 hideKeyboard();
 
+                //BUNDLE 을 생성해 값전달
+                ReportShopFragment reportShopFragment = new ReportShopFragment();
+                Bundle resultBundle = new Bundle();
+
+                resultBundle.putString("selectedLocationAdd", selectedLocationAdd);
+                resultBundle.putDouble("selectedLatitude", selectedLatitude);
+                resultBundle.putDouble("selectedLongitude", selectedLongitude);
+
+                getParentFragmentManager().setFragmentResult("locationResult",resultBundle);
+                Log.d("rototri", String.valueOf(resultBundle));
 
 
             }
         });
 
-//        // 위치 검색 버튼을 클릭했을때 작동
-//        searchButton.setOnClickListener(new View.OnClickListener()
-//        {
-//            @Override
-//            public void onClick(View v)
-//            {
-////                hideKeyboard();
-//                new Thread(new Runnable()
-//                {
-//                    @Override
-//                    public void run()
-//                    {
-//
-//                        // 검색한 주소를  addr 변수에 가져옴
-//                        final String addr = null;
-//                        //searchedLatLng: 위도 경도 저장
-//                        // getCoordinatesFromeAddress로 검색한 주소를 좌표로 변환 -> 검색한 부분으로 지도 이동, 핀 찍기 위함
-//                        LatLng searchedLatLng = getCoordinatesFromAddress(addr);
-//                        // 주소검색한 내용이 null이 아니면 ( 검색한 내용이 있으면 ) =>
-//                        if (searchedLatLng != null)
-//                        {
-//                            getActivity().runOnUiThread(new Runnable()
-//                            {
-//                                @Override
-//                                public void run()
-//                                {
-//                                    // => 검색한 위치로  지도 이동
-////                              지우셈      popNaverMap.moveCamera(CameraUpdate.scrollTo(searchedLatLng));
-//                                    // 이전에 표시된 마커는 지우고 초기화
-//                                    updateMapWithLatLng(searchedLatLng);
-//                                    Log.d("고릴라", String.valueOf(searchedLatLng));
-//                                }
-//                            });
-//                        }
-//                    }
-//                }).start();
-//            }
-//        });
         // MapFragment를 초기화하고 뷰에 추가
         // getChildFragMent  _ 부모 fragment 위에 자식 fragment를 다루기 위해 getChldFragmentManager 사용( 팝업처럼 뜨는 창이여서 이렇게 작동시킴)
         MapFragment mapFragment = (MapFragment) getChildFragmentManager().findFragmentById(R.id.PopMapFragment);
@@ -607,23 +631,7 @@ public class MapLocationPopupFragment extends Fragment implements OnMapReadyCall
         }
 
     }
-//    p
-    // 주소로부터 좌표를 가져올 새로운 메서드를 추가
-    public LatLng getCoordinatesFromAddress(String address) {
-        Geocoder geocoder = new Geocoder(requireContext(), new Locale("ko", "KR"));
-        try {
-            List<Address> addresses = geocoder.getFromLocationName(address, 1);
-            if (addresses != null && !addresses.isEmpty()) {
-                Address foundAddress = addresses.get(0);
-                double latitude = foundAddress.getLatitude();
-                double longitude = foundAddress.getLongitude();
-                return new LatLng(latitude, longitude);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
+
     public void addShopMarker(Shop shop)
     {
         if (shop != null) {
@@ -644,13 +652,31 @@ public class MapLocationPopupFragment extends Fragment implements OnMapReadyCall
         }
     }
 
-    // Implement the hideKeyboard method
+    // 배경을 클릭하거나 enter을 쳤을때도 키보드가 감춰짐
     private void hideKeyboard() {
         View view = requireActivity().getCurrentFocus();
         if (view != null) {
             inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
     }
+
+    //   지워도 되는가
+    // 주소로부터 좌표를 가져올 새로운 메서드를 추가
+//    public LatLng getCoordinatesFromAddress(String address) {
+//        Geocoder geocoder = new Geocoder(requireContext(), new Locale("ko", "KR"));
+//        try {
+//            List<Address> addresses = geocoder.getFromLocationName(address, 1);
+//            if (addresses != null && !addresses.isEmpty()) {
+//                Address foundAddress = addresses.get(0);
+//                double latitude = foundAddress.getLatitude();
+//                double longitude = foundAddress.getLongitude();
+//                return new LatLng(latitude, longitude);
+//            }
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        return null;
+//    }
 
 
 
