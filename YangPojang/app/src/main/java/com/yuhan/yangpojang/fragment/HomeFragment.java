@@ -59,7 +59,7 @@ import com.naver.maps.map.util.FusedLocationSource;
 import com.naver.maps.map.util.MarkerIcons;
 import com.naver.maps.map.widget.CompassView;
 import com.naver.maps.map.widget.LocationButtonView;
-import com.yuhan.yangpojang.PochainfoActivity;
+import com.yuhan.yangpojang.pochaInfo.info.PochainfoActivity;
 import com.yuhan.yangpojang.R;
 import com.yuhan.yangpojang.home.HttpResponse;
 import com.yuhan.yangpojang.home.PochaListAdapter;
@@ -67,7 +67,6 @@ import com.yuhan.yangpojang.home.SearchActivity;
 import com.yuhan.yangpojang.model.Shop;
 import com.yuhan.yangpojang.model.StoreData;
 import com.yuhan.yangpojang.onPochaListItemClickListener;
-
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -353,7 +352,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
     @Override
     public void onPochaListItemClick(View v, int position) {
         try{
-            String className = "com.yuhan.yangpojang.PochainfoActivity";
+            String className = "com.yuhan.yangpojang.pochaInfo.info.PochainfoActivity";
             Class<?> activityClass = Class.forName(className);
 
             Intent intent = new Intent(v.getContext(), activityClass);

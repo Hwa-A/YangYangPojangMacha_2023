@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- id 형식: view약자_속한xml명_view설명 -->
+<!-- view 약자
+        img: ImageView
+        imgbtn: ImageButton
+        btn: Button
+        lin: LinearLayout
+        tv: TextView             -->
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:padding="10dp">
+    <TextView
+        android:id="@+id/tv_pochareview_writerName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="익명"
+        android:textColor="#FE7E44"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="님의 글"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@id/tv_pochareview_writerName"
+        app:layout_constraintBaseline_toBaselineOf="@id/tv_pochareview_writerName"
+        android:layout_marginLeft="5dp"/>
+    <LinearLayout
+        android:id="@+id/lin_pochareview_imageContainer"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_pochareview_writerName"
+        android:layout_marginTop="5dp">
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:background="@color/black"
+            android:layout_marginRight="5dp"/>
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:background="@color/black"
+            android:layout_marginRight="5dp"/>
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:background="@color/black"
+            android:layout_marginRight="5dp"/>
+    </LinearLayout>
+    <TextView
+        android:id="@+id/tv_pochareview_textContent"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="여기 맛집으로 추천!!\n다음에도 반드시 사먹을게요~"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/lin_pochareview_imageContainer"
+        android:layout_marginTop="10dp"
+        />
+    <ImageButton
+        android:id="@+id/imgbtn_pochareview_report"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:src="@drawable/pochadetail_report"
+        android:adjustViewBounds="true"
+        android:scaleType="fitCenter"
+        android:background="@android:color/transparent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_pochareview_textContent"
+        tools:ignore="SpeakableTextPresentCheck" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
