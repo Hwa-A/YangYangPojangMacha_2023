@@ -5,6 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
     <com.naver.maps.map.widget.LocationButtonView
         android:id="@+id/locationButton"
         android:layout_width="wrap_content"
@@ -15,65 +16,46 @@
         app:layout_constraintTop_toTopOf="@+id/PopMapFragment"
         tools:ignore="MissingConstraints" />
 
-
     <fragment
         android:id="@+id/PopMapFragment"
         android:name="com.naver.maps.map.MapFragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="414dp"
+        android:layout_height="734dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         tools:ignore="MissingConstraints"
         tools:layout_editor_absoluteY="-2dp" />
 
-
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="62dp"
+    <EditText
+        android:id="@+id/locationSearchEditText"
+        android:layout_width="380dp"
+        android:layout_height="46dp"
         android:background="@color/white"
-        app:layout_constraintBottom_toBottomOf="@+id/PopMapFragment"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0">
-
-        <androidx.appcompat.widget.SearchView
-            android:id="@+id/locationSearchsearchView"
-            android:layout_width="match_parent"
-            android:layout_height="49dp"
-            android:background="@color/white"
-            android:queryBackground="@color/white"
-            android:textSize="12sp"
-            app:closeIcon="@drawable/xicon"
-            app:iconifiedByDefault="false"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0"
-            app:queryHint="주소를 검색하세요"
-            app:searchIcon="@null"
-            tools:ignore="TouchTargetSizeCheck" />
-    </androidx.appcompat.widget.Toolbar>
-
-    <ListView
-        android:id="@+id/search_listView"
-        android:layout_width="match_parent"
-        android:layout_height="681dp"
-        android:background="@color/white"
-        android:dividerHeight="0.7dp"
-        android:visibility="gone"
-        android:footerDividersEnabled="false"
+        android:hint="   주소 검색"
+        android:textSize="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/PopMapFragment"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintHorizontal_bias="0.483"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.042"
+        tools:ignore="TouchTargetSizeCheck" />
+
+    <Button
+        android:id="@+id/searchButton"
+        android:layout_width="78dp"
+        android:layout_height="44dp"
 
 
+        android:text="검색"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.951"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.045"
+        tools:ignore="TouchTargetSizeCheck" />
 
     <Button
         android:id="@+id/selectLocationBtn"
@@ -99,5 +81,5 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.976"
-        tools:ignore="TouchTargetSizeCheck" />
+        tools:ignore="TouchTargetSizeCheck"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

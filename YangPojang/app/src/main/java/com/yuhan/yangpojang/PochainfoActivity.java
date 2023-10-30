@@ -34,6 +34,5 @@ public class PochainfoActivity extends AppCompatActivity {
         Log.d("PochainfoActivity", "결제방법 : " + shop.isPwayMobile() + shop.isPwayCard() + shop.isPwayAccount() + shop.isPwayCash());
         Log.d("PochainfoActivity", "요일 : " + shop.isOpenMon() + shop.isOpenTue() + shop.isOpenWed() + shop.isOpenThu() + shop.isOpenFri() + shop.isOpenSat() + shop.isOpenSun());
 
-
     }
 }

@@ -8,9 +8,11 @@
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/map"
+        android:name="com.naver.maps.map.MapFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:name="com.naver.maps.map.MapFragment"/>
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="43dp" />
 
     <com.naver.maps.map.widget.CompassView
         android:id="@+id/compass"

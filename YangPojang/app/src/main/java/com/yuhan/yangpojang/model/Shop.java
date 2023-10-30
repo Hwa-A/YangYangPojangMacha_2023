@@ -38,11 +38,13 @@ public class Shop implements Serializable {
     public Shop() {
     }
 
-    public Shop(String shopName, double latitude, double longitude , String  addressName, boolean pwayMobile, boolean pwayCard,
+    public Shop(String uid,String shopName,double latitude, double longitude ,String  addressName, boolean pwayMobile, boolean pwayCard,
                 boolean pwayAccount, boolean pwayCash, boolean openMon, boolean openTue,
                 boolean openWed, boolean openThu, boolean openFri, boolean openSat,
-                boolean openSun, String category , String storeImageUri, String menuImageUri,
-                boolean verified, boolean hasMeeting, float rating, String geohash ) {
+                boolean openSun, String category ,String storeImageUri, String menuImageUri,
+                boolean isVerified, boolean hasMeeting, float rating, String geohash ) {
+
+        this.uid= uid;
         this.shopName=shopName;
         this.latitude = latitude;
         this.longitude= longitude;
@@ -67,6 +69,9 @@ public class Shop implements Serializable {
         this.geohash = geohash;
     }
 
+    public String getUid() {  return uid; }
+
+    public void setUid(String uid) { this.uid = uid; }
 
     public double getLatitude() {
         return latitude;
@@ -171,8 +176,6 @@ public class Shop implements Serializable {
         return exteriorImagePath;
     }
     public String getPrimaryKey() { return primaryKey; }
-    public String getUid() { return uid;}
-
 
     public void setLatitude(double latitude) {
         this.latitude = latitude;
@@ -276,6 +279,5 @@ public class Shop implements Serializable {
     public void setExteriorImagePath(String exteriorImagePath) { this.exteriorImagePath = exteriorImagePath;}
     public void setPrimaryKey(String primaryKey) { this.primaryKey = primaryKey; }
 
-    public void setUid(String uid) { this.uid = uid; }
 }
 
