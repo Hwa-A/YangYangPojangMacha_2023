@@ -38,6 +38,7 @@ import com.yuhan.yangpojang.R;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import java.io.File;
 import java.util.Calendar;
 
 public class LogindetailAct extends AppCompatActivity {
@@ -51,6 +52,8 @@ public class LogindetailAct extends AppCompatActivity {
     ImageView profileImage;
     private Uri User_profileuri;
     private String User_img;
+    String imageUri = "drawable://" + R.drawable.profile_image;
+    private Uri imguri;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -63,6 +66,8 @@ public class LogindetailAct extends AppCompatActivity {
             user_info_uid = user.getUid();
         }
 
+        imguri = Uri.parse(imageUri);
+        User_profileuri = imguri;
         datetext = findViewById(R.id.showDate);
         Button datepickBtn = findViewById(R.id.selectDateBtn);
         EditText userNickname = findViewById(R.id.userNickname);
@@ -71,6 +76,7 @@ public class LogindetailAct extends AppCompatActivity {
         sexchecked = findViewById(R.id.sex);
         profileImage = findViewById(R.id.profileImagesetting);
         User_img = "/profile/"+user_info_uid;
+
 
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -134,7 +140,8 @@ public class LogindetailAct extends AppCompatActivity {
                     else {
                         if(getUserSex != "남자" && getUserSex != "여자" ){Toast.makeText(getApplicationContext(),"성별을 선택하여주세요",Toast.LENGTH_LONG).show(); }
                         else {
-                            writeNewUser(getUserName,getUserDate,getUserSex,getUserimg); upload();
+                            if(User_profileuri == imguri){ writeNewUser(getUserName,getUserDate,getUserSex,getUserimg); upload_profile(); }
+                            else{ writeNewUser(getUserName,getUserDate,getUserSex,getUserimg); upload_selected(); }
                         }
                     }
                 }
@@ -150,7 +157,7 @@ public class LogindetailAct extends AppCompatActivity {
         launcher.launch(intent);
     }
 
-    private void upload() {
+    private void upload_selected() {
         StorageReference storageReference = FirebaseStorage.getInstance().getReference("profile");
         storageReference.child(user_info_uid).putFile(User_profileuri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
             @Override
@@ -165,6 +172,24 @@ public class LogindetailAct extends AppCompatActivity {
         });
     }
 
+    private void upload_profile() {
+        StorageReference storageReference = FirebaseStorage.getInstance().getReference("profile");
+        Uri uri = Uri.parse("android.resource://com.yuhan.yangpojang/" + R.drawable.profile_image);
+
+        storageReference.child(user_info_uid).putFile(uri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                if(task.isSuccessful()) {
+                    Toast.makeText(LogindetailAct.this, "업로드에 성공했습니다", Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    Toast.makeText(LogindetailAct.this, "업로드에 실패했습니다", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
+
     private final ActivityResultLauncher<Intent> launcher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             new ActivityResultCallback<ActivityResult>() {
@@ -172,9 +197,11 @@ public class LogindetailAct extends AppCompatActivity {
                 public void onActivityResult(ActivityResult result) {
                     if(result.getResultCode() == RESULT_OK && result.getData() != null) {
                         User_profileuri = result.getData().getData();
+                        profileImage.setImageURI(User_profileuri);
                     }
                 }
             });
+
 
     private void writeNewUser(String name, String birthday, String sex, String img) {
         User user = new User(name, birthday,sex, img);
