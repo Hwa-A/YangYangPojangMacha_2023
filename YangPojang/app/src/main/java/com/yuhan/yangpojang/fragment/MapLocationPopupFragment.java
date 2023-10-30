@@ -136,21 +136,24 @@ public class MapLocationPopupFragment extends Fragment implements OnMapReadyCall
         bottomNavigationView.setVisibility(View.GONE);
         inputMethodManager = (InputMethodManager) requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
 
+
         // 기본위치 받아와 설정
         Bundle locationBundle = getArguments();
-        Log.d("abab", String.valueOf(locationBundle));
-//        String currentLocation = locationBundle.getString("currentLocation");
-//        double currentLatitude = locationBundle.getDouble("currentLatitude");
-//        double currentLongitude = locationBundle.getDouble("currentLongitude");
-//        Log.d("hihi",currentLocation);
         if(locationBundle!=null)
         {
-            Log.d("decaffaine", String.valueOf(locationBundle));
+            Log.d("caffaine", String.valueOf(locationBundle));
+           String currentLocation = locationBundle.getString("currentLocation");
+            double currentLatitude = locationBundle.getDouble("currentLatitude");
+            double currentLongitude = locationBundle.getDouble("currentLongitude");
 
-//            Log.d("etttddd",currentLocation);
-//            Log.d("fdsfsda", String.valueOf(currentLatitude));
-//            Log.d("fdsfsda", String.valueOf(currentLongitude));
+            Log.d("etttddd",currentLocation);
+            Log.d("fdsfsda", String.valueOf(currentLatitude));
+            Log.d("fdsfsda", String.valueOf(currentLongitude));
 
+            // 여기에서 받아온 위치 값을 사용하여 기본 핀을 추가
+            LatLng currentLatLng = new LatLng(currentLatitude, currentLongitude);
+            updateMapWithLatLng(currentLatLng);
+            moveMapToLocation(currentLatLng);
             // 이 부분에서 받은 위치 값을 이용해 지도를 설정
             // 여기서 popNaverMap은 지도 객체로 가정됨
 //            CameraUpdate cameraUpdate = CameraUpdate.scrollTo(new LatLng(currentLatitude, currentLongitude));
@@ -578,7 +581,6 @@ public class MapLocationPopupFragment extends Fragment implements OnMapReadyCall
                 for (DataSnapshot shopSnapshot : dataSnapshot.getChildren()) {
                     // 각 가게 데이터를 Shop 객체로 파싱
                     Shop shop = shopSnapshot.getValue(Shop.class);
-
                     // 가져온 가게 데이터에 대한 핀을 지도에 추가
                     addShopMarker(shop);
                 }

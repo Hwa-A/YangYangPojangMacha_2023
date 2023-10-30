@@ -334,10 +334,10 @@ public class ReportShopFragment extends Fragment implements ShopDataListener
                      Bundle locationBundle = new Bundle();
                      locationBundle.putString("currentLocation",addressName);
                      locationBundle.putDouble("currentLatitude",latitude);
-                     locationBundle.putDouble("currentLongtitude",longitude);
-                     Log.d("ㅂGg",addressName);
-                     Log.d("ㅂGg", String.valueOf(latitude));
-                     Log.d("ㅂGg", String.valueOf(longitude));
+                     locationBundle.putDouble("currentLongitude",longitude);
+                     Log.d("ㄱGg",addressName);
+                     Log.d("ㄱㄹGg", String.valueOf(latitude));
+                     Log.d("ㄱㄹGg", String.valueOf(longitude));
 
                      popupFragment.setArguments(locationBundle);
                      FragmentManager fragmentManager = getParentFragmentManager();
@@ -349,7 +349,6 @@ public class ReportShopFragment extends Fragment implements ShopDataListener
                     else
                     {
                         shopLocationText.setText("오류: 위치를 가져올 수 없음");
-
                     }
 
                 // 이미지 URI를 다시 설정
