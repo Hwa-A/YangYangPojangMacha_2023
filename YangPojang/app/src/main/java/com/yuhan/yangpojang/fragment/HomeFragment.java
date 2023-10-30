@@ -68,6 +68,7 @@ import com.yuhan.yangpojang.model.Shop;
 import com.yuhan.yangpojang.model.StoreData;
 import com.yuhan.yangpojang.onPochaListItemClickListener;
 
+
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -826,4 +827,5 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
             mNaverMap.removeOnCameraChangeListener(cameraChangeListener); //리스너 해제(메모리 누수 방지)
         }
     }
+
 }   // 끝

@@ -41,8 +41,11 @@
             android:windowSoftInputMode="adjustPan"/>
 
         <activity android:name=".login.LogindetailAct"/>
+
         <activity android:name=".Profile_setting"/>
         <activity android:name=".PermissionActivity"/>
+
+        <activity android:name=".mypage.account.accountPage"/>
 
         <meta-data
             android:name="com.naver.maps.map.CLIENT_ID"
