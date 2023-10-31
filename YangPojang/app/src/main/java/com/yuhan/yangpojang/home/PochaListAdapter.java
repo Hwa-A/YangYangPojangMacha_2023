@@ -4,15 +4,18 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.yuhan.yangpojang.R;
 import com.yuhan.yangpojang.fragment.HomeFragment;
+import com.yuhan.yangpojang.model.LikeShopData;
 import com.yuhan.yangpojang.model.Shop;
 import com.yuhan.yangpojang.onPochaListItemClickListener;
 
@@ -21,13 +24,14 @@ import java.util.ArrayList;
 public class PochaListAdapter extends RecyclerView.Adapter<PochaListAdapter.ViewHolder> {
     private ArrayList<Shop> mData = new ArrayList<Shop>();
     private static onPochaListItemClickListener mItemListener;
+    private HomeFragment homeFragment;
 
     // 생성자에서 데이터리스트 객체를 전달받음
-    public PochaListAdapter(ArrayList<Shop> list, onPochaListItemClickListener listener){
+    public PochaListAdapter(ArrayList<Shop> list, onPochaListItemClickListener listener, HomeFragment homeFragment){
         this.mData = list;
         mItemListener = listener;
+        this.homeFragment = homeFragment;
     }
-
     // 아이템 뷰를 저장하는 뷰홀더 클래스
     public static class ViewHolder extends RecyclerView.ViewHolder{
 
@@ -36,6 +40,8 @@ public class PochaListAdapter extends RecyclerView.Adapter<PochaListAdapter.View
         TextView pochalist_category;
         TextView pochalist_add;
         RatingBar pochalist_rating;
+        ImageButton pochalist_fullheart;
+        ImageButton pochalist_emptyheart;
 
         // 각 아이템 뷰의 구성 요소에 대한 참조 보관
         ViewHolder(View itemview){
@@ -54,12 +60,14 @@ public class PochaListAdapter extends RecyclerView.Adapter<PochaListAdapter.View
             pochalist_category = itemview.findViewById(R.id.pochalist_category);
             pochalist_add = itemview.findViewById(R.id.pochalist_add);
             pochalist_rating = itemview.findViewById(R.id.pochalist_rating);
+            pochalist_fullheart = itemview.findViewById(R.id.pochalist_fullheart);
+            pochalist_emptyheart = itemview.findViewById(R.id.pochalist_emptyheart);
 
         }
     }
 
     // 아이템 뷰를 위한 뷰홀더 객체를 생성하여 리턴
-    Context context;
+    static Context context;
     @NonNull
     @Override
     public PochaListAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -78,13 +86,35 @@ public class PochaListAdapter extends RecyclerView.Adapter<PochaListAdapter.View
         Shop mainStore = mData.get(position);
 
         String ExteriorImagePath = mainStore.getExteriorImagePath(); // URL 문자열을 가져옴
-        HomeFragment homeFragment = new HomeFragment();
         homeFragment.downloadFireStorage(context, ExteriorImagePath, holder.pochalist_image);
 
         holder.pochalist_name.setText(mainStore.getShopName());
         holder.pochalist_category.setText(mainStore.getCategory());
         holder.pochalist_add.setText(mainStore.getAddressName());
         holder.pochalist_rating.setRating(mainStore.getRating());
+        homeFragment.isLikeShop(mainStore.getPrimaryKey(), holder.pochalist_emptyheart, holder.pochalist_fullheart); // 하트 이미지 설정(디비에서 값 확인 후 출력)
+
+        // 하트 클릭 리스너 설정
+        LikeShopData likeShopData = new LikeShopData();
+        holder.pochalist_emptyheart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // 좋아요 목록에 추가
+                likeShopData.addLikedShop(mainStore.getPrimaryKey()); // 데이터 추가
+                homeFragment.isLikeShop(mainStore.getPrimaryKey(), holder.pochalist_emptyheart, holder.pochalist_fullheart); // 다시 likeShop데이터 검색 후 출력
+                Toast.makeText(context, "좋아요 목록에 추가되었습니다", Toast.LENGTH_SHORT).show();
+
+            }
+        });
+        holder.pochalist_fullheart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // 좋아요 목록에서 삭제
+                likeShopData.removeLikedShop(mainStore.getPrimaryKey());
+                homeFragment.isLikeShop(mainStore.getPrimaryKey(), holder.pochalist_emptyheart, holder.pochalist_fullheart);
+            }
+        });
+
     }
 
     @Override
