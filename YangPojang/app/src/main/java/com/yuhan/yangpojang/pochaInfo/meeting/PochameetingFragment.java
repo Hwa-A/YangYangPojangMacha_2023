@@ -21,13 +21,14 @@ import com.yuhan.yangpojang.pochaInfo.meeting.MeetingwriteActivity;
 public class PochameetingFragment extends Fragment {
     Shop shop;      // 포차 정보를 가진 객체
     String uid;     // 회원 id
-
     private OnFragmentReloadListener onFrgReloadListener;   // 프래그먼트 재실행하는 인터페이스
+
+    // ▼ 인터페이스 객체 초기화 코드
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         if(context instanceof OnFragmentReloadListener){
-            onFrgReloadListener = (OnFragmentReloadListener) context;   // 인터페이스 초기화
+            onFrgReloadListener = (OnFragmentReloadListener) context;   // 초기화
         }else {
             // 에러 처리
             throw new RuntimeException(context.toString() + "must implement OnFragmentReloadListener");
@@ -43,19 +44,18 @@ public class PochameetingFragment extends Fragment {
         Bundle bundle = getArguments();
         if(bundle != null){
             shop = (Shop)bundle.getSerializable("shopInfo");    // 포차 객체 초기화
-            uid = (String) bundle.getString("uid");             // 회원 id 초기화
+            uid = (String)bundle.getString("uid");             // 회원 id 초기화
         }else {
             // bundle이 null인 경우, 프래그먼트 재실행
             onFrgReloadListener.onFragmentReload("pchMeeting");
             return view;
         }
 
-        // ▼ 번개 작성 activity에 상단 포차 이름과 회원 ID 값을 주기 위한 코드
+        // ▼ 번개 작성 페이지(MeetingwriteActivity)로 데이터 전달 및 이동 코드
         // 객체 생성 및 초기화
-        FloatingActionButton meetingWriteFabtn;          // 번개 작성 activity 전환 버튼
+        FloatingActionButton meetingWriteFabtn;          // 번개 작성 버튼
         meetingWriteFabtn = (FloatingActionButton) view.findViewById(R.id.fabtn_pochameeting_writeButton);
-
-        // ▼ 버튼 클릭 시, 번개 작성 페이지(MeetingwriteActivity)로 이동 및 포차 데이터 전달 코드
+        // 버튼 클릭한 경우
         meetingWriteFabtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -64,7 +64,7 @@ public class PochameetingFragment extends Fragment {
                 intent.putExtra("pchKey", shop.getPrimaryKey());    // 포차 고유키
                 intent.putExtra("pchName", shop.getShopName());     // 포차 이름
                 intent.putExtra("uid", uid);                        // 회원 id
-                // Activity로 전환 및 데이터 전달
+                // Activity로 데이터 전달 및 이동
                 startActivity(intent);
             }
         });

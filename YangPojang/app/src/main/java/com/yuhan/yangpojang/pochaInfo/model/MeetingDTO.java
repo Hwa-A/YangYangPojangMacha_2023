@@ -1,54 +1,37 @@
 package com.yuhan.yangpojang.pochaInfo.model;
 // pch: pojangmacha
 public class MeetingDTO {
-    String uid;             // 회원 ID
-    String pchName;         // 포차 이름
-    String title;           // 번개 소개글
-    String date;            // 번개 날짜
-    String time;            // 번개 시간
-    String writeDate;       // 번개 작성 날짜
-    double maxMember;       // 번개 정원
+    private String uid;             // 작성한 회원 ID
+    private String pchKey;          // 포차 고유키
+    private String title;           // 번개 소개글
+    private String date;            // 번개 날짜(현재)
+    private String time;            // 번개 시간
+    private int maxMember;          // 번개 정원
+    private int minAge;             // 최소 연령대
+    private int maxAge;             // 최대 연령대
 
     // 생성자
-    public MeetingDTO(String uid, String pchName) {
+    // 데이터 읽는 경우, firebase에서 해당 클래스와 객체 매핑을 위한 생성자
+    public MeetingDTO() {
+    }
+    // 데이터 삽입 경우
+    public MeetingDTO(String uid, String pchKey, String title, String date, String time, int maxMember, int minAge, int maxAge) {
         this.uid = uid;
-        this.pchName = pchName;
-        this.title = "";
-        this.date = "";
-        this.time = "";
-        this.writeDate = "";
-        this.maxMember = 0;
-    }
-
-    // setter
-    public void setUid(String uid) {
-        this.uid = uid;
-    }
-    public void setPchName(String pchName) {
-        this.pchName = pchName;
-    }
-    public void setTitle(String title) {
+        this.pchKey = pchKey;
         this.title = title;
-    }
-    public void setDate(String date) {
         this.date = date;
-    }
-    public void setTime(String time) {
         this.time = time;
-    }
-    public void setWriteDate(String writeDate) {
-        this.writeDate = writeDate;
-    }
-    public void setMaxMember(double maxMember) {
         this.maxMember = maxMember;
+        this.minAge = minAge;
+        this.maxAge = maxAge;
     }
 
     // getter
     public String getUid() {
         return uid;
     }
-    public String getPchName() {
-        return pchName;
+    public String getPchKey() {
+        return pchKey;
     }
     public String getTitle() {
         return title;
@@ -59,10 +42,39 @@ public class MeetingDTO {
     public String getTime() {
         return time;
     }
-    public String getWriteDate() {
-        return writeDate;
-    }
-    public double getMaxMember() {
+    public int getMaxMember() {
         return maxMember;
+    }
+    public int getMinAge() {
+        return minAge;
+    }
+    public int getMaxAge() {
+        return maxAge;
+    }
+
+    // setter
+    public void setUid(String uid) {
+        this.uid = uid;
+    }
+    public void setPchKey(String pchKey) {
+        this.pchKey = pchKey;
+    }
+    public void setTitle(String title) {
+        this.title = title;
+    }
+    public void setDate(String date) {
+        this.date = date;
+    }
+    public void setTime(String time) {
+        this.time = time;
+    }
+    public void setMaxMember(int maxMember) {
+        this.maxMember = maxMember;
+    }
+    public void setMinAge(int minAge) {
+        this.minAge = minAge;
+    }
+    public void setMaxAge(int maxAge) {
+        this.maxAge = maxAge;
     }
 }

@@ -67,7 +67,7 @@ public class PochareviewFragment extends Fragment {
         Bundle bundle = getArguments();
         if(bundle != null){
             shop = (Shop)bundle.getSerializable("shopInfo");    // 포차 객체 초기화
-            uid = (String) bundle.getString("uid");             // 회원 id 초기화
+            uid = (String)bundle.getString("uid");             // 회원 id 초기화
         }else {
             // bundle이 null인 경우, 프래그먼트 재실행
             onFrgReloadListener.onFragmentReload("pchReview");
@@ -139,12 +139,11 @@ public class PochareviewFragment extends Fragment {
             }
         });
 */
-        // ▼ 리뷰 작성 activity에 포차 이름과 회원 ID 값을 주기 위한 코드
+        // ▼ 리뷰 작성 페이지(ReviewwriteActivity)로 데이터 전달 및 이동 코드
         // 객체 생성 및 초기화
-        FloatingActionButton reviewWriteFabtn;          // 리뷰 작성 activity 전환 버튼
+        FloatingActionButton reviewWriteFabtn;          // 리뷰 작성 버튼
         reviewWriteFabtn = (FloatingActionButton) view.findViewById(R.id.fabtn_pochareview_writeButton);
-
-        // 버튼 클릭 시, 리뷰 작성 페이지(ReviewwriteActivity)로 이동 및 포차 데이터 전달 코드
+        // 버튼 클릭한 경우
         reviewWriteFabtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -153,7 +152,7 @@ public class PochareviewFragment extends Fragment {
                 intent.putExtra("pchKey", shop.getPrimaryKey());    // 포차 고유키
                 intent.putExtra("pchName", shop.getShopName());     // 포차 이름
                 intent.putExtra("uid", uid);                        // 회원 id
-                // Activity로 전환 및 데이터 전달
+                // Activity로 데이터 전달 및 이동
                 startActivity(intent);
             }
         });
