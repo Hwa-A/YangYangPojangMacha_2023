@@ -224,7 +224,7 @@ public class ProfileShowFragment extends Fragment
 ////        startActivity(intent);  //인텐트 이동
 //
 //    }
-    
+
 
 
 
