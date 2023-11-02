@@ -17,7 +17,6 @@ import com.yuhan.yangpojang.R;
 import com.yuhan.yangpojang.fragment.HomeFragment;
 import com.yuhan.yangpojang.model.LikeShopData;
 import com.yuhan.yangpojang.model.Shop;
-import com.yuhan.yangpojang.onPochaListItemClickListener;
 
 import java.util.ArrayList;
 

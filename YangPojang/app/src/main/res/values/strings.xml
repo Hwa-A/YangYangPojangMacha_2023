@@ -133,6 +133,7 @@
     </string-array>
 
     <string-array name="category_alcohol_items">
+        <item>←</item>
         <item>전체</item>
         <item>고기</item>
         <item>해산물</item>

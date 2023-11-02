@@ -24,7 +24,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.PointF;
 import android.location.Location;
-import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -41,8 +40,6 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.naver.maps.geometry.LatLng;
@@ -70,7 +67,7 @@ import com.yuhan.yangpojang.home.PochaListAdapter;
 import com.yuhan.yangpojang.home.SearchActivity;
 import com.yuhan.yangpojang.model.Shop;
 import com.yuhan.yangpojang.model.StoreData;
-import com.yuhan.yangpojang.onPochaListItemClickListener;
+import com.yuhan.yangpojang.home.onPochaListItemClickListener;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -184,6 +181,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
         categoryList.setAdapter(categoryListAdapter);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
         categoryList.setLayoutManager(layoutManager);
+
     }
 
     // 위치 권한 거부 시 리스너 등록(팝업창)
@@ -869,5 +867,4 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
             mNaverMap.removeOnCameraChangeListener(cameraChangeListener); //리스너 해제(메모리 누수 방지)
         }
     }
-
 }   // 끝
