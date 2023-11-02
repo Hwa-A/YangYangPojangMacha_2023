@@ -63,11 +63,12 @@ public class PochameetingFragment extends Fragment {
                 // intent에 MeetingwriteActivity에 전달할 데이터 추가
                 intent.putExtra("pchKey", shop.getPrimaryKey());    // 포차 고유키
                 intent.putExtra("pchName", shop.getShopName());     // 포차 이름
-                intent.putExtra("uid", uid);                        // 회원 id
+                intent.putExtra("uid", uid);        // 회원 id
                 // Activity로 데이터 전달 및 이동
                 startActivity(intent);
             }
         });
+
 
         return view;
     }

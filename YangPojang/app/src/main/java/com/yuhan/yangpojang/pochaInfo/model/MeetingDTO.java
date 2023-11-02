@@ -1,7 +1,7 @@
 package com.yuhan.yangpojang.pochaInfo.model;
 // pch: pojangmacha
 public class MeetingDTO {
-    private String uid;             // 작성한 회원 ID
+    private String hostUid;             // 개최 회원 ID
     private String pchKey;          // 포차 고유키
     private String title;           // 번개 소개글
     private String date;            // 번개 날짜(현재)
@@ -14,21 +14,10 @@ public class MeetingDTO {
     // 데이터 읽는 경우, firebase에서 해당 클래스와 객체 매핑을 위한 생성자
     public MeetingDTO() {
     }
-    // 데이터 삽입 경우
-    public MeetingDTO(String uid, String pchKey, String title, String date, String time, int maxMember, int minAge, int maxAge) {
-        this.uid = uid;
-        this.pchKey = pchKey;
-        this.title = title;
-        this.date = date;
-        this.time = time;
-        this.maxMember = maxMember;
-        this.minAge = minAge;
-        this.maxAge = maxAge;
-    }
 
     // getter
-    public String getUid() {
-        return uid;
+    public String getHostUid() {
+        return hostUid;
     }
     public String getPchKey() {
         return pchKey;
@@ -53,8 +42,8 @@ public class MeetingDTO {
     }
 
     // setter
-    public void setUid(String uid) {
-        this.uid = uid;
+    public void setHostUid(String uid) {
+        this.hostUid = hostUid;
     }
     public void setPchKey(String pchKey) {
         this.pchKey = pchKey;
