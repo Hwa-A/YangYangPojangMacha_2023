@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
                     if (itemId == R.id.navigation_map) {
                         getSupportFragmentManager().beginTransaction()
                                 .replace(R.id.fragment_container, homeFragment)
-                                .addToBackStack(null)
+                                .addToBackStack(null) //뒤로가기 버튼 클릭 시 이전 페이지로
                                 .commitAllowingStateLoss();
                         return true;
                     } else if (itemId == R.id.navigation_report_shop) {
