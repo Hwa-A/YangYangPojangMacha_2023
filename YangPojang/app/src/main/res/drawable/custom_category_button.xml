@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="rectangle">
+            <corners android:radius="12dp" />
+            <solid android:color="@android:color/white" />
+            <stroke
+                android:width="0.5dp"
+                android:color="#BFBFBF" /> <!-- 원하는 윤곽선 색상 및 두께를 설정하세요 -->
+        </shape>
+    </item>
+</selector>

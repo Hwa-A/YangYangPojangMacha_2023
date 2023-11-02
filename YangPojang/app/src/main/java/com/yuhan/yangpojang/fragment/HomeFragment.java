@@ -61,6 +61,7 @@ import com.naver.maps.map.util.FusedLocationSource;
 import com.naver.maps.map.util.MarkerIcons;
 import com.naver.maps.map.widget.CompassView;
 import com.naver.maps.map.widget.LocationButtonView;
+import com.yuhan.yangpojang.home.CategoryListAdapter;
 import com.yuhan.yangpojang.model.LikeShopData;
 import com.yuhan.yangpojang.pochaInfo.info.PochainfoActivity;
 import com.yuhan.yangpojang.R;
@@ -176,6 +177,13 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
                 mNaverMap.removeOnLocationChangeListener(this); // 리스너 해제
             }
         });
+
+        // 카테고리 구현
+        RecyclerView categoryList = getActivity().findViewById(R.id.category_list);
+        CategoryListAdapter categoryListAdapter = new CategoryListAdapter(getActivity());
+        categoryList.setAdapter(categoryListAdapter);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
+        categoryList.setLayoutManager(layoutManager);
     }
 
     // 위치 권한 거부 시 리스너 등록(팝업창)
