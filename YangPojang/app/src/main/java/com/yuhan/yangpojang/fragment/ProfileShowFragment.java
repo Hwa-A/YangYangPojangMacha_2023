@@ -14,9 +14,13 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.activity.OnBackPressedCallback;
+import androidx.activity.OnBackPressedDispatcher;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -99,33 +103,42 @@ public class ProfileShowFragment extends Fragment
 
 
 
-        //사용자 정보 불러오기
+        // 사용자 정보 불러오기
         userNick = view.findViewById(R.id.userNickname);
         userImg = view.findViewById(R.id.showUserImg);
 
         loadUserProfile = new LoadUserProfile(user_info_uid, new LoadUserProfile.dataLoadedCallback() {
             @Override
             public void onDataLoaded(String nick, String img) {
-                // 프로필 사진을 위한 storage 연결
-                FirebaseStorage storage = FirebaseStorage.getInstance();
-                StorageReference storageRef = storage.getReference().child(img);    // LoadUserProfile에서 받아온 이미지 경로를 storage에 연결
-                storageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                    @Override
-                    public void onSuccess(Uri uri) {
-                        Log.d("프로필", "onSuccess: " + img);
-                        // 프로필 출력 칸에 보여지도록 설정
-                        Glide.with(requireContext())
-                                .load(uri)
-                                .into(userImg);
-                    }
-                });
+                if (isAdded()) { // 프래그먼트가 활성화되어 있을 경우에만 작동
+                    // 프로필 사진을 위한 storage 연결
+                    FirebaseStorage storage = FirebaseStorage.getInstance();
+                    StorageReference storageRef = storage.getReference().child(img);    // LoadUserProfile에서 받아온 이미지 경로를 storage에 연결
+                    storageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            Log.d("프로필", "onSuccess: " + img);
+                            if (isAdded()) { // 다시 확인
+                                // 프로필 출력 칸에 보여지도록 설정
+                                Glide.with(requireContext())
+                                        .load(uri)
+                                        .into(userImg);
+                            }
+                        }
+                    });
 
-                userNick.setText(nick);
-                Log.d("프로필", "변경되야 함" + nick + img);
-
+                    userNick.setText(nick);
+                    Log.d("프로필", "변경되야 함" + nick + img);
+                }
+                else{
+                    // 만약 프래그먼트가 활성화 되지 않았다면 프래그먼트를 다시 연결
+                    view = (ViewGroup) inflater.inflate(R.layout.fragment_profile, container, false);
+                }
             }
+
         });
-        //사용자 정보 불러오기
+        // 사용자 정보 불러오기
+
 
 
 
@@ -201,6 +214,18 @@ public class ProfileShowFragment extends Fragment
 
 
     }
+
+//    // 뒤로가기 버튼 클릭 시, HomeFragment로 넘어가도록
+//    public void onBackPress(){
+//
+//        Log.d("프로필", "onBackPress: 뒤로가기 버튼 클릭 시, HomeFragment로");
+//        Intent intent = new Intent(getContext(), HomeFragment.class); //지금 액티비티에서 다른 액티비티로 이동하는 인텐트 설정
+////        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);    //인텐트 플래그 설정
+////        startActivity(intent);  //인텐트 이동
+//
+//    }
+    
+
 
 
 }

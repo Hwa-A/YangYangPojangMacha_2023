@@ -5,6 +5,7 @@ import static android.app.Activity.RESULT_OK;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -41,6 +42,7 @@ public class ChangeImgDialog extends Dialog{
         changeImg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Log.d("팝업", "onClick: changeImg");
                 // 이미지 변경 동작 구현
                 // 예를 들어 갤러리 열기 등
             }

@@ -40,6 +40,7 @@ public class MyLikeShopGetList {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot snap : snapshot.getChildren()) {
 
+                    bflist.clear();
                     // 해당 UID의 like가게 리스트 저장
                     bflist.add(snap.getKey());
                     Log.d(TAG, "onDataChange: bflist");
@@ -52,6 +53,7 @@ public class MyLikeShopGetList {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot shopSnapshot) {
                             if (shopSnapshot.exists()) {
+                                shopDatas.clear();
                                 Log.d("테스트like", "onDataChange: 2");
                                 // 가게 정보 불러오기
                                 String category = shopSnapshot.child("category").getValue(String.class);

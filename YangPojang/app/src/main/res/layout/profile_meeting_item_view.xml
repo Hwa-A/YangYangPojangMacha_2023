@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="160dp"
+    android:layout_height="180dp"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="10dp"
+    android:background="@drawable/border_rounded_coner_gray"
+    android:elevation="40dp">
+
+
+    <TextView
+        android:id="@+id/meetingName"
+        android:layout_width="135dp"
+        android:layout_height="19dp"
+        android:text="meeting name"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.36"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.043"
+        android:textAlignment="center"
+        android:gravity="center"/>
+
+    <TextView
+        android:id="@+id/meetingShopAdd"
+        android:layout_width="146dp"
+        android:layout_height="25dp"
+        android:text="address"
+        android:textSize="10sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.428"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/meetingName"
+        app:layout_constraintVertical_bias="0.054"
+        android:textAlignment="center" />
+
+    <ScrollView
+        android:id="@+id/meeingMember"
+        android:layout_width="84dp"
+        android:layout_height="101dp"
+        android:layout_marginTop="4dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.073"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/meetingShopAdd"
+        app:layout_constraintVertical_bias="0.1">
+
+        <TextView
+            android:layout_width="84dp"
+            android:layout_height="10dp"
+            android:text="member1"
+            android:textAlignment="center"
+            android:gravity="center"/>
+    </ScrollView>
+
+    <TextView
+        android:id="@+id/meetingShopCategory"
+        android:layout_width="58dp"
+        android:layout_height="13dp"
+        android:text="shopCategory"
+        android:textSize="10sp"
+        android:minHeight="0dp"
+        android:minWidth="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.333"
+        app:layout_constraintStart_toEndOf="@+id/meeingMember"
+        app:layout_constraintTop_toBottomOf="@+id/meetingShopAdd"
+        app:layout_constraintVertical_bias="0.055"
+        android:textAlignment="center"
+        android:gravity="center"/>
+
+    <TextView
+        android:id="@+id/meetingMin"
+        android:layout_width="18dp"
+        android:layout_height="11dp"
+        android:text="N"
+        android:textSize="10sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.274"
+        app:layout_constraintStart_toEndOf="@+id/meeingMember"
+        app:layout_constraintTop_toBottomOf="@+id/meetingShopCategory"
+        app:layout_constraintVertical_bias="0.517"
+        android:textAlignment="center"
+        android:gravity="center"/>
+
+    <TextView
+        android:id="@+id/meetingMax"
+        android:layout_width="18dp"
+        android:layout_height="11dp"
+        android:text="N"
+        android:textSize="10sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.2"
+        app:layout_constraintStart_toEndOf="@+id/meetingMin"
+        app:layout_constraintTop_toBottomOf="@+id/meetingShopCategory"
+        app:layout_constraintVertical_bias="0.521"
+        android:textAlignment="center"
+        android:gravity="center"/>
+
+    <TextView
+        android:id="@+id/division"
+        android:layout_width="wrap_content"
+        android:layout_height="11dp"
+        android:text="/"
+        android:textSize="10sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/meetingMax"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/meetingMin"
+        app:layout_constraintTop_toBottomOf="@+id/meetingShopCategory"
+        app:layout_constraintVertical_bias="0.521"
+        android:textAlignment="center"
+        android:gravity="center"/>
+
+    <Button
+        android:id="@+id/cancleJoin"
+        android:layout_width="51dp"
+        android:layout_height="27dp"
+        android:backgroundTint="#FF5722"
+        android:gravity="center"
+        android:text="참석취소"
+        android:textAlignment="center"
+        android:textSize="8sp"
+
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.555"
+        app:layout_constraintStart_toEndOf="@+id/meeingMember"
+        app:layout_constraintTop_toBottomOf="@+id/meetingMin"
+        app:layout_constraintVertical_bias="0.200" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
