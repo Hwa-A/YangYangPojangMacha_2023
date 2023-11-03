@@ -1,7 +1,5 @@
 package com.yuhan.yangpojang.mypage.UserProfile;
 
-import static android.app.Activity.RESULT_OK;
-
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;

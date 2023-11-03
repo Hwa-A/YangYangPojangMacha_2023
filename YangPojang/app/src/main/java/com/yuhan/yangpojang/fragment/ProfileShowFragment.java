@@ -9,7 +9,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -18,8 +17,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -27,10 +24,10 @@ import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.yuhan.yangpojang.R;
+import com.yuhan.yangpojang.mypage.account.accountPage;
 import com.yuhan.yangpojang.mypage.Adapter.MyLikeShopAdapter;
 import com.yuhan.yangpojang.mypage.Adapter.MyReportShopAdapter;
 import com.yuhan.yangpojang.mypage.GetList.MyLikeShopGetList;
@@ -39,7 +36,6 @@ import com.yuhan.yangpojang.mypage.Model.MyLikeShopModel;
 import com.yuhan.yangpojang.mypage.Model.MyReportShopModel;
 import com.yuhan.yangpojang.mypage.UserProfile.ChangeImgDialog;
 import com.yuhan.yangpojang.mypage.UserProfile.LoadUserProfile;
-import com.yuhan.yangpojang.mypage.account.accountPage;
 
 import java.util.ArrayList;
 

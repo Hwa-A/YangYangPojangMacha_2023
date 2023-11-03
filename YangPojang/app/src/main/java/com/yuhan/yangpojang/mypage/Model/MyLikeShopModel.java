@@ -1,8 +1,12 @@
 package com.yuhan.yangpojang.mypage.Model;
 
+import com.yuhan.yangpojang.model.Shop;
+
 import java.io.Serializable;
 
-public class MyLikeShopModel implements Serializable {
+
+// Shop을 상속 받아 Adapter에서 강제적 형변환을 하지 않아도 괜찮다.
+public class MyLikeShopModel extends Shop {
     private double latitude; // x 좌표
     private double longitude; // y 좌표
     private String shopName;
