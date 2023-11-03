@@ -477,6 +477,9 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
                         visibilityMarker(pochas_marker, stores.get(i));
                         pochas_marker.setPosition(new LatLng(stores.get(i).getLatitude(), stores.get(i).getLongitude()));
 
+                        // 인증, 번개 버튼 상태에 따른 마커 표시
+                        updateMarker(pochas_marker, stores.get(i));
+
                         // 초기 카테고리 상태에 따른 마커 표시
                         setMarkerByCategory(itemName, stores.get(i), pochas_marker);
 
