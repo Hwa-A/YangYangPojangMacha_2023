@@ -28,8 +28,9 @@ public class FirebaseUtils {
         String shopKey = databaseReference.child("shops").push().getKey();
         DatabaseReference shopRef = databaseReference.child("shops").child(shopKey);
         reportShop.setShopKey(shopKey);
-        DatabaseReference reportShopRef = databaseReference.child("reportShop").child(reportShop.getUid()).child(shopKey);
+//        DatabaseReference reportShopRef = databaseReference.child("reportShop").child(reportShop.getUid()).child(shopKey);
 
+        DatabaseReference reportShopRef = databaseReference.child("reportShop").child(reportShop.getUid()).child(shopKey);
 
 
 

@@ -11,9 +11,13 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.yuhan.yangpojang.R;
 import com.yuhan.yangpojang.model.Shop;
 import com.yuhan.yangpojang.model.Store;
@@ -53,15 +57,45 @@ public class PochainfoActivity extends AppCompatActivity implements Serializable
         pchMeetingFrg = new PochameetingFragment();
         frgManager = getSupportFragmentManager();
         TextView pchNameTv = findViewById(R.id.tv_pochainfo_pochaname);  // 포차 이름 TextView
-
+        ImageView pchImgview = findViewById(R.id.img_pochainfo_pochaImage); // 포차 이미지
         // ▼ HomeFragment에서 전달 받은 포차 객체 받아 처리
         Intent intent = getIntent();
         if(intent != null){  // Serializable(객체 직렬화): 객체를 바이트로 저장하는 자바의 인터페이스
             shop = (Shop) intent.getSerializableExtra("shopInfo");  // 직렬화된 객체 수신
             String pchName = shop.getShopName(); // 포차 이름 얻기
+            
+            //포차 이미지 얻기 위한 firebase/firebaseStorage 호출
+            FirebaseStorage storage = FirebaseStorage.getInstance();
+            String pchImagePath= shop.getExteriorImagePath(); // 포차 storage의 경로 얻기
+
+            if(pchImagePath != null && !pchImagePath.isEmpty())  //포차 이미지가 있는 경우(즉 경로가 null이 아닌 경우)
+            {
+                StorageReference storageRef = storage.getReference().child(pchImagePath);
+                storageRef.getDownloadUrl().addOnSuccessListener(uri -> {
+                    // 이미지 다운로드 URL 얻기에 성공하면 Glide를 사용하여 이미지를 로드하고 표시
+                    Glide.with(this)
+                            .load(uri)
+                            .placeholder(R.drawable.img_loading) // 이미지 로딩중 표시할 이미지
+                            .error(R.drawable.error) //  이미지 로딩 오류 시 표시할 이미지
+                            .fitCenter()
+                            .into(pchImgview);
+                }).addOnFailureListener(exception -> {
+                    // 이미지가 null은 아니지만 다운로드 URL 얻기에 실패할 경우 오류 처리
+                    Log.e("FirebaseImageLoad", "이미지 다운로드 실패: " + exception.getMessage());
+                });
+            }
+            else // 이미지 경로가 없는 경우 (사진 등록이 안되있는 경우)
+            {
+                // If image path is null or empty, load error image
+                pchImgview.setImageResource(R.drawable.error);
+            }
+
             // 포차 이름 변경
             pchNameTv.setText(pchName);
-        } else {
+
+        } //intent가 null이라면 else
+        else
+        {
             Toast.makeText(this, "해당 가게를 찾을 수 없습니다.", Toast.LENGTH_LONG).show();
         }
 
