@@ -31,17 +31,15 @@ public class MyReportShopGetList {
     public void GetMyReportShopList(String UID, final dataLoadedCallback callback)
     {
         this.UID = UID;     //UID 연결
-
+        bflist.clear();
         //DB테이블 연결
         databaseReference = firebaseDatabase.getReference("reportShop/"+UID);
-        Log.d("프로필report", "GetMyReportShopList: 테스트report 값 reportShop/" + UID );
-        bflist.clear();
+        Log.d(TAG, "GetMyReportShopList: 테스트report 값 reportShop/" + UID );
 
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot snap : snapshot.getChildren()) {
-
                     // 해당 UID의 like가게 리스트 저장
                     bflist.add(snap.getKey());
                     Log.d(TAG, "테스트report onDataChange: bflist");
@@ -54,7 +52,7 @@ public class MyReportShopGetList {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot shopSnapshot) {
                             if (shopSnapshot.exists()) {
-                                Log.d("프로필report", "onDataChange: 2");
+                                Log.d("테스트report", "onDataChange: 2");
                                 // 가게 정보 불러오기
                                 String category = shopSnapshot.child("category").getValue(String.class);
                                 String addressName = shopSnapshot.child("addressName").getValue(String.class);
@@ -67,16 +65,15 @@ public class MyReportShopGetList {
                                 shop.setShopName(shopName);
 
                                 shopDatas.add(shop); // 가져온 가게 정보를 likeShops 리스트에 추가
-                                Log.d("프로필report", "Category: " + category);
-                                Log.d("프로필report", "Address Name: " + addressName);
-                                Log.d("프로필report", "Shop Name: " + shopName);
+                                Log.d("테스트report", "Category: " + category);
+                                Log.d("테스트report", "Address Name: " + addressName);
+                                Log.d("테스트report", "Shop Name: " + shopName);
 
 
-                                if(bflist.size() == shopDatas.size()){
-                                    Log.d("프로필report", "shopDatas.size() " + shopDatas);
+                                //if(bflist.size() == shopDatas.size()){
                                     callback.onDataLoaded(shopDatas);
-                                }
-                                Log.d("프로필report", "shop size-----: " + shopDatas.size());
+                                //}
+                                Log.d("테스트report", "shop size-----: " + shopDatas.size());
                             }
 
                         }

@@ -30,6 +30,7 @@ public class MyLikeShopGetList {
     public void GetMyLikeShopList(String UID, final dataLoadedCallback callback)
     {
         this.UID = UID;     //UID 연결
+        bflist.clear();
 
         //DB테이블 연결
         databaseReference = firebaseDatabase.getReference("likeShop/"+UID);
@@ -39,7 +40,6 @@ public class MyLikeShopGetList {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot snap : snapshot.getChildren()) {
-
                     // 해당 UID의 like가게 리스트 저장
                     bflist.add(snap.getKey());
                     Log.d(TAG, "onDataChange: bflist");
@@ -70,9 +70,9 @@ public class MyLikeShopGetList {
                                 Log.d("테스트like", "Shop Name: " + shopName);
 
 
-                                if(bflist.size() == shopDatas.size()){
+                                //if(bflist.size() == shopDatas.size()){
                                     callback.onDataLoaded(shopDatas);
-                                }
+                                //}
                                 Log.d("테스트like", "shop size-----: " + shopDatas.size());
                             }
 
