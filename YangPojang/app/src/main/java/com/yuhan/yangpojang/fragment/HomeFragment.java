@@ -94,6 +94,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
     ImageButton authoff, meetingoff, authon, meetingon; //인증, 번개 버튼
     boolean auth, meeting; //auth, meeting 상태를 확인하는 변수
     UiSettings uiSettings;
+    CategoryListAdapter categoryListAdapter;
 
     /* onMapReady()메서드 - 지도가 준비되었을 때 호출되며, NaverMap 객체에 위치 소스를 설정하고 권한을 확인하는 작업 수행
                              - 지도 초기화 및 사용자 정의 작업 수행, 지도가 초기화되고 사용 가능한 상태일 때 호출되는 콜백 */
@@ -177,7 +178,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
 
         // 카테고리 구현
         RecyclerView categoryList = getActivity().findViewById(R.id.category_list);
-        CategoryListAdapter categoryListAdapter = new CategoryListAdapter(getActivity());
+        categoryListAdapter = new CategoryListAdapter(getActivity());
         categoryList.setAdapter(categoryListAdapter);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
         categoryList.setLayoutManager(layoutManager);
@@ -450,6 +451,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
     ArrayList<Marker> pochas;
     Marker currentClickedMarker; //현재 클릭한 마커를 추적하기 위한 변수
     ConstraintLayout pocha_info; //가게 정보 탭
+    String itemName = null; //선택된 카테고리를 받아올 변수
 
     public void loadStoreData(){
         StoreData.initializeStores(new StoreData.dataLoadedCallback() {
@@ -471,7 +473,9 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
                         Marker pochas_marker = new Marker();
                         visibilityMarker(pochas_marker, stores.get(i));
                         pochas_marker.setPosition(new LatLng(stores.get(i).getLatitude(), stores.get(i).getLongitude()));
-                        pochas_marker.setMap(mNaverMap);
+
+                        // 초기 카테고리 상태에 따른 마커 표시
+                        setMarkerByCategory(itemName, stores.get(i).getCategory(), pochas_marker);
 
                         pochas.add(pochas_marker);
                         int index = i;
@@ -499,10 +503,43 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
                             }
                         });
                     }
+
+                    // 카테고리 클릭 리스너
+                    categoryListAdapter.setOnItemClickListener(new CategoryListAdapter.onItemClickListener() {
+                        @Override
+                        public void onItemClick(int position, String item) {
+                            itemName = item;
+                            for(int i = 0; i < pochas.size(); i++){
+                                setMarkerByCategory(itemName, stores.get(i).getCategory(), pochas.get(i));
+                            }
+                        }
+                    });
                 }
             }
         });
     }   // loadStoreData() 끝
+
+    // 카테고리 클릭 상태에 따른 마커 출력
+    public void setMarkerByCategory(String itemName, String categoryName, Marker pochaMarker){
+        // 마커 출력 기준
+        // 1. 카테고리 클릭하지 않았을 경우 -> 전체 마커 표시
+        // 2. "전체"카테고리를 클릭했을 경우 -> 전체 마커 표시
+        // 3. "←"카테고리 클랙했을 경우 -> 전체 마커 표시
+        if(itemName == null || Objects.equals(itemName, "전체") || Objects.equals(itemName, "←")){
+            pochaMarker.setMap(mNaverMap);
+        }
+        else if((Objects.equals(itemName, "술") || Objects.equals(itemName, "술&전체")) && categoryName.startsWith("술")){
+            // 4. "술"이나 "술&전체"클릭 할 경우 술에 대한 카테고리만 표시
+            pochaMarker.setMap(mNaverMap);
+        }
+        else if(Objects.equals(itemName, categoryName)) {
+            // 5. 클릭한 카테고리와 같은 카테고리를 갖고 있는 마커 -> 해당 마커 표시
+            pochaMarker.setMap(mNaverMap);
+        }
+        else{
+            pochaMarker.setMap(null);
+        }
+    }
 
 
     // 마커 클릭 시 하단에 가게 상세정보 탭 설정

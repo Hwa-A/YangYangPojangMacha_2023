@@ -134,14 +134,14 @@
 
     <string-array name="category_alcohol_items">
         <item>←</item>
-        <item>전체</item>
-        <item>고기</item>
-        <item>해산물</item>
-        <item>전</item>
-        <item>마른안주</item>
-        <item>면류</item>
-        <item>탕류</item>
-        <item>기타</item>
+        <item>술&amp;전체</item>
+        <item>술&amp;고기</item>
+        <item>술&amp;해산물</item>
+        <item>술&amp;전</item>
+        <item>술&amp;마른안주</item>
+        <item>술&amp;면류</item>
+        <item>술&amp;탕류</item>
+        <item>술&amp;기타</item>
     </string-array>
 
 </resources>

@@ -28,7 +28,13 @@ public class CategoryListAdapter extends RecyclerView.Adapter<CategoryListAdapte
     private final ArrayList<String> categoryLists; // 일반 카테고리 리스트
     private ArrayList<String> categoryAlcoholLists; // 술 카테고리 리스트
     private int selectedPosition = -1; // 선택된 아이템 위치 확인 변수
-    
+
+    private onItemClickListener onItemClickListener;
+
+    public void setOnItemClickListener(onItemClickListener listener) {
+        this.onItemClickListener = listener;
+    }
+
     public CategoryListAdapter(Context context){
         this.Context = context;
         categoryLists = new ArrayList<>(Arrays.asList(Context.getResources().getStringArray(R.array.category_items)));
@@ -61,7 +67,13 @@ public class CategoryListAdapter extends RecyclerView.Adapter<CategoryListAdapte
     @Override
     public void onBindViewHolder(@NonNull CategoryListAdapter.ViewHolder holder, int position) {
         String item = currentCategoryLists.get(position);
-        holder.category_item.setText(item);
+        if(Objects.equals(item, "←") || !item.startsWith("술&")){
+            holder.category_item.setText(item);
+        }else{
+            String itemAlcohol = item.replace("술&", "");
+            holder.category_item.setText(itemAlcohol);
+        }
+
 
         final int currentPosition = holder.getAdapterPosition();
 
@@ -84,6 +96,8 @@ public class CategoryListAdapter extends RecyclerView.Adapter<CategoryListAdapte
         holder.category_item.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                selectedPosition = currentPosition; // 선택된 위치 업데이트
+
                 if (Objects.equals(item, "술")) { // "술" 클릭 시 리스트 교체
                     currentCategoryLists.clear();
                     currentCategoryLists.addAll(categoryAlcoholLists);
@@ -92,13 +106,11 @@ public class CategoryListAdapter extends RecyclerView.Adapter<CategoryListAdapte
                     currentCategoryLists.addAll(categoryLists);
                 }
 
-                if (selectedPosition == currentPosition) {
-                    selectedPosition = -1; // 이미 선택된 아이템을 다시 클릭하면 선택 해제 -> "전체"에 포커스
-                } else {
-                    selectedPosition = currentPosition; // 선택된 위치 업데이트
-                }
-
                 notifyDataSetChanged(); // 어댑터 갱신
+
+                if (onItemClickListener != null) {
+                    onItemClickListener.onItemClick(currentPosition, item);
+                }
             }
         });
 
@@ -113,6 +125,10 @@ public class CategoryListAdapter extends RecyclerView.Adapter<CategoryListAdapte
     @Override
     public int getItemCount() {
         return currentCategoryLists.size();
+    }
+
+    public interface onItemClickListener{
+        void onItemClick(int position, String item);
     }
 
 
