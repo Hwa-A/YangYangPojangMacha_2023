@@ -10,9 +10,7 @@ public class MyLikeShopModel {
         this.shopName = shopName;
     }
 
-    public void setAddressName(String add) {
-        this.setAddressName = add;
-    }
+    public void setAddressName(String add) { this.setAddressName = add; }
 
     public void setCategory(String category) {
         this.category = category;
@@ -22,9 +20,7 @@ public class MyLikeShopModel {
         return shopName;
     }
 
-    public String getAddressName() {
-        return setAddressName;
-    }
+    public String getAddressName() { return setAddressName; }
 
     public String getCategory() {
         return category;

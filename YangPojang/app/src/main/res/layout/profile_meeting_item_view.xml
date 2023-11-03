@@ -11,7 +11,7 @@
 
 
     <TextView
-        android:id="@+id/meetingName"
+        android:id="@+id/MyReviewShopName"
         android:layout_width="155dp"
         android:layout_height="20dp"
         android:gravity="center"
@@ -25,7 +25,7 @@
         app:layout_constraintVertical_bias="0.037" />
 
     <TextView
-        android:id="@+id/meetingShopAdd"
+        android:id="@+id/MyReviewShopAdd"
         android:layout_width="171dp"
         android:layout_height="25dp"
         android:text="address"
@@ -35,7 +35,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.428"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/meetingName"
+        app:layout_constraintTop_toBottomOf="@+id/MyReviewShopName"
         app:layout_constraintVertical_bias="0.054" />
 
     <TextView
@@ -50,7 +50,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.186"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/meetingShopAdd"
+        app:layout_constraintTop_toBottomOf="@+id/MyReviewShopAdd"
         app:layout_constraintVertical_bias="0.0" />
 
     <ScrollView
@@ -85,11 +85,11 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.043"
         app:layout_constraintStart_toEndOf="@+id/meeingMemberScroll"
-        app:layout_constraintTop_toBottomOf="@+id/meetingShopAdd"
+        app:layout_constraintTop_toBottomOf="@+id/MyReviewShopAdd"
         app:layout_constraintVertical_bias="0.057" />
 
     <TextView
-        android:id="@+id/meetingShopCategory"
+        android:id="@+id/MyReviewCategory"
         android:layout_width="58dp"
         android:layout_height="13dp"
         android:gravity="center"
@@ -102,7 +102,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.34"
         app:layout_constraintStart_toEndOf="@+id/textView4"
-        app:layout_constraintTop_toBottomOf="@+id/meetingShopAdd"
+        app:layout_constraintTop_toBottomOf="@+id/MyReviewShopAdd"
         app:layout_constraintVertical_bias="0.091" />
 
     <TextView
@@ -135,7 +135,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.058"
         app:layout_constraintStart_toEndOf="@+id/textView6"
-        app:layout_constraintTop_toBottomOf="@+id/meetingShopCategory"
+        app:layout_constraintTop_toBottomOf="@+id/MyReviewCategory"
         app:layout_constraintVertical_bias="0.0" />
 
     <TextView

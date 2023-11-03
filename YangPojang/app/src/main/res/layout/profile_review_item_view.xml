@@ -11,7 +11,7 @@
 
 
     <TextView
-        android:id="@+id/meetingName"
+        android:id="@+id/MyReviewShopName"
         android:layout_width="187dp"
         android:layout_height="20dp"
         android:text="test shop"
@@ -23,7 +23,7 @@
         app:layout_constraintVertical_bias="0.058" />
 
     <TextView
-        android:id="@+id/meetingShopAdd"
+        android:id="@+id/MyReviewShopAdd"
         android:layout_width="195dp"
         android:layout_height="13dp"
         android:text="address"
@@ -31,12 +31,12 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.333"
-        app:layout_constraintStart_toEndOf="@+id/reviewImageView"
-        app:layout_constraintTop_toBottomOf="@+id/meetingName"
+        app:layout_constraintStart_toEndOf="@+id/MyReviewImage"
+        app:layout_constraintTop_toBottomOf="@+id/MyReviewShopName"
         app:layout_constraintVertical_bias="0.1" />
 
     <TextView
-        android:id="@+id/meetingShopCategory"
+        android:id="@+id/MyReviewCategory"
         android:layout_width="77dp"
         android:layout_height="11dp"
         android:text="shopCategory"
@@ -44,12 +44,12 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.067"
-        app:layout_constraintStart_toEndOf="@+id/reviewImageView"
-        app:layout_constraintTop_toBottomOf="@+id/meetingShopAdd"
+        app:layout_constraintStart_toEndOf="@+id/MyReviewImage"
+        app:layout_constraintTop_toBottomOf="@+id/MyReviewShopAdd"
         app:layout_constraintVertical_bias="0.101" />
 
     <ImageView
-        android:id="@+id/reviewImageView"
+        android:id="@+id/MyReviewImage"
         android:layout_width="68dp"
         android:layout_height="62dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -61,7 +61,7 @@
         app:srcCompat="@drawable/no_image_pic" />
 
     <TextView
-        android:id="@+id/reviewView"
+        android:id="@+id/MyReviewSummary"
         android:layout_width="279dp"
         android:layout_height="55dp"
         android:layout_marginTop="4dp"
@@ -70,22 +70,36 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.523"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/meetingShopCategory"
+        app:layout_constraintTop_toBottomOf="@+id/MyReviewCategory"
         app:layout_constraintVertical_bias="0.166" />
 
     <ImageButton
-        android:id="@+id/ReviewFixBtn"
+        android:id="@+id/MyReviewFixBtn"
         android:layout_width="16dp"
         android:layout_height="16dp"
         android:backgroundTint="#00FFFFFF"
         android:foregroundTint="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.918"
-        app:layout_constraintStart_toEndOf="@+id/meetingShopCategory"
-        app:layout_constraintTop_toBottomOf="@+id/meetingShopAdd"
-        app:layout_constraintVertical_bias="0.04"
+        app:layout_constraintHorizontal_bias="0.26"
+        app:layout_constraintStart_toEndOf="@+id/MyReviewRatingBar"
+        app:layout_constraintTop_toBottomOf="@+id/MyReviewShopAdd"
+        app:layout_constraintVertical_bias="0.054"
         app:srcCompat="@drawable/pochareview_writebutton"
         app:tint="#AEA298" />
+
+    <RatingBar
+        android:id="@+id/MyReviewRatingBar"
+        style="?android:attr/ratingBarStyleSmall"
+        android:layout_width="80dp"
+        android:layout_height="16dp"
+        android:isIndicator="true"
+        android:numStars="5"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.42"
+        app:layout_constraintStart_toEndOf="@+id/MyReviewCategory"
+        app:layout_constraintTop_toBottomOf="@+id/MyReviewShopAdd"
+        app:layout_constraintVertical_bias="0.054" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
