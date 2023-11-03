@@ -11,6 +11,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.yuhan.yangpojang.mypage.Model.MyLikeShopModel;
 import com.yuhan.yangpojang.mypage.Model.MyReportShopModel;
 import com.yuhan.yangpojang.mypage.Model.MyReportShopModel;
 
@@ -53,16 +54,40 @@ public class MyReportShopGetList {
                         public void onDataChange(@NonNull DataSnapshot shopSnapshot) {
                             if (shopSnapshot.exists()) {
                                 Log.d("테스트report", "onDataChange: 2");
+
                                 // 가게 정보 불러오기
                                 String category = shopSnapshot.child("category").getValue(String.class);
                                 String addressName = shopSnapshot.child("addressName").getValue(String.class);
                                 String shopName = shopSnapshot.child("shopName").getValue(String.class);
+                                String exteriorImagePath=  shopSnapshot.child("exteriorImagePath").getValue(String.class);
+                                String geohash=  shopSnapshot.child("geohash").getValue(String.class);
+                                boolean hasMeeting=  shopSnapshot.child("hasMeeting").getValue(boolean.class);
+                                double latitude=  shopSnapshot.child("latitude").getValue(double.class);
+                                double longitude=  shopSnapshot.child("longitude").getValue(double.class);
+                                String menuImageUri=  shopSnapshot.child("menuImageUri").getValue(String.class);
+                                boolean openFri =  shopSnapshot.child("openFri").getValue(boolean.class);
+                                boolean openMon =  shopSnapshot.child("openMon").getValue(boolean.class);
+                                boolean openSat =  shopSnapshot.child("openSat").getValue(boolean.class);
+                                boolean openSun =  shopSnapshot.child("openSun").getValue(boolean.class);
+                                boolean openThu =  shopSnapshot.child("openThu").getValue(boolean.class);
+                                boolean openTue =  shopSnapshot.child("openTue").getValue(boolean.class);
+                                boolean openWed =  shopSnapshot.child("openWed").getValue(boolean.class);
+                                boolean pwayAccount =  shopSnapshot.child("pwayAccount").getValue(boolean.class);
+                                boolean pwayCard =  shopSnapshot.child("pwayCard").getValue(boolean.class);
+                                boolean pwayCash =  shopSnapshot.child("pwayCash").getValue(boolean.class);
+                                boolean pwayMobile =  shopSnapshot.child("pwayMobile").getValue(boolean.class);
+                                float rating =  shopSnapshot.child("rating").getValue(float.class);
+                                String storeImageUri =  shopSnapshot.child("storeImageUri").getValue(String.class);
+                                String uid =  shopSnapshot.child("uid").getValue(String.class);
+                                boolean isVerified=  shopSnapshot.child("verified").getValue(boolean.class);
 
-                                // MyReportShopModel 객체 생성 및 값 설정
-                                MyReportShopModel shop = new MyReportShopModel();
-                                shop.setCategory(category);
-                                shop.setAddressName(addressName);
-                                shop.setShopName(shopName);
+
+                                // MyLikeShopModel 객체 생성 및 값 설정
+                                MyReportShopModel shop = new MyReportShopModel(uid, shopName, latitude, longitude ,  addressName, pwayMobile,  pwayCard,
+                                        pwayAccount,  pwayCash,  openMon,  openTue,
+                                        openWed,  openThu,  openFri,  openSat,
+                                        openSun,  category ,  storeImageUri,  menuImageUri,
+                                        isVerified,  hasMeeting,  rating,  geohash);
 
                                 shopDatas.add(shop); // 가져온 가게 정보를 likeShops 리스트에 추가
                                 Log.d("테스트report", "Category: " + category);
