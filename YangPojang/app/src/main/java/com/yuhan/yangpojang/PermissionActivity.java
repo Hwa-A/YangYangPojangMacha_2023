@@ -66,6 +66,31 @@ public class PermissionActivity extends AppCompatActivity {
 
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_REQUEST_CODE);
         } else {
+            mDatabase.child("user-info").child(user_info_uid).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    User user_check = snapshot.getValue(User.class);
+
+                    if(user_check == null)
+                    {
+                        Intent intent_main = new Intent(getApplication(), LogindetailAct.class);
+                        startActivity(intent_main);
+                        finish();
+                    }
+                    else
+                    {
+                        Intent intent_main = new Intent(getApplication(), MainActivity.class);
+                        startActivity(intent_main);
+                        finish();
+                    }
+
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
         }
     }
 

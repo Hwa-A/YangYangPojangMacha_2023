@@ -39,9 +39,6 @@ import com.yuhan.yangpojang.R;
 
 public class LoginActivity extends AppCompatActivity {
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
-
-    private Switch locationSwitch;
-
     private static final String TAG = "login.LoginActivity";
     private static final int RC_SIGN_IN = 9001;
 
@@ -58,8 +55,6 @@ public class LoginActivity extends AppCompatActivity {
     private SignInButton btnGoogleLogin;
     private String user_info_uid = null;
     private DatabaseReference mDatabase;
-    private String user_nickname;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +66,7 @@ public class LoginActivity extends AppCompatActivity {
         if (user != null) {
             user_info_uid = user.getUid();
         }
+
 
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
@@ -177,5 +173,6 @@ public class LoginActivity extends AppCompatActivity {
             finish();
         }
     }
+
 
 }

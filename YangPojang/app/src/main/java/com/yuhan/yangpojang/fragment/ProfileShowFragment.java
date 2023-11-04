@@ -79,6 +79,8 @@ public class ProfileShowFragment extends Fragment
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), accountPage.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
             }
         });
