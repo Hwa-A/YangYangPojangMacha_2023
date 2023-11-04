@@ -351,6 +351,7 @@ public class SearchActivity extends AppCompatActivity {
                 searchView.setQuery("", false); // 검색어 제출 후 주소 입력칸 초기화
                 saveRecentSearchesToSharedPreferences(); // 종료하기 전에 recent_searches 저장
                 Log.d("SearchAdapter", "총 아이템: " + recentSearches);
+
             }
         }, 500); // 500 밀리초 (0.5초) 지연 후 실행
 

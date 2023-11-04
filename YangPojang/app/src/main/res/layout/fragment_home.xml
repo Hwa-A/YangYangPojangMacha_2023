@@ -32,19 +32,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <ImageButton
-        android:id="@+id/location_btn_custom"
-        android:visibility="invisible"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/location_btn"
-        android:layout_marginBottom="44dp"
-        android:layout_marginLeft="12dp"
-        android:background="@drawable/location_btn_backgroud"
-        android:elevation="2dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"/>
-
     <TextView
         android:id="@+id/searchAdd"
         android:layout_width="match_parent"
@@ -58,8 +45,10 @@
         android:layout_marginTop="20dp"
         android:layout_marginStart="30dp"
         android:layout_marginEnd="30dp"
+        android:layout_marginBottom="10dp"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/category_list"/>
 
     <ImageView
         android:layout_width="30dp"
@@ -84,6 +73,18 @@
         app:layout_constraintBottom_toBottomOf="@id/searchAdd"
         android:layout_marginEnd="10dp"/>
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/category_list"
+        android:layout_width="0dp"
+        android:layout_height="35dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        android:orientation="horizontal"
+        app:layout_constraintStart_toStartOf="@+id/searchAdd"
+        app:layout_constraintEnd_toEndOf="@+id/searchAdd"
+        app:layout_constraintBottom_toTopOf="@+id/re_searchbtn"
+        app:layout_constraintTop_toBottomOf="@+id/searchAdd"/>
+
+
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/re_searchbtn"
         android:visibility="invisible"
@@ -93,8 +94,8 @@
         android:textSize="12.5sp"
         android:textColor="@color/white"
         android:background="@drawable/re_searchbutton_custom"
-        android:layout_marginTop="45dp"
-        app:layout_constraintTop_toBottomOf="@id/searchAdd"
+        android:layout_marginTop="15dp"
+        app:layout_constraintTop_toBottomOf="@id/category_list"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
@@ -114,53 +115,68 @@
 
     <ImageButton
         android:id="@+id/authoff"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:scaleType="centerInside"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:scaleType="fitXY"
         android:src="@drawable/authoff"
         android:background="#00000000"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@id/meetingoff"
-        android:layout_marginRight="-15dp"
-        android:layout_marginBottom="-45dp" />
+        android:layout_marginEnd="12dp"
+        android:layout_marginBottom="8dp" />
 
     <ImageButton
         android:id="@+id/authon"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:scaleType="centerInside"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:scaleType="fitXY"
         android:src="@drawable/authon"
+        android:visibility="invisible"
         android:background="#00000000"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@id/meetingoff"
-        android:visibility="invisible"
-        android:layout_marginRight="-15dp"
-        android:layout_marginBottom="-45dp"/>
+        android:layout_marginEnd="12dp"
+        android:layout_marginBottom="8dp"/>
 
     <ImageButton
         android:id="@+id/meetingoff"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:scaleType="centerInside"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:scaleType="fitXY"
         android:src="@drawable/meetingoff"
         android:background="#00000000"
+        app:layout_constraintStart_toStartOf="@+id/authoff"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginRight="-15dp"
-        android:layout_marginBottom="70dp" />
+        android:layout_marginEnd="12dp"
+        android:layout_marginBottom="75dp" />
 
     <ImageButton
         android:id="@+id/meetingon"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:scaleType="centerInside"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:scaleType="fitXY"
         android:src="@drawable/meetingon"
+        android:visibility="invisible"
         android:background="#00000000"
+        app:layout_constraintStart_toStartOf="@+id/authoff"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:visibility="invisible"
-        android:layout_marginRight="-15dp"
-        android:layout_marginBottom="70dp"/>
+        android:layout_marginEnd="12dp"
+        android:layout_marginBottom="75dp"/>
+
+    <ImageButton
+        android:id="@+id/location_btn_custom"
+        android:visibility="visible"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/location_btn"
+        android:layout_marginBottom="44dp"
+        android:layout_marginLeft="12dp"
+        android:background="@drawable/location_btn_backgroud"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
+
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/pocha_list"
@@ -170,6 +186,7 @@
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"/>
+
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/pocha_info"
@@ -231,6 +248,7 @@
             android:layout_marginLeft="-2dp"
             android:layout_marginTop="8dp"/>
         <ImageButton
+            android:id="@+id/pochainfo_fullheart"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="#00000000"
@@ -241,9 +259,11 @@
             android:layout_marginLeft="370dp"
             android:layout_marginTop="15dp"/>
         <ImageButton
+            android:id="@+id/pochainfo_emptyheart"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="#00000000"
+            android:visibility="visible"
             android:src="@drawable/empty_heart"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
