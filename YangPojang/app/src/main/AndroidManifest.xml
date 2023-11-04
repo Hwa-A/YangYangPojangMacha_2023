@@ -27,9 +27,8 @@
             android:name=".pochaInfo.review.ReviewwriteActivity"
             android:exported="false" />
 
-        <!-- 원래 .SplashImage 자리  -->
         <activity
-            android:name=".MainActivity"
+            android:name=".SplashImage"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -39,12 +38,10 @@
 
         <activity
             android:name=".pochaInfo.info.PochainfoActivity"
-            android:exported="false">
+            android:exported="true">
         </activity>
-        <activity android:name=".pochaInfo.info.PochainfoUpdate"/>
 
-
-        <activity android:name=".SplashImage"
+        <activity android:name=".MainActivity"
             android:windowSoftInputMode="adjustPan"/>
 
         <activity android:name=".home.SearchActivity"/>
