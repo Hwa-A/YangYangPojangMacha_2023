@@ -24,6 +24,7 @@ public class PochameetingFragment extends Fragment {
     private OnFragmentReloadListener onFrgReloadListener;   // 프래그먼트 재실행하는 인터페이스
 
     // ▼ 인터페이스 객체 초기화 코드
+    // onAttach(): 프래그먼트가 액티비티에 연결될 때 호출되는 콜백 메서드
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);

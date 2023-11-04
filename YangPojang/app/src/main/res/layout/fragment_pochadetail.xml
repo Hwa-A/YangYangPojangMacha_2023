@@ -3,6 +3,7 @@
 <!-- view 약자
         img: ImageView
         btn: Button
+        imgbtn: ImageButton
         lin: LinearLayout
         tv: TextView
         rtb: RatingBar              -->
@@ -31,7 +32,6 @@
             android:layout_marginRight="5dp"
             tools:ignore="SpeakableTextPresentCheck" />
         <TextView
-            android:id="@+id/tv_pochadetail_report"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="신고하기"
@@ -40,6 +40,7 @@
             android:textStyle="bold"/>
     </LinearLayout>
     <android.widget.Button
+        android:id="@+id/btn_pochainfo_verify"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="방문 인증"
@@ -105,6 +106,7 @@
             android:textSize="20sp"
             android:textStyle="bold" />
         <TextView
+            android:id="@+id/tv_pochadetail_pay"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="현금"
@@ -131,6 +133,7 @@
             android:textSize="20sp"
             android:textStyle="bold"/>
         <TextView
+            android:id="@+id/tv_pochadetail_openday"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="월 휴무"
@@ -138,16 +141,9 @@
             android:textSize="18sp"
             android:textStyle="bold"
             android:layout_marginTop="2dp"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="17:00 ~ 24:00"
-            android:textColor="@color/black"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:layout_marginTop="2dp"/>
     </LinearLayout>
     <android.widget.Button
+        android:id="@+id/btn_pochadetail_pochaUpdate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="정보수정"
