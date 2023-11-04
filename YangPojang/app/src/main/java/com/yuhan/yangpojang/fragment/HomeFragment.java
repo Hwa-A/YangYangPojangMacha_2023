@@ -222,6 +222,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, onPoch
         }
     };
 
+
     //지도 "이동" 리스너 설정
     NaverMap.OnCameraChangeListener cameraChangeListener = new NaverMap.OnCameraChangeListener() {
         @Override
@@ -230,6 +231,8 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, onPoch
                 AppCompatButton re_searchbtn = homeview.findViewById(R.id.re_searchbtn);
                 re_searchbtn.setVisibility(VISIBLE);
                 re_searchbtn.setOnClickListener(re_searchbtnL);
+
+                calculateRadius();
             }
 
         }
@@ -692,11 +695,13 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, onPoch
                 double latitude = recentLocation.getLatitude();
                 double longitude = recentLocation.getLongitude();
 
+                searchSuccess(latitude, longitude); // 검색 성공 - 카메라 이동, 마커 설정
+
                 //StoreData에 위치값 보내기
                 StoreData.addLocation(latitude, longitude, calculateRadius());
                 loadStoreData(); //주소 검색 후 검색한 주소 기준으로 데이터 로드
 
-                searchSuccess(latitude, longitude); // 검색 성공 - 카메라 이동, 마커 설정
+
             }
         }else{
             Toast.makeText(getActivity(), "주소검색 중 오류가 발생했습니다.", Toast.LENGTH_LONG).show();
@@ -711,11 +716,11 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, onPoch
             double latitude = autocompleteLocation.getLatitude();
             double longitude = autocompleteLocation.getLongitude();
 
+            searchSuccess(latitude, longitude); // 검색 성공 - 카메라 이동, 마커 설정
+
             //StoreData에 위치값 보내기
             StoreData.addLocation(latitude, longitude, calculateRadius());
             loadStoreData(); //주소 검색 후 검색한 주소 기준으로 데이터 로드
-
-            searchSuccess(latitude, longitude); // 검색 성공 - 카메라 이동, 마커 설정
 
         }else{
             Toast.makeText(getActivity(), "주소검색 중 오류가 발생했습니다.", Toast.LENGTH_LONG).show();
