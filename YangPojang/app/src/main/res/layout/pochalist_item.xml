@@ -55,6 +55,7 @@
         android:layout_marginLeft="-2dp"
         android:layout_marginTop="8dp"/>
     <ImageButton
+        android:id="@+id/pochalist_fullheart"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="#00000000"
@@ -65,9 +66,11 @@
         android:layout_marginLeft="370dp"
         android:layout_marginTop="15dp"/>
     <ImageButton
+        android:id="@+id/pochalist_emptyheart"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="#00000000"
+        android:visibility="visible"
         android:src="@drawable/empty_heart"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"

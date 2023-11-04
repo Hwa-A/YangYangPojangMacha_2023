@@ -24,7 +24,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.PointF;
 import android.location.Location;
-import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -51,7 +50,6 @@ import com.naver.maps.map.LocationTrackingMode;
 import com.naver.maps.map.NaverMap;
 import com.naver.maps.map.OnMapReadyCallback;
 import com.naver.maps.map.UiSettings;
-import com.naver.maps.map.overlay.LocationOverlay;
 import com.naver.maps.map.overlay.Marker;
 import com.naver.maps.map.overlay.Overlay;
 import com.naver.maps.map.overlay.OverlayImage;
@@ -59,6 +57,8 @@ import com.naver.maps.map.util.FusedLocationSource;
 import com.naver.maps.map.util.MarkerIcons;
 import com.naver.maps.map.widget.CompassView;
 import com.naver.maps.map.widget.LocationButtonView;
+import com.yuhan.yangpojang.home.CategoryListAdapter;
+import com.yuhan.yangpojang.model.LikeShopData;
 import com.yuhan.yangpojang.pochaInfo.info.PochainfoActivity;
 import com.yuhan.yangpojang.R;
 import com.yuhan.yangpojang.home.HttpResponse;
@@ -66,15 +66,12 @@ import com.yuhan.yangpojang.home.PochaListAdapter;
 import com.yuhan.yangpojang.home.SearchActivity;
 import com.yuhan.yangpojang.model.Shop;
 import com.yuhan.yangpojang.model.StoreData;
-import com.yuhan.yangpojang.onPochaListItemClickListener;
+import com.yuhan.yangpojang.home.onPochaListItemClickListener;
 
 import java.util.ArrayList;
 import java.util.Objects;
 
-//https://navermaps.github.io/android-map-sdk/guide-ko/4-1.html
-//https://asong-study-record.tistory.com/69
-
-public class HomeFragment extends Fragment implements OnMapReadyCallback, Overlay.OnClickListener, onPochaListItemClickListener{
+public class HomeFragment extends Fragment implements OnMapReadyCallback, onPochaListItemClickListener{
 
     //OnMapReadyCallback : 지도가 준비되었을 때 호출되는 콜백을 처리, onMapReady()메서드 구현해야 함
 
@@ -93,59 +90,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
     ImageButton authoff, meetingoff, authon, meetingon; //인증, 번개 버튼
     boolean auth, meeting; //auth, meeting 상태를 확인하는 변수
     UiSettings uiSettings;
-
-
-    /*public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        // request code와 권한 획득 여부 확인
-        if(requestCode == PERMISSION_REQUEST_CODE){ // onMapReady()메서드에 요청한 권한 요청과 일치하는지 확인
-            if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
-                mNaverMap.setLocationSource(locationSource);
-                mNaverMap.setLocationTrackingMode(LocationTrackingMode.Follow); //지도에서 현재 위치를 추적하여 따라가는 모드를 의미
-            } else if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_DENIED){
-                Toast.makeText(getActivity(), "설정> 애플리케이션 > YangPojag > 권한에서 지도 권한을 부여하세요", Toast.LENGTH_SHORT).show();
-            }
-        }// onRequestPermissionsResult()메서드는 권한 요청 결과를 처리하고, 권한이 획득되었을 경우에만 NaverMap객체의 위치 추적 모드를 설정하는 역할을 함
-
-    }*/
-
-
-    /*@Override
-    public void onResume() {
-        super.onResume();
-        // 현위치 버튼 -> 다른 액티비티 다녀오면 현위치 재검색 버튼 invisible
-        AppCompatButton re_searchbtn = homeview.findViewById(R.id.re_searchbtn);
-        re_searchbtn.setVisibility(INVISIBLE);
-
-        if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-
-            if(mNaverMap != null ){
-                LocationButtonView locationButtonView = homeview.findViewById(R.id.location_btn);
-                locationButtonView.setMap(mNaverMap);
-
-                ImageButton location_btn_custom = homeview.findViewById(R.id.location_btn_custom);
-                location_btn_custom.setVisibility(INVISIBLE);
-
-                mNaverMap.setLocationSource(locationSource);
-                mNaverMap.setLocationTrackingMode(LocationTrackingMode.Follow);
-            }
-
-        }
-        // 권한 부여가 되지 않은 경우 권한 부여 메세지 생성
-        else
-        {
-            if (mNaverMap != null) {
-                mNaverMap.setLocationTrackingMode(LocationTrackingMode.None); // 위치 추적 모드 중지
-            }
-
-            LocationButtonView locationButtonView = homeview.findViewById(R.id.location_btn);
-            locationButtonView.setMap(null);
-
-            ImageButton location_btn_custom = homeview.findViewById(R.id.location_btn_custom);
-            location_btn_custom.setVisibility(VISIBLE);
-            location_btn_custom.setOnClickListener(locationPermissionPopup);
-        }
-    }*/
+    CategoryListAdapter categoryListAdapter;
 
     /* onMapReady()메서드 - 지도가 준비되었을 때 호출되며, NaverMap 객체에 위치 소스를 설정하고 권한을 확인하는 작업 수행
                              - 지도 초기화 및 사용자 정의 작업 수행, 지도가 초기화되고 사용 가능한 상태일 때 호출되는 콜백 */
@@ -155,29 +100,15 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
         // NaverMap 객체 받아서 NaverMap 객체에 위치 소스 지정
         mNaverMap = naverMap;
 
-
-        //mNaverMap.setLocationSource(locationSource); // NaverMap객체에 위치 소스를 지정 - 현재 위치 사용
-        // 권한 확인, onRequestPermissionResult 콜백 메서드 호출 - 앱에서 위치 권한을 얻기 위해 권한 요청 대화상자를 표시하는 역할
-        //ActivityCompat.requestPermissions(getActivity(), PERMISSIONS, PERMISSION_REQUEST_CODE);
-
+        // 위치권한 여부에 따른 현위치 버튼 표시, 위치 권한 거부 시 서울 시청 기준으로 가게 띄우기
         if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-
-            mNaverMap.setLocationSource(locationSource);
-            mNaverMap.setLocationTrackingMode(LocationTrackingMode.Follow);
-
-            LocationButtonView locationButtonView = homeview.findViewById(R.id.location_btn);
-            locationButtonView.setMap(naverMap);
+            locationPermission();
 
         }
         // 권한 부여가 되지 않은 경우 권한 부여 메세지 생성
         else
         {
-            LocationButtonView locationButtonView = homeview.findViewById(R.id.location_btn);
-            locationButtonView.setMap(null);
-
-            ImageButton location_btn_custom = homeview.findViewById(R.id.location_btn_custom);
-            location_btn_custom.setVisibility(VISIBLE);
-            location_btn_custom.setOnClickListener(locationPermissionPopup);
+            locationPermission();
 
             // 위치권한 거부 시 서울시청 중심으로 가게 데이터 요청
             StoreData.addLocation(37.566585801211325, 126.9777104192369, calculateRadius());
@@ -193,23 +124,12 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
         uiSettings.setZoomControlEnabled(false); // 줌 버튼
 
 
-        //앱 시작 시 줌레벨 설정
-        /*double mapLatitude = 0; //초기 위치 변수 초기화
-        double mapLongitude = 0;
-        // 마지막으로 알려진 위치 정보 가져오기
-        Location currentLocation = locationSource.getLastLocation(); //Location 클래스 - 지도와 관련된 위치 정보를 나타내기 위한 클래스
-        if(currentLocation != null){
-            mapLatitude = currentLocation.getLatitude(); //초기 위치 설정
-            mapLongitude = currentLocation.getLongitude();
-        }*/
-        // 카메라 줌레벨 설정
-        //mNaverMap.setCameraPosition(new CameraPosition(new LatLng(0, 0), 14)); //기본값=14;
-
         //지도 클릭 리스너 설정
         mNaverMap.setOnMapClickListener(mapL);
 
         //지도 "이동" 리스너 설정
         mNaverMap.addOnCameraChangeListener(cameraChangeListener);
+
 
         // 인증 및 번개 버튼 리스너 설정
         authoff = getActivity().findViewById(R.id.authoff);
@@ -226,9 +146,8 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
         show_list.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (stores != null && !stores.isEmpty()) {
-                    ArrayList<Shop> pochas = new ArrayList<>(stores);
-
+                if (listStores != null && !listStores.isEmpty()) {
+                    ArrayList<Shop> pochas = new ArrayList<>(listStores);
                     PochaListView(pochas);
                 } else {
                     Toast.makeText(getActivity(), "조건에 맞는 업체가 없습니다.", Toast.LENGTH_SHORT).show();
@@ -251,6 +170,14 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
                 mNaverMap.removeOnLocationChangeListener(this); // 리스너 해제
             }
         });
+
+        // 카테고리 구현
+        RecyclerView categoryList = getActivity().findViewById(R.id.category_list);
+        categoryListAdapter = new CategoryListAdapter(getActivity());
+        categoryList.setAdapter(categoryListAdapter);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
+        categoryList.setLayoutManager(layoutManager);
+
     }
 
     // 위치 권한 거부 시 리스너 등록(팝업창)
@@ -289,6 +216,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
         }
     };
 
+
     //지도 "이동" 리스너 설정
     NaverMap.OnCameraChangeListener cameraChangeListener = new NaverMap.OnCameraChangeListener() {
         @Override
@@ -297,6 +225,8 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
                 AppCompatButton re_searchbtn = homeview.findViewById(R.id.re_searchbtn);
                 re_searchbtn.setVisibility(VISIBLE);
                 re_searchbtn.setOnClickListener(re_searchbtnL);
+
+                calculateRadius();
             }
 
         }
@@ -341,7 +271,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
         pochaListPochas = pochas;
         pochalist_view = getActivity().findViewById(R.id.pocha_list); //리사이클러 뷰
         pochalist_view.setVisibility(View.VISIBLE);
-        PochaListAdapter pochaListAdapter = new PochaListAdapter(pochaListPochas, this); // 어댑터
+        PochaListAdapter pochaListAdapter = new PochaListAdapter(pochaListPochas, this, HomeFragment.this); // 어댑터
         pochalist_view.setAdapter(pochaListAdapter); //리사이클러뷰에 어댑터 장착
 
         pochalist_view.setLayoutManager(new LinearLayoutManager(getActivity())); //레이아웃 매니저 지정
@@ -455,6 +385,15 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
         return homeview;
     } // onCreateView 끝
 
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        // request code와 권한 획득 여부 확인
+        if(requestCode == PERMISSION_REQUEST_CODE){ // onMapReady()메서드에 요청한 권한 요청과 일치하는지 확인
+            locationPermission();
+        }// onRequestPermissionsResult()메서드는 권한 요청 결과를 처리하고, 권한이 획득되었을 경우에만 NaverMap객체의 위치 추적 모드를 설정하는 역할을 함
+
+    }
+
     @Override
     public void onStart() {
         super.onStart();
@@ -469,19 +408,57 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
             }
         });
 
+        // 현위치 버튼 -> 다른 액티비티 다녀오면 현위치 재검색 버튼 invisible
+        AppCompatButton re_searchbtn = homeview.findViewById(R.id.re_searchbtn);
+        re_searchbtn.setVisibility(INVISIBLE);
+
+        locationPermission();
+
     }
 
+    // 위치 권한이 변경될 때 호출할 메소드
+    private void locationPermission() {
+        if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            if(mNaverMap != null ){
+                mNaverMap.setLocationSource(locationSource);
+                mNaverMap.setLocationTrackingMode(LocationTrackingMode.Follow);
+
+                LocationButtonView locationButtonView = homeview.findViewById(R.id.location_btn);
+                locationButtonView.setMap(mNaverMap);
+
+                ImageButton location_btn_custom = homeview.findViewById(R.id.location_btn_custom);
+                location_btn_custom.setVisibility(INVISIBLE);
+
+            }
+        } else {
+            if (mNaverMap != null) {
+                mNaverMap.setLocationTrackingMode(LocationTrackingMode.None); // 위치 추적 모드 중지
+            }
+
+            LocationButtonView locationButtonView = homeview.findViewById(R.id.location_btn);
+            locationButtonView.setMap(null);
+
+            ImageButton location_btn_custom = homeview.findViewById(R.id.location_btn_custom);
+            location_btn_custom.setVisibility(VISIBLE);
+            location_btn_custom.setOnClickListener(locationPermissionPopup);
+        }
+    }
 
 
     ArrayList<Shop> stores;
     ArrayList<Marker> pochas;
     Marker currentClickedMarker; //현재 클릭한 마커를 추적하기 위한 변수
     ConstraintLayout pocha_info; //가게 정보 탭
+    String itemName = null; //선택된 카테고리를 받아올 변수
+
+    ArrayList<Shop> listStores = new ArrayList<>(); //현재 활성화된 가게만 리스트(->포차리스트로 보냄)
+    // 초기화 시점 : 첫 화면, 카테고리 클릭 시, 인증&번개 버튼 클릭 시
 
     public void loadStoreData(){
         StoreData.initializeStores(new StoreData.dataLoadedCallback() {
             @Override
             public void onDataLoaded(ArrayList<Shop> getStore) {
+                listStores = new ArrayList<>();
                 if(getStore != null){
                     stores = getStore;
                     Log.d("MainActivity","받아온 가게 수 : " + stores.size());
@@ -498,7 +475,12 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
                         Marker pochas_marker = new Marker();
                         visibilityMarker(pochas_marker, stores.get(i));
                         pochas_marker.setPosition(new LatLng(stores.get(i).getLatitude(), stores.get(i).getLongitude()));
-                        pochas_marker.setMap(mNaverMap);
+
+                        // 인증, 번개 버튼 상태에 따른 마커 표시
+                        updateMarker(pochas_marker, stores.get(i));
+
+                        // 초기 카테고리 상태에 따른 마커 표시
+                        setMarkerByCategory(itemName, stores.get(i), pochas_marker);
 
                         pochas.add(pochas_marker);
                         int index = i;
@@ -506,6 +488,10 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
                         pochas.get(i).setOnClickListener(new Overlay.OnClickListener() {
                             @Override
                             public boolean onClick(@NonNull Overlay overlay) {
+                                //포차리스트 닫기
+                                if(pochalist_view != null)
+                                    pochalist_view.setVisibility(INVISIBLE);
+
                                 // 마커 클릭 시 크기 조절
                                 if(currentClickedMarker != null){  //이전에 클릭한 마커가 존재하는지 확인
                                     currentClickedMarker.setWidth(80);
@@ -520,42 +506,143 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
                                 CameraUpdate cameralocationUpdate = CameraUpdate.scrollTo(new LatLng(stores.get(index).getLatitude(), stores.get(index).getLongitude()));
                                 mNaverMap.moveCamera(cameralocationUpdate);
 
-                                // 클릭 시 하단에 가게정보 탭 생성
-                                // 프래그먼트에서 findViewByID 사용 https://m.blog.naver.com/PostView.naver?isHttpsRedirect=true&blogId=sweetsmell9&logNo=221344510749
-                                TextView pocha_name = homeview.findViewById(R.id.pocha_name);
-                                TextView pocha_category = homeview.findViewById(R.id.pocha_category);
-                                TextView pocha_add = homeview.findViewById(R.id.pocha_add);
-                                RatingBar pocha_rating = homeview.findViewById(R.id.pocha_rating);
-                                ImageView pocha_image = homeview.findViewById(R.id.pocha_image);
-                                pocha_name.setText(stores.get(index).getShopName());
-                                pocha_category.setText(stores.get(index).getCategory());
-                                pocha_add.setText(stores.get(index).getAddressName());
-                                pocha_rating.setRating(stores.get(index).getRating());
-                                downloadFireStorage(getActivity(), stores.get(index).getExteriorImagePath(),pocha_image);
-
-                                pocha_info = getView().findViewById(R.id.pocha_info);
-                                pocha_info.setVisibility(VISIBLE);
-                                // 하단 탭 클릭 시 가게 상세정보 페이지로 이동(기본키 함께 보냄)
-                                pocha_info.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        Intent intent = new Intent(v.getContext(), PochainfoActivity.class);
-                                        intent.putExtra("shopInfo", stores.get(index));
-                                        v.getContext().startActivity(intent);
-                                    }
-                                });
-
-                                //마커 클릭 시 하단 상세정보 탭이 생성되면서 인증,번개 버튼의 위치가 가려지지 않도록 위치 변경
-                                ButtonPosition(uiSettings);
+                                settingPochainfo(index); // 하단에 가게 상세정보 탭 표시
 
                                 return true;
                             }
                         });
+
+                        if(pochas_marker.getMap() != null && pochas_marker.getIcon() != null){
+                            listStores.add(stores.get(i));
+                        }
                     }
+
+                    // 카테고리 클릭 리스너
+                    categoryListAdapter.setOnItemClickListener(new CategoryListAdapter.onItemClickListener() {
+                        @Override
+                        public void onItemClick(int position, String item) {
+                            listStores = new ArrayList<>();
+                            itemName = item;
+                            for(int i = 0; i < pochas.size(); i++){
+                                setMarkerByCategory(itemName, stores.get(i), pochas.get(i));
+
+                                if(pochas.get(i).getMap() != null && pochas.get(i).getIcon() != null){
+                                    listStores.add(stores.get(i));
+                                }
+                            }
+
+                        }
+                    });
                 }
             }
         });
     }   // loadStoreData() 끝
+
+    // 카테고리 클릭 상태에 따른 마커 출력
+    public void setMarkerByCategory(String itemName, Shop store, Marker pochaMarker){
+        // 마커 출력 기준
+        // 1. 카테고리 클릭하지 않았을 경우 -> 전체 마커 표시
+        // 2. "전체"카테고리를 클릭했을 경우 -> 전체 마커 표시
+        // 3. "←"카테고리 클랙했을 경우 -> 전체 마커 표시
+        if(itemName == null || Objects.equals(itemName, "전체") || Objects.equals(itemName, "←")){
+            pochaMarker.setMap(mNaverMap);
+        }
+        else if((Objects.equals(itemName, "술") || Objects.equals(itemName, "술&전체")) && store.getCategory().startsWith("술")){
+            // 4. "술"이나 "술&전체"클릭 할 경우 술에 대한 카테고리만 표시
+            pochaMarker.setMap(mNaverMap);
+        }
+        else if(Objects.equals(itemName, store.getCategory())) {
+            // 5. 클릭한 카테고리와 같은 카테고리를 갖고 있는 마커 -> 해당 마커 표시
+            pochaMarker.setMap(mNaverMap);
+        }
+        else{
+            pochaMarker.setMap(null);
+        }
+    }
+
+
+    // 마커 클릭 시 하단에 가게 상세정보 탭 설정
+    public void settingPochainfo(int index){
+        // 클릭 시 하단에 가게정보 탭 생성
+        // 프래그먼트에서 findViewByID 사용 https://m.blog.naver.com/PostView.naver?isHttpsRedirect=true&blogId=sweetsmell9&logNo=221344510749
+        TextView pocha_name = homeview.findViewById(R.id.pocha_name);
+        TextView pocha_category = homeview.findViewById(R.id.pocha_category);
+        TextView pocha_add = homeview.findViewById(R.id.pocha_add);
+        RatingBar pocha_rating = homeview.findViewById(R.id.pocha_rating);
+        ImageView pocha_image = homeview.findViewById(R.id.pocha_image);
+        pocha_name.setText(stores.get(index).getShopName());
+        pocha_category.setText(stores.get(index).getCategory());
+        pocha_add.setText(stores.get(index).getAddressName());
+        pocha_rating.setRating(stores.get(index).getRating());
+        downloadFireStorage(getActivity(), stores.get(index).getExteriorImagePath(),pocha_image);
+
+        //heart이미지 설정
+        ImageButton empty_heart = homeview.findViewById(R.id.pochainfo_emptyheart);
+        ImageButton full_heart = homeview.findViewById(R.id.pochainfo_fullheart);
+        isLikeShop(stores.get(index).getPrimaryKey(), empty_heart, full_heart);
+        //heart리스너 설정
+        View.OnClickListener heartL = setHeartListener(stores.get(index).getPrimaryKey(), empty_heart, full_heart);
+        empty_heart.setOnClickListener(heartL);
+        full_heart.setOnClickListener(heartL);
+
+        //하단 탭 설정
+        pocha_info = getView().findViewById(R.id.pocha_info);
+        pocha_info.setVisibility(VISIBLE);
+        // 하단 탭 클릭 시 가게 상세정보 페이지로 이동(기본키 함께 보냄)
+        pocha_info.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(v.getContext(), PochainfoActivity.class);
+                intent.putExtra("shopInfo", stores.get(index));
+                v.getContext().startActivity(intent);
+            }
+        });
+
+        //마커 클릭 시 하단 상세정보 탭이 생성되면서 인증,번개 버튼의 위치가 가려지지 않도록 위치 변경
+        ButtonPosition(uiSettings);
+    }
+    // 좋아요 여부 확인 후 하트 모양 설정(초기 가시성)
+    public void isLikeShop(String shopId, ImageButton emptyHeart, ImageButton fullHeart){
+        LikeShopData.likeShopDataLoad(new LikeShopData.dataLoadedCallback() {
+            @Override
+            public void onDataLoaded(ArrayList<String> likeShopsId) {
+                if(likeShopsId != null){
+                    boolean isLiked = likeShopsId.contains(shopId);
+                    if(isLiked){
+                        emptyHeart.setVisibility(View.INVISIBLE);
+                        fullHeart.setVisibility(View.VISIBLE);
+                    }else{
+                        emptyHeart.setVisibility(View.VISIBLE);
+                        fullHeart.setVisibility(View.INVISIBLE);
+                    }
+                }
+            }
+        });
+    }
+
+    // 하트 모양 리스너
+    public View.OnClickListener setHeartListener(String shopId, ImageButton empty_heart, ImageButton full_heart) {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int viewId = v.getId();
+                LikeShopData likeShopData = new LikeShopData();
+
+                if (viewId == R.id.pochainfo_emptyheart) {
+                    // 좋아요 목록에 추가
+                    likeShopData.addLikedShop(shopId);
+                    isLikeShop(shopId, empty_heart, full_heart);
+                    Toast.makeText(getActivity(), "좋아요 목록에 추가되었습니다", Toast.LENGTH_SHORT).show();
+
+
+                } else if(viewId == R.id.pochainfo_fullheart){
+                    // 좋아요 목록에서 삭제
+                    likeShopData.removeLikedShop(shopId);
+                    isLikeShop(shopId, empty_heart, full_heart);
+                }
+            }
+        };
+    }
 
     // 파이어베이스 스토리지에 저장된 이미지 다운로드
     public void downloadFireStorage(Context context, String ExteriorImagePath, ImageView pocha_image){
@@ -601,11 +688,13 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
                 double latitude = recentLocation.getLatitude();
                 double longitude = recentLocation.getLongitude();
 
+                searchSuccess(latitude, longitude); // 검색 성공 - 카메라 이동, 마커 설정
+
                 //StoreData에 위치값 보내기
                 StoreData.addLocation(latitude, longitude, calculateRadius());
                 loadStoreData(); //주소 검색 후 검색한 주소 기준으로 데이터 로드
 
-                searchSuccess(latitude, longitude); // 검색 성공 - 카메라 이동, 마커 설정
+
             }
         }else{
             Toast.makeText(getActivity(), "주소검색 중 오류가 발생했습니다.", Toast.LENGTH_LONG).show();
@@ -620,11 +709,11 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
             double latitude = autocompleteLocation.getLatitude();
             double longitude = autocompleteLocation.getLongitude();
 
+            searchSuccess(latitude, longitude); // 검색 성공 - 카메라 이동, 마커 설정
+
             //StoreData에 위치값 보내기
             StoreData.addLocation(latitude, longitude, calculateRadius());
             loadStoreData(); //주소 검색 후 검색한 주소 기준으로 데이터 로드
-
-            searchSuccess(latitude, longitude); // 검색 성공 - 카메라 이동, 마커 설정
 
         }else{
             Toast.makeText(getActivity(), "주소검색 중 오류가 발생했습니다.", Toast.LENGTH_LONG).show();
@@ -677,20 +766,12 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
             pochalist_view.setVisibility(INVISIBLE); //포차리스트 닫기
     }
 
-    //Overlay.OnClickListener : 네이버 지도 API에서 제동하는 인터페이스로, 오버레이(지도 위에 그려지는 그래픽 요소) 객체를 클릭했을 때 발생하는 이벤트 처리하는 메소드 정의
-    @Override
-    public boolean onClick(@NonNull Overlay overlay) {
-        if(overlay instanceof LocationOverlay){
-            Toast.makeText(getActivity(), "클릭", Toast.LENGTH_SHORT).show();
-            return true;
-        }
-        return false;
-    }
-
     // 인증, 번개 버튼 리스너
     View.OnClickListener authmeetingL = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            listStores = new ArrayList<>();
+
             int id = v.getId();
             if(id == R.id.authoff){
                 auth = true;
@@ -709,6 +790,10 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
             if(pochas != null){
                 for(int i = 0; i < pochas.size(); i++){
                     updateMarker(pochas.get(i), stores.get(i));
+
+                    if(pochas.get(i).getMap() != null && pochas.get(i).getIcon() != null){
+                        listStores.add(stores.get(i));
+                    }
                 }
             }
         }
@@ -786,34 +871,43 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
 
     public void ButtonPosition(UiSettings uiSettings) {
         LocationButtonView locationButtonView = getActivity().findViewById(R.id.location_btn);
+        ImageButton location_btn_custom = getActivity().findViewById(R.id.location_btn_custom);
+
         if(pocha_info.getVisibility() == View.VISIBLE){
             ConstraintLayout.LayoutParams layoutParams1 = (ConstraintLayout.LayoutParams) meetingoff.getLayoutParams();
-            layoutParams1.bottomMargin = 350;
+            layoutParams1.bottomMargin = 420;
             meetingoff.setLayoutParams(layoutParams1);
 
             ConstraintLayout.LayoutParams layoutParams2 = (ConstraintLayout.LayoutParams) meetingon.getLayoutParams();
-            layoutParams2.bottomMargin = 350;
+            layoutParams2.bottomMargin = 420;
             meetingon.setLayoutParams(layoutParams2);
-
 
             ConstraintLayout.LayoutParams layoutParams3 = (ConstraintLayout.LayoutParams) locationButtonView.getLayoutParams();
             layoutParams3.bottomMargin = 480;
             locationButtonView.setLayoutParams(layoutParams3);
 
+            ConstraintLayout.LayoutParams layoutParams4 = (ConstraintLayout.LayoutParams) location_btn_custom.getLayoutParams();
+            layoutParams4.bottomMargin = 480;
+            location_btn_custom.setLayoutParams(layoutParams4);
+
             uiSettings.setLogoMargin(30, 0, 0, 430);
 
         }else{
             ConstraintLayout.LayoutParams layoutParams1 = (ConstraintLayout.LayoutParams) meetingoff.getLayoutParams();
-            layoutParams1.bottomMargin = 70;
+            layoutParams1.bottomMargin = 190;
             meetingoff.setLayoutParams(layoutParams1);
 
             ConstraintLayout.LayoutParams layoutParams2 = (ConstraintLayout.LayoutParams) meetingon.getLayoutParams();
-            layoutParams2.bottomMargin = 70;
+            layoutParams2.bottomMargin = 190;
             meetingon.setLayoutParams(layoutParams2);
 
             ConstraintLayout.LayoutParams layoutParams3 = (ConstraintLayout.LayoutParams) locationButtonView.getLayoutParams();
             layoutParams3.bottomMargin = 80;
             locationButtonView.setLayoutParams(layoutParams3);
+
+            ConstraintLayout.LayoutParams layoutParams4 = (ConstraintLayout.LayoutParams) location_btn_custom.getLayoutParams();
+            layoutParams4.bottomMargin = 80;
+            location_btn_custom.setLayoutParams(layoutParams4);
 
             uiSettings.setLogoMargin(30, 0, 0, 30);
         }
@@ -826,5 +920,4 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
             mNaverMap.removeOnCameraChangeListener(cameraChangeListener); //리스너 해제(메모리 누수 방지)
         }
     }
-
 }   // 끝
