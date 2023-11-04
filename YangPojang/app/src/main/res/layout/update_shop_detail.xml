@@ -137,9 +137,9 @@
                 android:layout_marginTop="4dp"
                 android:background="@drawable/spinner_border"
                 android:gravity="end"
-                android:paddingLeft="20dp"
+                android:paddingLeft="43dp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.529"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/txtCategory"
                 tools:ignore="TouchTargetSizeCheck" />
@@ -169,7 +169,7 @@
                 android:inputType="text"
                 android:paddingLeft="24dp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.542"
+                app:layout_constraintHorizontal_bias="0.942"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/ShopNameIs" />
 

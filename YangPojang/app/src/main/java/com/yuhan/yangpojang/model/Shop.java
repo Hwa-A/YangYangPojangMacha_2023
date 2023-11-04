@@ -33,6 +33,7 @@ public class Shop implements Serializable {
     private String primaryKey;
     private String uid;
 
+    private String shopKey;
 
     //중요" firebase 이용을 위해서는 기본생성자 필수
     public Shop() {
@@ -69,6 +70,9 @@ public class Shop implements Serializable {
         this.geohash = geohash;
     }
 
+    public String getShopKey() {  return shopKey; }
+
+    public void setShopKey(String shopKey) { this.shopKey = shopKey; }
     public String getUid() {  return uid; }
 
     public void setUid(String uid) { this.uid = uid; }
