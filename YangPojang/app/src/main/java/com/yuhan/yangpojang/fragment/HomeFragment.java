@@ -49,9 +49,7 @@ import com.naver.maps.map.CameraUpdate;
 import com.naver.maps.map.LocationTrackingMode;
 import com.naver.maps.map.NaverMap;
 import com.naver.maps.map.OnMapReadyCallback;
-import com.naver.maps.map.Projection;
 import com.naver.maps.map.UiSettings;
-import com.naver.maps.map.overlay.LocationOverlay;
 import com.naver.maps.map.overlay.Marker;
 import com.naver.maps.map.overlay.Overlay;
 import com.naver.maps.map.overlay.OverlayImage;
@@ -71,11 +69,7 @@ import com.yuhan.yangpojang.model.StoreData;
 import com.yuhan.yangpojang.home.onPochaListItemClickListener;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
-
-//https://navermaps.github.io/android-map-sdk/guide-ko/4-1.html
-//https://asong-study-record.tistory.com/69
 
 public class HomeFragment extends Fragment implements OnMapReadyCallback, onPochaListItemClickListener{
 
@@ -607,7 +601,6 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, onPoch
         //마커 클릭 시 하단 상세정보 탭이 생성되면서 인증,번개 버튼의 위치가 가려지지 않도록 위치 변경
         ButtonPosition(uiSettings);
     }
-
     // 좋아요 여부 확인 후 하트 모양 설정(초기 가시성)
     public void isLikeShop(String shopId, ImageButton emptyHeart, ImageButton fullHeart){
         LikeShopData.likeShopDataLoad(new LikeShopData.dataLoadedCallback() {
