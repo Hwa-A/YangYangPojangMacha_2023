@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -14,6 +15,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.naver.maps.geometry.LatLng;
 import com.naver.maps.map.CameraUpdate;
 import com.naver.maps.map.MapFragment;
@@ -50,31 +56,57 @@ public class PochadetailFragment extends Fragment {
         TextView detailAddressTv= view.findViewById(R.id.tv_pochadetail_address);
         TextView detailPayTv = view.findViewById(R.id.tv_pochadetail_pay);
         TextView detailOpendayTv = view.findViewById(R.id.tv_pochadetail_openday);
-        MapView mapView=  view.findViewById(R.id.map_pochadetail_location);
+        Button updatebtn = view.findViewById(R.id.btn_pochadetail_pochaUpdate);
+        DatabaseReference shopReference; // Firebase Database reference
 
         // ▼ PochainfoActivity.java에서 전달한 데이터를 받는 코드
         Bundle bundle = getArguments();
         if (bundle != null) {
             Shop shop = (Shop) bundle.getSerializable("shopInfo");    // 포차 객체 초기화
             String uid = bundle.getString("uid");
+            String shopkey=shop.getShopKey();
+            Log.d("hong","a"+shopkey);
 
+            shopReference = FirebaseDatabase.getInstance().getReference().child("shops");
+            // Fetch the shop key
+            Log.d("abc", String.valueOf(shopReference));
 
+            shopReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    Log.d("abc", String.valueOf(dataSnapshot));
+                    if (dataSnapshot.exists()) {
+                        Log.d("fdg","fdf");
+                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                            String shopKey = snapshot.getKey(); // Extract the shop key
+                            // You can use shopKey here
+                            Log.d("Shop Keyssss", shopKey);
+                            // Update UI or perform further operations using shopKey
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    // Handle the error
+                    Log.e("Firebase Error", databaseError.getMessage());
+                }
+            });
 
             if (shop != null) {
                 // Address 설정
                 String address = shop.getAddressName();
+                double latitude = shop.getLatitude();
+                double longitude = shop.getLongitude();
+//                Log.d("latitude정보:", String.valueOf(latitude));
+//                Log.d("longtitude정보:", String.valueOf(longitude));
 
-                double a = shop.getLatitude();
-                double b = shop.getLongitude();
-                Log.d("fuck", String.valueOf(a));
-                Log.d("fuck", String.valueOf(b));
-
-                if (address != null && !address.isEmpty()) {
-                    detailAddressTv.setText(address);
+                if (address != null && !address.isEmpty()) { //주소가 비어있지 않으면
+                    detailAddressTv.setText(address); //주소 설정
                 } else {
                     detailAddressTv.setText("...");
                 }
-                MapFragment mapFragment = (MapFragment) getChildFragmentManager().findFragmentById(R.id.map_pochadetail_location);
+                MapFragment mapFragment = (MapFragment) getChildFragmentManager().findFragmentById(R.id.map_pochadetail_location); // 가게 위치 지도로 띄우기
                 if (mapFragment == null) {
                     mapFragment = MapFragment.newInstance();
                     getChildFragmentManager().beginTransaction().add(R.id.map_pochadetail_location, mapFragment).commit();
@@ -82,7 +114,7 @@ public class PochadetailFragment extends Fragment {
                 mapFragment.getMapAsync(new OnMapReadyCallback() {
                     @Override
                     public void onMapReady(@NonNull NaverMap naverMap) {
-                        LatLng location = new LatLng(a, b);
+                        LatLng location = new LatLng(latitude, longitude);
                         naverMap.moveCamera(CameraUpdate.scrollTo(location));
 
                         // Marker를 사용하여 마커 추가
@@ -93,10 +125,10 @@ public class PochadetailFragment extends Fragment {
                         // 마커 아이콘의 크기 설정
                         marker.setWidth(48);  // 마커의 너비
                         marker.setHeight(65);  // 마커의 높이
-                        // 지도 UI 설정에서 확대/축소 컨트롤 숨기기
-                        naverMap.getUiSettings().setZoomControlEnabled(false);
+                        naverMap.getUiSettings().setZoomControlEnabled(false); // 지도 UI 설정에서 확대/축소 컨트롤 숨기기
                     }
                 });
+                
 
                 // 결제 방식 설정
                 StringBuilder paymentMethods = new StringBuilder();
@@ -112,14 +144,13 @@ public class PochadetailFragment extends Fragment {
                 if (shop.isPwayCash()) {
                     paymentMethods.append("현금");
                 }
-               // Remove the trailing comma if appended
+               // 어색한 , 없애기
                 if (paymentMethods.length() > 0) {
                     if (paymentMethods.charAt(paymentMethods.length() - 1) == ' ') {
                         paymentMethods.delete(paymentMethods.length() - 2, paymentMethods.length());
                     }
                     detailPayTv.setText(paymentMethods.toString());
                 }  else {
-//                    detailPayTv.setText("결제 정보가 없습니다");
                     detailPayTv.setText("...");
                 }
 
@@ -146,22 +177,32 @@ public class PochadetailFragment extends Fragment {
                 if (shop.isOpenSun()) {
                     openDays.append("일");
                 }
-// Remove the trailing comma if appended
-                if (openDays.length() > 0) {
+                if (openDays.length() > 0) {   // 요일이 0개가 아니면 선택된 녀석으로 setText
+
                     detailOpendayTv.setText(openDays.toString());
-                }  else {
+                }  else {  // 요일 선택된게 0이면 ...으로 setText
                     detailOpendayTv.setText("...");
-//                    detailOpendayTv.setText("오픈 정보가 없습니다");
                 }
             } else {
                 // 가게 정보가 비어있는 경우 보여지는 메세지들
-//                detailAddressTv.setText("위치 정보가 없습니다");
-//                detailPayTv.setText("결제 정보가 없습니다");
-//                detailOpendayTv.setText("오픈 정보가 없습니다");
                 detailAddressTv.setText("...");
                 detailPayTv.setText("...");
                 detailOpendayTv.setText("...");
             }
+
+            updatebtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.d("hellotomy","");
+                    // Code to navigate to the update form activity
+                    Intent intent = new Intent(getActivity(), PochainfoUpdate.class); // Replace UpdateFormActivity with your actual activity class
+                    // Pass necessary data if needed
+//                    intent.putExtra("shopInfo", shop);
+                    intent.putExtra("shopKey", shopkey);
+//                    intent.putExtra("uid", uid);
+                    startActivity(intent);
+                }
+            });
         }
 
         else {

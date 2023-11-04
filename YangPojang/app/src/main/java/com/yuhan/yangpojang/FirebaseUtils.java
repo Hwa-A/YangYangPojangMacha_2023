@@ -26,6 +26,13 @@ public class FirebaseUtils {
     public static void saveShopData(Shop shop, ReportShop reportShop, Uri exteriorImageUri, Uri menuImageUri) {
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
         String shopKey = databaseReference.child("shops").push().getKey();
+        Log.d("king",shopKey);
+        shop.setShopKey(shopKey);
+        String shopkey=shop.getShopKey();
+        Log.d("king2",shopKey);
+
+
+
         DatabaseReference shopRef = databaseReference.child("shops").child(shopKey);
         reportShop.setShopKey(shopKey);
 //        DatabaseReference reportShopRef = databaseReference.child("reportShop").child(reportShop.getUid()).child(shopKey);

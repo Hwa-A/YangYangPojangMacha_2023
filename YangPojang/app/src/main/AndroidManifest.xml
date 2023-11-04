@@ -41,6 +41,8 @@
             android:name=".pochaInfo.info.PochainfoActivity"
             android:exported="false">
         </activity>
+        <activity android:name=".pochaInfo.info.PochainfoUpdate"/>
+
 
         <activity android:name=".SplashImage"
             android:windowSoftInputMode="adjustPan"/>
