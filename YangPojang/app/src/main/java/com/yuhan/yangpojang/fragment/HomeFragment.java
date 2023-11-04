@@ -49,6 +49,7 @@ import com.naver.maps.map.CameraUpdate;
 import com.naver.maps.map.LocationTrackingMode;
 import com.naver.maps.map.NaverMap;
 import com.naver.maps.map.OnMapReadyCallback;
+import com.naver.maps.map.Projection;
 import com.naver.maps.map.UiSettings;
 import com.naver.maps.map.overlay.LocationOverlay;
 import com.naver.maps.map.overlay.Marker;
@@ -70,12 +71,13 @@ import com.yuhan.yangpojang.model.StoreData;
 import com.yuhan.yangpojang.home.onPochaListItemClickListener;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 //https://navermaps.github.io/android-map-sdk/guide-ko/4-1.html
 //https://asong-study-record.tistory.com/69
 
-public class HomeFragment extends Fragment implements OnMapReadyCallback, Overlay.OnClickListener, onPochaListItemClickListener{
+public class HomeFragment extends Fragment implements OnMapReadyCallback, onPochaListItemClickListener{
 
     //OnMapReadyCallback : 지도가 준비되었을 때 호출되는 콜백을 처리, onMapReady()메서드 구현해야 함
 
@@ -152,7 +154,6 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
             public void onClick(View v) {
                 if (listStores != null && !listStores.isEmpty()) {
                     ArrayList<Shop> pochas = new ArrayList<>(listStores);
-
                     PochaListView(pochas);
                 } else {
                     Toast.makeText(getActivity(), "조건에 맞는 업체가 없습니다.", Toast.LENGTH_SHORT).show();
@@ -454,6 +455,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
     String itemName = null; //선택된 카테고리를 받아올 변수
 
     ArrayList<Shop> listStores = new ArrayList<>(); //현재 활성화된 가게만 리스트(->포차리스트로 보냄)
+    // 초기화 시점 : 첫 화면, 카테고리 클릭 시, 인증&번개 버튼 클릭 시
 
     public void loadStoreData(){
         StoreData.initializeStores(new StoreData.dataLoadedCallback() {
@@ -489,6 +491,10 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
                         pochas.get(i).setOnClickListener(new Overlay.OnClickListener() {
                             @Override
                             public boolean onClick(@NonNull Overlay overlay) {
+                                //포차리스트 닫기
+                                if(pochalist_view != null)
+                                    pochalist_view.setVisibility(INVISIBLE);
+
                                 // 마커 클릭 시 크기 조절
                                 if(currentClickedMarker != null){  //이전에 클릭한 마커가 존재하는지 확인
                                     currentClickedMarker.setWidth(80);
@@ -508,6 +514,10 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
                                 return true;
                             }
                         });
+
+                        if(pochas_marker.getMap() != null && pochas_marker.getIcon() != null){
+                            listStores.add(stores.get(i));
+                        }
                     }
 
                     // 카테고리 클릭 리스너
@@ -518,7 +528,12 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
                             itemName = item;
                             for(int i = 0; i < pochas.size(); i++){
                                 setMarkerByCategory(itemName, stores.get(i), pochas.get(i));
+
+                                if(pochas.get(i).getMap() != null && pochas.get(i).getIcon() != null){
+                                    listStores.add(stores.get(i));
+                                }
                             }
+
                         }
                     });
                 }
@@ -534,17 +549,14 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
         // 3. "←"카테고리 클랙했을 경우 -> 전체 마커 표시
         if(itemName == null || Objects.equals(itemName, "전체") || Objects.equals(itemName, "←")){
             pochaMarker.setMap(mNaverMap);
-            listStores.add(store);
         }
         else if((Objects.equals(itemName, "술") || Objects.equals(itemName, "술&전체")) && store.getCategory().startsWith("술")){
             // 4. "술"이나 "술&전체"클릭 할 경우 술에 대한 카테고리만 표시
             pochaMarker.setMap(mNaverMap);
-            listStores.add(store);
         }
         else if(Objects.equals(itemName, store.getCategory())) {
             // 5. 클릭한 카테고리와 같은 카테고리를 갖고 있는 마커 -> 해당 마커 표시
             pochaMarker.setMap(mNaverMap);
-            listStores.add(store);
         }
         else{
             pochaMarker.setMap(null);
@@ -756,20 +768,12 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
             pochalist_view.setVisibility(INVISIBLE); //포차리스트 닫기
     }
 
-    //Overlay.OnClickListener : 네이버 지도 API에서 제동하는 인터페이스로, 오버레이(지도 위에 그려지는 그래픽 요소) 객체를 클릭했을 때 발생하는 이벤트 처리하는 메소드 정의
-    @Override
-    public boolean onClick(@NonNull Overlay overlay) {
-        if(overlay instanceof LocationOverlay){
-            Toast.makeText(getActivity(), "클릭", Toast.LENGTH_SHORT).show();
-            return true;
-        }
-        return false;
-    }
-
     // 인증, 번개 버튼 리스너
     View.OnClickListener authmeetingL = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            listStores = new ArrayList<>();
+
             int id = v.getId();
             if(id == R.id.authoff){
                 auth = true;
@@ -788,6 +792,10 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
             if(pochas != null){
                 for(int i = 0; i < pochas.size(); i++){
                     updateMarker(pochas.get(i), stores.get(i));
+
+                    if(pochas.get(i).getMap() != null && pochas.get(i).getIcon() != null){
+                        listStores.add(stores.get(i));
+                    }
                 }
             }
         }
@@ -869,11 +877,11 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
 
         if(pocha_info.getVisibility() == View.VISIBLE){
             ConstraintLayout.LayoutParams layoutParams1 = (ConstraintLayout.LayoutParams) meetingoff.getLayoutParams();
-            layoutParams1.bottomMargin = 350;
+            layoutParams1.bottomMargin = 420;
             meetingoff.setLayoutParams(layoutParams1);
 
             ConstraintLayout.LayoutParams layoutParams2 = (ConstraintLayout.LayoutParams) meetingon.getLayoutParams();
-            layoutParams2.bottomMargin = 350;
+            layoutParams2.bottomMargin = 420;
             meetingon.setLayoutParams(layoutParams2);
 
             ConstraintLayout.LayoutParams layoutParams3 = (ConstraintLayout.LayoutParams) locationButtonView.getLayoutParams();
@@ -888,11 +896,11 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Overla
 
         }else{
             ConstraintLayout.LayoutParams layoutParams1 = (ConstraintLayout.LayoutParams) meetingoff.getLayoutParams();
-            layoutParams1.bottomMargin = 70;
+            layoutParams1.bottomMargin = 190;
             meetingoff.setLayoutParams(layoutParams1);
 
             ConstraintLayout.LayoutParams layoutParams2 = (ConstraintLayout.LayoutParams) meetingon.getLayoutParams();
-            layoutParams2.bottomMargin = 70;
+            layoutParams2.bottomMargin = 190;
             meetingon.setLayoutParams(layoutParams2);
 
             ConstraintLayout.LayoutParams layoutParams3 = (ConstraintLayout.LayoutParams) locationButtonView.getLayoutParams();

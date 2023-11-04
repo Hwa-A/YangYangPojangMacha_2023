@@ -32,19 +32,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <ImageButton
-        android:id="@+id/location_btn_custom"
-        android:visibility="invisible"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/location_btn"
-        android:layout_marginBottom="44dp"
-        android:layout_marginLeft="12dp"
-        android:background="@drawable/location_btn_backgroud"
-        android:elevation="2dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"/>
-
     <TextView
         android:id="@+id/searchAdd"
         android:layout_width="match_parent"
@@ -128,53 +115,68 @@
 
     <ImageButton
         android:id="@+id/authoff"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:scaleType="centerInside"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:scaleType="fitXY"
         android:src="@drawable/authoff"
         android:background="#00000000"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@id/meetingoff"
-        android:layout_marginRight="-15dp"
-        android:layout_marginBottom="-45dp" />
+        android:layout_marginEnd="12dp"
+        android:layout_marginBottom="8dp" />
 
     <ImageButton
         android:id="@+id/authon"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:scaleType="centerInside"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:scaleType="fitXY"
         android:src="@drawable/authon"
+        android:visibility="invisible"
         android:background="#00000000"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@id/meetingoff"
-        android:visibility="invisible"
-        android:layout_marginRight="-15dp"
-        android:layout_marginBottom="-45dp"/>
+        android:layout_marginEnd="12dp"
+        android:layout_marginBottom="8dp"/>
 
     <ImageButton
         android:id="@+id/meetingoff"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:scaleType="centerInside"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:scaleType="fitXY"
         android:src="@drawable/meetingoff"
         android:background="#00000000"
+        app:layout_constraintStart_toStartOf="@+id/authoff"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginRight="-15dp"
-        android:layout_marginBottom="70dp" />
+        android:layout_marginEnd="12dp"
+        android:layout_marginBottom="75dp" />
 
     <ImageButton
         android:id="@+id/meetingon"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:scaleType="centerInside"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:scaleType="fitXY"
         android:src="@drawable/meetingon"
+        android:visibility="invisible"
         android:background="#00000000"
+        app:layout_constraintStart_toStartOf="@+id/authoff"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:visibility="invisible"
-        android:layout_marginRight="-15dp"
-        android:layout_marginBottom="70dp"/>
+        android:layout_marginEnd="12dp"
+        android:layout_marginBottom="75dp"/>
+
+    <ImageButton
+        android:id="@+id/location_btn_custom"
+        android:visibility="visible"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/location_btn"
+        android:layout_marginBottom="44dp"
+        android:layout_marginLeft="12dp"
+        android:background="@drawable/location_btn_backgroud"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
+
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/pocha_list"
@@ -184,6 +186,7 @@
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"/>
+
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/pocha_info"
