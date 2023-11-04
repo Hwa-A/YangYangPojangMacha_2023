@@ -27,6 +27,8 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.yuhan.yangpojang.R;
+//import com.yuhan.yangpojang.mypage.GetList.MyReviewGetList;
+import com.yuhan.yangpojang.mypage.Model.MyReviewModel;
 import com.yuhan.yangpojang.mypage.account.accountPage;
 import com.yuhan.yangpojang.mypage.Adapter.MyLikeShopAdapter;
 import com.yuhan.yangpojang.mypage.Adapter.MyReportShopAdapter;
@@ -178,14 +180,32 @@ public class ProfileShowFragment extends Fragment
         });
 
 
-
-
-
-//
-//        // myReviewRecyclerView (내가 작성한 리뷰)
+//        //        // myReviewRecyclerView (내가 작성한 리뷰)
 //        reviewRecyclerView = view.findViewById(R.id.myReviewRecycle);
 //        reviewRecyclerView.setHasFixedSize(true);
 //        reviewRecyclerView.setLayoutManager(new LinearLayoutManager(view.getContext(), LinearLayoutManager.HORIZONTAL, false));
+//
+//        MyReviewGetList myReviewGetList = new MyReviewGetList();
+//
+//        myReviewGetList.getMyReviewModel(user_info_uid, new MyReviewGetList.dataLoadCallback() {
+//            @Override
+//            public void listLoad(ArrayList<MyReviewModel> reviewDatas) {
+//                Log.d("프로필", "onDataLoaded: MyReviewList");
+//                //reviewAdapter = new MyReView
+//            }
+//
+//            @Override
+//            public void reviewLoad(ArrayList selectReview, ArrayList selectShop, ArrayList<MyReviewModel> shopDatas) {
+//
+//            }
+//
+//            @Override
+//            public void shopLoad(MyReviewModel model, ArrayList selectShop, ArrayList<MyReviewModel> shopDatas) {
+//
+//            }
+//
+//        });
+
 //
 //
 //        //myMeetingRecyclerView (내 번개)

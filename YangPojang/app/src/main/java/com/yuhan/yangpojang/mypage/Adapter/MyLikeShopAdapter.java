@@ -84,11 +84,10 @@ public class MyLikeShopAdapter extends RecyclerView.Adapter<MyLikeShopAdapter.My
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // 클릭한 항목의 가게 정보를 가져옵니다.
+                // 클릭한 항목의 가게 정보
                 MyLikeShopModel selectedShop = likeList.get(position);
 
-
-                // 가게의 고유 식별자를 사용하여 가게 세부 정보 화면으로 이동하는 인텐트를 생성합니다.
+                // 가게의 고유 식별자를 사용하여 가게 세부 정보 화면으로 이동하는 인텐트를 생성
                 Intent intent = new Intent(context, PochainfoActivity.class);
                 intent.putExtra("shopInfo", selectedShop);  // MyLikeShopModel 객체를 추가 데이터로 전달
 
