@@ -59,6 +59,7 @@ import com.naver.maps.map.widget.CompassView;
 import com.naver.maps.map.widget.LocationButtonView;
 import com.yuhan.yangpojang.home.CategoryListAdapter;
 import com.yuhan.yangpojang.model.LikeShopData;
+import com.yuhan.yangpojang.mypage.Model.MyReviewModel;
 import com.yuhan.yangpojang.pochaInfo.info.PochainfoActivity;
 import com.yuhan.yangpojang.R;
 import com.yuhan.yangpojang.home.HttpResponse;
@@ -296,6 +297,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, onPoch
     }
 
     private ActivityResultLauncher<Intent> getSearchActivityResult;
+    private ArrayList<MyReviewModel> myReviewModels = new ArrayList<>();
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -382,8 +384,71 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, onPoch
             });
         }
 
+        introductionPopup();
+
         return homeview;
     } // onCreateView 끝
+
+    // 앱 실행 시 팝업
+    public void introductionPopup(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+
+        LayoutInflater inflater = getLayoutInflater();
+        View customView = inflater.inflate(R.layout.app_introduction_popup, null);
+        builder.setView(customView);
+        final AlertDialog dialog = builder.create();
+
+        final TextView description = customView.findViewById(R.id.description);
+        final TextView title = customView.findViewById(R.id.title);
+        final ImageView auth = customView.findViewById(R.id.auth);
+        final ImageView meet = customView.findViewById(R.id.meet);
+        final ImageView yuhan = customView.findViewById(R.id.yuhan);
+        final Button end = customView.findViewById(R.id.end);
+
+        final String[] descriptions = {getActivity().getResources().getString(R.string.description1), getActivity().getResources().getString(R.string.description2), getActivity().getResources().getString(R.string.description3)};
+        final String[] titles = {getActivity().getResources().getString(R.string.title1), getActivity().getResources().getString(R.string.title2), getActivity().getResources().getString(R.string.title3)};
+        final int[] currentIndex = {0};
+
+        Button cancel = customView.findViewById(R.id.cancel);
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) { dialog.dismiss(); }
+        });
+
+        Button next = customView.findViewById(R.id.next);
+        next.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // 배열에서 다음 텍스트를 가져와 설정
+                if (currentIndex[0] < descriptions.length) {
+                    currentIndex[0]++;
+                    if (currentIndex[0] == 1) {
+                        yuhan.setVisibility(INVISIBLE);
+                        auth.setVisibility(VISIBLE);
+                    } else if (currentIndex[0] == 2) {
+                        meet.setVisibility(VISIBLE);
+                        yuhan.setVisibility(INVISIBLE);
+                        cancel.setVisibility(INVISIBLE);
+                        next.setVisibility(INVISIBLE);
+                        end.setVisibility(VISIBLE);
+                    } else {
+                        auth.setVisibility(INVISIBLE);
+                        meet.setVisibility(INVISIBLE);
+                    }
+
+                    description.setText(descriptions[currentIndex[0]]);
+                    title.setText(titles[currentIndex[0]]);
+                }
+            }
+        });
+
+        end.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) { dialog.dismiss(); }
+        });
+
+        dialog.show();
+    }
 
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
