@@ -46,7 +46,7 @@ public class MyLikeShopModel extends Shop {
                 boolean pwayAccount, boolean pwayCash, boolean openMon, boolean openTue,
                 boolean openWed, boolean openThu, boolean openFri, boolean openSat,
                 boolean openSun, String category , String storeImageUri, String menuImageUri,
-                boolean isVerified, boolean hasMeeting, float rating, String geohash ) {
+                boolean verified, boolean hasMeeting, float rating, String geohash ) {
 
         this.uid= uid;
         this.shopName=shopName;

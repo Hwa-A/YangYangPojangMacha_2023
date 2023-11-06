@@ -27,7 +27,9 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.yuhan.yangpojang.R;
-//import com.yuhan.yangpojang.mypage.GetList.MyReviewGetList;
+import com.yuhan.yangpojang.mypage.Adapter.MyReviewAdapter;
+import com.yuhan.yangpojang.mypage.GetList.ReviewList.MyReviewList;
+import com.yuhan.yangpojang.mypage.GetList.ReviewList.ZeroReviewList;
 import com.yuhan.yangpojang.mypage.Model.MyReviewModel;
 import com.yuhan.yangpojang.mypage.account.accountPage;
 import com.yuhan.yangpojang.mypage.Adapter.MyLikeShopAdapter;
@@ -42,8 +44,7 @@ import com.yuhan.yangpojang.mypage.UserProfile.LoadUserProfile;
 import java.util.ArrayList;
 
 
-public class ProfileShowFragment extends Fragment
-{
+public class ProfileShowFragment extends Fragment {
     private String user_info_uid;
 
     private LoadUserProfile loadUserProfile; // 프로필을 부르기 위한 클래스
@@ -57,7 +58,7 @@ public class ProfileShowFragment extends Fragment
 
     // 리사이클러 뷰와 리사이클러 뷰 어뎁터
     private RecyclerView likeRecyclerView, reportRecyclerView, reviewRecyclerView, meetingRecyclerView;
-    private RecyclerView.Adapter likeAdapter, reportAdapter,reviewAdapter, meetingAdapter;
+    private RecyclerView.Adapter likeAdapter, reportAdapter, reviewAdapter, meetingAdapter;
 
     View view;
 
@@ -65,7 +66,6 @@ public class ProfileShowFragment extends Fragment
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = (ViewGroup) inflater.inflate(R.layout.fragment_profile, container, false);
-
 
 
         // 화면 내의 활성화 되는 버튼들
@@ -96,8 +96,6 @@ public class ProfileShowFragment extends Fragment
         // 화면 내의 활성화 되는 버튼들
 
 
-
-
         // 사용자 정보 불러오기
         userNick = view.findViewById(R.id.userNickname);
         userImg = view.findViewById(R.id.showUserImg);
@@ -124,8 +122,7 @@ public class ProfileShowFragment extends Fragment
 
                     userNick.setText(nick);
                     Log.d("프로필", "변경되야 함" + nick + img);
-                }
-                else{
+                } else {
                     // 만약 프래그먼트가 활성화 되지 않았다면 프래그먼트를 다시 연결
                     view = (ViewGroup) inflater.inflate(R.layout.fragment_profile, container, false);
                 }
@@ -133,9 +130,6 @@ public class ProfileShowFragment extends Fragment
 
         });
         // 사용자 정보 불러오기
-
-
-
 
 
         // 4개의 리사이클러뷰 출력
@@ -146,13 +140,13 @@ public class ProfileShowFragment extends Fragment
 
         MyLikeShopGetList myLikeShopGetList = new MyLikeShopGetList();
 
-        myLikeShopGetList.GetMyLikeShopList(user_info_uid , new MyLikeShopGetList.dataLoadedCallback() {
+        myLikeShopGetList.GetMyLikeShopList(user_info_uid, new MyLikeShopGetList.dataLoadedCallback() {
             @Override
             public void onDataLoaded(ArrayList<MyLikeShopModel> shopDatas) {
-                if(shopDatas != null ){
+                if (shopDatas != null) {
 
                     Log.d(TAG, "onDataLoaded: in main");
-                    likeAdapter = new MyLikeShopAdapter(shopDatas,getContext());
+                    likeAdapter = new MyLikeShopAdapter(shopDatas, getContext());
                     likeRecyclerView.setAdapter(likeAdapter);
                 }
             }
@@ -166,47 +160,41 @@ public class ProfileShowFragment extends Fragment
 
         MyReportShopGetList myReportShopGetList = new MyReportShopGetList();
 
-        myReportShopGetList.GetMyReportShopList(user_info_uid , new MyReportShopGetList.dataLoadedCallback() {
+        myReportShopGetList.GetMyReportShopList(user_info_uid, new MyReportShopGetList.dataLoadedCallback() {
             @Override
             public void onDataLoaded(ArrayList<MyReportShopModel> shopDatas) {
-                if(shopDatas != null ){
+                if (shopDatas != null) {
 
                     Log.d(TAG, "onDataLoaded: myReportRecycle");
-                    reportAdapter = new MyReportShopAdapter(shopDatas,getContext());
+                    reportAdapter = new MyReportShopAdapter(shopDatas, getContext());
                     reportRecyclerView.setAdapter(reportAdapter);
-                }
-                else{
+                } else {
                     Log.d("프로필", "shopDatas null");
                 }
             }
         });
 
 
-//        //        // myReviewRecyclerView (내가 작성한 리뷰)
-//        reviewRecyclerView = view.findViewById(R.id.myReviewRecycle);
-//        reviewRecyclerView.setHasFixedSize(true);
-//        reviewRecyclerView.setLayoutManager(new LinearLayoutManager(view.getContext(), LinearLayoutManager.HORIZONTAL, false));
-//
-//        MyReviewGetList myReviewGetList = new MyReviewGetList();
-//
-//        myReviewGetList.getMyReviewModel(user_info_uid, new MyReviewGetList.dataLoadCallback() {
-//            @Override
-//            public void listLoad(ArrayList<MyReviewModel> reviewDatas) {
-//                Log.d("프로필", "onDataLoaded: MyReviewList");
-//                //reviewAdapter = new MyReView
-//            }
-//
-//            @Override
-//            public void reviewLoad(ArrayList selectReview, ArrayList selectShop, ArrayList<MyReviewModel> shopDatas) {
-//
-//            }
-//
-//            @Override
-//            public void shopLoad(MyReviewModel model, ArrayList selectShop, ArrayList<MyReviewModel> shopDatas) {
-//
-//            }
-//
-//        });
+        // myReviewRecyclerView (내가 작성한 리뷰)
+        reviewRecyclerView = view.findViewById(R.id.myReviewRecycle);
+        reviewRecyclerView.setHasFixedSize(true);
+        reviewRecyclerView.setLayoutManager(new LinearLayoutManager(view.getContext(), LinearLayoutManager.HORIZONTAL, false));
+
+        MyReviewList myReviewList = new MyReviewList();
+
+        myReviewList.getMyReviewList(user_info_uid, new MyReviewList.DataLoadedCallback(){
+            @Override
+            public void onDataLoaded(ArrayList<MyReviewModel> reviewItemList) {
+                if(reviewItemList != null){
+                    Log.d("마지막", "--");
+                    reviewAdapter = new MyReviewAdapter(reviewItemList, getContext());
+                    Log.d("마지막", "-- : " + reviewItemList.get(0).getShopName() );
+                    reviewRecyclerView.setAdapter(reviewAdapter);
+                }
+            }
+        });
+
+
 
 //
 //
@@ -240,8 +228,6 @@ public class ProfileShowFragment extends Fragment
 ////        startActivity(intent);  //인텐트 이동
 //
 //    }
-
-
 
 
 }
