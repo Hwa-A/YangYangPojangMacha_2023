@@ -28,7 +28,7 @@
             android:exported="false" />
 
         <activity
-            android:name=".SplashImage"
+            android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -41,7 +41,7 @@
             android:exported="true">
         </activity>
 
-        <activity android:name=".MainActivity"
+        <activity android:name=".SplashImage"
             android:windowSoftInputMode="adjustPan"/>
 
         <activity android:name=".home.SearchActivity"/>

@@ -2,8 +2,10 @@ package com.yuhan.yangpojang.pochaInfo.model;
 
 import android.text.TextUtils;
 
+import java.io.Serializable;
+
 // pch: pojangmacha
-public class MeetingDTO {
+public class MeetingDTO implements Serializable {
     private String hostUid;             // 개최 회원 ID
     private String pchKey;          // 포차 고유키
     private String title;           // 번개 소개글

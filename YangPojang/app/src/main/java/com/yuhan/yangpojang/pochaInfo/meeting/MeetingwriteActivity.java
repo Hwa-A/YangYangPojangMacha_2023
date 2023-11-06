@@ -3,6 +3,7 @@ package com.yuhan.yangpojang.pochaInfo.meeting;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
 
 import android.app.TimePickerDialog;
 import android.content.Intent;
@@ -13,7 +14,6 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -23,29 +23,23 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ServerValue;
 import com.yuhan.yangpojang.R;
+import com.yuhan.yangpojang.pochaInfo.Dialog.UploadFailDialogFragment;
+import com.yuhan.yangpojang.pochaInfo.Dialog.UploadSuccessDialogFragment;
 import com.yuhan.yangpojang.pochaInfo.model.MeetingDTO;
 
-import org.checkerframework.checker.units.qual.C;
-
 import java.text.SimpleDateFormat;
-import java.time.Instant;
-import java.time.ZoneOffset;
-import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
-
-import io.grpc.Server;
 
 // meet: meeting
 // pch: pojangmacha
@@ -144,8 +138,6 @@ public class MeetingwriteActivity extends AppCompatActivity {
         timeTv.setOnClickListener(selectTime);
         // 번개 등록 리스너 연결
         registerBtn.setOnClickListener(registerMeeting);
-        // 번개 연령대 editText에서 포커스 벗어나면 텍스트 가운데 졍렬
-//        minAgeEdt.setOnFocusChangeListener(textAlignCenter);
 
         // ▼ 번개 취소 버튼 클릭한 경우, 현재 Activity 종료 코드
         cancelBtn.setOnClickListener(new View.OnClickListener() {
@@ -155,27 +147,6 @@ public class MeetingwriteActivity extends AppCompatActivity {
             }
         });
     }
-
-    // ▼ 번개 연령대 editText에 포커스가 벗어난 경우, 텍스트 가운데 정렬
-    View.OnFocusChangeListener textAlignCenter = new View.OnFocusChangeListener() {
-        @Override
-        public void onFocusChange(View v, boolean hasFocus) {
-            if(!hasFocus){
-                if(minAgeTxtLay.getError() == null) {
-                    // 포커스가 없는 경우
-
-                    minAgeTxtLay.setEndIconMode(TextInputLayout.END_ICON_NONE);     // clear text 아이콘 숨김
-                    minAgeEdt.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);   // 가운데 정렬
-                    maxAgeEdt.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);   // 가운데 정렬
-                }
-            }else {
-                // 포커스가 있는 경우
-                // clear text 아이콘 표시
-                minAgeTxtLay.setEndIconMode(TextInputLayout.END_ICON_CLEAR_TEXT);
-            }
-        }
-    };
-
 
     // ▼ 현재 날짜 구하는 코드
     public Map<String, String> getCurrentDateAndTime(){
@@ -203,7 +174,7 @@ public class MeetingwriteActivity extends AppCompatActivity {
         @Override
         public void onClick(View v) {
             // 번개 객체에 데이터 저장
-            meeting.setTitle(titleEdt.getText().toString());    // 번개 소개글 저장
+            meeting.setTitle(titleEdt.getText().toString().trim());    // 문자열 양 끝단의 공백을 제거 후, 번개 소개글 저장
             String maxMember = maxMemberTv.getText().toString();
             String maxMem = maxMember.substring(0, maxMember.indexOf("명"));  // 번개 정원에서 숫자만 분리("명" 제외)
             meeting.setMaxMember(Integer.parseInt(maxMem));     // 번개 정원 저장
@@ -224,24 +195,50 @@ public class MeetingwriteActivity extends AppCompatActivity {
                     String meetingKey = ref.child("meeting").push().getKey();
                     // firebase에 저장
                     Map<String, Object> meetingInsert = new HashMap<>();
-                    meetingInsert.put("/meeting/"+meetingKey, meeting);         // meeting 테이블에 저장
-                    meetingInsert.put("/myMeeting/"+meeting.getHostUid()+"/"+meetingKey, meeting.getPchKey());      // myMeeting 테이블에 저장
+                    // meeting 테이블에 저장
+                    // meeting > 포차 id > 번개 id > 번개 정보
+                    meetingInsert.put("/meeting/"+meeting.getPchKey()+"/"+meetingKey, meeting);
+                    // myMeeting 테이블에 저장
+                    // myMeeting > uid > 번개 id : 포차 id
+                    meetingInsert.put("/myMeeting/"+meeting.getHostUid()+"/"+meetingKey, meeting.getPchKey());
 
                     // firebase에 업로드
                     ref.updateChildren(meetingInsert, new DatabaseReference.CompletionListener() {
                         @Override
                         public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
                             if (error == null){
-                                // 업로드 성공한 경우
+                                // 업로드 성공한 경우, 확인 다이얼로그 실행 메서드
+                                showUploadSuccessDialog();
                             }else {
-                                // 업로드 실패 경우
+                                // 업로드 실패 경우, 확인 다이얼로그 실행 메서드
+                                showUploadFailDialog();
                             }
                         }
                     });
+                }else {
+                    Toast.makeText(getApplicationContext(), "입력된 연령대의 범위가 옳지 않습니다", Toast.LENGTH_SHORT).show();
                 }
+            }else {
+                Toast.makeText(getApplicationContext(), "모든 항목의 입력은 필수입니다", Toast.LENGTH_SHORT).show();
             }
         }
     };
+
+    // ▼ 번개 업로드 성공한 경우, 성공 다이얼로그 출력
+    private void showUploadSuccessDialog(){
+        FragmentManager frgManager = getSupportFragmentManager();
+        UploadSuccessDialogFragment successDialog = new UploadSuccessDialogFragment(); // 업로드 확인 다이어로그 생성 및 초기화
+        successDialog.setDialogCallPlace("번개");   // 번개에서 다이얼로그를 호출함을 전달
+        successDialog.show(frgManager, "upload_success_meeting");
+    }
+
+    // ▼ 번개 업로드 실패한 경우, 실패 다이어로그 출력
+    private void showUploadFailDialog(){
+        FragmentManager frgManager = getSupportFragmentManager();
+        UploadFailDialogFragment failDialog = new UploadFailDialogFragment(); // 업로드 확인 다이어로그 생성 및 초기화
+        failDialog.setDialogCallPlace("번개");   // 번개에서 다이얼로그를 호출함을 전달
+        failDialog.show(frgManager, "upload_fail_meeting");
+    }
 
     // ▼ 버튼 클릭한 경우, TimePickerDialog로 번개 시간 선택
     View.OnClickListener selectTime = new View.OnClickListener() {
@@ -276,10 +273,17 @@ public class MeetingwriteActivity extends AppCompatActivity {
             public void afterTextChanged(Editable s) {
                 // text 변경 후에 호출되는 메서드
                 // TextUtils.isEmpty(): 라이브러리에서 제공하는 'null or 공백' 체크 함수
-                if (TextUtils.isEmpty(s.toString())){
-                    // text가 공백인 경우, 에러 메시지 출력
+                // 주의: "   "의 경우, isEmpty()의 결과가 false / ""의 경우, true
+                // isEmpty() 사용 시, 문자열의 양 끝단의 공백을 제거 후 사용
+                if(TextUtils.isEmpty(s.toString().trim())){
                     txtLayout.setError("문자 입력 필수");
-                }else {
+                    if(s.toString().indexOf(" ") == 0){
+                        txtLayout.setEndIconMode(TextInputLayout.END_ICON_NONE);     // clear text 아이콘 숨김
+                        // 문자열의 맨 앞에 공백이 오는 경우, 공백 제거
+                        edt.setText(s.toString().replaceFirst(" ", ""));
+                    }
+                } else {
+                    txtLayout.setEndIconMode(TextInputLayout.END_ICON_CLEAR_TEXT);     // clear text 아이콘 생성
                     // text가 공백이 아닌 경우
                     txtLayout.setError(null);
                 }
@@ -300,10 +304,11 @@ public class MeetingwriteActivity extends AppCompatActivity {
                     txtLayout.setError("문자 입력 필수");
                     if(!TextUtils.isEmpty(maxAgeEdt.getText().toString())){
                         maxAgeTxtLay.setError(null);
-                        maxAgeTxtLay.setEndIconMode(TextInputLayout.END_ICON_NONE);     // clear text 아이콘 숨김
+//                        maxAgeTxtLay.setEndIconMode(TextInputLayout.END_ICON_NONE);     // clear text 아이콘 숨김
                         maxAgeEdt.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);   // 가운데 정렬
                     }
                 }else {
+//                    txtLayout.setEndIconMode(TextInputLayout.END_ICON_CLEAR_TEXT);     // clear text 아이콘 생성
                     // text가 공백이 아닌 경우
                     txtLayout.setError(null);
                     if((s.toString().length() == 2) && (s.toString().indexOf("0") == 0)){
@@ -320,7 +325,7 @@ public class MeetingwriteActivity extends AppCompatActivity {
                         }else{
                             // 범위가 맞는 경우
                             maxAgeTxtLay.setError(null);
-                            maxAgeTxtLay.setEndIconMode(TextInputLayout.END_ICON_NONE);     // clear text 아이콘 숨김
+//                            maxAgeTxtLay.setEndIconMode(TextInputLayout.END_ICON_NONE);     // clear text 아이콘 숨김
                             maxAgeEdt.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);   // 가운데 정렬
                         }
                     }
@@ -343,10 +348,11 @@ public class MeetingwriteActivity extends AppCompatActivity {
                     txtLayout.setError("문자 입력 필수");
                     if(!TextUtils.isEmpty(minAgeEdt.getText().toString())){
                         minAgeTxtLay.setError(null);
-                        minAgeTxtLay.setEndIconMode(TextInputLayout.END_ICON_NONE);     // clear text 아이콘 숨김
+//                        minAgeTxtLay.setEndIconMode(TextInputLayout.END_ICON_NONE);     // clear text 아이콘 숨김
                         minAgeEdt.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);   // 가운데 정렬
                     }
                 }else {
+//                    txtLayout.setEndIconMode(TextInputLayout.END_ICON_CLEAR_TEXT);     // clear text 아이콘 생성
                     // text가 공백이 아닌 경우
                     txtLayout.setError(null);
                     if((s.toString().length() == 2) && (s.toString().indexOf("0") == 0)){
@@ -362,7 +368,7 @@ public class MeetingwriteActivity extends AppCompatActivity {
                         }else{
                             // 범위가 맞는 경우
                             minAgeTxtLay.setError(null);
-                            minAgeTxtLay.setEndIconMode(TextInputLayout.END_ICON_NONE);     // clear text 아이콘 숨김
+//                            minAgeTxtLay.setEndIconMode(TextInputLayout.END_ICON_NONE);     // clear text 아이콘 숨김
                             minAgeEdt.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);   // 가운데 정렬
                         }
                     }

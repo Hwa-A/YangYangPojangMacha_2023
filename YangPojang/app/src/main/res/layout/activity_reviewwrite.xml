@@ -75,7 +75,8 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tv_reviewwrite_ratingLabel"
                 app:layout_constraintBottom_toTopOf="@id/tv_reviewwrite_textContentLabel"
-                tools:ignore="SpeakableTextPresentCheck"/>
+                tools:ignore="SpeakableTextPresentCheck"
+                style="?android:attr/ratingBarStyleIndicator"/>
             <TextView
                 android:id="@+id/tv_reviewwrite_textContentLabel"
                 android:layout_width="wrap_content"
@@ -87,7 +88,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/rtb_reviewwrite_rating"
                 app:layout_constraintBottom_toTopOf="@id/edt_reviewwrite_textContent"
-                android:layout_marginTop="10dp"/>
+                android:layout_marginTop="15dp"/>
             <EditText
                 android:id="@+id/edt_reviewwrite_textContent"
                 android:layout_width="0dp"
@@ -121,7 +122,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tv_reviewwrite_textCount"
                 app:layout_constraintBottom_toTopOf="@id/lin_reviewwrite_imageContainer"
-                android:layout_marginTop="10dp"/>
+                android:layout_marginTop="15dp"/>
             <LinearLayout
                 android:id="@+id/lin_reviewwrite_imageContainer"
                 android:layout_width="match_parent"

@@ -28,7 +28,8 @@ public class PochameetingFragment extends Fragment {
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        if(context instanceof OnFragmentReloadListener){
+        if(context instanceof OnFragmentReloadListener){    // 호스트 액티비티가 해당 인터페이스를 구현한 액티비티인지 확인
+            // 현재 연결된 (호스트)액티비티를 형변환해 onFrgReloadListener에 할당
             onFrgReloadListener = (OnFragmentReloadListener) context;   // 초기화
         }else {
             // 에러 처리

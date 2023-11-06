@@ -1,7 +1,9 @@
 package com.yuhan.yangpojang.pochaInfo.model;
 
+import java.io.Serializable;
+
 // pch: pojangmacha
-public class ReviewDTO {
+public class ReviewDTO implements Serializable {
     String uid;         // 회원 ID
     double rating;      // 별점
     String content;     // 내용
