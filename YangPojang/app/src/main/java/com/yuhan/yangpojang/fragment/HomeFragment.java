@@ -104,13 +104,12 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, onPoch
         // 위치권한 여부에 따른 현위치 버튼 표시, 위치 권한 거부 시 서울 시청 기준으로 가게 띄우기
         if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             locationPermission();
-
+            mNaverMap.setLocationTrackingMode(LocationTrackingMode.Follow);
         }
         // 권한 부여가 되지 않은 경우 권한 부여 메세지 생성
         else
         {
             locationPermission();
-
             // 위치권한 거부 시 서울시청 중심으로 가게 데이터 요청
             StoreData.addLocation(37.566585801211325, 126.9777104192369, calculateRadius());
             loadStoreData();
@@ -295,9 +294,19 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, onPoch
         }
 
     }
+    @Override
+    public void onResume() {
+        super.onResume();
+        RecyclerView pochalist_view = getActivity().findViewById(R.id.pocha_list);
+        pochalist_view.setVisibility(View.INVISIBLE);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+    }
 
     private ActivityResultLauncher<Intent> getSearchActivityResult;
-    private ArrayList<MyReviewModel> myReviewModels = new ArrayList<>();
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -455,8 +464,33 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, onPoch
         // request code와 권한 획득 여부 확인
         if(requestCode == PERMISSION_REQUEST_CODE){ // onMapReady()메서드에 요청한 권한 요청과 일치하는지 확인
             locationPermission();
+            mNaverMap.setLocationTrackingMode(LocationTrackingMode.Follow);
         }// onRequestPermissionsResult()메서드는 권한 요청 결과를 처리하고, 권한이 획득되었을 경우에만 NaverMap객체의 위치 추적 모드를 설정하는 역할을 함
 
+    }
+
+    private CameraPosition savedCameraPosition;
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        if (mNaverMap != null) {
+            savedCameraPosition = mNaverMap.getCameraPosition(); // 현재 지도의 카메라 위치 저장
+            outState.putParcelable("camera_position", savedCameraPosition);
+        }
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        if (savedInstanceState != null) {
+            // 이전 상태를 복원
+            savedCameraPosition = savedInstanceState.getParcelable("camera_position");
+            if (savedCameraPosition != null && mNaverMap != null) {
+                mNaverMap.setCameraPosition(savedCameraPosition);
+            }
+        }
     }
 
     @Override
@@ -478,7 +512,6 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, onPoch
         re_searchbtn.setVisibility(INVISIBLE);
 
         locationPermission();
-
     }
 
     // 위치 권한이 변경될 때 호출할 메소드
@@ -486,7 +519,6 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, onPoch
         if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             if(mNaverMap != null ){
                 mNaverMap.setLocationSource(locationSource);
-                mNaverMap.setLocationTrackingMode(LocationTrackingMode.Follow);
 
                 LocationButtonView locationButtonView = homeview.findViewById(R.id.location_btn);
                 locationButtonView.setMap(mNaverMap);
