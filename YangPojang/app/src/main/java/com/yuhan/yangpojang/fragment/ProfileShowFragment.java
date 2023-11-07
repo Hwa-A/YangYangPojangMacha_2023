@@ -14,6 +14,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -48,7 +51,7 @@ public class ProfileShowFragment extends Fragment
 
     private LoadUserProfile loadUserProfile; // 프로필을 부르기 위한 클래스
     private TextView userNick;
-    private ImageView userImg;
+    public ImageView userImg;
 
 
     // 현재 프래그먼트에서 작동하는 버튼들
@@ -61,12 +64,11 @@ public class ProfileShowFragment extends Fragment
 
     View view;
 
+    private ActivityResultLauncher<String> getPicture;
     @Nullable  // null 체크유도, 경고를 통해 누락된 체크를 알려줄수 있음
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = (ViewGroup) inflater.inflate(R.layout.fragment_profile, container, false);
-
-
 
         // 화면 내의 활성화 되는 버튼들
         // accountBtn : 클릭 시 계정 설정 페이지로 넘어감 (accountPage.java , account_page.xml)
@@ -88,15 +90,12 @@ public class ProfileShowFragment extends Fragment
             @Override
             public void onClick(View view) {
                 Log.d("프로필", "onClick: changeUserImg");
-                ChangeImgDialog changeImgDialog = new ChangeImgDialog(getContext());
+                ChangeImgDialog changeImgDialog = new ChangeImgDialog(getContext(), getPicture, user_info_uid);
                 changeImgDialog.show();
-
+                changeImgDialog.setuserImg(userImg);
             }
         });
         // 화면 내의 활성화 되는 버튼들
-
-
-
 
         // 사용자 정보 불러오기
         userNick = view.findViewById(R.id.userNickname);
@@ -221,13 +220,23 @@ public class ProfileShowFragment extends Fragment
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         //UID 가져오기
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
             user_info_uid = user.getUid();
         }
 
+        // 갤러리에서 이미지를 선택하는 동작 처리(ActivityResultLauncher 정의)
+        getPicture = registerForActivityResult(new ActivityResultContracts.GetContent(),
+                new ActivityResultCallback<Uri>() {
+                    @Override
+                    public void onActivityResult(Uri result) {
+                        Log.d("이야이야이", "겟픽쳐 호출");
+                        ChangeImgDialog.getPicUri(result);
+                        ChangeImgDialog.changeImg.setImageURI(result);
+                        ChangeImgDialog.changeImg.setScaleType(ImageView.ScaleType.FIT_CENTER);
+                    }
+                });
 
     }
 
