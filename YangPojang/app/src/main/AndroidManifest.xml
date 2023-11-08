@@ -23,15 +23,12 @@
             android:name=".pochaInfo.meeting.MeetingwriteActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustNothing"/>
-        <!-- ReviewwriteActivity에 android:windowSoftInputMode="adjustNothing"추가
-             : 키보드를 레이아웃 위에 위치시킴 => 레이아웃이 키보드에 의해 올라가는 등 바뀌는 현상 방지-->
         <activity
             android:name=".pochaInfo.review.ReviewwriteActivity"
-            android:exported="false"
-            android:windowSoftInputMode="adjustNothing"/>
+            android:exported="false" />
 
         <activity
-            android:name=".MainActivity"
+            android:name=".SplashImage"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -44,7 +41,7 @@
             android:exported="true">
         </activity>
 
-        <activity android:name=".SplashImage"
+        <activity android:name=".MainActivity"
             android:windowSoftInputMode="adjustPan"/>
 
         <activity android:name=".home.SearchActivity"/>
