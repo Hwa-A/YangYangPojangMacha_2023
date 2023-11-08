@@ -78,14 +78,6 @@ public class MyReviewModel extends Shop {
         this.geohash = geohash;
     }
 
-    public  MyReviewModel(String shopID_reviewID, String picUrl1, Float myRating, String summary){
-        this.shopID_reviewID = shopID_reviewID;
-
-        this.picUrl1 = picUrl1;
-        this.myRating = myRating;
-        this.summary = summary;
-    }
-
 
     public String getUid() {        return uid;    }
 
@@ -246,5 +238,13 @@ public class MyReviewModel extends Shop {
         this.hasMeeting = hasMeeting;
         this.rating = rating;
         this.geohash = geohash;
+    }
+
+    public void setMyReviewModel(String shopID_reviewID, String picUrl1, Float myRating, String summary){
+        this.shopID_reviewID = shopID_reviewID;
+
+        this.picUrl1 = picUrl1;
+        this.myRating = myRating;
+        this.summary = summary;
     }
 }

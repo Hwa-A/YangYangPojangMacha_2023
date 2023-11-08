@@ -28,7 +28,7 @@ public class MyLikeShopGetList {
         Log.d("테스트like", "MyLikeShopGetList: 진입");
     }
 
-    public void GetMyLikeShopList(String UID, final dataLoadedCallback callback)
+    public void getMyLikeShopList(String UID, final dataLoadedCallback callback)
     {
         this.UID = UID;     //UID 연결
         bflist.clear();

@@ -1,7 +1,5 @@
 package com.yuhan.yangpojang.fragment;
 
-import static com.google.firebase.crashlytics.internal.Logger.TAG;
-
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -28,8 +26,8 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.yuhan.yangpojang.R;
 import com.yuhan.yangpojang.mypage.Adapter.MyReviewAdapter;
+//import com.yuhan.yangpojang.mypage.GetList.ReviewList.DataLoadedCallback;
 import com.yuhan.yangpojang.mypage.GetList.ReviewList.MyReviewList;
-import com.yuhan.yangpojang.mypage.GetList.ReviewList.ZeroReviewList;
 import com.yuhan.yangpojang.mypage.Model.MyReviewModel;
 import com.yuhan.yangpojang.mypage.account.accountPage;
 import com.yuhan.yangpojang.mypage.Adapter.MyLikeShopAdapter;
@@ -140,12 +138,12 @@ public class ProfileShowFragment extends Fragment {
 
         MyLikeShopGetList myLikeShopGetList = new MyLikeShopGetList();
 
-        myLikeShopGetList.GetMyLikeShopList(user_info_uid, new MyLikeShopGetList.dataLoadedCallback() {
+        myLikeShopGetList.getMyLikeShopList(user_info_uid, new MyLikeShopGetList.dataLoadedCallback() {
             @Override
             public void onDataLoaded(ArrayList<MyLikeShopModel> shopDatas) {
                 if (shopDatas != null) {
 
-                    Log.d(TAG, "onDataLoaded: in main");
+                    Log.d("프로필", "onDataLoaded: in main");
                     likeAdapter = new MyLikeShopAdapter(shopDatas, getContext());
                     likeRecyclerView.setAdapter(likeAdapter);
                 }
@@ -164,8 +162,7 @@ public class ProfileShowFragment extends Fragment {
             @Override
             public void onDataLoaded(ArrayList<MyReportShopModel> shopDatas) {
                 if (shopDatas != null) {
-
-                    Log.d(TAG, "onDataLoaded: myReportRecycle");
+                    Log.d("프로필", "onDataLoaded: myReportRecycle");
                     reportAdapter = new MyReportShopAdapter(shopDatas, getContext());
                     reportRecyclerView.setAdapter(reportAdapter);
                 } else {
@@ -182,17 +179,24 @@ public class ProfileShowFragment extends Fragment {
 
         MyReviewList myReviewList = new MyReviewList();
 
-        myReviewList.getMyReviewList(user_info_uid, new MyReviewList.DataLoadedCallback(){
-            @Override
-            public void onDataLoaded(ArrayList<MyReviewModel> reviewItemList) {
-                if(reviewItemList != null){
-                    Log.d("마지막", "--");
-                    reviewAdapter = new MyReviewAdapter(reviewItemList, getContext());
-                    Log.d("마지막", "-- : " + reviewItemList.get(0).getShopName() );
-                    reviewRecyclerView.setAdapter(reviewAdapter);
-                }
-            }
-        });
+//        myReviewList.onSecondDataLoaded(new );
+
+
+
+
+
+//        SecondReviewList secondReviewList = new SecondReviewList();
+//        secondReviewList.getSecondReviewList(user_info_uid, new SecondReviewList.secondDataLoadedCallback() {
+//            @Override
+//            public void onSecondDataLoaded(ArrayList selectReview, ArrayList selectShop, String UID) {
+//
+//            }
+//        });
+
+
+//        MyReviewGetList myReviewGetList = new MyReviewGetList();
+//        myReviewGetList.setReviewAdapter(user_info_uid);
+
 
 
 

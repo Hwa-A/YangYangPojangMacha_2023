@@ -2,68 +2,126 @@ package com.yuhan.yangpojang.mypage.GetList.ReviewList;
 
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.yuhan.yangpojang.mypage.Model.MyReviewModel;
 
 import java.util.ArrayList;
 
-public class MyReviewList {
+public class MyReviewList implements SecondDataLoadedCallback {
+    private ArrayList<MyReviewModel> shopDatas = new ArrayList<>(); // 가게 정보 전송용
 
-    private ArrayList<MyReviewModel> reviewItemList = new ArrayList<>(); // 가게 정보 전송용
+    DataLoadedCallback dataLoadedCallback;
 
-    public void getMyReviewList(String UID, final DataLoadedCallback callback) {
+    private String UID;
+    int i = 0;
 
-        ZeroReviewList zeroReviewList = new ZeroReviewList();
 
-        zeroReviewList.getZeroReviewList(UID, new ZeroReviewList.ZeroDataLoadedCallback() {
+    @Override
+    public void onSecondDataLoaded(ArrayList<MyReviewModel> reviewDatas, ArrayList selectShop, String UID) {
 
-            @Override
-            public void onZeroDataLoaded( final ArrayList<MyReviewModel> reviewDatas, final ArrayList<MyReviewModel> shopDatas){
-                MyReviewModel model = new MyReviewModel();
-                for (int i = 0; i < reviewDatas.size() ; i++) {
-                    model.setShopName(shopDatas.get(i).getShopName());
-                    model.setLatitude(shopDatas.get(i).getLatitude());
-                    model.setLongitude(shopDatas.get(i).getLongitude());
-                    model.setPwayMobile(shopDatas.get(i).isPwayMobile());
-                    model.setPwayCard(shopDatas.get(i).isPwayCard());
-                    model.setPwayAccount(shopDatas.get(i).isPwayAccount());
-                    model.setPwayCash(shopDatas.get(i).isPwayCash());
-                    model.setOpenMon(shopDatas.get(i).isOpenMon());
-                    model.setOpenTue(shopDatas.get(i).isOpenTue());
-                    model.setOpenWed(shopDatas.get(i).isOpenWed());
-                    model.setOpenThu(shopDatas.get(i).isOpenThu());
-                    model.setOpenFri(shopDatas.get(i).isOpenFri());
-                    model.setOpenSat(shopDatas.get(i).isOpenSat());
-                    model.setOpenSun(shopDatas.get(i).isOpenSun());
-                    model.setStoreImageUri(shopDatas.get(i).getStoreImageUri());
-                    model.setMenuImageUri(shopDatas.get(i).getMenuImageUri());
-                    model.setAddressName(shopDatas.get(i).getAddressName());
-                    model.setCategory(shopDatas.get(i).getCategory());
-                    model.setHash(shopDatas.get(i).getHash());
-                    model.setFbStoreImgurl(shopDatas.get(i).getFbStoreImgurl());
-                    model.setFbMenuImgurl(shopDatas.get(i).getFbMenuImgurl());
-                    model.setVerified(shopDatas.get(i).getVerified());
-                    model.setHasMeeting(shopDatas.get(i).getHasMeeting());
-                    model.setRating(shopDatas.get(i).getRating());
-                    model.setGeohash(shopDatas.get(i).getGeohash());
-                    model.setExteriorImagePath(shopDatas.get(i).getExteriorImagePath());
-                    model.setPrimaryKey(shopDatas.get(i).getPrimaryKey());
-                    model.setUid(shopDatas.get(i).getUid());
+        for (Object shopLink : selectShop) {
+            Log.d("프로필reviewGetList", "selectShop.size() : " + selectShop.size());
+            DatabaseReference shopRef = FirebaseDatabase.getInstance().getReference("shops/" + shopLink);//.child(shopLink.toString());
+
+            shopRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                            if (snapshot.exists()) {
+                    MyReviewModel model = new MyReviewModel();
+                    Log.d("프로필reviewGetList", "ZeroReviewList: 가게 정보 가져오기 ");
+                    String category = snapshot.child("category").getValue(String.class);
+                    String addressName = snapshot.child("addressName").getValue(String.class);
+                    String shopName = snapshot.child("shopName").getValue(String.class);
+                    String exteriorImagePath = snapshot.child("exteriorImagePath").getValue(String.class);
+                    String geohash = snapshot.child("geohash").getValue(String.class);
+                    boolean hasMeeting = snapshot.child("hasMeeting").getValue(boolean.class);
+                    double latitude = snapshot.child("latitude").getValue(Double.class);
+                    double longitude = snapshot.child("longitude").getValue(Double.class);
+                    String menuImageUri = snapshot.child("menuImageUri").getValue(String.class);
+                    boolean openFri = snapshot.child("openFri").getValue(Boolean.class);
+                    boolean openMon = snapshot.child("openMon").getValue(Boolean.class);
+                    boolean openSat = snapshot.child("openSat").getValue(Boolean.class);
+                    boolean openSun = snapshot.child("openSun").getValue(Boolean.class);
+                    boolean openThu = snapshot.child("openThu").getValue(Boolean.class);
+                    boolean openTue = snapshot.child("openTue").getValue(Boolean.class);
+                    boolean openWed = snapshot.child("openWed").getValue(Boolean.class);
+                    boolean pwayAccount = snapshot.child("pwayAccount").getValue(Boolean.class);
+                    boolean pwayCard = snapshot.child("pwayCard").getValue(Boolean.class);
+                    boolean pwayCash = snapshot.child("pwayCash").getValue(Boolean.class);
+                    boolean pwayMobile = snapshot.child("pwayMobile").getValue(Boolean.class);
+                    float rating = snapshot.child("rating").getValue(Float.class);
+                    String storeImageUri = snapshot.child("storeImageUri").getValue(String.class);
+                    String uid = snapshot.child("uid").getValue(String.class);
+                    boolean isVerified = snapshot.child("verified").getValue(Boolean.class);
+
+                    model.setUid(uid);
+                    model.setShopName(shopName);
+                    model.setLatitude(latitude);
+                    model.setLongitude(longitude);
+                    model.setAddressName(addressName);
+                    model.setPwayMobile(pwayMobile);
+                    model.setPwayCard(pwayCard);
+                    model.setPwayAccount(pwayAccount);
+                    model.setPwayCard(pwayCash);
+                    model.setOpenMon(openMon);
+                    model.setOpenTue(openTue);
+                    model.setOpenWed(openWed);
+                    model.setOpenThu(openThu);
+                    model.setOpenFri(openFri);
+                    model.setOpenSat(openSat);
+                    model.setOpenSun(openSun);
+                    model.setCategory(category);
+                    model.setStoreImageUri(storeImageUri);
+                    model.setMenuImageUri(menuImageUri);
+                    model.setVerified(isVerified);
+                    model.setHasMeeting(hasMeeting);
+                    model.setRating(rating);
+                    model.setGeohash(geohash);
+                    model.setExteriorImagePath(exteriorImagePath);
+
                     model.setShopID_reviewID(reviewDatas.get(i).getShopID_reviewID());
                     model.setPicUrl1(reviewDatas.get(i).getPicUrl1());
-                    model.setMyRating(reviewDatas.get(i).getMyRating());
+                    model.setRating(reviewDatas.get(i).getRating());
                     model.setSummary(reviewDatas.get(i).getSummary());
-                    Log.d("마지막", "onZeroDataLoaded: " + model.getLongitude());
-                    Log.d("마지막", "onZeroDataLoaded: " + model.getSummary());
-                    Log.d("마지막", "onZeroDataLoaded: " + model.getShopName());
-                    reviewItemList.add(model);
+
+
+                    Log.d("프로필reviewGetList", "reviewDatas: " + reviewDatas.size());
+
+
+                    Log.d("프로필reviewGetList", "shopDatas: " + shopDatas.size());
+                    //Log.d("프로필reviewGetList", "shopDatas: " + shopDatas.get(0).getShopName());
+                    //Log.d("프로필reviewGetList", "shopDatas: " + shopDatas.get(1).getShopName());
+                    shopDatas.add(model);
+                    Log.d("프로필reviewGetList", "ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ" + model.getSummary());
+                    Log.d("프로필reviewGetList", "ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ" + model.getShopName());
+
                 }
-                callback.onDataLoaded(reviewItemList);
-            }
-        });
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+
+            });
+gi t
+
+        }
+
+        
+
+
     }
 
-    public interface DataLoadedCallback {
-        void onDataLoaded(ArrayList<MyReviewModel> reviewItemList);
-    }
 }
+interface DataLoadedCallback {
+
+    void onDataLoaded(ArrayList<MyReviewModel> shopDatas);
+}
+
+
