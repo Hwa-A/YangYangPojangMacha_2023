@@ -207,12 +207,16 @@ public class ProfileShowFragment extends Fragment
 //
 //        });
 
-//
-//
-//        //myMeetingRecyclerView (내 번개)
-//        meetingRecyclerView = view.findViewById(R.id.myMeetingRecycle);
-//        meetingRecyclerView.setHasFixedSize(true);
-//        meetingRecyclerView.setLayoutManager(new LinearLayoutManager(view.getContext(), LinearLayoutManager.HORIZONTAL, false));
+
+
+        //myMeetingRecyclerView (내 번개)
+        meetingRecyclerView = view.findViewById(R.id.myMeetingRecycle);
+        meetingRecyclerView.setHasFixedSize(true);
+        meetingRecyclerView.setLayoutManager(new LinearLayoutManager(view.getContext(), LinearLayoutManager.HORIZONTAL, false));
+
+
+
+
         return view;
     }
 

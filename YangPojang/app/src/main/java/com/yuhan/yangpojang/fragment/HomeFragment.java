@@ -59,7 +59,6 @@ import com.naver.maps.map.widget.CompassView;
 import com.naver.maps.map.widget.LocationButtonView;
 import com.yuhan.yangpojang.home.CategoryListAdapter;
 import com.yuhan.yangpojang.model.LikeShopData;
-import com.yuhan.yangpojang.mypage.Model.MyReviewModel;
 import com.yuhan.yangpojang.pochaInfo.info.PochainfoActivity;
 import com.yuhan.yangpojang.R;
 import com.yuhan.yangpojang.home.HttpResponse;
@@ -320,7 +319,6 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, onPoch
                     if (result.getResultCode() == RESULT_OK){
                         // 서브 액티비티의 입력 값을 메인에서 받아서 텍스트뷰에 표시 ...!
                         basemap(); // 기본 지도 형태(이전에 생성되었던 지도 상의 이벤트 원상복구)
-
 
                         Location recentLocation = result.getData().getParcelableExtra("select_recent_location"); //최근검색 - 위치값
                         String recentAddress = result.getData().getStringExtra("select_recent_address"); //최근검색 - 주소값
