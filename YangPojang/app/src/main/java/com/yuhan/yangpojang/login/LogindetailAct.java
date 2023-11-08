@@ -212,6 +212,8 @@ public class LogindetailAct extends AppCompatActivity {
                         // Write was successful!
                         Toast.makeText(LogindetailAct.this, "회원가입 완료!.", Toast.LENGTH_SHORT).show();
                         Intent intent_main = new Intent(getApplicationContext(), MainActivity.class);
+                        intent_main.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        intent_main.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(intent_main);
                     }
                 })

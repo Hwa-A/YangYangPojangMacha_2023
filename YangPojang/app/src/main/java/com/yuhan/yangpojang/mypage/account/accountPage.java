@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,6 +15,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
@@ -21,7 +24,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.yuhan.yangpojang.R;
-import com.yuhan.yangpojang.login.LoginActivity;
+import com.yuhan.yangpojang.SplashImage;
 
 
 public class accountPage extends AppCompatActivity {
@@ -31,6 +34,7 @@ public class accountPage extends AppCompatActivity {
     Button logoutButton;
     Button deleteAccountButton;
     private FirebaseAuth mAuth ;
+    private FirebaseUser user;
     private GoogleSignInClient mGoogleSignInClient;
     private GoogleSignInAccount gsa;
 
@@ -45,6 +49,7 @@ public class accountPage extends AppCompatActivity {
             user_info_uid = user.getUid();
         }
 
+
         logoutButton = findViewById(R.id.logoutButton);
         deleteAccountButton = findViewById(R.id.deleteAccountButton);
 
@@ -52,7 +57,7 @@ public class accountPage extends AppCompatActivity {
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build();
-        mGoogleSignInClient = GoogleSignIn.getClient(this, googleSignInOptions);
+        mGoogleSignInClient = GoogleSignIn.getClient(accountPage.this, googleSignInOptions);
 
 
         logoutButton.setOnClickListener(new View.OnClickListener(){
@@ -66,7 +71,7 @@ public class accountPage extends AppCompatActivity {
                             @Override
                             public void onClick(DialogInterface dialog, int i) {
                                 signOut();
-                                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                                Intent intent = new Intent(getApplicationContext(), SplashImage.class);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                 startActivity(intent);
@@ -95,7 +100,9 @@ public class accountPage extends AppCompatActivity {
                         .setPositiveButton("네", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int i) {
-                                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                                signOut();
+                                deleteAccount();
+                                Intent intent = new Intent(getApplicationContext(), SplashImage.class);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                 startActivity(intent);
@@ -125,5 +132,26 @@ public class accountPage extends AppCompatActivity {
                 });
     }
 
-}
+    private void deleteAccount() {
+        user = FirebaseAuth.getInstance().getCurrentUser();
+        user.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                mGoogleSignInClient.revokeAccess();
+                deleteDB();
+            }
+        });
+    }
 
+    private void deleteDB(){
+        StorageReference storageReference = FirebaseStorage.getInstance().getReference("profile").child(user_info_uid);
+        mDatabase.child("user-info").child(user_info_uid).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                storageReference.delete();
+            }
+        });
+
+    }
+
+}
