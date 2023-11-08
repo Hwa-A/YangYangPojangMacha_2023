@@ -27,6 +27,8 @@ import android.widget.Toast;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -46,6 +48,7 @@ import java.util.Map;
 // txtLay: textInputLayout
 public class MeetingwriteActivity extends AppCompatActivity {
 //    private ConnectivityManager.NetworkCallback networkCallback;    // 인터넷 연결 여부 확인 콜백 메서드
+    private String user_info_uid = null;    // 화원 uid
     private MeetingDTO meeting;              // 번개 객체
     private String pchKey;         // 포차 고유키
     TextInputEditText titleEdt;  // 번개 소개글 EditText
@@ -106,12 +109,22 @@ public class MeetingwriteActivity extends AppCompatActivity {
         if (intent != null){
             pchKey = intent.getStringExtra("pchKey");         // 포차 고유키
             String pchName = intent.getStringExtra("pchName");      // 포차 이름
-            String hostUid = intent.getStringExtra("uid");          // 회원 id
             // 포차 이름 변경
             pchNameTv.setText(pchName);
-            // 회원 id를 번개 객체(MeetingDTO)에 저장
-            meeting.setHostUid(hostUid);    // 회원 id
         }
+
+        // firebase에서 회원 id 가져오기
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            user_info_uid = user.getUid();
+            // 회원 id를 번개 객체(MeetingDTO)에 저장
+            meeting.setHostUid(user_info_uid);
+        }else {
+            // 로그인 회원 id를 못 가져온 경우
+            Toast.makeText(getApplicationContext(),"사용자 로그인 정보를 찾을 수 없습니다\n다시 로그인 후 사용해주시기 바랍니다", Toast.LENGTH_LONG).show();
+            finish();   // 현재 액티비티 종료
+        }
+
 
         // timePickerDialog에서 번개 시간이 선택되면 호출되는 메서드 구현
         timeCallBack = new TimePickerDialog.OnTimeSetListener() {
@@ -133,6 +146,18 @@ public class MeetingwriteActivity extends AppCompatActivity {
         minAgeErrorMessage(minAgeEdt, minAgeTxtLay);
         // 번개 최대 연령대 입력에 따른 에러 메시지 출력
         maxAgeErrorMessage(maxAgeEdt, maxAgeTxtLay);
+
+        // ▼ 번개 최소 연령대 한 자릿 수 입력한 경우, 나이 20으로 고정
+        minAgeEdt.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(!hasFocus){
+                    if(minAgeEdt.getText().toString().length() == 1){
+                        minAgeEdt.setText("20");
+                    }
+                }
+            }
+        });
 
         // 번개 시간을 선택할 리스너 연결
         timeTv.setOnClickListener(selectTime);
@@ -275,22 +300,27 @@ public class MeetingwriteActivity extends AppCompatActivity {
                 // TextUtils.isEmpty(): 라이브러리에서 제공하는 'null or 공백' 체크 함수
                 // 주의: "   "의 경우, isEmpty()의 결과가 false / ""의 경우, true
                 // isEmpty() 사용 시, 문자열의 양 끝단의 공백을 제거 후 사용
-                if(TextUtils.isEmpty(s.toString().trim())){
-                    txtLayout.setError("한 글자 이상 입력 필수");
-                    if(s.toString().indexOf(" ") == 0){
+
+                if(s.toString().indexOf(" ") == 0){
+                    // 문자열의 맨 앞에 공백이 오는 경우, 공백 제거
+                    edt.setText(s.toString().replaceFirst(" ", ""));
+                    if(TextUtils.isEmpty(s.toString().trim())){
                         txtLayout.setEndIconMode(TextInputLayout.END_ICON_NONE);     // clear text 아이콘 숨김
-                        // 문자열의 맨 앞에 공백이 오는 경우, 공백 제거
-                        edt.setText(s.toString().replaceFirst(" ", ""));
+                        txtLayout.setError("한 글자 이상 입력 필수");
                     }
-                } else {
+                }
+                if(TextUtils.isEmpty(s.toString().trim()) || (s.toString() == null)){
+                    txtLayout.setEndIconMode(TextInputLayout.END_ICON_NONE);     // clear text 아이콘 숨김
+                    txtLayout.setError("한 글자 이상 입력 필수");
+                }else {
                     txtLayout.setEndIconMode(TextInputLayout.END_ICON_CLEAR_TEXT);     // clear text 아이콘 생성
-                    // text가 공백이 아닌 경우
+                    // 문자열이 공백이 아닌 경우
                     txtLayout.setError(null);
                 }
             }
         });
     }
-    // ▼ 번개 최소 연령에 공백 입력 or 값이 최대 연령보다 높은 경우, 에러 메시지 출력
+    // ▼ 번개 최소 연령에 공백 입력 or 값이 최대 연령보다 높은 경우, 에러 메시지 출력 + 자동으로 최소 20으로 지정
     public void minAgeErrorMessage(TextInputEditText edt, TextInputLayout txtLayout){
         edt.addTextChangedListener(new TextWatcher() {
             @Override
@@ -301,7 +331,7 @@ public class MeetingwriteActivity extends AppCompatActivity {
             public void afterTextChanged(Editable s) {
                 if (TextUtils.isEmpty(s.toString())){
                     // text가 공백인 경우, 에러 메시지 출력
-                    txtLayout.setError("숫자 입력 필수");
+                    txtLayout.setError("나이 입력 필수");
                     if(!TextUtils.isEmpty(maxAgeEdt.getText().toString())){
                         maxAgeTxtLay.setError(null);
 //                        maxAgeTxtLay.setEndIconMode(TextInputLayout.END_ICON_NONE);     // clear text 아이콘 숨김
@@ -311,10 +341,16 @@ public class MeetingwriteActivity extends AppCompatActivity {
 //                    txtLayout.setEndIconMode(TextInputLayout.END_ICON_CLEAR_TEXT);     // clear text 아이콘 생성
                     // text가 공백이 아닌 경우
                     txtLayout.setError(null);
-                    if((s.toString().length() == 2) && (s.toString().indexOf("0") == 0)){
-                        // 십의 자릿 수가 0인 두 자릿 수인 경우, 십의 자리의 0은 생략
-                        edt.setText(s.toString().substring(1));
-                        edt.setSelection(1);      // 커서를 맨 뒤로 이동
+                    if(s.toString().length() == 2){
+                        if(s.toString().indexOf("0") == 0){
+                            // 십의 자릿 수가 0인 두 자릿 수인 경우, 십의 자리의 0은 생략
+                            edt.setText(s.toString().substring(1));
+                            edt.setSelection(1);      // 커서를 맨 뒤로 이동
+                        }else if (s.toString().indexOf("1") == 0){
+                            // 십의 자릿 수가 1인 두 자릿 수인 경우
+                            edt.setText("20");      // 20세로 고정
+                            edt.setSelection(2);      // 커서를 맨 뒤로 이동
+                        }
                     }
                     if(!TextUtils.isEmpty(maxAgeEdt.getText().toString())){
                         int min = Integer.parseInt(s.toString());   // 최소 연령
@@ -345,7 +381,7 @@ public class MeetingwriteActivity extends AppCompatActivity {
             public void afterTextChanged(Editable s) {
                 if (TextUtils.isEmpty(s.toString())){
                     // text가 공백인 경우, 에러 메시지 출력
-                    txtLayout.setError("숫자 입력 필수");
+                    txtLayout.setError("나이 입력 필수");
                     if(!TextUtils.isEmpty(minAgeEdt.getText().toString())){
                         minAgeTxtLay.setError(null);
 //                        minAgeTxtLay.setEndIconMode(TextInputLayout.END_ICON_NONE);     // clear text 아이콘 숨김
