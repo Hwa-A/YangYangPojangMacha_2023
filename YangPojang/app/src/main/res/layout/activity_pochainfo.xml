@@ -101,7 +101,8 @@
                 android:textSize="12sp"
                 app:layout_constraintBottom_toBottomOf="@id/tv_pochainfo_pochaname"
                 app:layout_constraintStart_toEndOf="@id/tv_pochainfo_pochaname"
-                app:layout_constraintTop_toTopOf="@id/tv_pochainfo_pochaname" />
+                app:layout_constraintTop_toTopOf="@id/tv_pochainfo_pochaname"
+                tools:ignore="TouchTargetSizeCheck" />
 
             <ImageView
                 android:layout_width="30dp"

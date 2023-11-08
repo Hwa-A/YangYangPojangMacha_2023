@@ -102,9 +102,25 @@
     <string name="default_web_client_id" />
 
     <string-array name="category_array">
-        <item>카테고리 1</item>
-        <item>카테고리 2</item>
-        <item>카테고리 3</item>
+        <item>기타</item>
+        <item>붕어빵</item>
+        <item>분식</item>
+        <item>꼬치</item>
+        <item>호떡</item>
+        <item>계란빵</item>
+        <item>달고나</item>
+        <item>군고구마</item>
+        <item>와플&amp;크레페</item>
+        <item>타코야끼</item>
+<!--        <item>술</item>-->
+        <item>술&amp;전체</item>
+        <item>술&amp;고기</item>
+        <item>술&amp;해산물</item>
+        <item>술&amp;전</item>
+        <item>술&amp;마른안주</item>
+        <item>술&amp;면류</item>
+        <item>술&amp;탕류</item>
+        <item>술&amp;기타</item>
     </string-array>
 
     <!-- activity_meetingwrite.xml의 번개 정원 Drop Menu로 사용할 item -->

@@ -82,20 +82,22 @@ public class LoginActivity extends AppCompatActivity {
 
         btnGoogleLogin = findViewById(R.id.btn_google_sign_in);
 
-                    btnGoogleLogin.setOnClickListener(view -> {
-                        // 기존에 로그인 했던 계정을 확인한다.
-                        gsa = GoogleSignIn.getLastSignedInAccount(LoginActivity.this);
+        btnGoogleLogin.setOnClickListener(view -> {
+            // 기존에 로그인 했던 계정을 확인한다.
+            gsa = GoogleSignIn.getLastSignedInAccount(LoginActivity.this);
 
-                        if (gsa != null) {// 로그인 되있는 경우
-                            Toast.makeText(LoginActivity.this, R.string.status_login , Toast.LENGTH_SHORT).show();
-                            Intent intent_main = new Intent(getApplicationContext(), PermissionActivity.class);
-                            startActivity(intent_main);
-                            finish();
-                        }
-                        else
-                            signIn();
-                    });
-                }
+            if (gsa != null) {// 로그인 되있는 경우
+                Toast.makeText(LoginActivity.this, R.string.status_login , Toast.LENGTH_SHORT).show();
+                Intent intent_main = new Intent(getApplicationContext(), PermissionActivity.class);
+                intent_main.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                intent_main.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent_main);
+                finish();
+            }
+            else
+                signIn();
+        });
+    }
 
 
     private void signIn(){
@@ -169,6 +171,8 @@ public class LoginActivity extends AppCompatActivity {
     private void updateUI(FirebaseUser user) {
         if(user != null){
             Intent intent_main = new Intent(getApplicationContext(), PermissionActivity.class);
+            intent_main.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            intent_main.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent_main);
             finish();
         }

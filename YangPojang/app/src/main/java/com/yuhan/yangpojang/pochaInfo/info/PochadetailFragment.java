@@ -1,5 +1,8 @@
 package com.yuhan.yangpojang.pochaInfo.info;
 
+import static android.content.Intent.getIntent;
+import static android.content.Intent.getIntentOld;
+
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -59,6 +62,8 @@ public class PochadetailFragment extends Fragment {
         Button updatebtn = view.findViewById(R.id.btn_pochadetail_pochaUpdate);
         DatabaseReference shopReference; // Firebase Database reference
 
+
+
         // ▼ PochainfoActivity.java에서 전달한 데이터를 받는 코드
         Bundle bundle = getArguments();
         if (bundle != null) {
@@ -66,6 +71,7 @@ public class PochadetailFragment extends Fragment {
             String uid = bundle.getString("uid");
             String shopkey=shop.getShopKey();
             Log.d("hong","a"+shopkey);
+            Log.d("hong","a"+uid);
 
             shopReference = FirebaseDatabase.getInstance().getReference().child("shops");
             // Fetch the shop key
@@ -98,8 +104,6 @@ public class PochadetailFragment extends Fragment {
                 String address = shop.getAddressName();
                 double latitude = shop.getLatitude();
                 double longitude = shop.getLongitude();
-//                Log.d("latitude정보:", String.valueOf(latitude));
-//                Log.d("longtitude정보:", String.valueOf(longitude));
 
                 if (address != null && !address.isEmpty()) { //주소가 비어있지 않으면
                     detailAddressTv.setText(address); //주소 설정
@@ -128,9 +132,10 @@ public class PochadetailFragment extends Fragment {
                         naverMap.getUiSettings().setZoomControlEnabled(false); // 지도 UI 설정에서 확대/축소 컨트롤 숨기기
                     }
                 });
-                
 
-                // 결제 방식 설정
+
+                // 결제 방식
+                // 설정
                 StringBuilder paymentMethods = new StringBuilder();
                 if (shop.isPwayMobile()) {
                     paymentMethods.append("모바일, ");
@@ -194,12 +199,13 @@ public class PochadetailFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     Log.d("hellotomy","");
+                    Log.d("hellotomy",shop.getShopName());
                     // Code to navigate to the update form activity
                     Intent intent = new Intent(getActivity(), PochainfoUpdate.class); // Replace UpdateFormActivity with your actual activity class
                     // Pass necessary data if needed
-//                    intent.putExtra("shopInfo", shop);
+                    intent.putExtra("shop", shop);
                     intent.putExtra("shopKey", shopkey);
-//                    intent.putExtra("uid", uid);
+                    intent.putExtra("uid", uid);
                     startActivity(intent);
                 }
             });
@@ -214,3 +220,4 @@ public class PochadetailFragment extends Fragment {
         return view;
     }
 }
+

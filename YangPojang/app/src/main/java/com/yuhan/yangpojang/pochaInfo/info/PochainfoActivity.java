@@ -39,6 +39,7 @@ public class PochainfoActivity extends AppCompatActivity implements Serializable
     Button pchMeetingBtn;                   // 포차 번개 Button
     FragmentManager frgManager;             // Fragment 관리자
     FragmentTransaction frgTransaction;     // Fragment 트랜잭션 : Fragment 작업을 처리
+    private  String pchImagePath;
     private Shop shop;          // 포차 정보를 담을 객체
 //    FirebaseDatabase ref = FirebaseDatabase.getInstance();
 //    DatabaseReference shops = ref.getReference("shops");
@@ -63,10 +64,16 @@ public class PochainfoActivity extends AppCompatActivity implements Serializable
         if(intent != null){  // Serializable(객체 직렬화): 객체를 바이트로 저장하는 자바의 인터페이스
             shop = (Shop) intent.getSerializableExtra("shopInfo");  // 직렬화된 객체 수신
             String pchName = shop.getShopName(); // 포차 이름 얻기
+            Log.d("ffffff1",pchName);
             
             //포차 이미지 얻기 위한 firebase/firebaseStorage 호출
             FirebaseStorage storage = FirebaseStorage.getInstance();
-            String pchImagePath= shop.getExteriorImagePath(); // 포차 storage의 경로 얻기
+
+            if( shop.getExteriorImagePath()!=null || shop.getExteriorImagePath()!="")
+            {
+                pchImagePath= shop.getExteriorImagePath(); // 포차 storage의 경로 얻기
+                Log.d("fffffff2","a"+pchImagePath);
+            }
 
             if(pchImagePath != null && !pchImagePath.isEmpty())  //포차 이미지가 있는 경우(즉 경로가 null이 아닌 경우)
             {
