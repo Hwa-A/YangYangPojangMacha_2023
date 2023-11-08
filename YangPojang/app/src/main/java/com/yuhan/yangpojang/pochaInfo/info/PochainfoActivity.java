@@ -30,7 +30,7 @@ import java.io.Serializable;
 // pch: pojangmacha
 // frg: fragment
 // tv: TextView
-public class PochainfoActivity extends AppCompatActivity implements Serializable, OnFragmentReloadListener {
+public class PochainfoActivity extends AppCompatActivity implements OnFragmentReloadListener {
     PochadetailFragment pchDetailFrg;      // 포차 상세정보 Fragment
     PochareviewFragment pchReviewFrg;      // 포차 리뷰 Fragment
     PochameetingFragment pchMeetingFrg;        // 포차 번개 Fragment
@@ -181,18 +181,39 @@ public class PochainfoActivity extends AppCompatActivity implements Serializable
                     frgTransaction = frgManager.beginTransaction();
                     // 포차 상세정보 Fragment로 화면 전환
                     frgTransaction.replace(R.id.frg_pochainfo_mainFragment, pchDetailFrg).commit();
+                    // 버튼 탭의 색 변경
+                    pchDetailBtn.setTextColor(Color.WHITE);
+                    pchDetailBtn.setBackgroundResource(R.drawable.pochainfo_allbutton_selected);
+                    pchReviewBtn.setTextColor(Color.BLACK);
+                    pchReviewBtn.setBackgroundResource(R.drawable.pochainfo_allbutton_unselected);
+                    pchMeetingBtn.setTextColor(Color.BLACK);
+                    pchMeetingBtn.setBackgroundResource(R.drawable.pochainfo_allbutton_unselected);
                     break;
                 case "pchReview":
                     // fragment transaction 객체 생성 및 초기화
                     frgTransaction = frgManager.beginTransaction();
                     // 포차 리뷰 Fragment로 화면 전환
                     frgTransaction.replace(R.id.frg_pochainfo_mainFragment, pchReviewFrg).commit();
+                    // 버튼 탭의 색 변경
+                    pchDetailBtn.setTextColor(Color.BLACK);
+                    pchDetailBtn.setBackgroundResource(R.drawable.pochainfo_allbutton_unselected);
+                    pchReviewBtn.setTextColor(Color.WHITE);
+                    pchReviewBtn.setBackgroundResource(R.drawable.pochainfo_allbutton_selected);
+                    pchMeetingBtn.setTextColor(Color.BLACK);
+                    pchMeetingBtn.setBackgroundResource(R.drawable.pochainfo_allbutton_unselected);
                     break;
                 case "pchMeeting":
                     // fragment transaction 객체 생성 및 초기화
                     frgTransaction = frgManager.beginTransaction();
                     // 포차 번개 Fragment로 화면 전환
                     frgTransaction.replace(R.id.frg_pochainfo_mainFragment, pchMeetingFrg).commit();
+                    // 버튼 탭의 색 변경
+                    pchDetailBtn.setTextColor(Color.BLACK);
+                    pchDetailBtn.setBackgroundResource(R.drawable.pochainfo_allbutton_unselected);
+                    pchReviewBtn.setTextColor(Color.BLACK);
+                    pchReviewBtn.setBackgroundResource(R.drawable.pochainfo_allbutton_unselected);
+                    pchMeetingBtn.setTextColor(Color.WHITE);
+                    pchMeetingBtn.setBackgroundResource(R.drawable.pochainfo_allbutton_selected);
                     break;
             }
 

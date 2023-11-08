@@ -214,7 +214,7 @@
                     android:layout_width="107dp"
                     android:layout_height="wrap_content"
                     app:errorEnabled="true"
-                    app:endIconMode="clear_text"
+                    app:endIconMode="none"
                     android:hint="최소(0~)">
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/edt_meetingwrite_minAge"
@@ -240,7 +240,7 @@
                     android:layout_width="107dp"
                     android:layout_height="wrap_content"
                     app:errorEnabled="true"
-                    app:endIconMode="clear_text"
+                    app:endIconMode="none"
                     android:hint="최대(~99)"
                     android:layout_marginRight="10dp" >
                     <com.google.android.material.textfield.TextInputEditText
