@@ -45,9 +45,10 @@ import java.util.Map;
 // pch: pojangmacha
 // txtLay: textInputLayout
 public class MeetingwriteActivity extends AppCompatActivity {
+//    private ConnectivityManager.NetworkCallback networkCallback;    // 인터넷 연결 여부 확인 콜백 메서드
     private MeetingDTO meeting;              // 번개 객체
-    private ConnectivityManager.NetworkCallback networkCallback;    // 인터넷 연결 여부 확인 콜백 메서드
-    EditText titleEdt;  // 번개 소개글 EditText
+    private String pchKey;         // 포차 고유키
+    TextInputEditText titleEdt;  // 번개 소개글 EditText
     TextInputLayout titleTxtLay;    // 번개 소개글 컨테이너
     private TimePickerDialog.OnTimeSetListener timeCallBack;    // 번개 시간 선택할 timePickerDialog 콜백 메서드
     private AutoCompleteTextView maxMemberTv;  // 번개 정원 autoCompleteTextView
@@ -59,11 +60,11 @@ public class MeetingwriteActivity extends AppCompatActivity {
     TextInputEditText minAgeEdt;     // 번개 최소 연령
     TextInputEditText maxAgeEdt;     // 번개 최대 연령
     private DatabaseReference ref;      // DB 참조 객체
+
     @Override     // onResume(): Activity가 재활성 될 때마다 호출 => 데이터 업데이트 + 초기화에 사용
     protected void onResume() {
         super.onResume();
-        maxMemberTv.setAdapter(arrayAdapter);
-
+        maxMemberTv.setAdapter(arrayAdapter);   // 번개 정원 선택을 위한 adapter 연결
     }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,13 +104,12 @@ public class MeetingwriteActivity extends AppCompatActivity {
         // ▼ PochameetingFragment에서 전달 받은 데이터 받아 처리
         Intent intent = getIntent();
         if (intent != null){
-            String pchKey = intent.getStringExtra("pchKey");         // 포차 고유키
+            pchKey = intent.getStringExtra("pchKey");         // 포차 고유키
             String pchName = intent.getStringExtra("pchName");      // 포차 이름
             String hostUid = intent.getStringExtra("uid");          // 회원 id
             // 포차 이름 변경
             pchNameTv.setText(pchName);
-            // 포차 고유키, 회원 id를 번개 객체(MeetingDTO)에 저장
-            meeting.setPchKey(pchKey);      // 포차 고유키
+            // 회원 id를 번개 객체(MeetingDTO)에 저장
             meeting.setHostUid(hostUid);    // 회원 id
         }
 
@@ -197,10 +197,10 @@ public class MeetingwriteActivity extends AppCompatActivity {
                     Map<String, Object> meetingInsert = new HashMap<>();
                     // meeting 테이블에 저장
                     // meeting > 포차 id > 번개 id > 번개 정보
-                    meetingInsert.put("/meeting/"+meeting.getPchKey()+"/"+meetingKey, meeting);
+                    meetingInsert.put("/meeting/"+pchKey+"/"+meetingKey, meeting);
                     // myMeeting 테이블에 저장
                     // myMeeting > uid > 번개 id : 포차 id
-                    meetingInsert.put("/myMeeting/"+meeting.getHostUid()+"/"+meetingKey, meeting.getPchKey());
+                    meetingInsert.put("/myMeeting/"+meeting.getHostUid()+"/"+meetingKey, pchKey);
 
                     // firebase에 업로드
                     ref.updateChildren(meetingInsert, new DatabaseReference.CompletionListener() {
@@ -259,7 +259,7 @@ public class MeetingwriteActivity extends AppCompatActivity {
     };
 
     // ▼ 번개 소개글에 공백 입력한 경우, 에러 메시지 출력 코드
-    public void titleErrorMessage(EditText edt, TextInputLayout txtLayout){
+    public void titleErrorMessage(TextInputEditText edt, TextInputLayout txtLayout){
         edt.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -276,7 +276,7 @@ public class MeetingwriteActivity extends AppCompatActivity {
                 // 주의: "   "의 경우, isEmpty()의 결과가 false / ""의 경우, true
                 // isEmpty() 사용 시, 문자열의 양 끝단의 공백을 제거 후 사용
                 if(TextUtils.isEmpty(s.toString().trim())){
-                    txtLayout.setError("문자 입력 필수");
+                    txtLayout.setError("한 글자 이상 입력 필수");
                     if(s.toString().indexOf(" ") == 0){
                         txtLayout.setEndIconMode(TextInputLayout.END_ICON_NONE);     // clear text 아이콘 숨김
                         // 문자열의 맨 앞에 공백이 오는 경우, 공백 제거
@@ -291,7 +291,7 @@ public class MeetingwriteActivity extends AppCompatActivity {
         });
     }
     // ▼ 번개 최소 연령에 공백 입력 or 값이 최대 연령보다 높은 경우, 에러 메시지 출력
-    public void minAgeErrorMessage(EditText edt, TextInputLayout txtLayout){
+    public void minAgeErrorMessage(TextInputEditText edt, TextInputLayout txtLayout){
         edt.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
@@ -301,7 +301,7 @@ public class MeetingwriteActivity extends AppCompatActivity {
             public void afterTextChanged(Editable s) {
                 if (TextUtils.isEmpty(s.toString())){
                     // text가 공백인 경우, 에러 메시지 출력
-                    txtLayout.setError("문자 입력 필수");
+                    txtLayout.setError("숫자 입력 필수");
                     if(!TextUtils.isEmpty(maxAgeEdt.getText().toString())){
                         maxAgeTxtLay.setError(null);
 //                        maxAgeTxtLay.setEndIconMode(TextInputLayout.END_ICON_NONE);     // clear text 아이콘 숨김
@@ -335,7 +335,7 @@ public class MeetingwriteActivity extends AppCompatActivity {
         });
     }
     // ▼ 번개 최대 연령에 공백 입력 or 값이 최소 연령보다 낮은 경우, 에러 메시지 출력
-    public void maxAgeErrorMessage(EditText edt, TextInputLayout txtLayout){
+    public void maxAgeErrorMessage(TextInputEditText edt, TextInputLayout txtLayout){
         edt.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
@@ -345,7 +345,7 @@ public class MeetingwriteActivity extends AppCompatActivity {
             public void afterTextChanged(Editable s) {
                 if (TextUtils.isEmpty(s.toString())){
                     // text가 공백인 경우, 에러 메시지 출력
-                    txtLayout.setError("문자 입력 필수");
+                    txtLayout.setError("숫자 입력 필수");
                     if(!TextUtils.isEmpty(minAgeEdt.getText().toString())){
                         minAgeTxtLay.setError(null);
 //                        minAgeTxtLay.setEndIconMode(TextInputLayout.END_ICON_NONE);     // clear text 아이콘 숨김
@@ -379,10 +379,10 @@ public class MeetingwriteActivity extends AppCompatActivity {
 
     // ▼ 번개 객체의 모든 필드에 값이 존재하는지 확인
     private boolean isValid(){
-        return !TextUtils.isEmpty(meeting.getHostUid()) && !TextUtils.isEmpty(meeting.getPchKey())
-                && !TextUtils.isEmpty(meeting.getTitle()) && !TextUtils.isEmpty(meeting.getYearDate())
-                && !TextUtils.isEmpty(meeting.getDate()) && !TextUtils.isEmpty(meeting.getTime())
-                && (meeting.getMinAge() > 0) && (meeting.getMaxAge() > 0) && (meeting.getMaxMember() > 0)
+        return !TextUtils.isEmpty(meeting.getHostUid()) && !TextUtils.isEmpty(meeting.getTitle())
+                && !TextUtils.isEmpty(meeting.getYearDate()) && !TextUtils.isEmpty(meeting.getDate())
+                && !TextUtils.isEmpty(meeting.getTime()) && (meeting.getMinAge() > 0)
+                && (meeting.getMaxAge() > 0) && (meeting.getMaxMember() > 0)
                 && !TextUtils.isEmpty(meeting.getRegisterTime());
     }
 

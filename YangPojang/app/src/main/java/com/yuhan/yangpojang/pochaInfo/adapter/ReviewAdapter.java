@@ -57,7 +57,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewHold
             super(itemView);
 
             writerNameTv = itemView.findViewById(R.id.tv_pochareview_writerName);
-            contentTv = itemView.findViewById(R.id.tv_reviewwrite_textCount);
+//            contentTv = itemView.findViewById(R.id.tv_reviewwrite_textCount);
         }
     }
 
