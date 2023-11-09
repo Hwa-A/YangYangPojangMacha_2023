@@ -15,10 +15,11 @@
         android:textColor="#000000"
         android:textStyle="bold"
         android:paddingBottom="10dp"
+        android:layout_marginStart="-15dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/description"/>
+        app:layout_constraintBottom_toTopOf="@+id/authmeeting"/>
 
     <ImageView
         android:id="@+id/yuhan"
@@ -26,32 +27,51 @@
         android:layout_height="30dp"
         android:src="@drawable/yuhan"
         android:visibility="visible"
-        android:layout_marginStart="-15dp"
+        android:layout_marginStart="-3dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/title"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/authmeeting"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/title2"
+        android:textSize="18sp"
+        android:textColor="#000000"
+        android:textStyle="bold"
+        android:visibility="gone"
+        android:layout_marginTop="10dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/title"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/description"/>
 
     <ImageView
         android:id="@+id/auth"
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:src="@drawable/authon"
-        android:visibility="invisible"
+        android:visibility="gone"
         android:layout_marginStart="-120dp"
+        android:layout_marginBottom="10dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/title"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toEndOf="@+id/authmeeting"
+        app:layout_constraintBottom_toTopOf="@+id/description"
+        app:layout_constraintTop_toBottomOf="@+id/title"/>
 
     <ImageView
         android:id="@+id/meet"
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:src="@drawable/meetingon"
-        android:visibility="invisible"
+        android:visibility="gone"
         android:layout_marginStart="-120dp"
+        android:layout_marginBottom="10dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/title"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toEndOf="@+id/authmeeting"
+        app:layout_constraintBottom_toTopOf="@+id/description"
+        app:layout_constraintTop_toBottomOf="@+id/title" />
 
 
     <TextView
@@ -63,9 +83,10 @@
         android:textColor="#000000"
         android:gravity=""
         android:padding="10dp"
+        android:layout_marginTop="15dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/title"/>
+        app:layout_constraintTop_toBottomOf="@+id/authmeeting"/>
 
     <Button
         android:id="@+id/cancel"

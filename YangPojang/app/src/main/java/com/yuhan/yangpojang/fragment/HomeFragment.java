@@ -406,14 +406,13 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, onPoch
         final AlertDialog dialog = builder.create();
 
         final TextView description = customView.findViewById(R.id.description);
-        final TextView title = customView.findViewById(R.id.title);
+        final TextView authmeeting = customView.findViewById(R.id.authmeeting);
         final ImageView auth = customView.findViewById(R.id.auth);
         final ImageView meet = customView.findViewById(R.id.meet);
-        final ImageView yuhan = customView.findViewById(R.id.yuhan);
         final Button end = customView.findViewById(R.id.end);
 
         final String[] descriptions = {getActivity().getResources().getString(R.string.description1), getActivity().getResources().getString(R.string.description2), getActivity().getResources().getString(R.string.description3)};
-        final String[] titles = {getActivity().getResources().getString(R.string.title1), getActivity().getResources().getString(R.string.title2), getActivity().getResources().getString(R.string.title3)};
+        final String[] authmeetings = {getActivity().getResources().getString(R.string.title1), getActivity().getResources().getString(R.string.title2), getActivity().getResources().getString(R.string.title3)};
         final int[] currentIndex = {0};
 
         Button cancel = customView.findViewById(R.id.cancel);
@@ -430,21 +429,22 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, onPoch
                 if (currentIndex[0] < descriptions.length) {
                     currentIndex[0]++;
                     if (currentIndex[0] == 1) {
-                        yuhan.setVisibility(INVISIBLE);
                         auth.setVisibility(VISIBLE);
+                        authmeeting.setVisibility(VISIBLE);
                     } else if (currentIndex[0] == 2) {
+                        auth.setVisibility(INVISIBLE);
                         meet.setVisibility(VISIBLE);
-                        yuhan.setVisibility(INVISIBLE);
                         cancel.setVisibility(INVISIBLE);
                         next.setVisibility(INVISIBLE);
                         end.setVisibility(VISIBLE);
                     } else {
-                        auth.setVisibility(INVISIBLE);
-                        meet.setVisibility(INVISIBLE);
+                        auth.setVisibility(View.GONE);
+                        meet.setVisibility(View.GONE);
+                        authmeeting.setVisibility(View.GONE);
                     }
 
                     description.setText(descriptions[currentIndex[0]]);
-                    title.setText(titles[currentIndex[0]]);
+                    authmeeting.setText(authmeetings[currentIndex[0]]);
                 }
             }
         });
@@ -454,6 +454,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, onPoch
             public void onClick(View v) { dialog.dismiss(); }
         });
 
+        dialog.setCanceledOnTouchOutside(false);
         dialog.show();
     }
 
