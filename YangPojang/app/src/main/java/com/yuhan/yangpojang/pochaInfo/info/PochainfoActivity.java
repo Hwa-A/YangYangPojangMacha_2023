@@ -63,7 +63,7 @@ public class PochainfoActivity extends AppCompatActivity implements Serializable
         if(intent != null){  // Serializable(객체 직렬화): 객체를 바이트로 저장하는 자바의 인터페이스
             shop = (Shop) intent.getSerializableExtra("shopInfo");  // 직렬화된 객체 수신
             String pchName = shop.getShopName(); // 포차 이름 얻기
-            
+
             //포차 이미지 얻기 위한 firebase/firebaseStorage 호출
             FirebaseStorage storage = FirebaseStorage.getInstance();
             String pchImagePath= shop.getExteriorImagePath(); // 포차 storage의 경로 얻기
