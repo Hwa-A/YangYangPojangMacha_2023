@@ -156,6 +156,7 @@
                             android:adjustViewBounds="true"
                             android:background="@drawable/reviewwrite_picture_clear_btn"
                             tools:ignore="SpeakableTextPresentCheck"
+                            android:visibility="gone"
                             android:layout_gravity="right"/>
                 </FrameLayout>
                 <FrameLayout
@@ -181,6 +182,7 @@
                         android:adjustViewBounds="true"
                         android:background="@drawable/reviewwrite_picture_clear_btn"
                         tools:ignore="SpeakableTextPresentCheck"
+                        android:visibility="gone"
                         android:layout_gravity="right"/>
                 </FrameLayout>
                 <FrameLayout
@@ -206,6 +208,7 @@
                         android:adjustViewBounds="true"
                         android:background="@drawable/reviewwrite_picture_clear_btn"
                         tools:ignore="SpeakableTextPresentCheck"
+                        android:visibility="gone"
                         android:layout_gravity="right"/>
                 </FrameLayout>
             </LinearLayout>

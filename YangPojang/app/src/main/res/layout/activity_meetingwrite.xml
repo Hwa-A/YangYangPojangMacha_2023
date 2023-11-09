@@ -215,7 +215,7 @@
                     android:layout_height="wrap_content"
                     app:errorEnabled="true"
                     app:endIconMode="none"
-                    android:hint="최소(0~)">
+                    android:hint="만 19세~">
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/edt_meetingwrite_minAge"
                         android:layout_width="match_parent"
@@ -241,7 +241,7 @@
                     android:layout_height="wrap_content"
                     app:errorEnabled="true"
                     app:endIconMode="none"
-                    android:hint="최대(~99)"
+                    android:hint="~만 99세"
                     android:layout_marginRight="10dp" >
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/edt_meetingwrite_maxAge"
