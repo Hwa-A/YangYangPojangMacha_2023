@@ -144,4 +144,12 @@
         <item>술&amp;기타</item>
     </string-array>
 
+    <string name="title1">유한대학교 컴퓨터소프트웨어공학과</string>
+    <string name="description1">안녕하세요. YangYang포장마차입니다. \n저희 어플을 통해 주변 포장마차의 위치를 손쉽게 찾아보고, 번개 만남을 통해 새로운 인연을 만날 수 있습니다. \n맛있는 음식과 흥미로운 대화, 단 한 번의 터치로 경험하세요.\n\nYangYang포장마차, 맛있는 음식과 인연을 만나는 곳!</string>
+
+    <string name="title2">인증</string>
+    <string name="description2">사용자들은 직접 방문한 가게의 정보페이지에서 "방문인증"버튼을 누르고, 인증 횟수가 일정 횟수를 초과하면 해당 가게가 인증됩니다. 인증된 가게는 초록색 마커로 표시되며, 사용자들은 인증 버튼을 통해 인증된 가게들만 모아서 볼 수 있습니다!</string>
+
+    <string name="title3">번개</string>
+    <string name="description3">원하는 포장마차에서 번개만남을 주최하고, 다른 사용자들도 이 모임에 참여할 수 있습니다. 번개가 활성화된 가게는 번개 모양 마커로 표시되며, 번개 버튼을 통해 번개가 활성화된 가게들만 따로 모아서 볼 수 있습니다.</string>
 </resources>
