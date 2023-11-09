@@ -5,9 +5,10 @@ import java.io.Serializable;
 // pch: pojangmacha
 public class ReviewDTO implements Serializable {
     String uid;         // 작성 회원 id
-    double rating;      // 별점
+    float rating = 0;      // 별점
     String summary;     // 내용
-    String date;        // 작성 날짜
+    String yearDate;        // 등록 날짜
+    private String registerTime;    // 리뷰 등록 시간
     public String picUrl1;     // 사진 url 1
     public String picUrl2;     // 사진 url 2
     public String picUrl3;     // 사진 url 3
@@ -22,7 +23,7 @@ public class ReviewDTO implements Serializable {
         return uid;
     }
 
-    public double getRating() {
+    public float getRating() {
         return rating;
     }
 
@@ -30,8 +31,12 @@ public class ReviewDTO implements Serializable {
         return summary;
     }
 
-    public String getDate() {
-        return date;
+    public String getYearDate() {
+        return yearDate;
+    }
+
+    public String getRegisterTime() {
+        return registerTime;
     }
 
     public String getPicUrl1() {
@@ -52,7 +57,7 @@ public class ReviewDTO implements Serializable {
         this.uid = uid;
     }
 
-    public void setRating(double rating) {
+    public void setRating(float rating) {
         this.rating = rating;
     }
 
@@ -60,8 +65,12 @@ public class ReviewDTO implements Serializable {
         this.summary = summary;
     }
 
-    public void setDate(String date) {
-        this.date = date;
+    public void setYearDate(String yearDate) {
+        this.yearDate = yearDate;
+    }
+
+    public void setRegisterTime(String registerTime) {
+        this.registerTime = registerTime;
     }
 
     public void setPicUrl1(String picUrl1) {
