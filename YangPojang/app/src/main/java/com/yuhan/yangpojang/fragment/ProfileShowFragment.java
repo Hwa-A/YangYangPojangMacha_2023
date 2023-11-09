@@ -1,5 +1,6 @@
 package com.yuhan.yangpojang.fragment;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -12,21 +13,25 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.yuhan.yangpojang.R;
-import com.yuhan.yangpojang.mypage.Adapter.MyReviewAdapter;
 //import com.yuhan.yangpojang.mypage.GetList.ReviewList.DataLoadedCallback;
+import com.yuhan.yangpojang.mypage.Adapter.MyReviewAdapter;
 import com.yuhan.yangpojang.mypage.GetList.ReviewList.MyReviewList;
 import com.yuhan.yangpojang.mypage.Model.MyReviewModel;
 import com.yuhan.yangpojang.mypage.account.accountPage;
@@ -178,20 +183,18 @@ public class ProfileShowFragment extends Fragment {
         reviewRecyclerView.setLayoutManager(new LinearLayoutManager(view.getContext(), LinearLayoutManager.HORIZONTAL, false));
 
         MyReviewList myReviewList = new MyReviewList();
-
-//        myReviewList.onSecondDataLoaded(new );
-
-
-
-
-
-//        SecondReviewList secondReviewList = new SecondReviewList();
-//        secondReviewList.getSecondReviewList(user_info_uid, new SecondReviewList.secondDataLoadedCallback() {
-//            @Override
-//            public void onSecondDataLoaded(ArrayList selectReview, ArrayList selectShop, String UID) {
-//
-//            }
-//        });
+        myReviewList.getReviewItemInfo(user_info_uid, new MyReviewList.dataLoadedCallback() {
+            @Override
+            public void onDataLoaded(ArrayList<MyReviewModel> shopDatas) {
+                if (shopDatas != null) {
+                    Log.d("프로필3", "onDataLoaded: myReportRecycle");
+                    reviewAdapter = new MyReviewAdapter(shopDatas, getContext());
+                    reviewRecyclerView.setAdapter(reviewAdapter);
+                } else {
+                    Log.d("프로필3", "shopDatas null");
+                }
+            }
+        });
 
 
 //        MyReviewGetList myReviewGetList = new MyReviewGetList();
@@ -221,17 +224,27 @@ public class ProfileShowFragment extends Fragment {
         }
 
 
-    }
+        // 뒤로가기 버튼
+        OnBackPressedCallback backPressedCallback = new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                FragmentManager fragmentManager = getParentFragmentManager();
+                if(isAdded()){
+                    FragmentTransaction transaction = fragmentManager.beginTransaction();   // 플래그먼트 전환을 위한 트랜잭션 시작
+                    HomeFragment homeFragment = new HomeFragment();     // HomeFragment의 인스턴스를 생성
+                    transaction.replace(R.id.fragmentProfileLayout,homeFragment);    // 기존 플래그먼로 교체
+                    transaction.commit();  // 트랜잭션 커밋
 
-//    // 뒤로가기 버튼 클릭 시, HomeFragment로 넘어가도록
-//    public void onBackPress(){
-//
-//        Log.d("프로필", "onBackPress: 뒤로가기 버튼 클릭 시, HomeFragment로");
-//        Intent intent = new Intent(getContext(), HomeFragment.class); //지금 액티비티에서 다른 액티비티로 이동하는 인텐트 설정
-////        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);    //인텐트 플래그 설정
-////        startActivity(intent);  //인텐트 이동
-//
-//    }
+                    // 하단 탐색 바에서 Home 탭을 선택하도록 설정
+                    BottomNavigationView bottomNavigationView = requireActivity().findViewById(R.id.bottomNavigationView);
+                    bottomNavigationView.setSelectedItemId(R.id.navigation_map);
+                }
+            }
+        };
+            // OnBackPressedCallback 호출
+            requireActivity().getOnBackPressedDispatcher().addCallback(this, backPressedCallback);
+
+    }
 
 
 }
