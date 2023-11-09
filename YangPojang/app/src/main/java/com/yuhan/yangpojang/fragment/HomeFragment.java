@@ -96,7 +96,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, onPoch
                              - 지도 초기화 및 사용자 정의 작업 수행, 지도가 초기화되고 사용 가능한 상태일 때 호출되는 콜백 */
     @Override
     public void onMapReady(@NonNull NaverMap naverMap) {
-
+        Log.d("나만 볼거야", "onMapReady() 실행");
         // NaverMap 객체 받아서 NaverMap 객체에 위치 소스 지정
         mNaverMap = naverMap;
 
@@ -294,17 +294,22 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, onPoch
 
     }
 
-    
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d("나만 볼거야", "onResume() 실행");
+    }
+
     @Override
     public void onPause() {
-        super.onPause();
+        super.onPause(); Log.d("나만 볼거야", "onPause() 실행");
     }
 
     private ActivityResultLauncher<Intent> getSearchActivityResult;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        Log.d("나만 볼거야", "onCreate() 실행");
         //위치를 반환하는 구현체인 FusedLocationSource 생성, locationSource를 초기화 하는 시점에 권한 허용여부를 확인한다(PermissionActivity의 onRequestPermissionResult())
         locationSource = new FusedLocationSource(this, PERMISSION_REQUEST_CODE);
 
@@ -359,7 +364,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, onPoch
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         homeview = (ViewGroup) inflater.inflate(R.layout.fragment_home, container, false);
-
+        Log.d("나만 볼거야", "onCreateView() 실행");
         //지도 객체 생성하기 (xml에 있는 지도와 연결 후, 지도 출력)
         // MapFragment를 다른 프래그먼트 내에 배치할 경우 supportFragmentManager
         // 대신 childFragmentManager()를 사용해 MapFragment를 자식 프래그먼트로 두어야 함.
@@ -490,7 +495,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, onPoch
     @Override
     public void onStart() {
         super.onStart();
-
+        Log.d("나만 볼거야", "onStart() 실행");
         //주소 창 클릭 시 SearchActivity로 이동 후 검색 값 받아오기
         searchAdd = homeview.findViewById(R.id.searchAdd);
         searchAdd.setOnClickListener(new View.OnClickListener() {
@@ -1007,6 +1012,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, onPoch
     @Override
     public void onDestroy() {
         super.onDestroy();
+        Log.d("나만 볼거야", "onDestroy() 실행");
         if (mNaverMap != null) {
             mNaverMap.removeOnCameraChangeListener(cameraChangeListener); //리스너 해제(메모리 누수 방지)
         }
