@@ -2,10 +2,11 @@ package com.yuhan.yangpojang.pochaInfo.model;
 
 import android.text.TextUtils;
 
+import java.io.Serializable;
+
 // pch: pojangmacha
-public class MeetingDTO {
+public class MeetingDTO implements Serializable {
     private String hostUid;             // 개최 회원 ID
-    private String pchKey;          // 포차 고유키
     private String title;           // 번개 소개글
     private String yearDate;        // 번개 날짜(당일): 년도 O
     private  String date;           // 번개 날짜(당일): 년도 X
@@ -23,10 +24,6 @@ public class MeetingDTO {
     // getter
     public String getHostUid() {
         return hostUid;
-    }
-
-    public String getPchKey() {
-        return pchKey;
     }
 
     public String getTitle() {
@@ -64,10 +61,6 @@ public class MeetingDTO {
     // setter
     public void setHostUid(String hostUid) {
         this.hostUid = hostUid;
-    }
-
-    public void setPchKey(String pchKey) {
-        this.pchKey = pchKey;
     }
 
     public void setTitle(String title) {

@@ -36,6 +36,7 @@ public class SplashImage extends AppCompatActivity {
             user_info_uid = user.getUid();
         }
 
+
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -51,12 +52,16 @@ public class SplashImage extends AppCompatActivity {
                             if(user_check == null)
                             {
                                 Intent intent_main = new Intent(getApplication(), LogindetailAct.class);
+                                intent_main.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                intent_main.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                 startActivity(intent_main);
                                 finish();
                             }
                             else
                             {
                                 Intent intent_main = new Intent(getApplication(), MainActivity.class);
+                                intent_main.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                intent_main.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                 startActivity(intent_main);
                                 finish();
                             }
@@ -72,6 +77,8 @@ public class SplashImage extends AppCompatActivity {
                 else
                 {
                     Intent intent_main = new Intent(getApplication(), LoginActivity.class);
+                    intent_main.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    intent_main.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent_main);
                     finish();
                 }
