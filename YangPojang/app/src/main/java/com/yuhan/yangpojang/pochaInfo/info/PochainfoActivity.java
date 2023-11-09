@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -19,6 +20,7 @@ import com.bumptech.glide.Glide;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.yuhan.yangpojang.R;
+import com.yuhan.yangpojang.fragment.HomeFragment;
 import com.yuhan.yangpojang.model.Shop;
 import com.yuhan.yangpojang.model.Store;
 import com.yuhan.yangpojang.pochaInfo.interfaces.OnFragmentReloadListener;
@@ -30,7 +32,7 @@ import java.io.Serializable;
 // pch: pojangmacha
 // frg: fragment
 // tv: TextView
-public class PochainfoActivity extends AppCompatActivity implements Serializable, OnFragmentReloadListener {
+public class PochainfoActivity extends AppCompatActivity implements OnFragmentReloadListener {
     PochadetailFragment pchDetailFrg;      // 포차 상세정보 Fragment
     PochareviewFragment pchReviewFrg;      // 포차 리뷰 Fragment
     PochameetingFragment pchMeetingFrg;        // 포차 번개 Fragment
@@ -122,6 +124,16 @@ public class PochainfoActivity extends AppCompatActivity implements Serializable
 //        // 포차 상세정보 Fragment로 화면 전환
 //        frgTransaction.replace(R.id.frg_pochainfo_mainFragment, pchDetailFrg).commitNow();
 
+        //heart이미지 설정
+        ImageButton notgoodButton = findViewById(R.id.imgbtn_pochainfo_notgoodButton);
+        ImageButton goodButton = findViewById(R.id.imgbtn_pochainfo_goodButton);
+        HomeFragment homeFragment = new HomeFragment();
+        homeFragment.isLikeShop(shop.getPrimaryKey(), notgoodButton, goodButton);
+
+        //heart리스너 설정
+        View.OnClickListener heartL = homeFragment.setHeartListener(getApplicationContext(), shop.getPrimaryKey(), notgoodButton, goodButton);
+        notgoodButton.setOnClickListener(heartL);
+        goodButton.setOnClickListener(heartL);
     }
 
     View.OnClickListener onClickListener = new View.OnClickListener() {
@@ -181,18 +193,39 @@ public class PochainfoActivity extends AppCompatActivity implements Serializable
                     frgTransaction = frgManager.beginTransaction();
                     // 포차 상세정보 Fragment로 화면 전환
                     frgTransaction.replace(R.id.frg_pochainfo_mainFragment, pchDetailFrg).commit();
+                    // 버튼 탭의 색 변경
+                    pchDetailBtn.setTextColor(Color.WHITE);
+                    pchDetailBtn.setBackgroundResource(R.drawable.pochainfo_allbutton_selected);
+                    pchReviewBtn.setTextColor(Color.BLACK);
+                    pchReviewBtn.setBackgroundResource(R.drawable.pochainfo_allbutton_unselected);
+                    pchMeetingBtn.setTextColor(Color.BLACK);
+                    pchMeetingBtn.setBackgroundResource(R.drawable.pochainfo_allbutton_unselected);
                     break;
                 case "pchReview":
                     // fragment transaction 객체 생성 및 초기화
                     frgTransaction = frgManager.beginTransaction();
                     // 포차 리뷰 Fragment로 화면 전환
                     frgTransaction.replace(R.id.frg_pochainfo_mainFragment, pchReviewFrg).commit();
+                    // 버튼 탭의 색 변경
+                    pchDetailBtn.setTextColor(Color.BLACK);
+                    pchDetailBtn.setBackgroundResource(R.drawable.pochainfo_allbutton_unselected);
+                    pchReviewBtn.setTextColor(Color.WHITE);
+                    pchReviewBtn.setBackgroundResource(R.drawable.pochainfo_allbutton_selected);
+                    pchMeetingBtn.setTextColor(Color.BLACK);
+                    pchMeetingBtn.setBackgroundResource(R.drawable.pochainfo_allbutton_unselected);
                     break;
                 case "pchMeeting":
                     // fragment transaction 객체 생성 및 초기화
                     frgTransaction = frgManager.beginTransaction();
                     // 포차 번개 Fragment로 화면 전환
                     frgTransaction.replace(R.id.frg_pochainfo_mainFragment, pchMeetingFrg).commit();
+                    // 버튼 탭의 색 변경
+                    pchDetailBtn.setTextColor(Color.BLACK);
+                    pchDetailBtn.setBackgroundResource(R.drawable.pochainfo_allbutton_unselected);
+                    pchReviewBtn.setTextColor(Color.BLACK);
+                    pchReviewBtn.setBackgroundResource(R.drawable.pochainfo_allbutton_unselected);
+                    pchMeetingBtn.setTextColor(Color.WHITE);
+                    pchMeetingBtn.setBackgroundResource(R.drawable.pochainfo_allbutton_selected);
                     break;
             }
 

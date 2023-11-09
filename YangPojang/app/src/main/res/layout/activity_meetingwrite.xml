@@ -214,8 +214,8 @@
                     android:layout_width="107dp"
                     android:layout_height="wrap_content"
                     app:errorEnabled="true"
-                    app:endIconMode="clear_text"
-                    android:hint="최소(0~)">
+                    app:endIconMode="none"
+                    android:hint="만 19세~">
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/edt_meetingwrite_minAge"
                         android:layout_width="match_parent"
@@ -240,8 +240,8 @@
                     android:layout_width="107dp"
                     android:layout_height="wrap_content"
                     app:errorEnabled="true"
-                    app:endIconMode="clear_text"
-                    android:hint="최대(~99)"
+                    app:endIconMode="none"
+                    android:hint="~만 99세"
                     android:layout_marginRight="10dp" >
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/edt_meetingwrite_maxAge"

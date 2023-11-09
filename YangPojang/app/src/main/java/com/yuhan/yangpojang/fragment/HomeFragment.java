@@ -96,7 +96,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, onPoch
                              - 지도 초기화 및 사용자 정의 작업 수행, 지도가 초기화되고 사용 가능한 상태일 때 호출되는 콜백 */
     @Override
     public void onMapReady(@NonNull NaverMap naverMap) {
-
+        Log.d("나만 볼거야", "onMapReady() 실행");
         // NaverMap 객체 받아서 NaverMap 객체에 위치 소스 지정
         mNaverMap = naverMap;
 
@@ -293,23 +293,23 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, onPoch
         }
 
     }
+
     @Override
     public void onResume() {
         super.onResume();
-        RecyclerView pochalist_view = getActivity().findViewById(R.id.pocha_list);
-        pochalist_view.setVisibility(View.INVISIBLE);
+        Log.d("나만 볼거야", "onResume() 실행");
     }
 
     @Override
     public void onPause() {
-        super.onPause();
+        super.onPause(); Log.d("나만 볼거야", "onPause() 실행");
     }
 
     private ActivityResultLauncher<Intent> getSearchActivityResult;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        Log.d("나만 볼거야", "onCreate() 실행");
         //위치를 반환하는 구현체인 FusedLocationSource 생성, locationSource를 초기화 하는 시점에 권한 허용여부를 확인한다(PermissionActivity의 onRequestPermissionResult())
         locationSource = new FusedLocationSource(this, PERMISSION_REQUEST_CODE);
 
@@ -364,7 +364,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, onPoch
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         homeview = (ViewGroup) inflater.inflate(R.layout.fragment_home, container, false);
-
+        Log.d("나만 볼거야", "onCreateView() 실행");
         //지도 객체 생성하기 (xml에 있는 지도와 연결 후, 지도 출력)
         // MapFragment를 다른 프래그먼트 내에 배치할 경우 supportFragmentManager
         // 대신 childFragmentManager()를 사용해 MapFragment를 자식 프래그먼트로 두어야 함.
@@ -406,14 +406,13 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, onPoch
         final AlertDialog dialog = builder.create();
 
         final TextView description = customView.findViewById(R.id.description);
-        final TextView title = customView.findViewById(R.id.title);
+        final TextView authmeeting = customView.findViewById(R.id.authmeeting);
         final ImageView auth = customView.findViewById(R.id.auth);
         final ImageView meet = customView.findViewById(R.id.meet);
-        final ImageView yuhan = customView.findViewById(R.id.yuhan);
         final Button end = customView.findViewById(R.id.end);
 
         final String[] descriptions = {getActivity().getResources().getString(R.string.description1), getActivity().getResources().getString(R.string.description2), getActivity().getResources().getString(R.string.description3)};
-        final String[] titles = {getActivity().getResources().getString(R.string.title1), getActivity().getResources().getString(R.string.title2), getActivity().getResources().getString(R.string.title3)};
+        final String[] authmeetings = {getActivity().getResources().getString(R.string.title1), getActivity().getResources().getString(R.string.title2), getActivity().getResources().getString(R.string.title3)};
         final int[] currentIndex = {0};
 
         Button cancel = customView.findViewById(R.id.cancel);
@@ -430,21 +429,22 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, onPoch
                 if (currentIndex[0] < descriptions.length) {
                     currentIndex[0]++;
                     if (currentIndex[0] == 1) {
-                        yuhan.setVisibility(INVISIBLE);
                         auth.setVisibility(VISIBLE);
+                        authmeeting.setVisibility(VISIBLE);
                     } else if (currentIndex[0] == 2) {
+                        auth.setVisibility(INVISIBLE);
                         meet.setVisibility(VISIBLE);
-                        yuhan.setVisibility(INVISIBLE);
                         cancel.setVisibility(INVISIBLE);
                         next.setVisibility(INVISIBLE);
                         end.setVisibility(VISIBLE);
                     } else {
-                        auth.setVisibility(INVISIBLE);
-                        meet.setVisibility(INVISIBLE);
+                        auth.setVisibility(View.GONE);
+                        meet.setVisibility(View.GONE);
+                        authmeeting.setVisibility(View.GONE);
                     }
 
                     description.setText(descriptions[currentIndex[0]]);
-                    title.setText(titles[currentIndex[0]]);
+                    authmeeting.setText(authmeetings[currentIndex[0]]);
                 }
             }
         });
@@ -454,6 +454,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, onPoch
             public void onClick(View v) { dialog.dismiss(); }
         });
 
+        dialog.setCanceledOnTouchOutside(false);
         dialog.show();
     }
 
@@ -494,7 +495,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, onPoch
     @Override
     public void onStart() {
         super.onStart();
-
+        Log.d("나만 볼거야", "onStart() 실행");
         //주소 창 클릭 시 SearchActivity로 이동 후 검색 값 받아오기
         searchAdd = homeview.findViewById(R.id.searchAdd);
         searchAdd.setOnClickListener(new View.OnClickListener() {
@@ -676,7 +677,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, onPoch
         ImageButton full_heart = homeview.findViewById(R.id.pochainfo_fullheart);
         isLikeShop(stores.get(index).getPrimaryKey(), empty_heart, full_heart);
         //heart리스너 설정
-        View.OnClickListener heartL = setHeartListener(stores.get(index).getPrimaryKey(), empty_heart, full_heart);
+        View.OnClickListener heartL = setHeartListener(getActivity(), stores.get(index).getPrimaryKey(), empty_heart, full_heart);
         empty_heart.setOnClickListener(heartL);
         full_heart.setOnClickListener(heartL);
 
@@ -716,21 +717,21 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, onPoch
     }
 
     // 하트 모양 리스너
-    public View.OnClickListener setHeartListener(String shopId, ImageButton empty_heart, ImageButton full_heart) {
+    public View.OnClickListener setHeartListener(Context context, String shopId, ImageButton empty_heart, ImageButton full_heart) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 int viewId = v.getId();
                 LikeShopData likeShopData = new LikeShopData();
 
-                if (viewId == R.id.pochainfo_emptyheart) {
+                if (viewId == R.id.pochainfo_emptyheart || viewId == R.id.imgbtn_pochainfo_notgoodButton) {
                     // 좋아요 목록에 추가
                     likeShopData.addLikedShop(shopId);
                     isLikeShop(shopId, empty_heart, full_heart);
-                    Toast.makeText(getActivity(), "좋아요 목록에 추가되었습니다", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "좋아요 목록에 추가되었습니다", Toast.LENGTH_SHORT).show();
 
 
-                } else if(viewId == R.id.pochainfo_fullheart){
+                } else if(viewId == R.id.pochainfo_fullheart || viewId == R.id.imgbtn_pochainfo_goodButton){
                     // 좋아요 목록에서 삭제
                     likeShopData.removeLikedShop(shopId);
                     isLikeShop(shopId, empty_heart, full_heart);
@@ -1011,6 +1012,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, onPoch
     @Override
     public void onDestroy() {
         super.onDestroy();
+        Log.d("나만 볼거야", "onDestroy() 실행");
         if (mNaverMap != null) {
             mNaverMap.removeOnCameraChangeListener(cameraChangeListener); //리스너 해제(메모리 누수 방지)
         }

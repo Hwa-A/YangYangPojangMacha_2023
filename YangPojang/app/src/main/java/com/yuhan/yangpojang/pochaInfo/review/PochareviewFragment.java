@@ -34,29 +34,24 @@ import java.util.ArrayList;
  */
 
 public class PochareviewFragment extends Fragment {
-    TextView writerIdTv;            // 리뷰 작성자
-    ///// RecyclerView 관련
-    private RecyclerView recyclerView;
-    private ArrayList<ReviewDTO> reviewDTOArrayList;
-    DatabaseReference databaseReference;
-    // ReviewAdapter reviewAdapter;
-    // RecyclerView.LayoutManager layoutManager;
+
     Shop shop;      // 포차 정보를 가진 객체
     String uid;     // 회원 id
     private OnFragmentReloadListener onFrgReloadListener;   // 프래그먼트 재실행하는 인터페이스
 
     // ▼ 인터페이스 객체 초기화 코드
+    // onAttach(): 프래그먼트가 액티비티에 연결될 때 호출되는 콜백 메서드
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        if(context instanceof OnFragmentReloadListener){
+        if(context instanceof OnFragmentReloadListener){    // 호스트 액티비티가 해당 인터페이스를 구현한 액티비티인지 확인
+            // 현재 연결된 (호스트)액티비티를 형변환해 onFrgReloadListener에 할당
             onFrgReloadListener = (OnFragmentReloadListener) context;   // 초기화
         }else {
             // 에러 처리
             throw new RuntimeException(context.toString() + "must implement OnFragmentReloadListener");
         }
     }
-
 
     @Nullable
     @Override
@@ -74,71 +69,6 @@ public class PochareviewFragment extends Fragment {
             return view;
         }
 
-
-        databaseReference = FirebaseDatabase.getInstance().getReference("reviews");
-        reviewDTOArrayList = new ArrayList<>();
-
-
-
-        databaseReference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for(DataSnapshot dataSnapshot: snapshot.getChildren()){
-                    ReviewDTO reviewDTO = dataSnapshot.getValue(ReviewDTO.class);
-                    reviewDTOArrayList.add(reviewDTO);
-                  //  Toast.makeText(getActivity(), reviewDTO.getContent(), Toast.LENGTH_SHORT).show();
-                }
-                /*
-                recyclerView = (RecyclerView)view.findViewById(R.id.recyv_pochareview_reviewList);
-                recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-                recyclerView.setHasFixedSize(true);
-                ReviewAdapter reviewAdapter = new ReviewAdapter(getContext(), reviewDTOArrayList);
-                recyclerView.setAdapter(reviewAdapter);
-                // reviewAdapter.notifyDataSetChanged();
-
-                 */
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(getActivity(), "DB 오류 발생", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-
-/*
-        ///// RecyclerView 관련
-        recyclerView = (RecyclerView)view.findViewById(R.id.recyv_pochareview_reviewList);
-        databaseReference = FirebaseDatabase.getInstance().getReference("reviews");
-        reviewDTOArrayList = new ArrayList<>();
-
-        recyclerView.setHasFixedSize(true);
-        layoutManager = new LinearLayoutManager(getActivity());
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.scrollToPosition(0);
-
-        // recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        reviewAdapter = new ReviewAdapter(getActivity(), reviewDTOArrayList);
-        recyclerView.setAdapter(reviewAdapter);
-
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
-
-
-        databaseReference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for(DataSnapshot dataSnapshot: snapshot.getChildren()){
-                    ReviewDTO reviewDTO = dataSnapshot.getValue(ReviewDTO.class);
-                    reviewDTOArrayList.add(reviewDTO);
-                    // Toast.makeText(getActivity(), reviewDTO.getContent(), Toast.LENGTH_SHORT).show();
-                }
-                // reviewAdapter.notifyDataSetChanged();
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(getActivity(), "DB 오류 발생", Toast.LENGTH_SHORT).show();
-            }
-        });
-*/
         // ▼ 리뷰 작성 페이지(ReviewwriteActivity)로 데이터 전달 및 이동 코드
         // 객체 생성 및 초기화
         FloatingActionButton reviewWriteFabtn;          // 리뷰 작성 버튼
@@ -151,7 +81,6 @@ public class PochareviewFragment extends Fragment {
                 // intent에 ReviewwriteActivity에 전달할 데이터 추가
                 intent.putExtra("pchKey", shop.getPrimaryKey());    // 포차 고유키
                 intent.putExtra("pchName", shop.getShopName());     // 포차 이름
-                intent.putExtra("uid", uid);                        // 회원 id
                 // Activity로 데이터 전달 및 이동
                 startActivity(intent);
             }
@@ -159,23 +88,4 @@ public class PochareviewFragment extends Fragment {
 
         return view;
     }
-/*
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-        // dataInitialize();
-        Toast.makeText(getActivity(), uid, Toast.LENGTH_SHORT).show();
-
-
-        recyclerView = (RecyclerView)view.findViewById(R.id.recyv_pochareview_reviewList);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerView.setHasFixedSize(true);
-        ReviewAdapter reviewAdapter = new ReviewAdapter(getContext(), reviewDTOArrayList);
-        recyclerView.setAdapter(reviewAdapter);
-        // reviewAdapter.notifyDataSetChanged();
-
-    }
-
- */
 }

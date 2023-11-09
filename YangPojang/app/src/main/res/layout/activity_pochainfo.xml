@@ -125,15 +125,33 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/img_pochainfo_pochaImage">
 
-                <ImageButton
-                    android:id="@+id/imgbtn_pochainfo_goodButton"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:adjustViewBounds="true"
-                    android:background="@android:color/transparent"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/empty_heart"
-                    tools:ignore="SpeakableTextPresentCheck" />
+                <FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <ImageButton
+                        android:id="@+id/imgbtn_pochainfo_notgoodButton"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:adjustViewBounds="true"
+                        android:visibility="visible"
+                        android:background="@android:color/transparent"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/empty_heart"
+                        tools:ignore="SpeakableTextPresentCheck" />
+
+                    <ImageButton
+                        android:id="@+id/imgbtn_pochainfo_goodButton"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:adjustViewBounds="true"
+                        android:visibility="invisible"
+                        android:background="@android:color/transparent"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/full_heart"
+                        tools:ignore="SpeakableTextPresentCheck" />
+
+                </FrameLayout>
 
                 <TextView
                     android:layout_width="wrap_content"
