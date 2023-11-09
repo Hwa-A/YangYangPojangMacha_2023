@@ -31,6 +31,9 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.yuhan.yangpojang.R;
 //import com.yuhan.yangpojang.mypage.GetList.MyReviewGetList;
+import com.yuhan.yangpojang.mypage.Adapter.MyMeetingAdapter;
+import com.yuhan.yangpojang.mypage.GetList.MeetingGetListCollection.GetAllMyMeetingItems;
+import com.yuhan.yangpojang.mypage.Model.MeetingModelCollection.AllMeetingItemModel;
 import com.yuhan.yangpojang.mypage.Model.MyReviewModel;
 import com.yuhan.yangpojang.mypage.account.accountPage;
 import com.yuhan.yangpojang.mypage.Adapter.MyLikeShopAdapter;
@@ -206,18 +209,22 @@ public class ProfileShowFragment extends Fragment
 //        });
 
 
-
         //myMeetingRecyclerView (내 번개)
         meetingRecyclerView = view.findViewById(R.id.myMeetingRecycle);
         meetingRecyclerView.setHasFixedSize(true);
         meetingRecyclerView.setLayoutManager(new LinearLayoutManager(view.getContext(), LinearLayoutManager.HORIZONTAL, false));
 
-
-
+        GetAllMyMeetingItems getAllMyMeetingItems = new GetAllMyMeetingItems();
+        getAllMyMeetingItems.getMeetingInfo(new GetAllMyMeetingItems.allMeetingItemLoadCallback() {
+            @Override
+            public void onAllLoaded(ArrayList<AllMeetingItemModel> allMeetingItemModels) {
+                meetingAdapter = new MyMeetingAdapter(getActivity(), allMeetingItemModels);
+                meetingRecyclerView.setAdapter(meetingAdapter);
+            }
+        });
 
         return view;
     }
-
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {

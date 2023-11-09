@@ -59,6 +59,7 @@ import com.naver.maps.map.widget.CompassView;
 import com.naver.maps.map.widget.LocationButtonView;
 import com.yuhan.yangpojang.home.CategoryListAdapter;
 import com.yuhan.yangpojang.model.LikeShopData;
+import com.yuhan.yangpojang.mypage.GetList.MeetingGetListCollection.GetAllMyMeetingItems;
 import com.yuhan.yangpojang.pochaInfo.info.PochainfoActivity;
 import com.yuhan.yangpojang.R;
 import com.yuhan.yangpojang.home.HttpResponse;
