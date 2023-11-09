@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -19,6 +20,7 @@ import com.bumptech.glide.Glide;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.yuhan.yangpojang.R;
+import com.yuhan.yangpojang.fragment.HomeFragment;
 import com.yuhan.yangpojang.model.Shop;
 import com.yuhan.yangpojang.model.Store;
 import com.yuhan.yangpojang.pochaInfo.interfaces.OnFragmentReloadListener;
@@ -122,6 +124,16 @@ public class PochainfoActivity extends AppCompatActivity implements OnFragmentRe
 //        // 포차 상세정보 Fragment로 화면 전환
 //        frgTransaction.replace(R.id.frg_pochainfo_mainFragment, pchDetailFrg).commitNow();
 
+        //heart이미지 설정
+        ImageButton notgoodButton = findViewById(R.id.imgbtn_pochainfo_notgoodButton);
+        ImageButton goodButton = findViewById(R.id.imgbtn_pochainfo_goodButton);
+        HomeFragment homeFragment = new HomeFragment();
+        homeFragment.isLikeShop(shop.getPrimaryKey(), notgoodButton, goodButton);
+
+        //heart리스너 설정
+        View.OnClickListener heartL = homeFragment.setHeartListener(getApplicationContext(), shop.getPrimaryKey(), notgoodButton, goodButton);
+        notgoodButton.setOnClickListener(heartL);
+        goodButton.setOnClickListener(heartL);
     }
 
     View.OnClickListener onClickListener = new View.OnClickListener() {

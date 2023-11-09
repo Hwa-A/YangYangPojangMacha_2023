@@ -293,13 +293,8 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, onPoch
         }
 
     }
-    @Override
-    public void onResume() {
-        super.onResume();
-        RecyclerView pochalist_view = getActivity().findViewById(R.id.pocha_list);
-        pochalist_view.setVisibility(View.INVISIBLE);
-    }
 
+    
     @Override
     public void onPause() {
         super.onPause();
@@ -677,7 +672,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, onPoch
         ImageButton full_heart = homeview.findViewById(R.id.pochainfo_fullheart);
         isLikeShop(stores.get(index).getPrimaryKey(), empty_heart, full_heart);
         //heart리스너 설정
-        View.OnClickListener heartL = setHeartListener(stores.get(index).getPrimaryKey(), empty_heart, full_heart);
+        View.OnClickListener heartL = setHeartListener(getActivity(), stores.get(index).getPrimaryKey(), empty_heart, full_heart);
         empty_heart.setOnClickListener(heartL);
         full_heart.setOnClickListener(heartL);
 
@@ -717,21 +712,21 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, onPoch
     }
 
     // 하트 모양 리스너
-    public View.OnClickListener setHeartListener(String shopId, ImageButton empty_heart, ImageButton full_heart) {
+    public View.OnClickListener setHeartListener(Context context, String shopId, ImageButton empty_heart, ImageButton full_heart) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 int viewId = v.getId();
                 LikeShopData likeShopData = new LikeShopData();
 
-                if (viewId == R.id.pochainfo_emptyheart) {
+                if (viewId == R.id.pochainfo_emptyheart || viewId == R.id.imgbtn_pochainfo_notgoodButton) {
                     // 좋아요 목록에 추가
                     likeShopData.addLikedShop(shopId);
                     isLikeShop(shopId, empty_heart, full_heart);
-                    Toast.makeText(getActivity(), "좋아요 목록에 추가되었습니다", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "좋아요 목록에 추가되었습니다", Toast.LENGTH_SHORT).show();
 
 
-                } else if(viewId == R.id.pochainfo_fullheart){
+                } else if(viewId == R.id.pochainfo_fullheart || viewId == R.id.imgbtn_pochainfo_goodButton){
                     // 좋아요 목록에서 삭제
                     likeShopData.removeLikedShop(shopId);
                     isLikeShop(shopId, empty_heart, full_heart);
