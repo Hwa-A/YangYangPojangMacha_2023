@@ -9,9 +9,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import androidx.activity.result.ActivityResultCallback;
@@ -31,6 +33,8 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.yuhan.yangpojang.R;
 //import com.yuhan.yangpojang.mypage.GetList.MyReviewGetList;
+import com.yuhan.yangpojang.home.onPochaListItemClickListener;
+import com.yuhan.yangpojang.model.Shop;
 import com.yuhan.yangpojang.mypage.Adapter.MyMeetingAdapter;
 import com.yuhan.yangpojang.mypage.GetList.MeetingGetListCollection.GetAllMyMeetingItems;
 import com.yuhan.yangpojang.mypage.Model.MeetingModelCollection.AllMeetingItemModel;
@@ -63,7 +67,8 @@ public class ProfileShowFragment extends Fragment
 
     // 리사이클러 뷰와 리사이클러 뷰 어뎁터
     private RecyclerView likeRecyclerView, reportRecyclerView, reviewRecyclerView, meetingRecyclerView;
-    private RecyclerView.Adapter likeAdapter, reportAdapter,reviewAdapter, meetingAdapter;
+    private RecyclerView.Adapter likeAdapter, reportAdapter,reviewAdapter;
+    private MyMeetingAdapter meetingAdapter;
 
     View view;
 
@@ -214,10 +219,12 @@ public class ProfileShowFragment extends Fragment
         meetingRecyclerView.setHasFixedSize(true);
         meetingRecyclerView.setLayoutManager(new LinearLayoutManager(view.getContext(), LinearLayoutManager.HORIZONTAL, false));
 
+
         GetAllMyMeetingItems getAllMyMeetingItems = new GetAllMyMeetingItems();
         getAllMyMeetingItems.getMeetingInfo(new GetAllMyMeetingItems.allMeetingItemLoadCallback() {
             @Override
             public void onAllLoaded(ArrayList<AllMeetingItemModel> allMeetingItemModels) {
+                meetingAdapter = null;
                 meetingAdapter = new MyMeetingAdapter(getActivity(), allMeetingItemModels);
                 meetingRecyclerView.setAdapter(meetingAdapter);
             }
@@ -247,6 +254,7 @@ public class ProfileShowFragment extends Fragment
                 });
 
     }
+
 
 //    // 뒤로가기 버튼 클릭 시, HomeFragment로 넘어가도록
 //    public void onBackPress(){

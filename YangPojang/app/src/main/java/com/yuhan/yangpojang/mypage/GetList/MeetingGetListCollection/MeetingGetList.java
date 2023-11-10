@@ -1,6 +1,8 @@
 package com.yuhan.yangpojang.mypage.GetList.MeetingGetListCollection;
 
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 
 import com.google.firebase.database.DataSnapshot;
@@ -18,6 +20,7 @@ public class MeetingGetList {
     static ArrayList<MeetingModel> meetings = new ArrayList<>();
     static ArrayList<String> routes = new ArrayList<>();
     public static void getMeetingId_ShopId(ArrayList<MyMeetingModel> myMeetings){
+        routes.clear();
         for(int i = 0; i < myMeetings.size(); i++){
             String route = myMeetings.get(i).getShopId() + "/" + myMeetings.get(i).getMeetingId();
             routes.add(route);
@@ -32,7 +35,7 @@ public class MeetingGetList {
         for(int i = 0; i < routes.size(); i++){
             databaseReference = FirebaseDatabase.getInstance().getReference("meeting/" + routes.get(i));
 
-            databaseReference.addValueEventListener(new ValueEventListener() {
+            databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     MeetingModel meetingModel = snapshot.getValue(MeetingModel.class);

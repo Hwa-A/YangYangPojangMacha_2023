@@ -60,6 +60,7 @@ import com.naver.maps.map.widget.LocationButtonView;
 import com.yuhan.yangpojang.home.CategoryListAdapter;
 import com.yuhan.yangpojang.model.LikeShopData;
 import com.yuhan.yangpojang.mypage.GetList.MeetingGetListCollection.GetAllMyMeetingItems;
+import com.yuhan.yangpojang.mypage.Model.MeetingModelCollection.AllMeetingItemModel;
 import com.yuhan.yangpojang.pochaInfo.info.PochainfoActivity;
 import com.yuhan.yangpojang.R;
 import com.yuhan.yangpojang.home.HttpResponse;
@@ -292,7 +293,6 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, onPoch
         }catch (ClassNotFoundException e){
             Toast.makeText(v.getContext(), "클래스 찾을 수 없음: PochainfoActivity", Toast.LENGTH_SHORT).show();
         }
-
     }
 
     @Override
@@ -311,6 +311,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, onPoch
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d("나만 볼거야", "onCreate() 실행");
+
         //위치를 반환하는 구현체인 FusedLocationSource 생성, locationSource를 초기화 하는 시점에 권한 허용여부를 확인한다(PermissionActivity의 onRequestPermissionResult())
         locationSource = new FusedLocationSource(this, PERMISSION_REQUEST_CODE);
 
@@ -676,9 +677,9 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, onPoch
         //heart이미지 설정
         ImageButton empty_heart = homeview.findViewById(R.id.pochainfo_emptyheart);
         ImageButton full_heart = homeview.findViewById(R.id.pochainfo_fullheart);
-        isLikeShop(stores.get(index).getPrimaryKey(), empty_heart, full_heart);
+        isLikeShop(stores.get(index).getShopKey(), empty_heart, full_heart);
         //heart리스너 설정
-        View.OnClickListener heartL = setHeartListener(getActivity(), stores.get(index).getPrimaryKey(), empty_heart, full_heart);
+        View.OnClickListener heartL = setHeartListener(getActivity(), stores.get(index).getShopKey(), empty_heart, full_heart);
         empty_heart.setOnClickListener(heartL);
         full_heart.setOnClickListener(heartL);
 

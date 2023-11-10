@@ -68,7 +68,7 @@
     <androidx.core.widget.NestedScrollView
         android:id="@+id/meeingMemberScroll"
         android:layout_width="83dp"
-        android:layout_height="101dp"
+        android:layout_height="85dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.102"
         app:layout_constraintStart_toStartOf="parent"
@@ -181,7 +181,7 @@
         android:layout_marginStart="60dp"
         android:layout_marginTop="15dp"
         android:layout_marginBottom="-5dp"
-        app:layout_constraintBottom_toTopOf="@+id/cancleJoin"
+        app:layout_constraintBottom_toTopOf="@+id/cancelJoin"
         app:layout_constraintTop_toBottomOf="@+id/meetingAgeMin"
         app:layout_constraintStart_toEndOf="@+id/meeingMemberScroll"/>
 
@@ -198,7 +198,7 @@
         android:layout_marginBottom="-5dp"
         app:layout_constraintStart_toEndOf="@+id/meetingMin"
         app:layout_constraintTop_toBottomOf="@+id/meetingAgeMin"
-        app:layout_constraintBottom_toTopOf="@+id/cancleJoin"
+        app:layout_constraintBottom_toTopOf="@+id/cancelJoin"
         app:layout_constraintEnd_toStartOf="@+id/meetingMax"/>
 
 
@@ -213,12 +213,12 @@
         android:textAlignment="center"
         android:textSize="13dp"
         android:layout_marginBottom="-5dp"
-        app:layout_constraintBottom_toTopOf="@+id/cancleJoin"
+        app:layout_constraintBottom_toTopOf="@+id/cancelJoin"
         app:layout_constraintStart_toEndOf="@+id/division"
         app:layout_constraintTop_toBottomOf="@+id/meetingAgeMin" />
 
     <Button
-        android:id="@+id/cancleJoin"
+        android:id="@+id/cancelJoin"
         android:layout_width="70dp"
         android:layout_height="30dp"
         android:backgroundTint="#FF9800"

@@ -1,11 +1,14 @@
 package com.yuhan.yangpojang.mypage.Model.MeetingModelCollection;
 
+import com.yuhan.yangpojang.model.Shop;
+
 import java.util.ArrayList;
 
 public class AllMeetingItemModel {
     String meetingId;
     String shopId;
 
+    Shop shop;
     String title;
     String time;
     int maxAge;
@@ -31,6 +34,8 @@ public class AllMeetingItemModel {
     public void setShopId(String shopId) {
         this.shopId = shopId;
     }
+    public Shop getShop(){return shop;}
+    public void setShop(Shop shop){this.shop = shop;}
 
     public String getTitle() {
         return title;
@@ -99,6 +104,7 @@ public class AllMeetingItemModel {
         return "AllMeetingItemModel{" +
                 "meetingId='" + meetingId + '\'' +
                 ", shopId='" + shopId + '\'' +
+                ", shop='" + shop + '\'' +
                 ", title='" + title + '\'' +
                 ", time='" + time + '\'' +
                 ", maxAge=" + maxAge +

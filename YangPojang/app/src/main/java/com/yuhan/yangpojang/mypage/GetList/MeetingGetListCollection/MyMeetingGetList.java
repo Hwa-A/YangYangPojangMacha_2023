@@ -1,5 +1,7 @@
 package com.yuhan.yangpojang.mypage.GetList.MeetingGetListCollection;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -9,6 +11,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.yuhan.yangpojang.mypage.Model.MeetingModelCollection.AllMeetingItemModel;
 import com.yuhan.yangpojang.mypage.Model.MeetingModelCollection.MyMeetingModel;
 
 import java.util.ArrayList;
@@ -33,7 +36,7 @@ public class MyMeetingGetList {
 
         databaseReference = FirebaseDatabase.getInstance().getReference("myMeeting/" + getUserUID());
 
-        databaseReference.addValueEventListener(new ValueEventListener() {
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for(DataSnapshot snap : snapshot.getChildren()){
@@ -44,6 +47,7 @@ public class MyMeetingGetList {
                     myMeetings.add(myMeetingModel);
                 }
                 callback.onMyMeetingLoaded(myMeetings);
+
             }
 
             @Override
@@ -53,6 +57,7 @@ public class MyMeetingGetList {
         });
 
     }
+
 
     public interface myMeetingDataLoadedCallback{
         void onMyMeetingLoaded(ArrayList<MyMeetingModel> myMeetings);

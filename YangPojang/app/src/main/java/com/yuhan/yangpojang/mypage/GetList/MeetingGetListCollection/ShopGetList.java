@@ -1,5 +1,7 @@
 package com.yuhan.yangpojang.mypage.GetList.MeetingGetListCollection;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 
 import com.google.firebase.database.DataSnapshot;
@@ -18,6 +20,7 @@ public class ShopGetList {
     static ArrayList<String> shopIds = new ArrayList<>(); // 내가 속한 번개의 가게 id
 
     public static void getShopId(ArrayList<MyMeetingModel> myMeetings){
+        shopIds.clear();
         for(int i = 0; i < myMeetings.size(); i++){
             String shopId = myMeetings.get(i).getShopId();
             shopIds.add(shopId);
@@ -32,7 +35,7 @@ public class ShopGetList {
         for(int i = 0; i < shopIds.size(); i++){
             databaseReference = FirebaseDatabase.getInstance().getReference("shops/" + shopIds.get(i));
 
-            databaseReference.addValueEventListener(new ValueEventListener() {
+            databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     Shop shop = snapshot.getValue(Shop.class);

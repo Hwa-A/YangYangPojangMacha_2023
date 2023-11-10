@@ -21,31 +21,36 @@ public class GetAllMyMeetingItems {
     ArrayList<AllMeetingItemModel> allMeetingItemModels = new ArrayList<>();
 
     public void getMeetingInfo(final allMeetingItemLoadCallback callback){
-
         MyMeetingGetList.myMeetingDataLoad(new MyMeetingGetList.myMeetingDataLoadedCallback() {
             @Override
             public void onMyMeetingLoaded(ArrayList<MyMeetingModel> myMeetings) {
+                myMeeting.clear();
                 myMeeting = myMeetings; //번개ID : 가게ID
                 MeetingGetList.getMeetingId_ShopId(myMeeting);
                 MeetingGetList.meetingDataLoad(new MeetingGetList.meetingDataLoadedCallback() {
                     @Override
                     public void onMeetingLoaded(ArrayList<MeetingModel> meetings) {
+                        meetingList.clear();
                         meetingList = meetings; //date~yeardate
                         ShopGetList.getShopId(myMeeting);
                         ShopGetList.meetingDataLoad(new ShopGetList.shopDataLoadedCallback() {
                             @Override
                             public void onShopLoaded(ArrayList<Shop> shops) {
+                                shopArrayList.clear();
                                 shopArrayList = shops;
                                 MeetingAttendersGetList.getMeetingId(myMeeting);
                                 MeetingAttendersGetList.attendersDataLoad(new MeetingAttendersGetList.attenderDataLoadedCallback() {
                                     @Override
                                     public void onAttenderLoaded(ArrayList<ArrayList<MeetingAttendersModel>> attenders) {
+                                        attender.clear();
                                         attender = attenders;
+                                        allMeetingItemModels.clear();
                                         // 합치기
                                         for(int i = 0; i < myMeetings.size(); i++) {
                                             AllMeetingItemModel allMeetingItemModel = new AllMeetingItemModel();
                                             allMeetingItemModel.setMeetingId(myMeetings.get(i).getMeetingId());
                                             allMeetingItemModel.setShopId(myMeetings.get(i).getShopId());
+                                            allMeetingItemModel.setShop(shopArrayList.get(i));
                                             allMeetingItemModel.setTitle(meetingList.get(i).getTitle());
                                             allMeetingItemModel.setTime(meetingList.get(i).getTime());
                                             allMeetingItemModel.setMaxAge(meetingList.get(i).getMaxAge());
@@ -56,10 +61,10 @@ public class GetAllMyMeetingItems {
                                             allMeetingItemModel.setAttenders(attender.get(i));
                                             allMeetingItemModels.add(allMeetingItemModel);
                                         }
+                                        Log.d("ㅈ", "데이터 로드 시점(GetAllMyMeetingItems) : " + allMeetingItemModels);
+                                        Log.d("ㅈ", "데이터 로드 시점 갯수(GetAllMyMeetingItems) : " + allMeetingItemModels.size());
                                         callback.onAllLoaded(allMeetingItemModels);
 
-                                        /*MyMeetingAdapter myMeetingAdapter = new MyMeetingAdapter();
-                                        myMeetingAdapter.getLists(allMeetingItemModels);*/
 
                                     }
                                 });
