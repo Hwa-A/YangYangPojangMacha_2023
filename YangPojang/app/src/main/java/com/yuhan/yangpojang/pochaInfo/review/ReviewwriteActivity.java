@@ -100,6 +100,18 @@ public class ReviewwriteActivity extends AppCompatActivity {
     TextInputEditText summaryEdt;      // 리뷰 내용
     RatingBar starRtb;            // 리뷰 별점
 
+    // 액티비티 종료 시, 메모리 해제
+    @Override
+    protected void onDestroy() {
+        if(imageBitmaps != null){
+            for(int i=0; i < imageBitmaps.size(); i++){
+                Bitmap bitmap = imageBitmaps.get(i);
+                bitmap.recycle();
+                bitmap = null;
+            }
+        }
+        super.onDestroy();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -197,7 +209,6 @@ public class ReviewwriteActivity extends AppCompatActivity {
         deleteSelectedImage(imageClearBtn2, 1);
         deleteSelectedImage(imageClearBtn3, 2);
     }
-
 
     // ▼ 클릭한 경우, 리뷰 등록
     View.OnClickListener registerReview = new View.OnClickListener() {
@@ -603,6 +614,7 @@ public class ReviewwriteActivity extends AppCompatActivity {
                     // 비트맵 메모리 해제
                     if (bitmap != null) {
                         bitmap.recycle();
+                        bitmap = null;
                     }
                     // 맨 끝의 이미지 버튼 비활성
                     int uriSize = selectedImageUris.size();
@@ -693,4 +705,5 @@ public class ReviewwriteActivity extends AppCompatActivity {
         }
         return super.dispatchTouchEvent(ev);
     }
+
 }
