@@ -11,7 +11,7 @@
 
 
     <TextView
-        android:id="@+id/MyReviewShopName"
+        android:id="@+id/myReviewShopName"
         android:layout_width="187dp"
         android:layout_height="20dp"
         android:text="test shop"
@@ -23,7 +23,7 @@
         app:layout_constraintVertical_bias="0.058" />
 
     <TextView
-        android:id="@+id/MyReviewShopAdd"
+        android:id="@+id/myReviewShopAdd"
         android:layout_width="195dp"
         android:layout_height="13dp"
         android:text="address"
@@ -31,12 +31,12 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.333"
-        app:layout_constraintStart_toEndOf="@+id/MyReviewImage"
-        app:layout_constraintTop_toBottomOf="@+id/MyReviewShopName"
+        app:layout_constraintStart_toEndOf="@+id/myReviewImage"
+        app:layout_constraintTop_toBottomOf="@+id/myReviewShopName"
         app:layout_constraintVertical_bias="0.1" />
 
     <TextView
-        android:id="@+id/MyReviewCategory"
+        android:id="@+id/myReviewCategory"
         android:layout_width="77dp"
         android:layout_height="11dp"
         android:text="shopCategory"
@@ -44,12 +44,12 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.067"
-        app:layout_constraintStart_toEndOf="@+id/MyReviewImage"
-        app:layout_constraintTop_toBottomOf="@+id/MyReviewShopAdd"
+        app:layout_constraintStart_toEndOf="@+id/myReviewImage"
+        app:layout_constraintTop_toBottomOf="@+id/myReviewShopAdd"
         app:layout_constraintVertical_bias="0.101" />
 
     <ImageView
-        android:id="@+id/MyReviewImage"
+        android:id="@+id/myReviewImage"
         android:layout_width="68dp"
         android:layout_height="62dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -61,7 +61,7 @@
         app:srcCompat="@drawable/no_image_pic" />
 
     <TextView
-        android:id="@+id/MyReviewSummary"
+        android:id="@+id/myReviewSummary"
         android:layout_width="279dp"
         android:layout_height="55dp"
         android:layout_marginTop="4dp"
@@ -70,11 +70,11 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.523"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/MyReviewCategory"
+        app:layout_constraintTop_toBottomOf="@+id/myReviewCategory"
         app:layout_constraintVertical_bias="0.166" />
 
     <ImageButton
-        android:id="@+id/MyReviewFixBtn"
+        android:id="@+id/myReviewFixBtn"
         android:layout_width="16dp"
         android:layout_height="16dp"
         android:backgroundTint="#00FFFFFF"
@@ -82,14 +82,14 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.26"
-        app:layout_constraintStart_toEndOf="@+id/MyReviewRatingBar"
-        app:layout_constraintTop_toBottomOf="@+id/MyReviewShopAdd"
+        app:layout_constraintStart_toEndOf="@+id/myReviewRatingBar"
+        app:layout_constraintTop_toBottomOf="@+id/myReviewShopAdd"
         app:layout_constraintVertical_bias="0.054"
         app:srcCompat="@drawable/pochareview_writebutton"
         app:tint="#AEA298" />
 
     <RatingBar
-        android:id="@+id/MyReviewRatingBar"
+        android:id="@+id/myReviewRatingBar"
         style="?android:attr/ratingBarStyleSmall"
         android:layout_width="80dp"
         android:layout_height="16dp"
@@ -98,8 +98,8 @@
         android:progressTint="#FFC107"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/MyReviewCategory"
-        app:layout_constraintTop_toBottomOf="@+id/MyReviewShopAdd"
+        app:layout_constraintStart_toEndOf="@+id/myReviewCategory"
+        app:layout_constraintTop_toBottomOf="@+id/myReviewShopAdd"
         app:layout_constraintVertical_bias="0.054" />
 
 

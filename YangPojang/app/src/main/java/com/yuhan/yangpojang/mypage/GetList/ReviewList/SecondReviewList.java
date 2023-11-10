@@ -38,7 +38,7 @@ public class SecondReviewList {
         databaseReference = firebaseDatabase.getReference("myReview/" + UID);
         Log.d("프로필reviewSecond", "ZeroReviewList: 테스트report 값 myReviews/" + UID);
 
-        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+        databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot snap : snapshot.getChildren()) {
@@ -61,6 +61,7 @@ public class SecondReviewList {
 
                                 String shopID_reviewID = reviewString;
                                 String picUrl1 = snapshot.child(reviewString).child( "picUrl1").getValue(String.class);
+                                Log.d("사진", "onDataChange: " + picUrl1);
                                 Float myRating = snapshot.child(reviewString).child("rating").getValue(Float.class);
                                 String summary = snapshot.child(reviewString).child( "summary").getValue(String.class);
 

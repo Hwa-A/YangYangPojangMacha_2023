@@ -97,7 +97,7 @@ public class MyReviewList {
 
                             model.setShopID_reviewID(reviewDatas.get(i).getShopID_reviewID());
                             model.setPicUrl1(reviewDatas.get(i).getPicUrl1());
-                            model.setRating(reviewDatas.get(i).getRating());
+                            model.setMyRating(reviewDatas.get(i).getMyRating());
                             model.setSummary(reviewDatas.get(i).getSummary());
 
 

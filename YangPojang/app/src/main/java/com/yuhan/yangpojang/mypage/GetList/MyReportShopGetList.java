@@ -35,7 +35,7 @@ public class MyReportShopGetList {
         databaseReference = firebaseDatabase.getReference("reportShop/"+UID);
         Log.d(TAG, "GetMyReportShopList: 테스트report 값 reportShop/" + UID );
 
-        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+        databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot snap : snapshot.getChildren()) {

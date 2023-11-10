@@ -26,6 +26,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -71,6 +72,7 @@ public class ProfileShowFragment extends Fragment {
     View view;
 
     private ActivityResultLauncher<String> getPicture;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
 
     @Nullable  // null 체크유도, 경고를 통해 누락된 체크를 알려줄수 있음
@@ -124,6 +126,7 @@ public class ProfileShowFragment extends Fragment {
                                 // 프로필 출력 칸에 보여지도록 설정
                                 Glide.with(requireContext())
                                         .load(uri)
+                                        .circleCrop()
                                         .into(userImg);
                             }
                         }
@@ -224,6 +227,7 @@ public class ProfileShowFragment extends Fragment {
             user_info_uid = user.getUid();
         }
 
+
         // 갤러리에서 이미지를 선택하는 동작 처리(ActivityResultLauncher 정의)
         getPicture = registerForActivityResult(new ActivityResultContracts.GetContent(),
                 new ActivityResultCallback<Uri>() {
@@ -235,15 +239,16 @@ public class ProfileShowFragment extends Fragment {
                     }
                 });
 
+
         // 뒤로가기 버튼
         OnBackPressedCallback backPressedCallback = new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
                 FragmentManager fragmentManager = getParentFragmentManager();
-                if(isAdded()){
+                if (isAdded()) {
                     FragmentTransaction transaction = fragmentManager.beginTransaction();   // 플래그먼트 전환을 위한 트랜잭션 시작
                     HomeFragment homeFragment = new HomeFragment();     // HomeFragment의 인스턴스를 생성
-                    transaction.replace(R.id.fragmentProfileLayout,homeFragment);    // 기존 플래그먼로 교체
+                    transaction.replace(R.id.fragmentProfileLayout, homeFragment);    // 기존 플래그먼로 교체
                     transaction.commit();  // 트랜잭션 커밋
 
                     // 하단 탐색 바에서 Home 탭을 선택하도록 설정
@@ -252,10 +257,9 @@ public class ProfileShowFragment extends Fragment {
                 }
             }
         };
-            // OnBackPressedCallback 호출
-            requireActivity().getOnBackPressedDispatcher().addCallback(this, backPressedCallback);
+        // OnBackPressedCallback 호출
+        requireActivity().getOnBackPressedDispatcher().addCallback(this, backPressedCallback);
 
     }
-
 
 }
