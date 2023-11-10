@@ -96,13 +96,17 @@ public class MyReviewList {
                             model.setPrimaryKey(primaryKey);
 
                             model.setShopID_reviewID(reviewDatas.get(i).getShopID_reviewID());
+
                             model.setPicUrl1(reviewDatas.get(i).getPicUrl1());
+                            model.setPicUrl2(reviewDatas.get(i).getPicUrl2());
+                            model.setPicUrl3(reviewDatas.get(i).getPicUrl3());
                             model.setMyRating(reviewDatas.get(i).getMyRating());
                             model.setSummary(reviewDatas.get(i).getSummary());
 
 
                             Log.d("프로필reviewGetList", "reviewDatas: " + reviewDatas.size());
-
+                            Log.d("사진 프로필reviewGetList", " model.setPicUrl1(reviewDatas.get(i).getPicUrl1()); " + model.getPicUrl1());
+                            Log.d("사진 프로필reviewGetList", " model.setPicUrl1(reviewDatas.get(i).getPicUrl2()); " + model.getPicUrl2());
 
                             Log.d("프로필reviewGetList", "shopDatas: " + shopDatas.size());
                             //Log.d("프로필reviewGetList", "shopDatas: " + shopDatas.get(0).getShopName());

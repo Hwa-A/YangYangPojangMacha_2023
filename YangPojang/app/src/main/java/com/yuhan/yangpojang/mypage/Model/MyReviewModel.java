@@ -39,6 +39,8 @@ public class MyReviewModel extends Shop {
 
     // 리뷰 아이템뷰에서 보여줄 내용
     private String picUrl1;
+    private String picUrl2;
+    private String picUrl3;
     private float myRating;
     private String summary;
 
@@ -72,7 +74,7 @@ public class MyReviewModel extends Shop {
         this.category = category;
         this.storeImageUri = storeImageUri;
         this.menuImageUri = menuImageUri;
-        this.verified = verified;
+        this.verified = isVerified;
         this.hasMeeting =hasMeeting;
         this.rating= rating;
         this.geohash = geohash;
@@ -141,6 +143,10 @@ public class MyReviewModel extends Shop {
 
     public String getPicUrl1() {        return picUrl1;    }
 
+    public String getPicUrl2() {        return picUrl2;    }
+
+    public String getPicUrl3() {        return picUrl3;    }
+
     public float getMyRating() {        return myRating;    }
 
     public String getSummary() {        return summary;    }
@@ -207,6 +213,10 @@ public class MyReviewModel extends Shop {
 
     public void setPicUrl1(String picUrl1) {        this.picUrl1 = picUrl1;    }
 
+    public void setPicUrl2(String picUrl2) {        this.picUrl2 = picUrl2;    }
+
+    public void setPicUrl3(String picUrl3) {        this.picUrl3 = picUrl3;    }
+
     public void setMyRating(float myRating) {        this.myRating = myRating;    }
 
     public void setSummary(String summary) {        this.summary = summary;    }
@@ -240,10 +250,13 @@ public class MyReviewModel extends Shop {
         this.geohash = geohash;
     }
 
-    public void setMyReviewModel(String shopID_reviewID, String picUrl1, Float myRating, String summary){
+    public void setMyReviewModel(String shopID_reviewID, String picUrl1, String picUrl2, String picUrl3, Float myRating, String summary){
+
         this.shopID_reviewID = shopID_reviewID;
 
         this.picUrl1 = picUrl1;
+        this.picUrl2 = picUrl2;
+        this.picUrl3 = picUrl3;
         this.myRating = myRating;
         this.summary = summary;
     }

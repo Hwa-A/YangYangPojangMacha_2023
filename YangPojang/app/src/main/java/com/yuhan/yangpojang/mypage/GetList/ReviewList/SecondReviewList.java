@@ -61,6 +61,8 @@ public class SecondReviewList {
 
                                 String shopID_reviewID = reviewString;
                                 String picUrl1 = snapshot.child(reviewString).child( "picUrl1").getValue(String.class);
+                                String picUrl2 = snapshot.child(reviewString).child( "picUrl2").getValue(String.class);
+                                String picUrl3 = snapshot.child(reviewString).child( "picUrl3").getValue(String.class);
                                 Log.d("사진", "onDataChange: " + picUrl1);
                                 Float myRating = snapshot.child(reviewString).child("rating").getValue(Float.class);
                                 String summary = snapshot.child(reviewString).child( "summary").getValue(String.class);
@@ -69,7 +71,7 @@ public class SecondReviewList {
                                 Log.d("프로필reviewFirst", "ZeroReviewList: 리뷰 정보 가져오기 ㅡㅡㅡㅡ " + myRating );
                                 Log.d("프로필reviewFirst", "ZeroReviewList: 리뷰 정보 가져오기 ㅡㅡㅡㅡ " + summary );
 
-                                model.setMyReviewModel(shopID_reviewID, picUrl1, myRating, summary);
+                                model.setMyReviewModel( shopID_reviewID,  picUrl1,  picUrl2,  picUrl3,  myRating,  summary);
                                 Log.d("프로필reviewFirst", "ZeroReviewList: selectReview 데이터 확인" + model.getSummary());
                                 Log.d("프로필reviewFirst", "i ㅡㅡㅡㅡㅡㅡㅡㅡ " + i);
 

@@ -13,6 +13,8 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -32,10 +34,7 @@ public class MyReviewAdapter extends RecyclerView.Adapter<MyReviewAdapter.MyRevi
     private ArrayList<MyReviewModel> reviewItemList = new ArrayList<>();
     private Context context;
     private StorageReference storageRef = FirebaseStorage.getInstance().getReference();
-//    private ProfileShowFragment profileShowFragment;
 
-//    FirebaseStorage storage = FirebaseStorage.getInstance(); // FirebaseStorage 인스턴스 생성
-    StorageReference img;
 
     public MyReviewAdapter(ArrayList<MyReviewModel> reviewItemList, Context context) {
         this.reviewItemList = reviewItemList;
@@ -85,9 +84,12 @@ public class MyReviewAdapter extends RecyclerView.Adapter<MyReviewAdapter.MyRevi
         holder.summary.setText(reviewItemList.get(position).getSummary());
         holder.rating.setRating(reviewItemList.get(position).getMyRating());
 
+        Log.d("리뷰 사진 2", "onBindViewHolder: " + reviewItemList.get(position).getPicUrl3());
+
         // 사진 받아오기
         String ImgPath = reviewItemList.get(position).getPicUrl1();
         Log.d("리뷰 사진", "ImgPath : " + ImgPath);
+
         if (ImgPath == "null" || ImgPath.isEmpty()) {
             Glide.with(context)
                     .load(R.drawable.no_image_pic)
@@ -124,8 +126,7 @@ public class MyReviewAdapter extends RecyclerView.Adapter<MyReviewAdapter.MyRevi
                 intent.putExtra("shopInfo", selectedShop);  // MyReportShopModel 객체를 추가 데이터로 전달
 
                 context.startActivity(intent); // 인텐트 실행
-//                FragmentManager fragmentManager = FragmentManager.findFragment();
-//                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
 
             }
         });

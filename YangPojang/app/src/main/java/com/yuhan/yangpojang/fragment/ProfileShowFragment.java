@@ -51,6 +51,7 @@ import com.yuhan.yangpojang.mypage.UserProfile.ChangeImgDialog;
 import com.yuhan.yangpojang.mypage.UserProfile.LoadUserProfile;
 
 import java.util.ArrayList;
+import java.util.zip.Inflater;
 
 
 public class ProfileShowFragment extends Fragment {
@@ -75,10 +76,13 @@ public class ProfileShowFragment extends Fragment {
     private SwipeRefreshLayout swipeRefreshLayout;
 
 
+
     @Nullable  // null 체크유도, 경고를 통해 누락된 체크를 알려줄수 있음
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = (ViewGroup) inflater.inflate(R.layout.fragment_profile, container, false);
+
+
 
         // 화면 내의 활성화 되는 버튼들
         // accountBtn : 클릭 시 계정 설정 페이지로 넘어감 (accountPage.java , account_page.xml)
@@ -261,5 +265,6 @@ public class ProfileShowFragment extends Fragment {
         requireActivity().getOnBackPressedDispatcher().addCallback(this, backPressedCallback);
 
     }
+
 
 }

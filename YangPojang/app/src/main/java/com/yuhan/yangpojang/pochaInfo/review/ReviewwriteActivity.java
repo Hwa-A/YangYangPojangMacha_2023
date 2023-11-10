@@ -1,57 +1,36 @@
 package com.yuhan.yangpojang.pochaInfo.review;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 
-import android.Manifest;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.ImageDecoder;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 import com.yuhan.yangpojang.R;
 import com.yuhan.yangpojang.pochaInfo.model.ReviewDTO;
 
-import java.io.InputStream;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /*
@@ -98,20 +77,20 @@ public class ReviewwriteActivity extends AppCompatActivity {
 
         // 객체 생성 및 초기화
         review = new ReviewDTO();   // 리뷰 객체
-        pchNameTv = findViewById(R.id.tv_reviewwrite_pochaName);    // 포차 이름
-        starRtb = findViewById(R.id.rtb_reviewwrite_rating);        // 리뷰 별점 RatingBar
-        summaryTxtLay = findViewById(R.id.txtLay_reviewwrite_summaryContainer);     // 리뷰 내용 컨테이너
-        summaryEdt = findViewById(R.id.edt_reviewwrite_summary);    // 리뷰 내용 EditText
+        pchNameTv = findViewById(R.id.myFixShopName);    // 포차 이름
+        starRtb = findViewById(R.id.myFixMyRating);        // 리뷰 별점 RatingBar
+        summaryTxtLay = findViewById(R.id.myFixSummaryOutfit);     // 리뷰 내용 컨테이너
+        summaryEdt = findViewById(R.id.myFixSummaryEdit);    // 리뷰 내용 EditText
         // 이미지 관련
-        ImageButton imageBtn1 = findViewById(R.id.imgbtn_reviewwrite_picture1);     // 리뷰 이미지 Button1
-        ImageButton imageBtn2 = findViewById(R.id.imgbtn_reviewwrite_picture2);     // 리뷰 이미지 Button2
-        ImageButton imageBtn3 = findViewById(R.id.imgbtn_reviewwrite_picture3);     // 리뷰 이미지 Button3
-        ImageButton imageClearBtn1 = findViewById(R.id.imgbtn_reviewwrite_pictureCancel1);      // 리뷰 이미지 삭제 Button1
-        ImageButton imageClearBtn2 = findViewById(R.id.imgbtn_reviewwrite_pictureCancel2);      // 리뷰 이미지 삭제 Button2
-        ImageButton imageClearBtn3 = findViewById(R.id.imgbtn_reviewwrite_pictureCancel3);      // 리뷰 이미지 삭제 Button3
-        FrameLayout imageContainer1 = findViewById(R.id.framLay_reviewwrite_pictureContainer1);     // 리뷰 이미지 컨테이너1
-        FrameLayout imageContainer2 = findViewById(R.id.framLay_reviewwrite_pictureContainer2);     // 리뷰 이미지 컨테이너2
-        FrameLayout imageContainer3 = findViewById(R.id.framLay_reviewwrite_pictureContainer3);     // 리뷰 이미지 컨테이너3
+        ImageButton imageBtn1 = findViewById(R.id.myFixPicImgBtn1);     // 리뷰 이미지 Button1
+        ImageButton imageBtn2 = findViewById(R.id.myFixPicImgBtn2);     // 리뷰 이미지 Button2
+        ImageButton imageBtn3 = findViewById(R.id.myFixPicImgBtn3);     // 리뷰 이미지 Button3
+        ImageButton imageClearBtn1 = findViewById(R.id.myFixPicCancelBtn1);      // 리뷰 이미지 삭제 Button1
+        ImageButton imageClearBtn2 = findViewById(R.id.myFixPicCancelBtn2);      // 리뷰 이미지 삭제 Button2
+        ImageButton imageClearBtn3 = findViewById(R.id.myFixPicCancelBtn3);      // 리뷰 이미지 삭제 Button3
+        FrameLayout imageContainer1 = findViewById(R.id.myFixPicScope1);     // 리뷰 이미지 컨테이너1
+        FrameLayout imageContainer2 = findViewById(R.id.myFixPicScope2);     // 리뷰 이미지 컨테이너2
+        FrameLayout imageContainer3 = findViewById(R.id.myFixPicScope3);     // 리뷰 이미지 컨테이너3
         // 이미지를 보여줄 이미지 버튼들을 imageBtns 리스트에 삽입
         imageBtns.add(imageBtn1);
         imageBtns.add(imageBtn2);
