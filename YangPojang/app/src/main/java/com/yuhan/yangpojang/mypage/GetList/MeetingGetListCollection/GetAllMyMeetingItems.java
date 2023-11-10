@@ -61,8 +61,6 @@ public class GetAllMyMeetingItems {
                                             allMeetingItemModel.setAttenders(attender.get(i));
                                             allMeetingItemModels.add(allMeetingItemModel);
                                         }
-                                        Log.d("ㅈ", "데이터 로드 시점(GetAllMyMeetingItems) : " + allMeetingItemModels);
-                                        Log.d("ㅈ", "데이터 로드 시점 갯수(GetAllMyMeetingItems) : " + allMeetingItemModels.size());
                                         callback.onAllLoaded(allMeetingItemModels);
 
 
