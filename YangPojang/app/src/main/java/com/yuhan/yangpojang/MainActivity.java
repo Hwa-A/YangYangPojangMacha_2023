@@ -69,13 +69,13 @@ public class MainActivity extends AppCompatActivity {
                     } else if (itemId == R.id.navigation_report_shop) {
                         getSupportFragmentManager().beginTransaction()
                                 .replace(R.id.fragment_container, reportShopFragment)
-                               // .addToBackStack(null)
+                                .addToBackStack(null)
                                 .commitAllowingStateLoss();
                         return true;
                     } else if (itemId == R.id.navigation_profile_show) {
                         getSupportFragmentManager().beginTransaction()
                                 .replace(R.id.fragment_container, profileShowFragment)
-                                //.addToBackStack(null)
+                                .addToBackStack(null)
                                 .commitAllowingStateLoss();
                         return true;
                     }

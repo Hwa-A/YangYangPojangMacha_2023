@@ -1,7 +1,6 @@
 package com.yuhan.yangpojang.fragment;
 
-import static com.google.firebase.crashlytics.internal.Logger.TAG;
-
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -16,28 +15,34 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.activity.OnBackPressedCallback;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.yuhan.yangpojang.R;
-//import com.yuhan.yangpojang.mypage.GetList.MyReviewGetList;
-import com.yuhan.yangpojang.home.onPochaListItemClickListener;
-import com.yuhan.yangpojang.model.Shop;
 import com.yuhan.yangpojang.mypage.Adapter.MyMeetingAdapter;
 import com.yuhan.yangpojang.mypage.GetList.MeetingGetListCollection.GetAllMyMeetingItems;
 import com.yuhan.yangpojang.mypage.Model.MeetingModelCollection.AllMeetingItemModel;
+import com.yuhan.yangpojang.mypage.Adapter.MyReviewAdapter;
+import com.yuhan.yangpojang.mypage.GetList.ReviewList.MyReviewList;
 import com.yuhan.yangpojang.mypage.Model.MyReviewModel;
 import com.yuhan.yangpojang.mypage.account.accountPage;
 import com.yuhan.yangpojang.mypage.Adapter.MyLikeShopAdapter;
@@ -52,8 +57,7 @@ import com.yuhan.yangpojang.mypage.UserProfile.LoadUserProfile;
 import java.util.ArrayList;
 
 
-public class ProfileShowFragment extends Fragment
-{
+public class ProfileShowFragment extends Fragment {
     private String user_info_uid;
 
     private LoadUserProfile loadUserProfile; // 프로필을 부르기 위한 클래스
@@ -70,13 +74,20 @@ public class ProfileShowFragment extends Fragment
     private RecyclerView.Adapter likeAdapter, reportAdapter,reviewAdapter;
     private MyMeetingAdapter meetingAdapter;
 
+
     View view;
 
     private ActivityResultLauncher<String> getPicture;
+    private SwipeRefreshLayout swipeRefreshLayout;
+
+
+
     @Nullable  // null 체크유도, 경고를 통해 누락된 체크를 알려줄수 있음
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = (ViewGroup) inflater.inflate(R.layout.fragment_profile, container, false);
+
+
 
         // 화면 내의 활성화 되는 버튼들
         // accountBtn : 클릭 시 계정 설정 페이지로 넘어감 (accountPage.java , account_page.xml)
@@ -103,6 +114,8 @@ public class ProfileShowFragment extends Fragment
         });
         // 화면 내의 활성화 되는 버튼들
 
+
+
         // 사용자 정보 불러오기
         userNick = view.findViewById(R.id.userNickname);
         userImg = view.findViewById(R.id.showUserImg);
@@ -122,6 +135,7 @@ public class ProfileShowFragment extends Fragment
                                 // 프로필 출력 칸에 보여지도록 설정
                                 Glide.with(requireContext())
                                         .load(uri)
+                                        .circleCrop()
                                         .into(userImg);
                             }
                         }
@@ -129,8 +143,7 @@ public class ProfileShowFragment extends Fragment
 
                     userNick.setText(nick);
                     Log.d("프로필", "변경되야 함" + nick + img);
-                }
-                else{
+                } else {
                     // 만약 프래그먼트가 활성화 되지 않았다면 프래그먼트를 다시 연결
                     view = (ViewGroup) inflater.inflate(R.layout.fragment_profile, container, false);
                 }
@@ -138,8 +151,6 @@ public class ProfileShowFragment extends Fragment
 
         });
         // 사용자 정보 불러오기
-
-
 
 
 
@@ -151,13 +162,13 @@ public class ProfileShowFragment extends Fragment
 
         MyLikeShopGetList myLikeShopGetList = new MyLikeShopGetList();
 
-        myLikeShopGetList.GetMyLikeShopList(user_info_uid , new MyLikeShopGetList.dataLoadedCallback() {
+        myLikeShopGetList.getMyLikeShopList(user_info_uid, new MyLikeShopGetList.dataLoadedCallback() {
             @Override
             public void onDataLoaded(ArrayList<MyLikeShopModel> shopDatas) {
-                if(shopDatas != null ){
+                if (shopDatas != null) {
 
-                    Log.d(TAG, "onDataLoaded: in main");
-                    likeAdapter = new MyLikeShopAdapter(shopDatas,getContext());
+                    Log.d("프로필", "onDataLoaded: in main");
+                    likeAdapter = new MyLikeShopAdapter(shopDatas, getContext());
                     likeRecyclerView.setAdapter(likeAdapter);
                 }
             }
@@ -171,48 +182,38 @@ public class ProfileShowFragment extends Fragment
 
         MyReportShopGetList myReportShopGetList = new MyReportShopGetList();
 
-        myReportShopGetList.GetMyReportShopList(user_info_uid , new MyReportShopGetList.dataLoadedCallback() {
+        myReportShopGetList.GetMyReportShopList(user_info_uid, new MyReportShopGetList.dataLoadedCallback() {
             @Override
             public void onDataLoaded(ArrayList<MyReportShopModel> shopDatas) {
-                if(shopDatas != null ){
-
-                    Log.d(TAG, "onDataLoaded: myReportRecycle");
-                    reportAdapter = new MyReportShopAdapter(shopDatas,getContext());
+                if (shopDatas != null) {
+                    Log.d("프로필", "onDataLoaded: myReportRecycle");
+                    reportAdapter = new MyReportShopAdapter(shopDatas, getContext());
                     reportRecyclerView.setAdapter(reportAdapter);
-                }
-                else{
+                } else {
                     Log.d("프로필", "shopDatas null");
                 }
             }
         });
 
 
-//        //        // myReviewRecyclerView (내가 작성한 리뷰)
-//        reviewRecyclerView = view.findViewById(R.id.myReviewRecycle);
-//        reviewRecyclerView.setHasFixedSize(true);
-//        reviewRecyclerView.setLayoutManager(new LinearLayoutManager(view.getContext(), LinearLayoutManager.HORIZONTAL, false));
-//
-//        MyReviewGetList myReviewGetList = new MyReviewGetList();
-//
-//        myReviewGetList.getMyReviewModel(user_info_uid, new MyReviewGetList.dataLoadCallback() {
-//            @Override
-//            public void listLoad(ArrayList<MyReviewModel> reviewDatas) {
-//                Log.d("프로필", "onDataLoaded: MyReviewList");
-//                //reviewAdapter = new MyReView
-//            }
-//
-//            @Override
-//            public void reviewLoad(ArrayList selectReview, ArrayList selectShop, ArrayList<MyReviewModel> shopDatas) {
-//
-//            }
-//
-//            @Override
-//            public void shopLoad(MyReviewModel model, ArrayList selectShop, ArrayList<MyReviewModel> shopDatas) {
-//
-//            }
-//
-//        });
+        // myReviewRecyclerView (내가 작성한 리뷰)
+        reviewRecyclerView = view.findViewById(R.id.myReviewRecycle);
+        reviewRecyclerView.setHasFixedSize(true);
+        reviewRecyclerView.setLayoutManager(new LinearLayoutManager(view.getContext(), LinearLayoutManager.HORIZONTAL, false));
 
+        MyReviewList myReviewList = new MyReviewList();
+        myReviewList.getReviewItemInfo(user_info_uid, new MyReviewList.dataLoadedCallback() {
+            @Override
+            public void onDataLoaded(ArrayList<MyReviewModel> shopDatas) {
+                if (shopDatas != null) {
+                    Log.d("프로필3", "onDataLoaded: myReportRecycle");
+                    reviewAdapter = new MyReviewAdapter(shopDatas, getContext());
+                    reviewRecyclerView.setAdapter(reviewAdapter);
+                } else {
+                    Log.d("프로필3", "shopDatas null");
+                }
+            }
+        });
 
         //myMeetingRecyclerView (내 번개)
         meetingRecyclerView = view.findViewById(R.id.myMeetingRecycle);
@@ -242,6 +243,7 @@ public class ProfileShowFragment extends Fragment
             user_info_uid = user.getUid();
         }
 
+
         // 갤러리에서 이미지를 선택하는 동작 처리(ActivityResultLauncher 정의)
         getPicture = registerForActivityResult(new ActivityResultContracts.GetContent(),
                 new ActivityResultCallback<Uri>() {
@@ -253,20 +255,27 @@ public class ProfileShowFragment extends Fragment
                     }
                 });
 
+
+        // 뒤로가기 버튼
+        OnBackPressedCallback backPressedCallback = new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                FragmentManager fragmentManager = getParentFragmentManager();
+                if (isAdded()) {
+                    FragmentTransaction transaction = fragmentManager.beginTransaction();   // 플래그먼트 전환을 위한 트랜잭션 시작
+                    HomeFragment homeFragment = new HomeFragment();     // HomeFragment의 인스턴스를 생성
+                    transaction.replace(R.id.fragmentProfileLayout, homeFragment);    // 기존 플래그먼로 교체
+                    transaction.commit();  // 트랜잭션 커밋
+
+                    // 하단 탐색 바에서 Home 탭을 선택하도록 설정
+                    BottomNavigationView bottomNavigationView = requireActivity().findViewById(R.id.bottomNavigationView);
+                    bottomNavigationView.setSelectedItemId(R.id.navigation_map);
+                }
+            }
+        };
+        // OnBackPressedCallback 호출
+        requireActivity().getOnBackPressedDispatcher().addCallback(this, backPressedCallback);
+
     }
-
-
-//    // 뒤로가기 버튼 클릭 시, HomeFragment로 넘어가도록
-//    public void onBackPress(){
-//
-//        Log.d("프로필", "onBackPress: 뒤로가기 버튼 클릭 시, HomeFragment로");
-//        Intent intent = new Intent(getContext(), HomeFragment.class); //지금 액티비티에서 다른 액티비티로 이동하는 인텐트 설정
-////        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);    //인텐트 플래그 설정
-////        startActivity(intent);  //인텐트 이동
-//
-//    }
-
-
-
 
 }

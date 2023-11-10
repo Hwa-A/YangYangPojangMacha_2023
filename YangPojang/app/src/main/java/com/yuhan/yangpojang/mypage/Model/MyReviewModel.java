@@ -35,11 +35,12 @@ public class MyReviewModel extends Shop {
 
     // review 테이블에서 가져와야 하는 값
     // 리뷰페이지 에서 사용할 경로
-    private String shopID;
-    private String reviewID;
+    private String shopID_reviewID;
 
     // 리뷰 아이템뷰에서 보여줄 내용
     private String picUrl1;
+    private String picUrl2;
+    private String picUrl3;
     private float myRating;
     private String summary;
 
@@ -48,17 +49,16 @@ public class MyReviewModel extends Shop {
     public MyReviewModel() {
     }
 
-    public MyReviewModel(String uid, String shopName, double latitude, double longitude, String addressName, boolean pwayMobile, boolean pwayCard,
-                         boolean pwayAccount, boolean pwayCash, boolean openMon, boolean openTue,
-                         boolean openWed, boolean openThu, boolean openFri, boolean openSat,
-                         boolean openSun, String category, String storeImageUri, String menuImageUri,
-                         boolean isVerified, boolean hasMeeting, float rating, String geohash,
-                         String shopID, String reviewID, String picUrl1, float myRating, String summary) {
+    public MyReviewModel(String uid,String shopName,double latitude, double longitude ,String  addressName, boolean pwayMobile, boolean pwayCard,
+                boolean pwayAccount, boolean pwayCash, boolean openMon, boolean openTue,
+                boolean openWed, boolean openThu, boolean openFri, boolean openSat,
+                boolean openSun, String category ,String storeImageUri, String menuImageUri,
+                boolean isVerified, boolean hasMeeting, float rating, String geohash, String primaryKey ) {
 
-        this.uid = uid;
-        this.shopName = shopName;
+        this.uid= uid;
+        this.shopName=shopName;
         this.latitude = latitude;
-        this.longitude = longitude;
+        this.longitude= longitude;
         this.addressName = addressName;
         this.pwayMobile = pwayMobile;
         this.pwayCard = pwayCard;
@@ -75,17 +75,11 @@ public class MyReviewModel extends Shop {
         this.storeImageUri = storeImageUri;
         this.menuImageUri = menuImageUri;
         this.verified = isVerified;
-        this.hasMeeting = hasMeeting;
-        this.rating = rating;
+        this.hasMeeting =hasMeeting;
+        this.rating= rating;
         this.geohash = geohash;
-
-        this.shopID = shopID;
-        this.reviewID = reviewID;
-
-        this.picUrl1 = picUrl1;
-        this.myRating = myRating;
-        this.summary = summary;
     }
+
 
     public String getUid() {        return uid;    }
 
@@ -145,11 +139,13 @@ public class MyReviewModel extends Shop {
 
     public String getPrimaryKey() {        return primaryKey;    }
 
-    public String getShopID() {        return shopID;    }
-
-    public String getReviewID() {        return reviewID;    }
+    public String getShopID_reviewID() {        return shopID_reviewID;    }
 
     public String getPicUrl1() {        return picUrl1;    }
+
+    public String getPicUrl2() {        return picUrl2;    }
+
+    public String getPicUrl3() {        return picUrl3;    }
 
     public float getMyRating() {        return myRating;    }
 
@@ -213,13 +209,55 @@ public class MyReviewModel extends Shop {
 
     public void setPrimaryKey(String primaryKey) {        this.primaryKey = primaryKey;    }
 
-    public void setShopID(String shopID) {        this.shopID = shopID;    }
-
-    public void setReviewID(String reviewID) {        this.reviewID = reviewID;    }
+    public void setShopID_reviewID(String shopID) {        this.shopID_reviewID = shopID_reviewID;    }
 
     public void setPicUrl1(String picUrl1) {        this.picUrl1 = picUrl1;    }
+
+    public void setPicUrl2(String picUrl2) {        this.picUrl2 = picUrl2;    }
+
+    public void setPicUrl3(String picUrl3) {        this.picUrl3 = picUrl3;    }
 
     public void setMyRating(float myRating) {        this.myRating = myRating;    }
 
     public void setSummary(String summary) {        this.summary = summary;    }
+
+    public void MyReviewModel(String uid, String shopName, double latitude, double longitude, String addressName, boolean pwayMobile,
+                              boolean pwayCard, boolean pwayAccount, boolean pwayCash, boolean openMon, boolean openTue, boolean openWed,
+                              boolean openThu, boolean openFri, boolean openSat, boolean openSun, String category, String storeImageUri,
+                              String menuImageUri, boolean isVerified, boolean hasMeeting, float rating, String geohash, String exteriorImagePath) {
+        this.uid = uid;
+        this.shopName = shopName;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.addressName = addressName;
+        this.pwayMobile = pwayMobile;
+        this.pwayCard = pwayCard;
+        this.pwayAccount = pwayAccount;
+        this.pwayCash = pwayCash;
+        this.openMon = openMon;
+        this.openTue = openTue;
+        this.openWed = openWed;
+        this.openThu = openThu;
+        this.openFri = openFri;
+        this.openSat = openSat;
+        this.openSun = openSun;
+        this.category = category;
+        this.storeImageUri = storeImageUri;
+        this.menuImageUri = menuImageUri;
+        this.verified = isVerified;
+        this.hasMeeting = hasMeeting;
+        this.rating = rating;
+        this.geohash = geohash;
+    }
+
+    public void setMyReviewModel(String shopID_reviewID, String picUrl1, String picUrl2, String picUrl3, Float myRating, String summary){
+
+        this.shopID_reviewID = shopID_reviewID;
+
+        this.picUrl1 = picUrl1;
+        this.picUrl2 = picUrl2;
+        this.picUrl3 = picUrl3;
+        this.myRating = myRating;
+        this.summary = summary;
+    }
 }
