@@ -13,8 +13,7 @@ import androidx.fragment.app.DialogFragment;
 // firebase 업로드 성공한 경우, 출력할 Dialog
 public class UploadSuccessDialogFragment extends DialogFragment {
     private String confirmPlace;        // 어느 activity인지 확인  ex.MeetingwriteActivity에서 불렸는지
-    // ▼ 다이얼로그 생성 메서드
-    Boolean checkFinish = false;        // 현재 액티비티 삭제 가능 여부
+
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {

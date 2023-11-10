@@ -129,7 +129,6 @@ public class MeetingwriteActivity extends AppCompatActivity {
             finish();   // 현재 액티비티 종료
         }
 
-
         // timePickerDialog에서 번개 시간이 선택되면 호출되는 메서드 구현
         timeCallBack = new TimePickerDialog.OnTimeSetListener() {
             @Override
@@ -147,7 +146,7 @@ public class MeetingwriteActivity extends AppCompatActivity {
         }
 
         // 등록 로딩 다이얼로그 설정
-        progressDialog.setMessage("리뷰 등록 중...");    // 로딩 메시지 설정
+        progressDialog.setMessage("번개 등록 중...");    // 로딩 메시지 설정
         progressDialog.setCancelable(false);    // 취소 불가능
         progressDialog.setCanceledOnTouchOutside(false);     // 외부 터치 불가능
 

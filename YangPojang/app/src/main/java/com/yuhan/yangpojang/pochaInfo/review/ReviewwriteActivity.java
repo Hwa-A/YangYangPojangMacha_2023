@@ -51,6 +51,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.MutableData;
 import com.google.firebase.database.Transaction;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -67,6 +68,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
 /*
    pch: pojangmacha
@@ -88,13 +90,12 @@ public class ReviewwriteActivity extends AppCompatActivity {
     private List<ImageButton> imageClearBtns = new ArrayList<>();   // 리뷰 이미지 삭제 버튼 리스트
     private List<Bitmap> imageBitmaps = new ArrayList<>();      // 선택된 사진의 비트맵 리스트
     private List<FrameLayout> imageContainers = new ArrayList<>();      // 리뷰 이미지 컨테이너 리스트
-    private List<String> uploadImagePaths = new ArrayList<>();      // storage에 업로드한 사진 경로 리스트
     private int selectedImageCount = 0;     // 선택된 이미지 개수
     private static final int MAX_IMAGE_COUNT = 3;   // 최대 선택 가능한 이미지 수
     private ProgressDialog progressDialog;      // 등록 로딩 다이얼로그
+    private Boolean uploadImageCheck = true;    // storeage에 이미지 업로드 성공 여부
 
     TextView pchNameTv;          // 포차 이름
-    ReviewDTO reviewDTO;         // 리뷰 정보
     TextInputLayout summaryTxtLay;      // 리뷰 내용 컨테이너
     TextInputEditText summaryEdt;      // 리뷰 내용
     RatingBar starRtb;            // 리뷰 별점
@@ -111,7 +112,7 @@ public class ReviewwriteActivity extends AppCompatActivity {
         starRtb = findViewById(R.id.rtb_reviewwrite_rating);        // 리뷰 별점 RatingBar
         summaryTxtLay = findViewById(R.id.txtLay_reviewwrite_summaryContainer);     // 리뷰 내용 컨테이너
         summaryEdt = findViewById(R.id.edt_reviewwrite_summary);    // 리뷰 내용 EditText
-        progressDialog = new ProgressDialog(this);      // 등록 로딩 Dialog
+        progressDialog = new ProgressDialog(ReviewwriteActivity.this);      // 등록 로딩 Dialog
 
         Button registerBtn = findViewById(R.id.btn_reviewwrite_register);  // 리뷰 등록 Button
         Button cancelBtn = findViewById(R.id.btn_reviewwrite_cancel);      // 리뷰 취소 Button
@@ -148,7 +149,7 @@ public class ReviewwriteActivity extends AppCompatActivity {
                             imagesSelection(data);     // 결과 데이터 처리할 메서드 호출
                         }
                     }
-        });
+                });
 
         // ▼ PochareviewFragment에서 전달 받은 데이터 받아 처리
         Intent intent = getIntent();
@@ -197,107 +198,34 @@ public class ReviewwriteActivity extends AppCompatActivity {
         deleteSelectedImage(imageClearBtn3, 2);
     }
 
+
     // ▼ 클릭한 경우, 리뷰 등록
     View.OnClickListener registerReview = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            progressDialog.show();      // 로딩 화면 표시
-
             // 리뷰 객체에 데이터 저장
             setReviewData();
-            if(!isValid()){
+
+            if(isValid()){
+                // 로딩 화면 표시
+                progressDialog.show();
+
+                // 회원 id, 리뷰 별점, 리뷰 내용, 리뷰 작성날짜 모두 입력된 경우
+                DatabaseReference ref = FirebaseDatabase.getInstance().getReference();  // firebase 참조 객체 생성 및 초기화
+                String reviewKey = ref.child("reviews").push().getKey();    // 리뷰 id
+                StorageReference storageRef = FirebaseStorage.getInstance().getReference()
+                        .child("review/"+pchKey+"/"+reviewKey); // storage 참조 객체 생성 및 초기화
+
+                if(selectedImageUris != null){
+                    // 선택된 이미지가 있는 경우, storage에 업로드
+                    uploadImageAndTransaction(storageRef, reviewKey, ref);
+                }else {
+                    // 선택된 이미지가 없는 경우, 트랜잭션만 실행
+                    runReviewTransaction(ref, reviewKey);
+                }
+            }else {
                 // 회원 id, 리뷰 별점, 리뷰 내용, 리뷰 작성날짜 중 하나라도 입력이 안된 경우
                 Toast.makeText(getApplicationContext(), "리뷰 내용과 별점 입력은 필수입니다", Toast.LENGTH_LONG).show();
-            }else {
-                // 회원 id, 리뷰 별점, 리뷰 내용, 리뷰 작성날짜 모두 입력된 경우
-                DatabaseReference ref = FirebaseDatabase.getInstance().getReference();      // firebase 참조 객체 생성 및 초기화
-                String reviewKey = ref.child("reviews").push().getKey();    // 리뷰 id 생성
-
-                // firebase storage 참조 객체 생성 및 초기화
-                // review > 포차 id > 리뷰 id > 사진들
-                StorageReference storeRef = FirebaseStorage.getInstance().getReference().child("review/"+pchKey+"/"+reviewKey);
-
-                // firebase에 리뷰 업로드
-                // shop 테이블에 별점 평균 업로드 중 데이터 변화 존재하는 경우, 롤백 후 최신 정보로 재시작
-                ref.child("shops/"+pchKey+"/rating").runTransaction(new Transaction.Handler() {
-                    @NonNull
-                    @Override
-                    public Transaction.Result doTransaction(@NonNull MutableData currentData) {
-                        if(currentData.getValue() == null){
-                            // 데이터가 없는 경우 초기값 설정하는 구간
-                            // shops 테이블의 rating은 처음부터 0으로 초기화 되어 있음
-                        }else {
-                            // 데이터가 있는 경우(shops 테이블에 모든 별점은 기본 0으로 데이터 존재)
-                            float currentRating = currentData.getValue(Float.class);    // 현재 포차(shops)에 저장되있는 별점
-                            Float avgRating;    // 별점 평균
-                            if(currentRating == 0){
-                                // currentRating이 0인 경우(=rating 초기값인 경우)
-                                avgRating = review.getRating();    // 현재 별점으로 별점 평균 변경
-                            }else{
-                                // currentRating이 0이 아닌 경우
-                               avgRating = getAvgRating(currentRating, review.getRating());    // 별점 평균 얻기
-                            }
-
-                            // 선택한 사진이 있는 경우, storage에 업로드
-                            if(selectedImageUris != null) {
-                                for (int i = 0; i < selectedImageUris.size(); i++) {
-                                    Uri imageUri = selectedImageUris.get(i);
-                                    storeRef.putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                                        @Override
-                                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                            // 이미지 업로드 성공한 경우, 업로드된 이미지의 storage 경로 가져오기
-                                            String uploadPath = taskSnapshot.getStorage().getPath();
-                                            uploadImagePaths.add(uploadPath);
-                                        }
-                                    }).addOnFailureListener(new OnFailureListener() {
-                                        @Override
-                                        public void onFailure(@NonNull Exception e) {
-                                            Log.e("test1", e.getMessage());
-                                        }
-                                    });
-                                    if (i == 0) {
-                                        review.setPicUrl1(uploadImagePaths.get(0));
-                                    } else if (i == 1) {
-                                        review.setPicUrl2(uploadImagePaths.get(1));
-                                    } else {
-                                        review.setPicUrl3(uploadImagePaths.get(2));
-                                    }
-                                }
-                            }
-                            // firebase에 업로드할 경로와 데이터를 저장할 Map
-                            Map<String, Object> uploadReviewMap = new HashMap<>();
-                            // review 테이블에 저장
-                            // reviews > 포차 id > 리뷰 id > 리뷰 정보
-                            uploadReviewMap.put("/reviews/"+pchKey+"/"+reviewKey, review);
-                            // myReview 테이블에 저장
-                            // myReview > 회원 id > 리뷰 id : 포차 id
-                            uploadReviewMap.put("/myReview/"+review.getUid()+"/"+reviewKey, pchKey);
-                            // shops 테이블의 해당 포차의 별점 수정
-                            // shops > 포차 id > rating
-                            Log.e("test1", String.valueOf(avgRating));
-                            uploadReviewMap.put("shops/"+pchKey+"/rating", avgRating);
-
-                            // firebase에 업로드
-                            ref.updateChildren(uploadReviewMap);
-                        }
-                        return Transaction.success(currentData);    // 트랜잭션 성공 알림(사전에 별도로 데이터 저장 필수)
-                        // +) Transaction.abort(): 트랜잭션 실패 알림 / 트랜잭션 중단 + 변경 사항 commit X
-                    }
-
-                    @Override
-                    public void onComplete(@Nullable DatabaseError error, boolean committed, @Nullable DataSnapshot currentData) {
-                        // 트랜잭션 완료 후 실행되는 콜백 메서드
-                        if (committed) {
-                            // 트랜잭션이 성공적으로 완료한 경우
-                            progressDialog.dismiss();       // 로딩 화면 숨기기
-                            showUploadSuccessDialog();      // 성공 다이얼로그 출력
-                        } else {
-                            // 트랜잭션이 충돌하거나 실패한 경우
-                            progressDialog.dismiss();       // 로딩 화면 숨기기
-                            showUploadFailDialog();     // 실패 다이얼로그 출력
-                        }
-                    }
-                });
             }
         }
     };
@@ -310,8 +238,164 @@ public class ReviewwriteActivity extends AppCompatActivity {
         }
     };
 
+    // ▼ 이미지 업로드
+    private void uploadImageAndTransaction(StorageReference storageRef, String reviewKey, DatabaseReference ref){
+        List<String> uploadImagePaths = new ArrayList<>();      // storage에 업로드한 이미지 경로 리스트
+
+        try {
+            for (int index=0; index < selectedImageUris.size(); index++){
+                Uri imageUri = selectedImageUris.get(index);    // 해당 인덱스의 이미지 uri
+                String imageName = "pic" + (index+1);    // 이미지 이름
+
+                // storage에 이미지 업로드
+                // review > 포차 id > 리뷰 id > pic + 숫자(차례로 1,2,3) 형식으로 저장
+                storageRef.child(imageName).putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        // 업로드 성공한 경우
+                        // 업로드 된 이미지의 storage 경로 가져오기
+                        Log.e("test1", "업로드 성공");
+                        String uploadPath = taskSnapshot.getStorage().getPath();
+                        uploadImagePaths.add(uploadPath);
+
+                        if (selectedImageUris.size() == uploadImagePaths.size()){
+                            // 선택된 이미지 개수와 업로드 성공한 이미지 개수가 동일한 경우
+                            // 즉, 선택된 이미지가 모두 성공적으로 업로드 된 경우
+                            // review 객체에 저장된 이미지 경로 저장
+                            setReviewImageUrl(uploadImagePaths, ref, reviewKey);
+                        }
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        // 업로드 실패한 경우
+                        Log.e("test1", "에러 메시지: "+e.getMessage());
+                        // 트랜잭션이 충돌하거나 실패한 경우
+                        progressDialog.dismiss();       // 로딩 화면 숨기기
+                        showUploadFailDialog();     // 실패 다이얼로그 출력
+                    }
+                });
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+    }
+
+    // ▼ 이미지 경로를 review 객체에 저장
+    private void setReviewImageUrl(List<String> uploadImagePaths,DatabaseReference ref, String reviewKey){
+        for(int i=0; i < uploadImagePaths.size(); i++){
+            String imagePath = uploadImagePaths.get(i);    // 해당 인덱스의 경로 가져오기
+            char finalCharPath = imagePath.charAt(imagePath.length() - 1);     // 경로의 마지막 문자 가져오기
+
+            if(finalCharPath == '1'){
+                review.setPicUrl1(imagePath);
+                Log.e("test1", "이미지1: "+review.getPicUrl1());
+            }else if(finalCharPath == '2'){
+                review.setPicUrl2(imagePath);
+                Log.e("test1", "이미지2: "+review.getPicUrl2());
+            }else {
+                review.setPicUrl3(uploadImagePaths.get(i));
+                Log.e("test1", "이미지3: "+review.getPicUrl3());
+            }
+        }
+        Log.e("test1", "객체에 이미지 경로 저장 성공");
+        runReviewTransaction(ref, reviewKey);   // 트랜잭션 실행
+    }
+
+    // ▼ realtime database에 데이터 저장하는 트랜잭션
+    private void runReviewTransaction(DatabaseReference ref, String reviewKey){
+        ref.child("shops/" + pchKey + "/rating").runTransaction(new Transaction.Handler() {
+            @NonNull
+            @Override
+            public Transaction.Result doTransaction(@NonNull MutableData currentData) {
+
+                if (currentData.getValue() == null) {
+                    // 데이터가 없는 경우 초기값 설정하는 구간
+                    // shops 테이블의 rating은 처음부터 0으로 초기화 되어 있음
+                } else {
+                    //  AtomicReference : 특정 객체에 대한 참조를 원자적으로 처리하도록 지원
+                    //                  : 주로 여러 스레드가 공유하는 변수에 안전하게 값을 업데이트하거나 읽을 때 사용
+                    AtomicReference<Float> avgRatingRef = new AtomicReference<>();    // 별점 평균
+
+                    // 현재 포차의 리뷰들의 별점 읽어와 평균 구하기
+                    ref.child("reviews/"+pchKey).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            if(snapshot.exists()){
+                                // 데이터가 존재하는 경우
+                                float ratingTotal = 0;      // 별점 총합
+                                long reviewCnt = snapshot.getChildrenCount();   // 리뷰 총 갯수
+
+                                for(DataSnapshot reviewSnapshot : snapshot.getChildren()){
+                                    ReviewDTO rev = reviewSnapshot.getValue(ReviewDTO.class);
+
+                                    if(rev != null){
+                                        // 별점을 읽어 총합 구하기
+                                        float addRating = rev.getRating();  // 별점 읽어오기
+                                        ratingTotal += addRating;   // 총합에 현재 별점 더하기
+                                    }
+                                }
+                                // 평균 구하기(현재 작성 중인 리뷰도 포함)
+                                ratingTotal = ratingTotal + review.getRating();  // 총합
+                                reviewCnt = reviewCnt + 1;      // 리뷰 갯수
+                                float avgRating = getAvgRating(ratingTotal, reviewCnt);   // 평균 구하기
+                                avgRatingRef.set(avgRating);
+                                Log.e("test1", "평균: "+avgRating);
+                            }else {
+                                // 현재 firebase에 등록된 리뷰가 존재하지 않는 경우
+                                float avgRating = review.getRating();    // 현재 별점으로 별점 평균 변경
+                                avgRatingRef.set(avgRating);
+                            }
+                            Float finalAvgRating = avgRatingRef.get();  // avgRatingRef에 저장된 값 가져오기
+
+                            // firebase에 업로드할 경로와 데이터를 저장할 Map
+                            Map<String, Object> uploadReviewMap = new HashMap<>();
+
+                            // review 테이블에 저장
+                            // reviews > 포차 id > 리뷰 id > 리뷰 정보
+                            uploadReviewMap.put("/reviews/" + pchKey + "/" + reviewKey, review);
+
+                            // myReview 테이블에 저장
+                            // myReview > 회원 id > 리뷰 id : 포차 id
+                            uploadReviewMap.put("/myReview/" + review.getUid() + "/" + reviewKey, pchKey);
+
+                            // shops 테이블의 해당 포차의 별점 수정
+                            // shops > 포차 id > rating
+                            uploadReviewMap.put("shops/" + pchKey + "/rating", finalAvgRating);
+                            Log.e("test1", "별점: "+finalAvgRating);
+
+                            // firebase에 업로드
+                            ref.updateChildren(uploadReviewMap);
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+                            // 읽기 취소될 때
+                            Log.e("test1", error.getMessage());
+                        }
+                    });
+                }
+                return Transaction.success(currentData);    // 트랜잭션 성공 알림(사전에 별도로 데이터 저장 필수)
+            }
+
+            @Override
+            public void onComplete(@Nullable DatabaseError error, boolean committed, @Nullable DataSnapshot currentData) {
+                if (committed) {
+                    // 트랜잭션이 성공적으로 완료한 경우
+                    progressDialog.dismiss();       // 로딩 화면 숨기기
+                    showUploadSuccessDialog();      // 성공 다이얼로그 출력
+                } else {
+                    // 트랜잭션이 충돌하거나 실패한 경우
+                    progressDialog.dismiss();       // 로딩 화면 숨기기
+                    showUploadFailDialog();     // 실패 다이얼로그 출력
+                }
+            }
+        });
+    }
+
     // ▼ 리뷰 업로드 성공한 경우, 성공 다이얼로그 출력
-    private void showUploadSuccessDialog(){
+    private void showUploadSuccessDialog() {
         FragmentManager frgManager = getSupportFragmentManager();
         UploadSuccessDialogFragment successDialog = new UploadSuccessDialogFragment(); // 업로드 확인 다이어로그 생성 및 초기화
         successDialog.setDialogCallPlace("리뷰");   // 리뷰에서 다이얼로그를 호출함을 전달
@@ -319,16 +403,18 @@ public class ReviewwriteActivity extends AppCompatActivity {
     }
 
     // ▼ 리뷰 업로드 실패한 경우, 실패 다이어로그 출력
-    private void showUploadFailDialog(){
+    private void showUploadFailDialog() {
         FragmentManager frgManager = getSupportFragmentManager();
         UploadFailDialogFragment failDialog = new UploadFailDialogFragment(); // 업로드 확인 다이어로그 생성 및 초기화
         failDialog.setDialogCallPlace("리뷰");   // 리뷰에서 다이얼로그를 호출함을 전달
         failDialog.show(frgManager, "upload_fail_review");
     }
 
+
+
     // ▼ 별점 평균 구하기
-    private Float getAvgRating(Float currentNum, Float addNum){
-        Float result = (currentNum + addNum) / 2;
+    private Float getAvgRating(Float totalNum, long reviewCnt){
+        Float result = totalNum / reviewCnt;    // 평균 계산(총합 / 리뷰 갯수)
         DecimalFormat decimalFormat = new DecimalFormat("#.#");     // 소수점 한 자릿수까지만 나오도록 형식 지정
         String strResult = decimalFormat.format(result);   // 소수점 첫번째 자리 까지 변환(String형)
         result = Float.parseFloat(strResult);     // float 형으로 변환
@@ -339,7 +425,7 @@ public class ReviewwriteActivity extends AppCompatActivity {
     // ▼ 리뷰 객체에 필수 데이터 저장
     private void setReviewData(){
         review.setRating(starRtb.getRating());      // 리뷰 별점
-        review.setSummary(summaryEdt.getText().toString());     // 리뷰 내용
+        review.setSummary(summaryEdt.getText().toString().trim());    // 리뷰 내용 (문자열 양 끝단의 공백 제거된)
         review.setYearDate(getCurrentDate().get("yearDate"));   // 리뷰 등록 날짜(년도O)
         review.setRegisterTime(getCurrentDate().get("registerTime"));   // 리뷰 등록 시간
     }
