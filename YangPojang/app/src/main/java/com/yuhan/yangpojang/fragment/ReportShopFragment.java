@@ -108,7 +108,7 @@ public class ReportShopFragment extends Fragment implements ShopDataListener
     private float rating; // 별점
     private String geohash; // 지오해쉬
     private Shop shop;
-
+    private  HomeFragment homeFragment;
     private DatabaseReference databaseReference ;
     private String shopKey;
     private DatabaseReference shopReference ;
@@ -150,6 +150,28 @@ public class ReportShopFragment extends Fragment implements ShopDataListener
         shopKey = databaseReference.child("shops").push().getKey();
 
         shopReference = databaseReference.child("shops").child(shopKey);
+
+        // 뒤로가기 버튼
+        OnBackPressedCallback backPressedCallback = new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                FragmentManager fragmentManager = getParentFragmentManager();
+                if(isAdded()){
+                    FragmentTransaction transaction = fragmentManager.beginTransaction();   // 플래그먼트 전환을 위한 트랜잭션 시작
+                    HomeFragment homeFragment = new HomeFragment();     // HomeFragment의 인스턴스를 생성
+                    transaction.replace(R.id.fragmentReportshopLayout,homeFragment);    // 기존 플래그먼로 교체
+                    transaction.commit();  // 트랜잭션 커밋
+
+                    bottomNavigationView = requireActivity().findViewById(R.id.bottomNavigationView); // BottomNavigationView의 ID로 변경 필요
+                    bottomNavigationView.setSelectedItemId(R.id.navigation_map); // HomeFragment에 해당하는 MenuItem ID로 변경 필요
+                }
+                }
+
+
+        };
+        // OnBackPressedCallback 호출
+        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), backPressedCallback);
+
 
 
         //hash= GeoFireUtils.getGeoHashForLocation(new GeoLocation(latitude,longitude));  // 나은 언니 hash 넣을 때 사용
@@ -316,7 +338,6 @@ public class ReportShopFragment extends Fragment implements ShopDataListener
             @Override
             public void onClick(View v)
             {
-
 
                 saveShopData();
 
@@ -507,7 +528,6 @@ public class ReportShopFragment extends Fragment implements ShopDataListener
         }
         else // 제보에 필요한 정보를 모두 입력했을시
         {
-            Log.d("nigga",menuImagePath);
              shop = new Shop(uid,shopName, latitude,longitude,addressName,isPwayMobile, isPwayCard, isPwayAccount, isPwayCash,
                     isOpenMon, isOpenTue, isOpenWed, isOpenThu, isOpenFri, isOpenSat, isOpenSun,selectedCategory,
                     isVerified,  hasMeeting, rating ,geohash,
@@ -516,8 +536,8 @@ public class ReportShopFragment extends Fragment implements ShopDataListener
              );
             shop.setMenuImagePath(menuImagePath);
             shop.setExteriorImagePath(exteriorImagePath);
-            Log.d("dskfjask",shop.getMenuImagePath());
-            Log.d("dskfjask",shop.getExteriorImagePath());
+//            Logd("dskfjask",shop.getMenuImagePath());
+//            Log.d("dskfjask",shop.getExteriorImagePath());
 
             Log.d("storeExteriroImageUri래요", String.valueOf(storeExteriorImageUri));
             ReportShop reportShop= new ReportShop(uid);
@@ -540,11 +560,12 @@ public class ReportShopFragment extends Fragment implements ShopDataListener
 
         Log.d("Fd45","A"+shop.getFbStoreImgurl());
         Toast.makeText(getActivity(), "가게가 정상적으로 등록되었습니다! ", Toast.LENGTH_SHORT).show();
+
         reportBtn.setClickable(false); // 제보 여러번 연타 못하게 버튼 클릭 비활성화
         clearForm();  // 저장이 되는경우 기존에 작성된 폼 지움
 
         //dkdk
-        HomeFragment homeFragment= new HomeFragment();
+        homeFragment= new HomeFragment();
         replaceFragment(homeFragment);
 
     }

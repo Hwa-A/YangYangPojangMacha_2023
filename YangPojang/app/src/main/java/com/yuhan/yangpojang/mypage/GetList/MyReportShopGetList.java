@@ -78,14 +78,17 @@ public class MyReportShopGetList {
                                 String storeImageUri =  shopSnapshot.child("storeImageUri").getValue(String.class);
                                 String uid =  shopSnapshot.child("uid").getValue(String.class);
                                 boolean isVerified=  shopSnapshot.child("verified").getValue(boolean.class);
+                                String primaryKey = shopKey.toString();
 
+                                Log.d("ffffffffffㄲ;여","a"+primaryKey);
+                                Log.d("ffffffffffㄲ;여","a"+primaryKey);
 
                                 // MyLikeShopModel 객체 생성 및 값 설정
                                 MyReportShopModel shop = new MyReportShopModel(uid, shopName, latitude, longitude ,  addressName, pwayMobile,  pwayCard,
                                         pwayAccount,  pwayCash,  openMon,  openTue,
                                         openWed,  openThu,  openFri,  openSat,
                                         openSun,  category ,  storeImageUri,  menuImageUri,
-                                        isVerified,  hasMeeting,  rating,  geohash);
+                                        isVerified,  hasMeeting,  rating,  geohash, exteriorImagePath, primaryKey);
 
                                 shopDatas.add(shop); // 가져온 가게 정보를 likeShops 리스트에 추가
                                 Log.d("테스트report", "Category: " + category);
@@ -94,7 +97,7 @@ public class MyReportShopGetList {
 
 
                                 //if(bflist.size() == shopDatas.size()){
-                                    callback.onDataLoaded(shopDatas);
+                                callback.onDataLoaded(shopDatas);
                                 //}
                                 Log.d("테스트report", "shop size-----: " + shopDatas.size());
                             }
@@ -134,4 +137,3 @@ public class MyReportShopGetList {
     }
 
 }
-

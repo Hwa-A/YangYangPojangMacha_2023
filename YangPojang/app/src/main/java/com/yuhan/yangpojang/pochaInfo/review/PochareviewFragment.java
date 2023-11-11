@@ -86,7 +86,7 @@ public class PochareviewFragment extends Fragment {
                 for(DataSnapshot dataSnapshot: snapshot.getChildren()){
                     ReviewDTO reviewDTO = dataSnapshot.getValue(ReviewDTO.class);
                     reviewDTOArrayList.add(reviewDTO);
-                  //  Toast.makeText(getActivity(), reviewDTO.getContent(), Toast.LENGTH_SHORT).show();
+                    //  Toast.makeText(getActivity(), reviewDTO.getContent(), Toast.LENGTH_SHORT).show();
                 }
                 /*
                 recyclerView = (RecyclerView)view.findViewById(R.id.recyv_pochareview_reviewList);
@@ -159,23 +159,7 @@ public class PochareviewFragment extends Fragment {
 
         return view;
     }
-/*
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-        // dataInitialize();
-        Toast.makeText(getActivity(), uid, Toast.LENGTH_SHORT).show();
 
 
-        recyclerView = (RecyclerView)view.findViewById(R.id.recyv_pochareview_reviewList);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerView.setHasFixedSize(true);
-        ReviewAdapter reviewAdapter = new ReviewAdapter(getContext(), reviewDTOArrayList);
-        recyclerView.setAdapter(reviewAdapter);
-        // reviewAdapter.notifyDataSetChanged();
 
-    }
-
- */
 }

@@ -3,6 +3,7 @@ package com.yuhan.yangpojang.pochaInfo.info;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -18,12 +19,14 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.LongDef;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -31,6 +34,10 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.FutureTarget;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -38,18 +45,23 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.yuhan.yangpojang.FirebaseUtils;
 import com.yuhan.yangpojang.R;
+import com.yuhan.yangpojang.fragment.HomeFragment;
 import com.yuhan.yangpojang.model.Shop;
 import com.yuhan.yangpojang.pochaInfo.interfaces.OnFragmentReloadListener;
 import com.yuhan.yangpojang.pochaInfo.meeting.PochameetingFragment;
 import com.yuhan.yangpojang.pochaInfo.review.PochareviewFragment;
 
+import java.io.ByteArrayOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
+
 import android.Manifest;
 // pch: pojangmacha
 // frg: fragment
@@ -58,13 +70,14 @@ public class PochainfoUpdate extends AppCompatActivity {
 
     private Shop shop ; // 가게 정보를 담을 Shop 객체
     // Firebase 데이터베이스를 초기화합니다
+    private PochainfoActivity pochainfoActivity;   // pochainfoActivity 내에 메서드 사용을 위해 선언
+    Spinner categorySpinner;    // 정보수정 - 카테고리 수정
+    String selectedCategory ;  // 선택된 카테고리를 담은 변수
 
-    Spinner categorySpinner;
-    CheckBox pwayCash, pwayCard, pwayMobile, pwayAccount;
-    CheckBox mon, tue, wed, thu, fri, sat, sun;
-    ImageView storeExteriorPhoto, menuBoardPhoto;
-    Button reportBtn; // 정보 수정 버튼
-    String selectedCategory ;
+    CheckBox pwayCash, pwayCard, pwayMobile, pwayAccount;  // 정보수정 - 결제수단
+    CheckBox mon, tue, wed, thu, fri, sat, sun;  // 정보수정 - 요일 수정
+    ImageView storeExteriorPhoto, menuBoardPhoto;   // 정보수정 - 외관사진, 메뉴판 사진 수정
+    Button reportBtn; // 정보 수정 버튼 ( 제출버튼)
 
     private FirebaseDatabase database ;
     private DatabaseReference shopsRef ;
@@ -75,15 +88,18 @@ public class PochainfoUpdate extends AppCompatActivity {
     private TextView storePhotoTextView; // 가게 사진 선택하기 글씨
     private TextView menuPhotoTextView; // 메뉴사진 선택하기 글씨
     private String shopkey;
-    private int requestCode;
-    // 기존 이미지의 Firebase Storage 경로
-    String storeExteriorPhotoPath = "stores/storeExteriorPhoto.jpg";
-    String menuBoardPhotoPath = "stores/menuBoardPhoto.jpg";
+    private int requestCode;   // 어떤 사진을 선택중인지 판별위한 code
+    private  String exteriorImageUrl;
+
+//    // 기존 이미지의 Firebase Storage 경로
+//    String storeExteriorPhotoPath = "stores/storeExteriorPhoto.jpg";
+//    String menuBoardPhotoPath = "stores/menuBoardPhoto.jpg";
 
     ActivityResultLauncher<Intent> galleryLauncher; // 갤러리 오픈을 위한 intent launcher
 
+    private BottomNavigationView bottomNavigationView;
     private static final int PICK_EXTERIOR_IMAGE_REQUEST = 1;    // 가게-외관이미지 선택
-    private static final int PICK_MENU_IMAGE_REQUEST = 2;
+    private static final int PICK_MENU_IMAGE_REQUEST = 2; // 가게- 메뉴판 이미지 선택
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,6 +119,7 @@ public class PochainfoUpdate extends AppCompatActivity {
         menuPhotoTextView= findViewById(R.id.menuBoardText);  //
         storeExteriorPhoto = findViewById(R.id.storeExteriorPhoto);
         menuBoardPhoto = findViewById(R.id.menuBoardPhoto);
+
 
         storeExteriorPhoto.setOnClickListener(new View.OnClickListener() // 가게 외관 사진 등록하기 누르면  갤러리 오픈
         {
@@ -130,7 +147,6 @@ public class PochainfoUpdate extends AppCompatActivity {
         /*순서
          *  1. openGallery 호출로 갤러리가 열리고 사용자가 이미지를 선택한다
          *  2. 이미지 선택을 결과에 대한 코드가 다음줄부터 진행된다*/
-
         galleryLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 new ActivityResultCallback<ActivityResult>()
@@ -198,104 +214,67 @@ public class PochainfoUpdate extends AppCompatActivity {
             }
             @Override
             public void onNothingSelected(AdapterView<?> parentView)
-            {
-                // 카테고리 - 아무것도 선택되지 않았을 때
-                selectedCategory = "...";
+            { 
+                selectedCategory = "...";     // 카테고리 - 아무것도 선택되지 않았을 때 "..." 으로 표시
+
             }
         });
-        Log.d("spinner 선택","a"+selectedCategory);
         // Set an onClickListener for the report buttonre
         reportBtn.setOnClickListener(view -> {
             // Get the updated data from the UI components
             ArrayList<String> selectedDays = new ArrayList<>();
             String paymentMethods = "";
 
-            if (!pwayCash.isChecked() && !pwayCard.isChecked() && !pwayMobile.isChecked() && !pwayAccount.isChecked()) {
-                Toast.makeText(PochainfoUpdate.this, "Please select at least one payment method", Toast.LENGTH_SHORT).show();
-                return; // Prevent further execution if none of the checkboxes is checked
+            if (!pwayCash.isChecked() && !pwayCard.isChecked() && !pwayMobile.isChecked() && !pwayAccount.isChecked())
+            {
+                Toast.makeText(PochainfoUpdate.this, "결제수단을 하나이상 선택해 주세요", Toast.LENGTH_SHORT).show();
+                return; 
             }
             else
             {
-                if (pwayCash.isChecked()) {
-                    paymentMethods += "현금, ";
-                }
-                if (pwayCard.isChecked()) {
-                    paymentMethods += "카드, ";
-                }
-                if (pwayMobile.isChecked()) {
-                    paymentMethods += "모바일, ";
-                }
-                if (pwayAccount.isChecked()) {
-                    paymentMethods += "계좌이체, ";
-                }
-                // Remove the last comma and space if present
-                if (!paymentMethods.isEmpty()|| paymentMethods!=null) {
+                if (pwayCash.isChecked()) { paymentMethods += "현금, "; }
+                if (pwayCard.isChecked()) {  paymentMethods += "카드, "; }
+                if (pwayMobile.isChecked()){ paymentMethods += "모바일, "; }
+                if (pwayAccount.isChecked()) { paymentMethods += "계좌이체, "; }
+                // 마지막에 설정된 ,(컴마를 지운다)
+                if (!paymentMethods.isEmpty()|| paymentMethods!=null)
+                {
                     paymentMethods = paymentMethods.substring(0, paymentMethods.length() - 2);
                 }
-
             }
 
-
-            if (!mon.isChecked() && !tue.isChecked() && !wed.isChecked() && !thu.isChecked() && !fri.isChecked() && !sat.isChecked() && !sun.isChecked()) {
-                Toast.makeText(PochainfoUpdate.this, "Please select at least one 요일 method", Toast.LENGTH_SHORT).show();
-                return; // Prevent further execution if none of the checkboxes is checked
+            if (!mon.isChecked() && !tue.isChecked() && !wed.isChecked() && !thu.isChecked() && !fri.isChecked() && !sat.isChecked() && !sun.isChecked())
+            {
+                Toast.makeText(PochainfoUpdate.this, "요일을 하나이상 선택해 주세요", Toast.LENGTH_SHORT).show();
+                return;
             }
             else
             {
-                if (mon.isChecked()) {
-                    selectedDays.add("월");
-                }
-                if (tue.isChecked()) {
-                    selectedDays.add("화");
-                }
-                if (wed.isChecked()) {
-                    selectedDays.add("수");
-                }
-                if (thu.isChecked()) {
-                    selectedDays.add("목");
-                }
-                if (fri.isChecked()) {
-                    selectedDays.add("금");
-                }
-                if (sat.isChecked()) {
-                    selectedDays.add("토");
-                }
-                if (sun.isChecked()) {
-                    selectedDays.add("일");
-                }
-
+                if (mon.isChecked()) { selectedDays.add("월"); }
+                if (tue.isChecked()) { selectedDays.add("화"); }
+                if (wed.isChecked()) { selectedDays.add("수"); }
+                if (thu.isChecked()) { selectedDays.add("목"); }
+                if (fri.isChecked()) { selectedDays.add("금"); }
+                if (sat.isChecked()) { selectedDays.add("토"); }
+                if (sun.isChecked()) { selectedDays.add("일"); }
             }
-
-
-            Log.d("selefdskf",selectedCategory+selectedDays+paymentMethods);
-            // Update the Firebase database with the new data
+            // 파이어 베이스에 새 데이터 삽입
             updateInformation(selectedCategory, paymentMethods, selectedDays);
-
-            // Optionally, you can add additional logic to handle image uploads for storeExteriorPhoto and menuBoardPhoto
-            // storeExteriorPhoto and menuBoardPhoto are ImageViews where users can select images from their device
-            Log.d("Updates", "Category: " + selectedCategory + ", Payment Methods: " + paymentMethods + ", Selected Days: " + selectedDays);
-            // Once the update is done, you might want to close this activity or show a success message to the user
-            // finish();
-            // Toast.makeText(PochainfoUpdate.this, "Information Updated Successfully", Toast.LENGTH_SHORT).show();
         });
     }
 
-    // 핸드폰 갤러리 여는 역할
-    private void openGallery() {
+    private void openGallery() {    // 핸드폰 갤러리 여는 역할
+
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         galleryLauncher.launch(intent); // onCreateView안에 작성된 galleryLauncher~~ 부분으로 이동
-
     }
 
     private void openGallery(ImageView imageView, String tag) {
         ActivityResultLauncher<String> galleryLauncher = registerForActivityResult(new ActivityResultContracts.GetContent(),
                 result -> {
                     if (result != null) {
-                        Log.d("doja", String.valueOf(result));
                         if (imageView.getTag() != null && imageView.getTag().equals(tag)) {
                             imageView.setImageURI(result);
-                            Log.d("doja", String.valueOf(imageView));
-                            // TODO: Firebase Storage upload for the image
                         }
                     }
                 });
@@ -303,22 +282,17 @@ public class PochainfoUpdate extends AppCompatActivity {
         galleryLauncher.launch("image/*");
     }
 
-    // Function to update the information in the Firebase Database
     private void updateInformation(String selectedCategory, String paymentMethods, List<String> selectedDays) {
         StorageReference storageRef = FirebaseStorage.getInstance().getReference();
-        // Store Exterior Image
-
 
       Intent intent = getIntent();
         if(intent!=null)
         {
             Toast.makeText(PochainfoUpdate.this, " [[화면을 이동 하지 말아주세요]] - 정보 업데이트 중 ", Toast.LENGTH_SHORT).show();
             shopkey = intent.getStringExtra("shopKey"); // PochadetailFragment에서 정보수정 버튼으로 받아온 shopkey 를 변수에 넣음
-            shop=(Shop)intent.getSerializableExtra("shop");
-
-            Log.d("fffffffff1212","f"+shop);
-            Log.d("fffffffff1212","f"+shopkey);
-
+            shop=(Shop)intent.getSerializableExtra("shopInfo");
+            String aa = shop.getShopKey();
+            String bb = shop.getPrimaryKey();
 
             if(shopkey!=null)
             {
@@ -327,39 +301,93 @@ public class PochainfoUpdate extends AppCompatActivity {
             }
 
         }
-
         if (storeExteriorImageUri != null) {
             StorageReference exteriorRef = storageRef.child("shops/" + shopkey + "/images/exterior.jpg");
-            exteriorRef.putFile(storeExteriorImageUri)
-                    .addOnSuccessListener(taskSnapshot -> {
 
-                        Log.d("aFirebase", "store Image URL updated successfully");
+            // Create a FutureTarget to get the Bitmap from Glide
+            FutureTarget<Bitmap> futureTarget = Glide.with(PochainfoUpdate.this)
+                    .asBitmap()
+                    .load(storeExteriorImageUri)
+                    .submit(500, 500); // max width & height
 
-                    })
-                    .addOnFailureListener(e -> {
-                        Log.e("Firebase", "Error uploading Exterior Image", e);
+            // Use a separate thread to execute Glide request synchronously
+            new Thread(() -> {
+                try {
+                    // Get the Bitmap from the FutureTarget
+                    Bitmap bitmap = futureTarget.get();
+
+                    // Compress the Bitmap and upload to Firebase Storage
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 80, baos);
+                    byte[] data = baos.toByteArray();
+                    UploadTask uploadTask = exteriorRef.putBytes(data);
+
+                    // Handle the upload success and failure
+                    uploadTask.addOnSuccessListener(taskSnapshot -> {
+
+                        Log.d("fffhappy","aa"+exteriorRef);
+                        exteriorRef.getDownloadUrl().addOnSuccessListener(uri -> {   // uri is the download URL for the exterior image
+                             exteriorImageUrl = uri.toString();
+                             Log.d("ffff받아진값",exteriorImageUrl);
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    pochainfoActivity = new PochainfoActivity();
+                                    if(pochainfoActivity!=null)
+                                    {
+                                        String a= "f";
+                                        pochainfoActivity.loadAndDisplayImage(exteriorImageUrl);
+                                    }
+                                }
+                            });
+
+                            // Now you can use 'exteriorImageUrl' as needed
+                        }).addOnFailureListener(e -> {
+                            // Handle failures to get the download URL
+                            Log.d("PochaInfoUpdate- Firebase", "외관 이미지 url 얻어오기에서 에러 발생", e);
+                        });
+
+                    }).addOnFailureListener(e -> {
+                        Log.e("PochaInfoUpdate- Firebase", "외관 이미지 url 업로딩 과정에서 에러 발생", e);
                     });
+                } catch (InterruptedException | ExecutionException e) {
+                    e.printStackTrace();
+                }
+            }).start();
         }
 
         if (menuBoardImageUri != null) {
 
-            // Upload Menu Image to Firebase Storage
+            // 메뉴판 이미지 파이어베이스에 넣기
             StorageReference menuRef = storageRef.child("shops/" + shopkey + "/images/menu.jpg");
-            menuRef.putFile(menuBoardImageUri)
-                    .addOnSuccessListener(taskSnapshot -> {
-                        Log.d("aFirebase", "Menu Image URL updated successfully");
-                        // After a successful upload, get the download URL and update the Firebase Database
+            FutureTarget<Bitmap> futureTarget = Glide.with(PochainfoUpdate.this)
+                    .asBitmap()
+                    .load(storeExteriorImageUri)
+                    .submit(500, 500); // max width & height
 
+            new Thread(() -> {
+                try {
+                    // Get the Bitmap from the FutureTarget
+                    Bitmap bitmap = futureTarget.get();
+                    // Compress the Bitmap and upload to Firebase Storage
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 80, baos);
+                    byte[] data = baos.toByteArray();
+                    UploadTask uploadTask = menuRef.putBytes(data);
 
-                                })
-
-                    .addOnFailureListener(e -> {
-                        Log.e("eFirebase", "Error uploading Menu Image", e);
+                    // Handle the upload success and failure
+                    uploadTask.addOnSuccessListener(taskSnapshot -> {
+                        Log.d("ㄹㄹㄹPochaInfoUpdate- Firebase", "메뉴이미지 정상 등록됌");
+                    }).addOnFailureListener(e -> {
+                        Log.e("PochaInfoUpdate- Firebase", "메뉴 업로딩 과정중 오류", e);
                     });
+                } catch (InterruptedException | ExecutionException e) {
+                    e.printStackTrace();
+                }
+            }).start();
         }
 
-
-        // 업데이트할 데이터를 Map으로 만듭니다.
+        // 업데이트할 데이터를 Map으로 제작
         Map<String, Object> updates = new HashMap<>();
         updates.put("category", selectedCategory); // 수정한 카테고리
 
@@ -376,19 +404,27 @@ public class PochainfoUpdate extends AppCompatActivity {
         updates.put("openFri", selectedDays.contains("금"));
         updates.put("openSat", selectedDays.contains("토"));
         updates.put("openSun", selectedDays.contains("일"));
-        Log.d("fjkdsjfklsdjfkls", updates.toString());
         // > shops/shopKey (자식) 경로에 업데이트할 데이터를 전송
-        detailShopRef.updateChildren(updates)
-                .addOnSuccessListener(aVoid -> {
-                    Log.d("Firebase", "Data updated successfully");
+        if (detailShopRef != null) 
+        {
+            detailShopRef.updateChildren(updates)
+                    .addOnSuccessListener(aVoid -> {
+                        Log.d("PochaInfoUpdate-Firebase", "데이터 업데이트 성공");
 
-                    Intent intent2 = new Intent(PochainfoUpdate.this, PochainfoActivity.class); // Replace NewActivity.class with the intended activity to start
-                    intent2.putExtra("shopInfo", shop);
-                    startActivity(intent2);
-                })
-                .addOnFailureListener(e -> {
-                    Log.e("Firebase", "Error updating data", e);
-                });
+                        Intent intent2 = new Intent(PochainfoUpdate.this, PochainfoActivity.class); // Replace NewActivity.class with the intended activity to start
+                        intent2.putExtra("shopInfo", shop);
+                        startActivity(intent2);
+                    })
+                    .addOnFailureListener(e -> {
+                        Log.e("PochaInfoUpdate-Firebase", "데이터 업데이트 실패", e);
+                    });
+
+        } else {
+            Toast.makeText(PochainfoUpdate.this, "결제수단을 하나이상 선택해 주세요", Toast.LENGTH_SHORT).show();
+
+            Log.e("PochaInfoUpdate- firebase","detailShopRef를 찾을수 없습니다");
+        }
+
     }
 }
 

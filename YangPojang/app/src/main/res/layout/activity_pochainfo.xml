@@ -11,6 +11,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".pochaInfo.info.PochainfoActivity"
+    android:id="@+id/fragment_container"
+
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true">
@@ -62,10 +64,9 @@
 
             <ImageView
                 android:id="@+id/img_pochainfo_pochaImage"
-                android:layout_width="312dp"
-                android:layout_height="131dp"
+                android:layout_width="318dp"
+                android:layout_height="157dp"
                 android:layout_marginTop="10dp"
-                android:background="@color/black"
                 android:scaleType="fitCenter"
                 app:layout_constraintDimensionRatio="H, 2:1"
                 app:layout_constraintEnd_toEndOf="parent"

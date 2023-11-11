@@ -28,7 +28,7 @@ public class MyLikeShopGetList {
         Log.d("테스트like", "MyLikeShopGetList: 진입");
     }
 
-    public void GetMyLikeShopList(String UID, final dataLoadedCallback callback)
+    public void getMyLikeShopList(String UID, final dataLoadedCallback callback)
     {
         this.UID = UID;     //UID 연결
         bflist.clear();
@@ -81,14 +81,17 @@ public class MyLikeShopGetList {
                                 String storeImageUri =  shopSnapshot.child("storeImageUri").getValue(String.class);
                                 String uid =  shopSnapshot.child("uid").getValue(String.class);
                                 boolean isVerified=  shopSnapshot.child("verified").getValue(boolean.class);
+                                String primaryKey = shopKey.toString();
 
+
+                                Log.d("ffffffffefffㄲ;여","a"+primaryKey);
 
                                 // MyLikeShopModel 객체 생성 및 값 설정
                                 MyLikeShopModel shop = new MyLikeShopModel(uid, shopName, latitude, longitude ,  addressName, pwayMobile,  pwayCard,
                                         pwayAccount,  pwayCash,  openMon,  openTue,
                                         openWed,  openThu,  openFri,  openSat,
                                         openSun,  category ,  storeImageUri,  menuImageUri,
-                                        isVerified,  hasMeeting,  rating,  geohash);
+                                        isVerified,  hasMeeting,  rating,  geohash, exteriorImagePath, primaryKey);
 
 
                                 shopDatas.add(shop); // 가져온 가게 정보를 likeShops 리스트에 추가
@@ -100,7 +103,7 @@ public class MyLikeShopGetList {
 
 
                                 //if(bflist.size() == shopDatas.size()){
-                                    callback.onDataLoaded(shopDatas);
+                                callback.onDataLoaded(shopDatas);
                                 //}
                                 Log.d("테스트like", "shop size-----: " + shopDatas.size());
 
@@ -135,4 +138,3 @@ public class MyLikeShopGetList {
     }
 
 }
-
