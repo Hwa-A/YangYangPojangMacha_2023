@@ -84,7 +84,6 @@ public class MyLikeShopGetList {
                                 String primaryKey = shopKey.toString();
 
 
-                                Log.d("ffffffffefffㄲ;여","a"+primaryKey);
 
                                 // MyLikeShopModel 객체 생성 및 값 설정
                                 MyLikeShopModel shop = new MyLikeShopModel(uid, shopName, latitude, longitude ,  addressName, pwayMobile,  pwayCard,

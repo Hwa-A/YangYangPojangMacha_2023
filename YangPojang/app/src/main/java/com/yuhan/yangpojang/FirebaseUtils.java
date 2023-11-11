@@ -26,13 +26,13 @@ public class FirebaseUtils {
 
     public static void saveShopData(Shop shop, ReportShop reportShop, Uri exteriorImageUri, Uri menuImageUri,String shopKey) {
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
-        Log.d("whatisthisthi", String.valueOf(exteriorImageUri));
-        Log.d("whatisthisthi", String.valueOf(menuImageUri));
+        Log.d("fffffffffdskfjask2", String.valueOf(exteriorImageUri));
+        Log.d("fffffffffdskfjask3", String.valueOf(menuImageUri));
 
-        Log.d("king",shopKey);
+        Log.d("fffffffffdskfjas4k",shopKey);
         shop.setShopKey(shopKey);
         String shopkey=shop.getShopKey();
-        Log.d("king2",shopKey);
+        Log.d("ffffffffffs5k",shopKey);
 
         DatabaseReference shopRef = databaseReference.child("shops").child(shopKey);
         reportShop.setShopKey(shopKey);
@@ -41,36 +41,44 @@ public class FirebaseUtils {
         DatabaseReference reportShopRef = databaseReference.child("reportShop").child(reportShop.getUid()).child(shopKey);
         shopRef.setValue(shop)
                 .addOnSuccessListener(aVoid -> {
-                    Log.d("bbbbbbbb", "가게 데이터가(이미지 제외) 성공적으로 저장되었습니다.");
+                    Log.d("fffffffffbbbbbbbb", "가게 데이터가(이미지 제외) 성공적으로 저장되었습니다.");
 
                     reportShop.setShopKey(shopKey);
 
                     Log.d("bbbbddddddbbbb", "가게 데이터가(이미지 제외) 성공적으로 저장되었습니다.");
 
-                    Log.d("FirebaseUtils", "가게 데이터가(이미지 제외) 성공적으로 저장되었습니다.");
+                    Log.d("fffffffffdskfjask 2323 e5r FirebaseUtils", "가게 데이터가(이미지 제외) 성공적으로 저장되었습니다.");
 
                     storageRef = FirebaseStorage.getInstance().getReference();
                     shopImagesRef = storageRef.child("shops").child(shopKey).child("images");
 
                     // 외관 이미지  업로드
-                    if (exteriorImageUri != null) {
-                        Log.d("FirebaseUtils", "외관 이미지 업로드 시작");
+                    if (exteriorImageUri != null)
+                    {
+                        Log.d(" fffffffffdskfjask 2323 FirebaseUtils", "외관 이미지 업로드 시작");
                         uploadImageToStorage(shop,shopImagesRef, exteriorImageUri, shopRef.child("fbStoreImgurl"), "exterior");
 
-                        if (menuImageUri != null) {
-                            Log.d("FirebaseUtils", "메뉴 이미지 업로드 시작");
+                        if (menuImageUri != null)
+                        {
+                            Log.d(" fffffffffdskfjask 4545 FirebaseUtils", "메뉴 이미지 업로드 시작");
                             uploadImageToStorage(shop,shopImagesRef, menuImageUri, shopRef.child("fbMenuImgurl"), "menu");
-                        } else {
-                            Log.d("FirebaseUtils", "메뉴 이미지 미선택");
+                        }
+                        else
+                        {
+                            Log.d("fffffffffFirebaseUtils", "메뉴 이미지 미선택");
                         }
                     }
                     else {
-                        Log.d("외관이미지는 선택되지 않았습니다", "외관이미지는 선택되지 않았습니다");
-                        if (menuImageUri != null) {
-                            Log.d("FirebaseUtils", "메뉴 이미지 업로드 시작");
+
+                        Log.d(" fffffffffdskfjask 6060 외관이미지는 선택되지 않았습니다", "외관이미지는 선택되지 않았습니다");
+                        if (menuImageUri != null)
+                        {
+                            Log.d("fffffffffFirebaseUtils", "메뉴 이미지 업로드 시작");
                             uploadImageToStorage(shop,shopImagesRef, menuImageUri, shopRef.child("menuImagePath"), "menu");
-                        } else {
-                            Log.d("메뉴이미지도 선택되지 않았습니다", "메뉴이미지도 선택되지 않았습니다");
+                        }
+                        else
+                        {
+                            Log.d("fffffffffdskfjask4094290982 메뉴이미지도 선택되지 않았습니다", "메뉴이미지도 선택되지 않았습니다");
                         }
                     }
                     if (shopDataListener != null) {
@@ -78,7 +86,7 @@ public class FirebaseUtils {
                     }
                 })
                 .addOnFailureListener(databaseException -> {
-                    Log.e("FirebaseUtils", "가게 이미지 업로드 데이터 저장 실패: " + databaseException.getMessage());
+                    Log.e("fffffffffskfjask4094290982dfddefeFirebaseUtils", "가게 이미지 업로드 데이터 저장 실패: " + databaseException.getMessage());
                     if (shopDataListener != null) {
                         shopDataListener.onShopDataSaved();
                     }

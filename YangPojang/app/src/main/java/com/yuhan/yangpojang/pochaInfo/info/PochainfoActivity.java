@@ -68,6 +68,7 @@ public class PochainfoActivity extends AppCompatActivity implements OnFragmentRe
     private  ImageView pchImgview;     // 포차 이미지가 뜨는 view 창
     private String exteriorImageUrl;
     private Handler backgroundHandler;    //  이미지 불러오기 지연 시키기 위해 선언한 핸들러
+    private DatabaseReference shopReference;
 
     //    FirebaseDatabase ref = FirebaseDatabase.getInstance();
 //    DatabaseReference shops = ref.getReference("shops");
@@ -130,7 +131,7 @@ public class PochainfoActivity extends AppCompatActivity implements OnFragmentRe
             }
             else // 이미지 경로가 없는 경우 (사진 등록이 안되있는 경우)
             {
-                pchImgview.setImageResource(R.drawable.error);  // 이미지 없을때 띄워지는 에러 이미지
+                pchImgview.setImageResource(R.drawable.full_heart);  // 이미지 없을때 띄워지는 에러 이미지
             }
 
             pchNameTv.setText(pchName);  //get으로 얻은 이름으로 포차이름 변경
@@ -235,7 +236,7 @@ public class PochainfoActivity extends AppCompatActivity implements OnFragmentRe
 
 
         if (shopKey != null && !shopKey.isEmpty()) {
-            DatabaseReference shopReference = FirebaseDatabase.getInstance().getReference("shops").child(shopKey);
+            shopReference = FirebaseDatabase.getInstance().getReference("shops").child(shopKey);
             shopReference.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {   // PochaInfoUpdate로 데이터 변화가 생기면 새로 선택된 값을 보여주기 위해 작성된 부분
@@ -253,7 +254,7 @@ public class PochainfoActivity extends AppCompatActivity implements OnFragmentRe
                         loadAndDisplayImage(storeImageUrl);  // 새로 선택된 이미지로 사진이 설정되게 하는 메서드로 이동
                     }
                     else {
-                        pchImgview.setImageResource(R.drawable.error);
+                        pchImgview.setImageResource(R.drawable.empty_heart);
                     }
 
                     viewModel.updateShopData(shop); // ViewModel을 통해 데이터 업데이트
@@ -314,36 +315,22 @@ public class PochainfoActivity extends AppCompatActivity implements OnFragmentRe
         }
     }
 
-    //    @Override
-//    public void onBackPressed() {
-//        // FragmentManager를 사용하여 HomeFragment로 교체
-//        FragmentManager fm = getSupportFragmentManager();
-//        if (fm.getBackStackEntryCount() > 0) {
-//            fm.popBackStack();
-//        } else {
-//            // 더 이상 뒤로 갈 Fragment가 없는 경우 HomeFragment로 교체
-//            HomeFragment homeFragment = new HomeFragment();
-//            fm.beginTransaction().replace(R.id.fragment_container, homeFragment).commit();
-//        }
-//    } @Override
-//    public void onBackPressed() {
-//        // FragmentManager를 사용하여 HomeFragment로 교체
-//        FragmentManager fm = getSupportFragmentManager();
-//        if (fm.getBackStackEntryCount() > 0) {
-//            fm.popBackStack();
-//        } else {
-//            // 더 이상 뒤로 갈 Fragment가 없는 경우 HomeFragment로 교체
-//            HomeFragment homeFragment = new HomeFragment();
-//            fm.beginTransaction().replace(R.id.fragment_container, homeFragment).commit();
-//        }
-//    }
+
+
     // 이미지를 로드하고 표시하는 함수
     public void loadAndDisplayImage(String imagePath) {
         HandlerThread handlerThread = new HandlerThread("BackgroundThread");
         handlerThread.start();
 
+
+
         // 생성된 스레드의 Looper를 사용하여 Handler를 생성
         backgroundHandler = new Handler(handlerThread.getLooper());
+
+        if(imagePath==null)
+        {
+            imagePath=exteriorImageUrl;
+        }
 
         if (imagePath != null && !imagePath.isEmpty()) {
             StorageReference storageRef = FirebaseStorage.getInstance().getReference().child("shops/" + shopKey + "/images/exterior.jpg");
@@ -360,7 +347,7 @@ public class PochainfoActivity extends AppCompatActivity implements OnFragmentRe
                                     .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
                                     .skipMemoryCache(true)
                                     .placeholder(R.drawable.img_loading)
-                                    .error(R.drawable.error)
+                                    .error(R.drawable.pin_black)
                                     .fitCenter()
                                     .into(pchImgview);
                         }
@@ -377,4 +364,11 @@ public class PochainfoActivity extends AppCompatActivity implements OnFragmentRe
         }
     }
 
+//    @Override
+//    public void onDestroy() {
+//        super.onDestroy();
+//        // Assuming "mDatabaseReference" is your DatabaseReference and "mListener" is ValueEventListener
+//
+//        shopReference.removeEventListener(mValueEventListener);
+//    }
 }

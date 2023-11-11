@@ -319,7 +319,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, onPoch
         }
 
 
-        Log.d("나만 볼거야", "onCreate() 실행");
+        Log.d("digimon", "onCreate() 실행");
         //제보 완료시 하단바 - 홈으로 이동시키기 위해 추가함(홍서빈)
 
 

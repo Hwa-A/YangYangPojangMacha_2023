@@ -80,8 +80,6 @@ public class MyReportShopGetList {
                                 boolean isVerified=  shopSnapshot.child("verified").getValue(boolean.class);
                                 String primaryKey = shopKey.toString();
 
-                                Log.d("ffffffffffㄲ;여","a"+primaryKey);
-                                Log.d("ffffffffffㄲ;여","a"+primaryKey);
 
                                 // MyLikeShopModel 객체 생성 및 값 설정
                                 MyReportShopModel shop = new MyReportShopModel(uid, shopName, latitude, longitude ,  addressName, pwayMobile,  pwayCard,

@@ -13,7 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 
-
+import androidx.activity.OnBackPressedCallback;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -184,9 +184,30 @@ public class ProfileShowFragment extends Fragment {
     }
 
 
+
+    @Override
+    public void onStart (){
+        super.onStart();
+        Log.d("ffffff프로핑 온스타","");
+
+        // OnBackPressedCallback 생성
+        OnBackPressedCallback callback = new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                // 뒤로가기 버튼이 눌렸을 때 홈 프래그먼트로 이동
+                BottomNavigationView bottomNavigationView = getActivity().findViewById(R.id.bottomNavigationView);
+                bottomNavigationView.setSelectedItemId(R.id.navigation_map);
+            }
+        };
+
+        // OnBackPressedCallback 추가
+        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), callback);
+    }
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d("ffffff프로핑 온크리","");
         //UID 가져오기
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
