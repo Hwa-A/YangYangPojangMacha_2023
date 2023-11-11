@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-    <!-- id 형식: view약자_속한xml명_view설명 -->
-    <!-- view 약자
-            frg: FragmentContainerView
-            img: ImageView
-            imgbtn: ImageButton
-            btn: Button
-            lin: LinearLayout
-            tv: TextView                       -->
+<!-- id 형식: view약자_속한xml명_view설명 -->
+<!-- view 약자
+        frg: FragmentContainerView
+        img: ImageView
+        imgbtn: ImageButton
+        btn: Button
+        lin: LinearLayout
+        tv: TextView                       -->
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"

@@ -31,7 +31,7 @@ public class MyLikeShopGetList {
     public void getMyLikeShopList(String UID, final dataLoadedCallback callback)
     {
         this.UID = UID;     //UID 연결
-        bflist.clear();
+
 
         //DB테이블 연결
         databaseReference = firebaseDatabase.getReference("likeShop/"+UID);
@@ -40,6 +40,9 @@ public class MyLikeShopGetList {
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                bflist.clear();
+                shopDatas.clear();
+
                 for (DataSnapshot snap : snapshot.getChildren()) {
                     // 해당 UID의 like가게 리스트 저장
                     bflist.add(snap.getKey());
@@ -49,7 +52,7 @@ public class MyLikeShopGetList {
                 // bflist에 있는 가게 정보를 가져오기 위한 루프
                 for (Object shopKey : bflist) {
                     DatabaseReference shopRef = FirebaseDatabase.getInstance().getReference("shops").child(shopKey.toString());
-                    shopRef.addValueEventListener(new ValueEventListener() {
+                    shopRef.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot shopSnapshot) {
                             if (shopSnapshot.exists()) {
@@ -82,6 +85,7 @@ public class MyLikeShopGetList {
                                 String uid =  shopSnapshot.child("uid").getValue(String.class);
                                 boolean isVerified=  shopSnapshot.child("verified").getValue(boolean.class);
                                 String primaryKey = shopKey.toString();
+                                String sKey = shopKey.toString();
 
 
                                 // MyLikeShopModel 객체 생성 및 값 설정
@@ -89,7 +93,7 @@ public class MyLikeShopGetList {
                                         pwayAccount,  pwayCash,  openMon,  openTue,
                                         openWed,  openThu,  openFri,  openSat,
                                         openSun,  category ,  storeImageUri,  menuImageUri,
-                                        isVerified,  hasMeeting,  rating,  geohash, exteriorImagePath, primaryKey);
+                                        isVerified,  hasMeeting,  rating,  geohash, exteriorImagePath, primaryKey, sKey);
 
 
                                 shopDatas.add(shop); // 가져온 가게 정보를 likeShops 리스트에 추가

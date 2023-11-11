@@ -26,16 +26,17 @@ public class MyReviewList {
             @Override
             public void onSecondDataLoaded(ArrayList<MyReviewModel> reviewDatas, ArrayList selectShop, String UID) {
                 Log.d("프로필reviewGetList", "onDataChange: selectShop 경로 :" + selectShop);
-//                        
+//
 //                        Log.d("프로필reviewGetList", "shopLink : " + shopLink.toString());
 //                        Log.d("프로필reviewGetList", "selectShop.size() : " + selectShop.size());
 //                        Log.d("프로필reviewGetList", "selectShop.size() : " + selectShop.get(i) + " / " + i);
 
                 DatabaseReference shopRef = FirebaseDatabase.getInstance().getReference("shops/");//.child(shopLink.toString());
                 Log.d("프로필reviewGetList", "selectShop.size() : " + shopRef);
-                shopRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                shopRef.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        shopDatas.clear();
                         for (i = 0; i < reviewDatas.size(); i++) {
                             String shopLink = selectShop.get(i).toString();
 
@@ -67,6 +68,7 @@ public class MyReviewList {
                             String uid = snapshot.child(shopLink).child("uid").getValue(String.class);
                             boolean isVerified = snapshot.child(shopLink).child("verified").getValue(Boolean.class);
                             String primaryKey = shopLink;
+                            String shopKey = shopLink;
 
 
                             model.setUid(uid);
@@ -94,6 +96,7 @@ public class MyReviewList {
                             model.setGeohash(geohash);
                             model.setExteriorImagePath(exteriorImagePath);
                             model.setPrimaryKey(primaryKey);
+                            model.setShopkey(shopKey);
 
                             model.setShopID_reviewID(reviewDatas.get(i).getShopID_reviewID());
 
@@ -125,19 +128,18 @@ public class MyReviewList {
                     public void onCancelled(@NonNull DatabaseError error) {
 
                     }
-                    });
+                });
 
 
-                }
-            });
+            }
+        });
 
-        }
-        public interface dataLoadedCallback {
-
-            void onDataLoaded(ArrayList<MyReviewModel> shopDatas);
-        }
     }
+    public interface dataLoadedCallback {
 
+        void onDataLoaded(ArrayList<MyReviewModel> shopDatas);
+    }
+}
 
 
 

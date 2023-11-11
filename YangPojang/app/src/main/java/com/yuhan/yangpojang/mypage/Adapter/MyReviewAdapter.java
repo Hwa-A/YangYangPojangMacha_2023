@@ -137,6 +137,8 @@ public class MyReviewAdapter extends RecyclerView.Adapter<MyReviewAdapter.MyRevi
                 // 클릭한 버튼의 위치에 대한 로그 출력
                 Log.d("FixReviewBtn", "Button Clicked at position: " + position);
 
+//                Intent intent = new Intent(context, .class);
+//                intent.putExtra("shopInfo", selectedShop);  // MyReportShopModel 객체를 추가 데이터로 전달
                 // 여기에 수정 버튼을 눌렀을 때의 동작을 추가하세요.
             }
         });
