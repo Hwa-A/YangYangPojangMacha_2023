@@ -8,9 +8,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 
@@ -36,7 +38,9 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.yuhan.yangpojang.R;
-//import com.yuhan.yangpojang.mypage.GetList.ReviewList.DataLoadedCallback;
+import com.yuhan.yangpojang.mypage.Adapter.MyMeetingAdapter;
+import com.yuhan.yangpojang.mypage.GetList.MeetingGetListCollection.GetAllMyMeetingItems;
+import com.yuhan.yangpojang.mypage.Model.MeetingModelCollection.AllMeetingItemModel;
 import com.yuhan.yangpojang.mypage.Adapter.MyReviewAdapter;
 import com.yuhan.yangpojang.mypage.GetList.ReviewList.MyReviewList;
 import com.yuhan.yangpojang.mypage.Model.MyReviewModel;
@@ -51,7 +55,6 @@ import com.yuhan.yangpojang.mypage.UserProfile.ChangeImgDialog;
 import com.yuhan.yangpojang.mypage.UserProfile.LoadUserProfile;
 
 import java.util.ArrayList;
-import java.util.zip.Inflater;
 
 
 public class ProfileShowFragment extends Fragment {
@@ -68,7 +71,9 @@ public class ProfileShowFragment extends Fragment {
 
     // 리사이클러 뷰와 리사이클러 뷰 어뎁터
     private RecyclerView likeRecyclerView, reportRecyclerView, reviewRecyclerView, meetingRecyclerView;
-    private RecyclerView.Adapter likeAdapter, reportAdapter, reviewAdapter, meetingAdapter;
+    private RecyclerView.Adapter likeAdapter, reportAdapter,reviewAdapter;
+    private MyMeetingAdapter meetingAdapter;
+
 
     View view;
 
@@ -82,7 +87,7 @@ public class ProfileShowFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = (ViewGroup) inflater.inflate(R.layout.fragment_profile, container, false);
 
-
+        Log.d("보라돌이", "onCreateView");
 
         // 화면 내의 활성화 되는 버튼들
         // accountBtn : 클릭 시 계정 설정 페이지로 넘어감 (accountPage.java , account_page.xml)
@@ -154,14 +159,12 @@ public class ProfileShowFragment extends Fragment {
         likeRecyclerView = view.findViewById(R.id.myLikeRecycle);
         likeRecyclerView.setHasFixedSize(true);
         likeRecyclerView.setLayoutManager(new LinearLayoutManager(view.getContext(), LinearLayoutManager.HORIZONTAL, false)); //리사이클 뷰의 아이템 배치 결정 (가로 스크롤 목록을 생성, 역방향 스크롤 비활성화)
-
         MyLikeShopGetList myLikeShopGetList = new MyLikeShopGetList();
 
         myLikeShopGetList.getMyLikeShopList(user_info_uid, new MyLikeShopGetList.dataLoadedCallback() {
             @Override
             public void onDataLoaded(ArrayList<MyLikeShopModel> shopDatas) {
                 if (shopDatas != null) {
-
                     Log.d("프로필", "onDataLoaded: in main");
                     likeAdapter = new MyLikeShopAdapter(shopDatas, getContext());
                     likeRecyclerView.setAdapter(likeAdapter);
@@ -210,40 +213,29 @@ public class ProfileShowFragment extends Fragment {
             }
         });
 
-
         //myMeetingRecyclerView (내 번개)
         meetingRecyclerView = view.findViewById(R.id.myMeetingRecycle);
         meetingRecyclerView.setHasFixedSize(true);
         meetingRecyclerView.setLayoutManager(new LinearLayoutManager(view.getContext(), LinearLayoutManager.HORIZONTAL, false));
 
 
+        GetAllMyMeetingItems getAllMyMeetingItems = new GetAllMyMeetingItems();
+        getAllMyMeetingItems.getMeetingInfo(new GetAllMyMeetingItems.allMeetingItemLoadCallback() {
+            @Override
+            public void onAllLoaded(ArrayList<AllMeetingItemModel> allMeetingItemModels) {
+                meetingAdapter = null;
+                meetingAdapter = new MyMeetingAdapter(getActivity(), allMeetingItemModels);
+                meetingRecyclerView.setAdapter(meetingAdapter);
+            }
+        });
 
         return view;
     }
 
-
-    @Override
-    public void onStart (){
-        super.onStart();
-
-        // OnBackPressedCallback 생성
-        OnBackPressedCallback callback = new OnBackPressedCallback(true) {
-            @Override
-            public void handleOnBackPressed() {
-                // 뒤로가기 버튼이 눌렸을 때 홈 프래그먼트로 이동
-                BottomNavigationView bottomNavigationView = getActivity().findViewById(R.id.bottomNavigationView);
-                bottomNavigationView.setSelectedItemId(R.id.navigation_map);
-            }
-        };
-
-        // OnBackPressedCallback 추가
-        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), callback);
-    }
-
-
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d("보라돌이", "onCreate");
         //UID 가져오기
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
@@ -263,29 +255,25 @@ public class ProfileShowFragment extends Fragment {
                 });
 
 
-//        // 뒤로가기 버튼
-//        OnBackPressedCallback backPressedCallback = new OnBackPressedCallback(true) {
-//            @Override
-//            public void handleOnBackPressed() {
-//                FragmentManager fragmentManager = getParentFragmentManager();
-//                if (isAdded()) {
-//                    FragmentTransaction transaction = fragmentManager.beginTransaction();   // 플래그먼트 전환을 위한 트랜잭션 시작
-//                    HomeFragment homeFragment = new HomeFragment();     // HomeFragment의 인스턴스를 생성
-//                    transaction.replace(R.id.fragmentProfileLayout, homeFragment);    // 기존 플래그먼로 교체
-//                    transaction.commit();  // 트랜잭션 커밋
-//
-//                    // 하단 탐색 바에서 Home 탭을 선택하도록 설정
-//                    BottomNavigationView bottomNavigationView = requireActivity().findViewById(R.id.bottomNavigationView);
-//                    bottomNavigationView.setSelectedItemId(R.id.navigation_map);
-//                }
-//            }
-//        };
-//        // OnBackPressedCallback 호출
-//        requireActivity().getOnBackPressedDispatcher().addCallback(this, backPressedCallback);
-//
-//    }
+        // 뒤로가기 버튼
+        OnBackPressedCallback backPressedCallback = new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                FragmentManager fragmentManager = getParentFragmentManager();
+                if (isAdded()) {
+                    FragmentTransaction transaction = fragmentManager.beginTransaction();   // 플래그먼트 전환을 위한 트랜잭션 시작
+                    HomeFragment homeFragment = new HomeFragment();     // HomeFragment의 인스턴스를 생성
+                    transaction.replace(R.id.fragmentProfileLayout, homeFragment);    // 기존 플래그먼로 교체
+                    transaction.commit();  // 트랜잭션 커밋
 
-
+                    // 하단 탐색 바에서 Home 탭을 선택하도록 설정
+                    BottomNavigationView bottomNavigationView = requireActivity().findViewById(R.id.bottomNavigationView);
+                    bottomNavigationView.setSelectedItemId(R.id.navigation_map);
+                }
+            }
+        };
+        // OnBackPressedCallback 호출
+        requireActivity().getOnBackPressedDispatcher().addCallback(this, backPressedCallback);
 
     }
 
