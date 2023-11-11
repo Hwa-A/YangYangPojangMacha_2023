@@ -31,15 +31,18 @@ public class MyLikeShopGetList {
     public void getMyLikeShopList(String UID, final dataLoadedCallback callback)
     {
         this.UID = UID;     //UID 연결
-        bflist.clear();
+
 
         //DB테이블 연결
         databaseReference = firebaseDatabase.getReference("likeShop/"+UID);
         Log.d(TAG, "GetMyLikeShopList: 테스트like 값 likeShop/" + UID );
 
-        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+        databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                bflist.clear();
+                shopDatas.clear();
+
                 for (DataSnapshot snap : snapshot.getChildren()) {
                     // 해당 UID의 like가게 리스트 저장
                     bflist.add(snap.getKey());
