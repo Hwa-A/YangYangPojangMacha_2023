@@ -50,8 +50,6 @@ public class PermissionActivity extends AppCompatActivity {
             user_info_uid = user.getUid();
         }
 
-
-
         permissionAccessButton = findViewById(R.id.permissionAccess);
 
         permissionAccessButton.setOnClickListener(new View.OnClickListener() {
