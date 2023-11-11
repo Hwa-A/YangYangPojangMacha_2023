@@ -36,7 +36,6 @@ import com.google.firebase.storage.StorageReference;
 import com.yuhan.yangpojang.R;
 import com.yuhan.yangpojang.fragment.HomeFragment;
 import com.yuhan.yangpojang.model.Shop;
-import com.yuhan.yangpojang.model.Store;
 import com.yuhan.yangpojang.pochaInfo.interfaces.OnFragmentReloadListener;
 import com.yuhan.yangpojang.pochaInfo.meeting.PochameetingFragment;
 import com.yuhan.yangpojang.pochaInfo.review.PochareviewFragment;
@@ -101,6 +100,7 @@ public class PochainfoActivity extends AppCompatActivity implements OnFragmentRe
             shopKey= shop.getPrimaryKey(); // 포차 키 얻기
             String pchName = shop.getShopName(); // 포차 이름 얻기
             category= shop.getCategory();   // 포차 카테고리 얻기
+
 
             //포차 이미지 얻기 위한 firebase/firebaseStorage 호출
             FirebaseStorage storage = FirebaseStorage.getInstance();
@@ -168,10 +168,10 @@ public class PochainfoActivity extends AppCompatActivity implements OnFragmentRe
         ImageButton notgoodButton = findViewById(R.id.imgbtn_pochainfo_notgoodButton);
         ImageButton goodButton = findViewById(R.id.imgbtn_pochainfo_goodButton);
         HomeFragment homeFragment = new HomeFragment();
-        homeFragment.isLikeShop(shop.getPrimaryKey(), notgoodButton, goodButton);
+        homeFragment.isLikeShop(shop.getShopKey(), notgoodButton, goodButton);
 
         //heart리스너 설정
-        View.OnClickListener heartL = homeFragment.setHeartListener(getApplicationContext(), shop.getPrimaryKey(), notgoodButton, goodButton);
+        View.OnClickListener heartL = homeFragment.setHeartListener(getApplicationContext(), shop.getShopKey(), notgoodButton, goodButton);
         notgoodButton.setOnClickListener(heartL);
         goodButton.setOnClickListener(heartL);
     }

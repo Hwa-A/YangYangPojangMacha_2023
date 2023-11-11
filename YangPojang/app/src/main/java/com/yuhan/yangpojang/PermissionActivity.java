@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
@@ -32,6 +33,7 @@ public class PermissionActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.d("권한", "onCreate: 권한");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_permission);
         Intent intent_main = new Intent(getApplication(), MainActivity.class);

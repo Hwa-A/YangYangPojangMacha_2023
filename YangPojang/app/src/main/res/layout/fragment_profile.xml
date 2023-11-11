@@ -92,6 +92,7 @@
                 android:layout_marginTop="24dp"
                 android:text="내가 좋아요한 가게"
                 android:textSize="20dp"
+                android:fontFamily="@font/yeongdeok_sea"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.063"
@@ -108,7 +109,8 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/myLike"
-                app:layout_constraintVertical_bias="0.021" />
+                app:layout_constraintVertical_bias="0.021"
+                />
 
             <TextView
                 android:id="@+id/myReport"
@@ -117,6 +119,7 @@
                 android:layout_marginTop="28dp"
                 android:text="내가 제보한 가게"
                 android:textSize="20dp"
+                android:fontFamily="@font/yeongdeok_sea"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.051"
@@ -143,6 +146,7 @@
                 android:layout_marginTop="28dp"
                 android:text="내가 작성한 리뷰"
                 android:textSize="20dp"
+                android:fontFamily="@font/yeongdeok_sea"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.048"
@@ -168,6 +172,7 @@
                 android:layout_marginTop="28dp"
                 android:text="내 번개"
                 android:textSize="20dp"
+                android:fontFamily="@font/yeongdeok_sea"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.048"
@@ -178,7 +183,10 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/myMeetingRecycle"
                 android:layout_width="386dp"
-                android:layout_height="170dp"
+                android:layout_height="200dp"
+                android:layout_marginBottom="20dp"
+                android:layout_marginTop="18dp"
+                android:nestedScrollingEnabled="false"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.64"

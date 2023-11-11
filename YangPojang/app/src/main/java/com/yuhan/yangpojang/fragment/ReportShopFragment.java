@@ -1,11 +1,9 @@
 package com.yuhan.yangpojang.fragment;
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.graphics.Color;
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.location.Address;
-import android.location.Geocoder;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -25,20 +23,17 @@ import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.activity.OnBackPressedCallback;
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.LongDef;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentResultListener;
 import androidx.fragment.app.FragmentTransaction;
-
 import com.firebase.geofire.GeoFireUtils;
 import com.firebase.geofire.GeoLocation;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -53,9 +48,7 @@ import com.yuhan.yangpojang.R;
 import com.yuhan.yangpojang.ShopDataListener;
 import com.yuhan.yangpojang.model.ReportShop;
 import com.yuhan.yangpojang.model.Shop;
-import java.io.IOException;
-import java.util.List;
-import java.util.Locale;
+
 
 public class ReportShopFragment extends Fragment implements ShopDataListener
 {
@@ -117,6 +110,7 @@ public class ReportShopFragment extends Fragment implements ShopDataListener
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
     {
+        Log.d("fffffff리포트샵온크리에트","");
         // 해당 class(ReprotShopFragment)에서 연결시킬 layout을 inflate한다
         // 즉 MainActivity 하단 네비게이션 바에서 클릭된 fragment ==>  fragment_report_shop.xml 레이아웃을 인플레이트 하면 되는것
         View viewReprotShop = inflater.inflate(R.layout.fragment_report_shop, container, false);
@@ -150,28 +144,6 @@ public class ReportShopFragment extends Fragment implements ShopDataListener
         shopKey = databaseReference.child("shops").push().getKey();
 
         shopReference = databaseReference.child("shops").child(shopKey);
-
-        // 뒤로가기 버튼
-        OnBackPressedCallback backPressedCallback = new OnBackPressedCallback(true) {
-            @Override
-            public void handleOnBackPressed() {
-                FragmentManager fragmentManager = getParentFragmentManager();
-                if(isAdded()){
-                    FragmentTransaction transaction = fragmentManager.beginTransaction();   // 플래그먼트 전환을 위한 트랜잭션 시작
-                    HomeFragment homeFragment = new HomeFragment();     // HomeFragment의 인스턴스를 생성
-                    transaction.replace(R.id.fragmentReportshopLayout,homeFragment);    // 기존 플래그먼로 교체
-                    transaction.commit();  // 트랜잭션 커밋
-
-                    bottomNavigationView = requireActivity().findViewById(R.id.bottomNavigationView); // BottomNavigationView의 ID로 변경 필요
-                    bottomNavigationView.setSelectedItemId(R.id.navigation_map); // HomeFragment에 해당하는 MenuItem ID로 변경 필요
-                }
-                }
-
-
-        };
-        // OnBackPressedCallback 호출
-        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), backPressedCallback);
-
 
 
         //hash= GeoFireUtils.getGeoHashForLocation(new GeoLocation(latitude,longitude));  // 나은 언니 hash 넣을 때 사용
@@ -326,11 +298,16 @@ public class ReportShopFragment extends Fragment implements ShopDataListener
 
 
                                 }
+
                                 }
 
+                            }
+
+
                         }
-                    }
                 });
+
+
 
         // 제보버튼 눌렀을때 발생
         reportBtn.setOnClickListener(new View.OnClickListener()
@@ -340,9 +317,17 @@ public class ReportShopFragment extends Fragment implements ShopDataListener
             {
 
                 saveShopData();
+                // 등록 버튼 클릭 시 홈 프래그먼트로 이동
+                BottomNavigationView bottomNavigationView = getActivity().findViewById(R.id.bottomNavigationView);
+                if(bottomNavigationView!=null) {
+                    bottomNavigationView.setSelectedItemId(R.id.navigation_map);
+                }
+
+
 
             }
         });
+
         //가게위치 선택하기 글자를 누르면 지도가 뜨게 구현 + 하단 네비게이션 바 감춤
         editShopPlaceBtn.setOnClickListener(v ->
         {
@@ -360,6 +345,26 @@ public class ReportShopFragment extends Fragment implements ShopDataListener
         });
         return viewReprotShop;
 
+    }
+
+    @Override
+    public void onStart (){
+        super.onStart();
+
+        // OnBackPressedCallback 생성
+        OnBackPressedCallback callback = new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                // 뒤로가기 버튼이 눌렸을 때 홈 프래그먼트로 이동
+                BottomNavigationView bottomNavigationView = getActivity().findViewById(R.id.bottomNavigationView);
+                if(bottomNavigationView!=null) {
+                    bottomNavigationView.setSelectedItemId(R.id.navigation_map);
+                }
+            }
+        };
+
+        // OnBackPressedCallback 추가
+        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), callback);
     }
 
 
@@ -528,12 +533,14 @@ public class ReportShopFragment extends Fragment implements ShopDataListener
         }
         else // 제보에 필요한 정보를 모두 입력했을시
         {
+
              shop = new Shop(uid,shopName, latitude,longitude,addressName,isPwayMobile, isPwayCard, isPwayAccount, isPwayCash,
                     isOpenMon, isOpenTue, isOpenWed, isOpenThu, isOpenFri, isOpenSat, isOpenSun,selectedCategory,
                     isVerified,  hasMeeting, rating ,geohash,
                      (exteriorImagePath!= null) ? exteriorImagePath.toString() : "",
                      (menuImagePath != null) ? menuImagePath.toString() : ""
              );
+
             shop.setMenuImagePath(menuImagePath);
             shop.setExteriorImagePath(exteriorImagePath);
 //            Logd("dskfjask",shop.getMenuImagePath());
@@ -544,7 +551,7 @@ public class ReportShopFragment extends Fragment implements ShopDataListener
 
             scrollView.setBackgroundColor(Color.parseColor("#000000")); // 제보버튼 누르면 배경색이 약간 어두어지게 연출
             textboard.setVisibility(View.VISIBLE);
-            Log.d("Fd3", String.valueOf(shop));
+
             FirebaseUtils.saveShopData(shop, reportShop , storeExteriorImageUri, menuBoardImageUri,shopKey); //FirebaseUtils에 별도로 firebase에 넣는 코드 작성함
 
 
@@ -556,32 +563,21 @@ public class ReportShopFragment extends Fragment implements ShopDataListener
     @Override
     public void onShopDataSaved()
     {
-        Log.d("Fd4","A"+shop.getFbMenuImgurl());
 
-        Log.d("Fd45","A"+shop.getFbStoreImgurl());
         Toast.makeText(getActivity(), "가게가 정상적으로 등록되었습니다! ", Toast.LENGTH_SHORT).show();
 
         reportBtn.setClickable(false); // 제보 여러번 연타 못하게 버튼 클릭 비활성화
         clearForm();  // 저장이 되는경우 기존에 작성된 폼 지움
 
-        //dkdk
-        homeFragment= new HomeFragment();
-        replaceFragment(homeFragment);
 
     }
 
-//    public void onShopImageUrlsReceived(String fbStoreImgUrl, String fbMenuImgUrl) {
-//       Log.d("bitao",fbStoreImgUrl);
-//        Log.d("bitao",fbMenuImgUrl);
-//    }
-//
 
-    //dkdk
-    private void replaceFragment(Fragment fragment) {
-        FragmentTransaction transaction = requireActivity().getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.fragment_container, fragment);
-        transaction.addToBackStack(null);
-        transaction.commit();
+
+    //  dkdk
+    private void replaceFragment() {
+
+
     }
 
 

@@ -8,15 +8,20 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
 
 
 
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.activity.OnBackPressedCallback;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -24,6 +29,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -33,7 +39,13 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.yuhan.yangpojang.R;
-//import com.yuhan.yangpojang.mypage.GetList.ReviewList.DataLoadedCallback;
+
+import com.yuhan.yangpojang.mypage.Adapter.MyMeetingAdapter;
+import com.yuhan.yangpojang.mypage.GetList.MeetingGetListCollection.GetAllMyMeetingItems;
+import com.yuhan.yangpojang.mypage.Model.MeetingModelCollection.AllMeetingItemModel;
+import com.yuhan.yangpojang.mypage.Adapter.MyReviewAdapter;
+import com.yuhan.yangpojang.mypage.GetList.ReviewList.MyReviewList;
+
 import com.yuhan.yangpojang.mypage.Model.MyReviewModel;
 import com.yuhan.yangpojang.mypage.account.accountPage;
 import com.yuhan.yangpojang.mypage.Adapter.MyLikeShopAdapter;
@@ -62,11 +74,17 @@ public class ProfileShowFragment extends Fragment {
 
     // 리사이클러 뷰와 리사이클러 뷰 어뎁터
     private RecyclerView likeRecyclerView, reportRecyclerView, reviewRecyclerView, meetingRecyclerView;
-    private RecyclerView.Adapter likeAdapter, reportAdapter, reviewAdapter, meetingAdapter;
+
+    private RecyclerView.Adapter likeAdapter, reportAdapter,reviewAdapter;
+    private MyMeetingAdapter meetingAdapter;
 
     View view;
 
     private ActivityResultLauncher<String> getPicture;
+    private SwipeRefreshLayout swipeRefreshLayout;
+
+
+
     @Nullable  // null 체크유도, 경고를 통해 누락된 체크를 알려줄수 있음
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -119,6 +137,7 @@ public class ProfileShowFragment extends Fragment {
                                 // 프로필 출력 칸에 보여지도록 설정
                                 Glide.with(requireContext())
                                         .load(uri)
+                                        .circleCrop()
                                         .into(userImg);
                             }
                         }
@@ -136,12 +155,12 @@ public class ProfileShowFragment extends Fragment {
         // 사용자 정보 불러오기
 
 
+
         // 4개의 리사이클러뷰 출력
         //myLikeRecyclerView (내가 좋아요한 가게)
         likeRecyclerView = view.findViewById(R.id.myLikeRecycle);
         likeRecyclerView.setHasFixedSize(true);
         likeRecyclerView.setLayoutManager(new LinearLayoutManager(view.getContext(), LinearLayoutManager.HORIZONTAL, false)); //리사이클 뷰의 아이템 배치 결정 (가로 스크롤 목록을 생성, 역방향 스크롤 비활성화)
-
         MyLikeShopGetList myLikeShopGetList = new MyLikeShopGetList();
 
         myLikeShopGetList.getMyLikeShopList(user_info_uid, new MyLikeShopGetList.dataLoadedCallback() {
@@ -179,19 +198,77 @@ public class ProfileShowFragment extends Fragment {
 
 
 
+        // myReviewRecyclerView (내가 작성한 리뷰)
+        reviewRecyclerView = view.findViewById(R.id.myReviewRecycle);
+        reviewRecyclerView.setHasFixedSize(true);
+        reviewRecyclerView.setLayoutManager(new LinearLayoutManager(view.getContext(), LinearLayoutManager.HORIZONTAL, false));
+
+        MyReviewList myReviewList = new MyReviewList();
+        myReviewList.getReviewItemInfo(user_info_uid, new MyReviewList.dataLoadedCallback() {
+            @Override
+            public void onDataLoaded(ArrayList<MyReviewModel> shopDatas) {
+                if (shopDatas != null) {
+                    Log.d("프로필3", "onDataLoaded: myReportRecycle");
+                    reviewAdapter = new MyReviewAdapter(shopDatas, getContext());
+                    reviewRecyclerView.setAdapter(reviewAdapter);
+                } else {
+                    Log.d("프로필3", "shopDatas null");
+                }
+            }
+        });
+
+        //myMeetingRecyclerView (내 번개)
+        meetingRecyclerView = view.findViewById(R.id.myMeetingRecycle);
+        meetingRecyclerView.setHasFixedSize(true);
+        meetingRecyclerView.setLayoutManager(new LinearLayoutManager(view.getContext(), LinearLayoutManager.HORIZONTAL, false));
+
+
+        GetAllMyMeetingItems getAllMyMeetingItems = new GetAllMyMeetingItems();
+        getAllMyMeetingItems.getMeetingInfo(new GetAllMyMeetingItems.allMeetingItemLoadCallback() {
+            @Override
+            public void onAllLoaded(ArrayList<AllMeetingItemModel> allMeetingItemModels) {
+                meetingAdapter = null;
+                meetingAdapter = new MyMeetingAdapter(getActivity(), allMeetingItemModels);
+                meetingRecyclerView.setAdapter(meetingAdapter);
+            }
+        });
+
 
         return view;
     }
 
+    @Override
+    public void onStart (){
+        super.onStart();
+
+        // 뒤로가기 구현
+        // OnBackPressedCallback 생성
+        OnBackPressedCallback callback = new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                // 뒤로가기 버튼이 눌렸을 때 홈 프래그먼트로 이동
+                BottomNavigationView bottomNavigationView = getActivity().findViewById(R.id.bottomNavigationView);
+                if(bottomNavigationView!=null)
+                {
+                    bottomNavigationView.setSelectedItemId(R.id.navigation_map);
+                }
+            }
+        };
+
+        // OnBackPressedCallback 추가
+        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), callback);
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d("보라돌이", "onCreate");
         //UID 가져오기
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
             user_info_uid = user.getUid();
         }
+
 
         // 갤러리에서 이미지를 선택하는 동작 처리(ActivityResultLauncher 정의)
         getPicture = registerForActivityResult(new ActivityResultContracts.GetContent(),
@@ -205,7 +282,10 @@ public class ProfileShowFragment extends Fragment {
                 });
 
 
+
     }
 
 
-}
+
+    }
+
