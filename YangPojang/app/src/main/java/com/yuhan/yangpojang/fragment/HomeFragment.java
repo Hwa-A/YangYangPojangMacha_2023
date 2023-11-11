@@ -40,6 +40,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.naver.maps.geometry.LatLng;
@@ -75,6 +76,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, onPoch
 
     //OnMapReadyCallback : 지도가 준비되었을 때 호출되는 콜백을 처리, onMapReady()메서드 구현해야 함
 
+    private BottomNavigationView bottomNavigationView;   // 하단 네비게이션 뷰
     private FusedLocationSource locationSource; //안드로이드의 위치 서비스를 이용하여 현재 위치를 가져올 수 있는 클래스
     private NaverMap mNaverMap; //네이버 지도를 표시하고 조작하기 위한 클래스
     private static final int PERMISSION_REQUEST_CODE = 100; //위치 권한 요청을 처리하기 위한 요청 코드
@@ -309,7 +311,18 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, onPoch
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //제보 완료시 하단바 - 홈으로 이동시키기 위해 추가함(홍서빈)
+        bottomNavigationView = requireActivity().findViewById(R.id.bottomNavigationView); // BottomNavigationView의 ID로 변경 필요
+        if (bottomNavigationView != null) {
+                    bottomNavigationView.setSelectedItemId(R.id.navigation_map); // 예시로 'navigation_home'을 HomeFragment에 해당하는 ID로 변경해야 합니다.
+        }
+
+
         Log.d("나만 볼거야", "onCreate() 실행");
+        //제보 완료시 하단바 - 홈으로 이동시키기 위해 추가함(홍서빈)
+
+
         //위치를 반환하는 구현체인 FusedLocationSource 생성, locationSource를 초기화 하는 시점에 권한 허용여부를 확인한다(PermissionActivity의 onRequestPermissionResult())
         locationSource = new FusedLocationSource(this, PERMISSION_REQUEST_CODE);
 

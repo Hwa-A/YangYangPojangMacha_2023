@@ -65,7 +65,9 @@ public class StoreData {
                             for(DataSnapshot dataSnapshot : snap.getChildren()){ // 하나의 레코드의 각 필드에 접근
                                 Shop mainStore = dataSnapshot.getValue(Shop.class); // 모든 필드를 Shop.class와 한번에 매핑
                                 if(mainStore != null){
-                                    mainStore.setPrimaryKey(dataSnapshot.getKey()); // 가게 기본키 얻기
+                                    mainStore.setPrimaryKey(dataSnapshot.getKey());// 가게 기본키 얻기
+
+
                                 }
 
                                 stores.add(mainStore);

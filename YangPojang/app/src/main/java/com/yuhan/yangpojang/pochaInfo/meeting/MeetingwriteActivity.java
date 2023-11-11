@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 
+import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.graphics.Rect;
@@ -63,6 +64,8 @@ public class MeetingwriteActivity extends AppCompatActivity {
     TextInputEditText minAgeEdt;     // 번개 최소 연령
     TextInputEditText maxAgeEdt;     // 번개 최대 연령
     private DatabaseReference ref;      // DB 참조 객체
+    private ProgressDialog progressDialog;      // 등록 로딩 다이얼로그
+
 
     @Override     // onResume(): Activity가 재활성 될 때마다 호출 => 데이터 업데이트 + 초기화에 사용
     protected void onResume() {
@@ -102,6 +105,7 @@ public class MeetingwriteActivity extends AppCompatActivity {
         minAgeEdt = findViewById(R.id.edt_meetingwrite_minAge);    // 번개 최소 연령
         maxAgeTxtLay = findViewById(R.id.txtLay_meetingwrite_maxAgeContainer);  // 번개 최대 연령 컨테이너
         maxAgeEdt = findViewById(R.id.edt_meetingwrite_maxAge);    // 번개 최대 연령
+        progressDialog = new ProgressDialog(this);      // 등록 로딩 Dialog
         ref = FirebaseDatabase.getInstance().getReference();    // DB 참조 객체
 
         // ▼ PochameetingFragment에서 전달 받은 데이터 받아 처리
@@ -125,7 +129,6 @@ public class MeetingwriteActivity extends AppCompatActivity {
             finish();   // 현재 액티비티 종료
         }
 
-
         // timePickerDialog에서 번개 시간이 선택되면 호출되는 메서드 구현
         timeCallBack = new TimePickerDialog.OnTimeSetListener() {
             @Override
@@ -136,9 +139,17 @@ public class MeetingwriteActivity extends AppCompatActivity {
         };
         // 처음 화면의 번개 날짜에 보여줄 현재 날짜 구하기
         String yearDate = (getCurrentDateAndTime().get("yearDate"));
-        // 화면의 번개 날짜를 당일로 변경
-        dateTv.setText(yearDate);
-        meeting.setYearDate(yearDate);      // 번개 객체에 저장
+        if(yearDate != null){
+            // yearDate 값이 존재하는 경우
+            dateTv.setText(yearDate);       // 화면의 번개 날짜를 당일로 변경
+            meeting.setYearDate(yearDate);      // 번개 객체에 저장
+        }
+
+        // 등록 로딩 다이얼로그 설정
+        progressDialog.setMessage("번개 등록 중...");    // 로딩 메시지 설정
+        progressDialog.setCancelable(false);    // 취소 불가능
+        progressDialog.setCanceledOnTouchOutside(false);     // 외부 터치 불가능
+
 
         // 번개 소개글 입력에 따른 에러 메시지 출력
         titleErrorMessage(titleEdt, titleTxtLay);
@@ -147,13 +158,14 @@ public class MeetingwriteActivity extends AppCompatActivity {
         // 번개 최대 연령대 입력에 따른 에러 메시지 출력
         maxAgeErrorMessage(maxAgeEdt, maxAgeTxtLay);
 
-        // ▼ 번개 최소 연령대 한 자릿 수 입력한 경우, 나이 20으로 고정
+        // ▼ 번개 최소 연령대 한 자릿 수 입력한 경우, 나이 19으로 고정
         minAgeEdt.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if(!hasFocus){
-                    if(minAgeEdt.getText().toString().length() == 1){
-                        minAgeEdt.setText("20");
+                    String minAge = minAgeEdt.getText().toString();
+                    if( Integer.parseInt(minAge) < 19){
+                        minAgeEdt.setText("19");
                     }
                 }
             }
@@ -174,7 +186,7 @@ public class MeetingwriteActivity extends AppCompatActivity {
     }
 
     // ▼ 현재 날짜 구하는 코드
-    public Map<String, String> getCurrentDateAndTime(){
+    private Map<String, String> getCurrentDateAndTime(){
         // ▼ 현재 시간 구하는 코드
         long currentTimeMillis = System.currentTimeMillis();    // 현재 시간(밀리초)로 가져오기
         Date now = new Date(currentTimeMillis);      // 현재 시간(밀리초)를 Date 객체로 변환
@@ -184,7 +196,7 @@ public class MeetingwriteActivity extends AppCompatActivity {
 
         String yearDate = currentDate.substring(0, currentDate.indexOf(" "));  // yyyy/MM/dd 문자열 분리
         String date = yearDate.substring(yearDate.indexOf("/")+1);    // MM/dd 문자열 분리
-        String registerTime = date.substring(date.indexOf(" ")+1);   // hh:mm 문자열 분리
+        String registerTime = currentDate.substring(currentDate.indexOf(" ")+1);   // hh:mm 문자열 분리
 
         // Map에 값 저장
         dateMap.put("yearDate", yearDate);      // 날짜(년도O)
@@ -216,6 +228,8 @@ public class MeetingwriteActivity extends AppCompatActivity {
             if (isValid()) {
                 // 번개 연령 범위가 적절한 경우
                 if ((minAgeTxtLay.getError() == null) && (maxAgeTxtLay.getError() == null)) {
+                    progressDialog.show();      // 로딩 화면 표시
+
                     // 번개 id 생성
                     String meetingKey = ref.child("meeting").push().getKey();
                     // firebase에 저장
@@ -232,11 +246,13 @@ public class MeetingwriteActivity extends AppCompatActivity {
                         @Override
                         public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
                             if (error == null){
-                                // 업로드 성공한 경우, 확인 다이얼로그 실행 메서드
-                                showUploadSuccessDialog();
+                                // 업로드 성공한 경우,
+                                progressDialog.dismiss();       // 로딩 화면 숨기기
+                                showUploadSuccessDialog();      // 성공 다이얼로그 출력
                             }else {
-                                // 업로드 실패 경우, 확인 다이얼로그 실행 메서드
-                                showUploadFailDialog();
+                                //  업로드 실패 경우
+                                progressDialog.dismiss();       // 로딩 화면 숨기기
+                                showUploadFailDialog();     // 실패 다이얼로그 출력
                             }
                         }
                     });
@@ -320,7 +336,7 @@ public class MeetingwriteActivity extends AppCompatActivity {
             }
         });
     }
-    // ▼ 번개 최소 연령에 공백 입력 or 값이 최대 연령보다 높은 경우, 에러 메시지 출력 + 자동으로 최소 20으로 지정
+    // ▼ 번개 최소 연령에 공백 입력 or 값이 최대 연령보다 높은 경우, 에러 메시지 출력
     public void minAgeErrorMessage(TextInputEditText edt, TextInputLayout txtLayout){
         edt.addTextChangedListener(new TextWatcher() {
             @Override
@@ -346,10 +362,6 @@ public class MeetingwriteActivity extends AppCompatActivity {
                             // 십의 자릿 수가 0인 두 자릿 수인 경우, 십의 자리의 0은 생략
                             edt.setText(s.toString().substring(1));
                             edt.setSelection(1);      // 커서를 맨 뒤로 이동
-                        }else if (s.toString().indexOf("1") == 0){
-                            // 십의 자릿 수가 1인 두 자릿 수인 경우
-                            edt.setText("20");      // 20세로 고정
-                            edt.setSelection(2);      // 커서를 맨 뒤로 이동
                         }
                     }
                     if(!TextUtils.isEmpty(maxAgeEdt.getText().toString())){

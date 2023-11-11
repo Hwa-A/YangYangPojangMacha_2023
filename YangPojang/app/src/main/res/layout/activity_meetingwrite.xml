@@ -275,21 +275,21 @@
                 app:layout_constraintTop_toBottomOf="@id/lin_meetingwrite_ageRangeContainer"
                 app:layout_constraintVertical_bias="0.0">
                 <Button
-                    android:id="@+id/btn_meetingwrite_register"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="50dp"
-                    android:letterSpacing="0.2"
-                    android:text="등록"
-                    android:textColor="@color/white"
-                    android:textSize="20sp"
-                    android:backgroundTint="#FF9800"/>
-                <Button
                     android:id="@+id/btn_meetingwrite_cancel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:letterSpacing="0.2"
                     android:text="취소"
+                    android:textColor="@color/white"
+                    android:textSize="20sp"
+                    android:backgroundTint="#FF9800"
+                    android:layout_marginRight="50dp" />
+                <Button
+                    android:id="@+id/btn_meetingwrite_register"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:letterSpacing="0.2"
+                    android:text="등록"
                     android:textColor="@color/white"
                     android:textSize="20sp"
                     android:backgroundTint="#FF9800"/>

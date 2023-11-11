@@ -44,6 +44,10 @@ import com.firebase.geofire.GeoLocation;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.yuhan.yangpojang.FirebaseUtils;
 import com.yuhan.yangpojang.R;
 import com.yuhan.yangpojang.ShopDataListener;
@@ -83,6 +87,8 @@ public class ReportShopFragment extends Fragment implements ShopDataListener
     //db에 넣을때 필요한 이미지들의 uri:  storeExteriorImageUri,menuBoardImageUri;
     private Uri storeExteriorImageUri; // 가게 외관 이미지의 URI
     private Uri menuBoardImageUri; // 가게 메뉴 이미지의 URI
+    private String exteriorImagePath;
+    private String menuImagePath;
 
     private Uri imageUri;
     private String uid; // uid
@@ -101,6 +107,11 @@ public class ReportShopFragment extends Fragment implements ShopDataListener
     private boolean hasMeeting;  // 번개가 잡힌 가게인가
     private float rating; // 별점
     private String geohash; // 지오해쉬
+    private Shop shop;
+    private  HomeFragment homeFragment;
+    private DatabaseReference databaseReference ;
+    private String shopKey;
+    private DatabaseReference shopReference ;
     @SuppressLint("ClickableViewAccessibility")
     @Nullable
     @Override
@@ -133,6 +144,36 @@ public class ReportShopFragment extends Fragment implements ShopDataListener
         storePhotoTextView= viewReprotShop.findViewById(R.id.storeBoardText); // 가게 사진 선택하기 글씨
         menuPhotoTextView= viewReprotShop.findViewById(R.id.menuBoardText);  // 메뉴 사진 선택하기 글씨
         bottomNavigationView= getActivity().findViewById(R.id.bottomNavigationView); // 하단 네비게이션 바
+        bottomNavigationView.setVisibility(View.VISIBLE);
+
+        databaseReference = FirebaseDatabase.getInstance().getReference();
+        shopKey = databaseReference.child("shops").push().getKey();
+
+        shopReference = databaseReference.child("shops").child(shopKey);
+
+        // 뒤로가기 버튼
+        OnBackPressedCallback backPressedCallback = new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                FragmentManager fragmentManager = getParentFragmentManager();
+                if(isAdded()){
+                    FragmentTransaction transaction = fragmentManager.beginTransaction();   // 플래그먼트 전환을 위한 트랜잭션 시작
+                    HomeFragment homeFragment = new HomeFragment();     // HomeFragment의 인스턴스를 생성
+                    transaction.replace(R.id.fragmentReportshopLayout,homeFragment);    // 기존 플래그먼로 교체
+                    transaction.commit();  // 트랜잭션 커밋
+
+                    bottomNavigationView = requireActivity().findViewById(R.id.bottomNavigationView); // BottomNavigationView의 ID로 변경 필요
+                    bottomNavigationView.setSelectedItemId(R.id.navigation_map); // HomeFragment에 해당하는 MenuItem ID로 변경 필요
+                }
+                }
+
+
+        };
+        // OnBackPressedCallback 호출
+        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), backPressedCallback);
+
+
+
         //hash= GeoFireUtils.getGeoHashForLocation(new GeoLocation(latitude,longitude));  // 나은 언니 hash 넣을 때 사용
         if(addressName!=null)
         {
@@ -144,12 +185,10 @@ public class ReportShopFragment extends Fragment implements ShopDataListener
         }
 
         uid=null; // FIREBASE에 USERID
-//        FirebaseUser user1 = FirebaseAuth.getInstance().getCurrentUser();
-//        Log.d("user정보", String.valueOf(user1));
-        String user="롤로"; //여기는 임시로 넣음
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        Log.d("hong", String.valueOf(user));
         if(user!=null) {
-            uid="fhffh";
-//            uid = user.getUid();
+            uid = user.getUid();
             Log.d("dsljfkldsjfklsdjfk", String.valueOf(user));  // 최종: 로그 지우기
         }
         else
@@ -158,8 +197,20 @@ public class ReportShopFragment extends Fragment implements ShopDataListener
         }
         FirebaseUtils.setShopDataListener(this);  // FirebaseUtils 클래스: 제보한 가게를 파이어베이스에 넣는 로직을 별도 class로 작성함(모든 부분의 파이어베이스가 아닌 제보부분만입니다)
 
-        // Spinner에 카테고리 목록 설정 -> res/values/strings에 목록있음
-        ArrayAdapter<CharSequence> categoryAdapter = ArrayAdapter.createFromResource(requireContext(), R.array.category_array, android.R.layout.simple_spinner_item);
+        // Spinner에 카테고리 목록 설정 -> res/values/strings에 목록있음#edada6
+        ArrayAdapter<CharSequence> categoryAdapter = new ArrayAdapter<CharSequence>(requireContext(), android.R.layout.simple_spinner_item, getResources().getStringArray(R.array.category_array)) {
+            @NonNull
+            @Override
+            public View getDropDownView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+                TextView view = (TextView) super.getDropDownView(position, convertView, parent);
+                if (getItem(position).toString().contains("술")) {
+                    view.setTextColor(Color.parseColor("#FF0000")); // 원하는 색상 코드를 입력하세요.
+                } else {
+                    view.setTextColor(Color.parseColor("#000000")); // 기본 글자색을 입력하세요.
+                }
+                return view;
+            }
+        };
         categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         categorySpinner.setAdapter(categoryAdapter);
         categorySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() // 카테고리 스피너 선택 리스너 설정
@@ -174,6 +225,7 @@ public class ReportShopFragment extends Fragment implements ShopDataListener
             {
                 // 카테고리 - 아무것도 선택되지 않았을 때
                 selectedCategory = null;
+
 
             }
         });
@@ -207,6 +259,8 @@ public class ReportShopFragment extends Fragment implements ShopDataListener
                     @Override
                     public void onActivityResult(ActivityResult result)
                     {
+                        String filename = "";
+//                        String path="";
                         shouldClearForm=false;
                         if (result.getResultCode() == Activity.RESULT_OK)
                         {
@@ -216,6 +270,7 @@ public class ReportShopFragment extends Fragment implements ShopDataListener
                                 imageUri = data.getData();
                                 if (imageUri != null)
                                 {
+                                    Log.d("dojacat", String .valueOf(imageUri));
                                     // 선택한 이미지 URI를 저장
                                     if (requestCode == PICK_EXTERIOR_IMAGE_REQUEST) // 1
                                     {
@@ -224,6 +279,8 @@ public class ReportShopFragment extends Fragment implements ShopDataListener
                                         storeExteriorPhoto.setImageURI(imageUri);  // 이미지뷰에 선택한 이미지 단순표시
                                         storeExteriorPhoto.setBackground(null);
                                         storePhotoTextView.setVisibility(View.GONE);
+                                        filename= "exterior.jpg";
+//                                        path="exteriorImagePath";
                                     } else if (requestCode == PICK_MENU_IMAGE_REQUEST) //2
                                     {
                                         menuBoardImageUri = imageUri;   // db에 넣기위해선 이미지를 uri로
@@ -231,10 +288,46 @@ public class ReportShopFragment extends Fragment implements ShopDataListener
                                         menuBoardPhoto.setImageURI(imageUri);   // 이미지뷰에 선택한 이미지 단순표시
                                         menuBoardPhoto.setBackground(null);
                                         menuPhotoTextView.setVisibility(View.GONE);
+                                        filename="menu.jpg";
+//                                        path="menuImagePath";
+
 
                                     }
+
                                 }
                             }
+                            if(filename!=null || filename=="")
+                            {
+                                Log.d("dskfjaskdjl",filename);
+                                StorageReference storageRef = FirebaseStorage.getInstance().getReference();
+//                                DatabaseReference shopRef = databaseReference.child("shops").child(shopKey).child(path);
+                                StorageReference shopImagesRef = storageRef.child("shops").child(shopKey).child("images").child(filename);
+                                Log.d("dskfjaskdjl", String.valueOf(shopImagesRef));
+                                if(filename=="exterior.jpg")
+                                {
+                                    Log.d("dskfjaskdjl",filename);
+                                    String originalString= String.valueOf(shopImagesRef);
+                                    String trimmedString = originalString.substring(originalString.indexOf("/shops"));
+                                    exteriorImagePath= trimmedString;
+//                                    shop.setExteriorImagePath(trimmedString);
+
+                                    Log.d("dskfjaskdjl22",exteriorImagePath);
+
+
+
+                                }
+                                else if (filename=="menu.jpg")
+                                {
+                                    String originalString= String.valueOf(shopImagesRef);
+                                    String trimmedString = originalString.substring(originalString.indexOf("/shops"));
+//                                    shop.setMenuImagePath(trimmedString);
+                                    menuImagePath= trimmedString;
+                                    Log.d("dskfjaskdjl33",menuImagePath);
+
+
+                                }
+                                }
+
                         }
                     }
                 });
@@ -245,6 +338,7 @@ public class ReportShopFragment extends Fragment implements ShopDataListener
             @Override
             public void onClick(View v)
             {
+
                 saveShopData();
 
             }
@@ -434,33 +528,54 @@ public class ReportShopFragment extends Fragment implements ShopDataListener
         }
         else // 제보에 필요한 정보를 모두 입력했을시
         {
-            Shop shop = new Shop(uid,shopName, latitude,longitude,addressName,isPwayMobile, isPwayCard, isPwayAccount, isPwayCash,
+             shop = new Shop(uid,shopName, latitude,longitude,addressName,isPwayMobile, isPwayCard, isPwayAccount, isPwayCash,
                     isOpenMon, isOpenTue, isOpenWed, isOpenThu, isOpenFri, isOpenSat, isOpenSun,selectedCategory,
-                    (storeExteriorImageUri != null) ? storeExteriorImageUri.toString() : "",
-                    (menuBoardImageUri != null) ? menuBoardImageUri.toString() : "" ,
-                    isVerified,  hasMeeting, rating ,geohash);
+                    isVerified,  hasMeeting, rating ,geohash,
+                     (exteriorImagePath!= null) ? exteriorImagePath.toString() : "",
+                     (menuImagePath != null) ? menuImagePath.toString() : ""
+             );
+            shop.setMenuImagePath(menuImagePath);
+            shop.setExteriorImagePath(exteriorImagePath);
+//            Logd("dskfjask",shop.getMenuImagePath());
+//            Log.d("dskfjask",shop.getExteriorImagePath());
 
+            Log.d("storeExteriroImageUri래요", String.valueOf(storeExteriorImageUri));
             ReportShop reportShop= new ReportShop(uid);
-            FirebaseUtils.saveShopData(shop, reportShop , storeExteriorImageUri, menuBoardImageUri); //FirebaseUtils에 별도로 firebase에 넣는 코드 작성함
+
             scrollView.setBackgroundColor(Color.parseColor("#000000")); // 제보버튼 누르면 배경색이 약간 어두어지게 연출
             textboard.setVisibility(View.VISIBLE);
+            Log.d("Fd3", String.valueOf(shop));
+            FirebaseUtils.saveShopData(shop, reportShop , storeExteriorImageUri, menuBoardImageUri,shopKey); //FirebaseUtils에 별도로 firebase에 넣는 코드 작성함
+
+
+
 
         }
     }
 
-
     @Override
     public void onShopDataSaved()
     {
+        Log.d("Fd4","A"+shop.getFbMenuImgurl());
+
+        Log.d("Fd45","A"+shop.getFbStoreImgurl());
         Toast.makeText(getActivity(), "가게가 정상적으로 등록되었습니다! ", Toast.LENGTH_SHORT).show();
+
         reportBtn.setClickable(false); // 제보 여러번 연타 못하게 버튼 클릭 비활성화
         clearForm();  // 저장이 되는경우 기존에 작성된 폼 지움
 
         //dkdk
-        HomeFragment homeFragment= new HomeFragment();
+        homeFragment= new HomeFragment();
         replaceFragment(homeFragment);
 
     }
+
+//    public void onShopImageUrlsReceived(String fbStoreImgUrl, String fbMenuImgUrl) {
+//       Log.d("bitao",fbStoreImgUrl);
+//        Log.d("bitao",fbMenuImgUrl);
+//    }
+//
+
     //dkdk
     private void replaceFragment(Fragment fragment) {
         FragmentTransaction transaction = requireActivity().getSupportFragmentManager().beginTransaction();
@@ -468,11 +583,6 @@ public class ReportShopFragment extends Fragment implements ShopDataListener
         transaction.addToBackStack(null);
         transaction.commit();
     }
-
-
-
-
-
 
 
     public void clearForm()  // 제보화면에 작성폼 초기화

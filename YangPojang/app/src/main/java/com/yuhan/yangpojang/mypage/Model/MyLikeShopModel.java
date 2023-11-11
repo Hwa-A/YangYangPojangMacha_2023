@@ -43,10 +43,10 @@ public class MyLikeShopModel extends Shop {
     }
 
     public MyLikeShopModel(String uid, String shopName, double latitude, double longitude , String  addressName, boolean pwayMobile, boolean pwayCard,
-                boolean pwayAccount, boolean pwayCash, boolean openMon, boolean openTue,
-                boolean openWed, boolean openThu, boolean openFri, boolean openSat,
-                boolean openSun, String category , String storeImageUri, String menuImageUri,
-                boolean isVerified, boolean hasMeeting, float rating, String geohash ) {
+                           boolean pwayAccount, boolean pwayCash, boolean openMon, boolean openTue,
+                           boolean openWed, boolean openThu, boolean openFri, boolean openSat,
+                           boolean openSun, String category , String storeImageUri, String menuImageUri,
+                           boolean verified, boolean hasMeeting, float rating, String geohash, String exteriorImagePath , String primaryKey) {
 
         this.uid= uid;
         this.shopName=shopName;
@@ -69,6 +69,8 @@ public class MyLikeShopModel extends Shop {
         this.menuImageUri = menuImageUri;
         this.verified = verified;
         this.hasMeeting =hasMeeting;
+        this.exteriorImagePath = exteriorImagePath;
+        this.primaryKey = primaryKey;
         this.rating= rating;
         this.geohash = geohash;
     }

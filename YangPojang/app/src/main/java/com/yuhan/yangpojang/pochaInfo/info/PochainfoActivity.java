@@ -1,13 +1,19 @@
 package com.yuhan.yangpojang.pochaInfo.info;
 
+import androidx.activity.OnBackPressedCallback;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModelProvider;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.HandlerThread;
+import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -17,6 +23,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.StartupTime;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.yuhan.yangpojang.R;
@@ -27,7 +41,10 @@ import com.yuhan.yangpojang.pochaInfo.interfaces.OnFragmentReloadListener;
 import com.yuhan.yangpojang.pochaInfo.meeting.PochameetingFragment;
 import com.yuhan.yangpojang.pochaInfo.review.PochareviewFragment;
 
+import org.checkerframework.common.subtyping.qual.Bottom;
+
 import java.io.Serializable;
+import java.net.URL;
 
 // pch: pojangmacha
 // frg: fragment
@@ -41,15 +58,25 @@ public class PochainfoActivity extends AppCompatActivity implements OnFragmentRe
     Button pchMeetingBtn;                   // 포차 번개 Button
     FragmentManager frgManager;             // Fragment 관리자
     FragmentTransaction frgTransaction;     // Fragment 트랜잭션 : Fragment 작업을 처리
+    private  String pchImagePath;     // firebase storage에 외관 사진이 저장된 경루 : shops/shopkey/images/exterior.jpg
     private Shop shop;          // 포차 정보를 담을 객체
-//    FirebaseDatabase ref = FirebaseDatabase.getInstance();
-//    DatabaseReference shops = ref.getReference("shops");
+    private  String shopKey;     // 샵키이자 primary키 (getPrimary)
+    private PochaViewModel viewModel;
+    private TextView categoryTv;     // 카테고리를 적을 textview
+    private String category;      // shop 객체에서 가져올 카테고리
+    private String storeImageUrl;    //  [http://] 로 시작하는 외관 사진 자체의 url (주소창에 입력시 사진이 뜨는 그 주소 url)
+    private  ImageView pchImgview;     // 포차 이미지가 뜨는 view 창
+    private String exteriorImageUrl;
+    private Handler backgroundHandler;    //  이미지 불러오기 지연 시키기 위해 선언한 핸들러
 
+    //    FirebaseDatabase ref = FirebaseDatabase.getInstance();
+//    DatabaseReference shops = ref.getReference("shops");
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pochainfo);
 
+        Log.d("ffffffffffon호출","호출");
         // 객체 생성 및 초기화
         pchDetailBtn = findViewById(R.id.btn_pochainfo_detailTab);
         pchReviewBtn = findViewById(R.id.btn_pochainfo_reviewTab);
@@ -59,47 +86,61 @@ public class PochainfoActivity extends AppCompatActivity implements OnFragmentRe
         pchMeetingFrg = new PochameetingFragment();
         frgManager = getSupportFragmentManager();
         TextView pchNameTv = findViewById(R.id.tv_pochainfo_pochaname);  // 포차 이름 TextView
-        ImageView pchImgview = findViewById(R.id.img_pochainfo_pochaImage); // 포차 이미지
+        pchImgview = findViewById(R.id.img_pochainfo_pochaImage); // 포차 이미지
+        categoryTv=findViewById(R.id.tv_pochainfo_category);
+
+        viewModel = new ViewModelProvider(this).get(PochaViewModel.class);
+
+
+
+
         // ▼ HomeFragment에서 전달 받은 포차 객체 받아 처리
         Intent intent = getIntent();
         if(intent != null){  // Serializable(객체 직렬화): 객체를 바이트로 저장하는 자바의 인터페이스
             shop = (Shop) intent.getSerializableExtra("shopInfo");  // 직렬화된 객체 수신
+            shopKey= shop.getPrimaryKey(); // 포차 키 얻기
             String pchName = shop.getShopName(); // 포차 이름 얻기
-            
+            category= shop.getCategory();   // 포차 카테고리 얻기
+
             //포차 이미지 얻기 위한 firebase/firebaseStorage 호출
             FirebaseStorage storage = FirebaseStorage.getInstance();
-            String pchImagePath= shop.getExteriorImagePath(); // 포차 storage의 경로 얻기
+
+            if( shop.getExteriorImagePath()!=null || shop.getExteriorImagePath()!="")
+            {
+                pchImagePath= shop.getExteriorImagePath(); // 포차 storage의 경로 얻기
+            }
+
 
             if(pchImagePath != null && !pchImagePath.isEmpty())  //포차 이미지가 있는 경우(즉 경로가 null이 아닌 경우)
             {
                 StorageReference storageRef = storage.getReference().child(pchImagePath);
                 storageRef.getDownloadUrl().addOnSuccessListener(uri -> {
+                    exteriorImageUrl = uri.toString();
                     // 이미지 다운로드 URL 얻기에 성공하면 Glide를 사용하여 이미지를 로드하고 표시
-                    Glide.with(this)
-                            .load(uri)
-                            .placeholder(R.drawable.img_loading) // 이미지 로딩중 표시할 이미지
-                            .error(R.drawable.error) //  이미지 로딩 오류 시 표시할 이미지
-                            .fitCenter()
-                            .into(pchImgview);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            loadAndDisplayImage(exteriorImageUrl);
+                        }
+                    });
                 }).addOnFailureListener(exception -> {
                     // 이미지가 null은 아니지만 다운로드 URL 얻기에 실패할 경우 오류 처리
-                    Log.e("FirebaseImageLoad", "이미지 다운로드 실패: " + exception.getMessage());
+                    Log.e("PochaInfoActivity - FirebaseImageLoad", "이미지 다운로드 실패: " + exception.getMessage());
                 });
             }
             else // 이미지 경로가 없는 경우 (사진 등록이 안되있는 경우)
             {
-                // If image path is null or empty, load error image
-                pchImgview.setImageResource(R.drawable.error);
+                pchImgview.setImageResource(R.drawable.error);  // 이미지 없을때 띄워지는 에러 이미지
             }
 
-            // 포차 이름 변경
-            pchNameTv.setText(pchName);
+            pchNameTv.setText(pchName);  //get으로 얻은 이름으로 포차이름 변경
 
         } //intent가 null이라면 else
         else
         {
             Toast.makeText(this, "해당 가게를 찾을 수 없습니다.", Toast.LENGTH_LONG).show();
         }
+
 
         // uid 임의 값 넣어 테스트(추후 삭제 예정)
         String uid = "롤로";
@@ -117,7 +158,6 @@ public class PochainfoActivity extends AppCompatActivity implements OnFragmentRe
         pchDetailBtn.setOnClickListener(onClickListener);       // 포차 상세 정보
         pchReviewBtn.setOnClickListener(onClickListener);       // 포차 리뷰 리스트
         pchMeetingBtn.setOnClickListener(onClickListener);      // 포차 번개 리스트
-//
 //        // ▼ 처음에 포차 상세 정보 Fragment를 보여주기 위한 코드
 //        // Fragment 트랜잭션 객체 생성 및 초기화
 //        frgTransaction = frgManager.beginTransaction();
@@ -185,6 +225,48 @@ public class PochainfoActivity extends AppCompatActivity implements OnFragmentRe
     };
 
     @Override
+    protected void onResume()
+    {
+        super.onResume();
+        Log.d("ffffffresume","리숨임");
+        // 뒤로가기 버튼
+
+//        onBackPressed();
+
+
+        if (shopKey != null && !shopKey.isEmpty()) {
+            DatabaseReference shopReference = FirebaseDatabase.getInstance().getReference("shops").child(shopKey);
+            shopReference.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {   // PochaInfoUpdate로 데이터 변화가 생기면 새로 선택된 값을 보여주기 위해 작성된 부분
+
+                    shop = dataSnapshot.getValue(Shop.class); // 최신의 Shop 데이터를 가져옴
+                    category=shop.getCategory();
+                    storeImageUrl= shop.getFbStoreImgurl();
+
+                    if(category!=null || category!="")
+                    {
+                        categoryTv.setText(category);
+                    }
+
+                    if (storeImageUrl != null || storeImageUrl != "") {
+                        loadAndDisplayImage(storeImageUrl);  // 새로 선택된 이미지로 사진이 설정되게 하는 메서드로 이동
+                    }
+                    else {
+                        pchImgview.setImageResource(R.drawable.error);
+                    }
+
+                    viewModel.updateShopData(shop); // ViewModel을 통해 데이터 업데이트
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    Log.e("PochaInfoActivity - Firebase Error", databaseError.getMessage());
+                }
+            });
+        }
+    }
+    @Override
     public void onFragmentReload(String frgName) {
         if(frgManager != null) {
             switch (frgName){
@@ -231,4 +313,68 @@ public class PochainfoActivity extends AppCompatActivity implements OnFragmentRe
 
         }
     }
+
+    //    @Override
+//    public void onBackPressed() {
+//        // FragmentManager를 사용하여 HomeFragment로 교체
+//        FragmentManager fm = getSupportFragmentManager();
+//        if (fm.getBackStackEntryCount() > 0) {
+//            fm.popBackStack();
+//        } else {
+//            // 더 이상 뒤로 갈 Fragment가 없는 경우 HomeFragment로 교체
+//            HomeFragment homeFragment = new HomeFragment();
+//            fm.beginTransaction().replace(R.id.fragment_container, homeFragment).commit();
+//        }
+//    } @Override
+//    public void onBackPressed() {
+//        // FragmentManager를 사용하여 HomeFragment로 교체
+//        FragmentManager fm = getSupportFragmentManager();
+//        if (fm.getBackStackEntryCount() > 0) {
+//            fm.popBackStack();
+//        } else {
+//            // 더 이상 뒤로 갈 Fragment가 없는 경우 HomeFragment로 교체
+//            HomeFragment homeFragment = new HomeFragment();
+//            fm.beginTransaction().replace(R.id.fragment_container, homeFragment).commit();
+//        }
+//    }
+    // 이미지를 로드하고 표시하는 함수
+    public void loadAndDisplayImage(String imagePath) {
+        HandlerThread handlerThread = new HandlerThread("BackgroundThread");
+        handlerThread.start();
+
+        // 생성된 스레드의 Looper를 사용하여 Handler를 생성
+        backgroundHandler = new Handler(handlerThread.getLooper());
+
+        if (imagePath != null && !imagePath.isEmpty()) {
+            StorageReference storageRef = FirebaseStorage.getInstance().getReference().child("shops/" + shopKey + "/images/exterior.jpg");
+
+            backgroundHandler.postDelayed(() -> {
+                storageRef.getDownloadUrl().addOnSuccessListener(uri -> {
+
+                    // 이미지 다운로드 URL 얻기에 성공하면 Glide를 사용하여 이미지를 로드하고 표시
+                    new Handler(Looper.getMainLooper()).post(() -> {
+                        // 액티비티가 파괴되었는지 확인 후 Glide 작업 시작
+                        if (!isDestroyed()) {
+                            Glide.with(this)
+                                    .load(uri)
+                                    .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
+                                    .skipMemoryCache(true)
+                                    .placeholder(R.drawable.img_loading)
+                                    .error(R.drawable.error)
+                                    .fitCenter()
+                                    .into(pchImgview);
+                        }
+                    });
+                }).addOnFailureListener(exception -> {
+                    // 이미지가 널은 아니지만 다운로드가 실패한경우
+                    Log.e("PochaInfoActivity - glideException", "Glide 로딩 예외처리: " + exception.getMessage(), exception);
+
+                });
+            }, 1500); // PochaInfoUpdate에 db 저장되는 속도보다 여기서 이미지 다운후 불러오는 것이 더 빨라서 1.5초후 불러오는 것으로 코드 작성
+        } else {
+            pchImgview.setImageResource(R.drawable.error);  // 사진 등록이 안되어 있는 경우  에러 이미지로 띄운다
+
+        }
+    }
+
 }
