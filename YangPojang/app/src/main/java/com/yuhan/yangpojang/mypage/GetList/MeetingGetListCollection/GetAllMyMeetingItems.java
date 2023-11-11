@@ -62,7 +62,8 @@ public class GetAllMyMeetingItems {
                                             allMeetingItemModels.add(allMeetingItemModel);
                                         }
                                         callback.onAllLoaded(allMeetingItemModels);
-
+                                        Log.d("ㅈ", "데이터로드 : " + allMeetingItemModels);
+                                        Log.d("ㅈ", "데이터로드(size) : " + allMeetingItemModels.size());
 
                                     }
                                 });
