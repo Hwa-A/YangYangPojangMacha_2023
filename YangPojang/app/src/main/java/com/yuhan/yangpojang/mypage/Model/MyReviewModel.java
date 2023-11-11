@@ -31,6 +31,7 @@ public class MyReviewModel extends Shop {
     private String geohash;
     private String exteriorImagePath;
     private String primaryKey;
+    private String shopKey;
     private String uid;
 
     // review 테이블에서 가져와야 하는 값
@@ -53,7 +54,7 @@ public class MyReviewModel extends Shop {
                 boolean pwayAccount, boolean pwayCash, boolean openMon, boolean openTue,
                 boolean openWed, boolean openThu, boolean openFri, boolean openSat,
                 boolean openSun, String category ,String storeImageUri, String menuImageUri,
-                boolean isVerified, boolean hasMeeting, float rating, String geohash, String primaryKey ) {
+                boolean isVerified, boolean hasMeeting, float rating, String geohash, String primaryKey, String shopKey ) {
 
         this.uid= uid;
         this.shopName=shopName;
@@ -76,6 +77,8 @@ public class MyReviewModel extends Shop {
         this.menuImageUri = menuImageUri;
         this.verified = isVerified;
         this.hasMeeting =hasMeeting;
+        this.primaryKey = primaryKey;
+        this.shopKey = shopKey;
         this.rating= rating;
         this.geohash = geohash;
     }
@@ -138,6 +141,8 @@ public class MyReviewModel extends Shop {
     public String getExteriorImagePath() {        return exteriorImagePath;    }
 
     public String getPrimaryKey() {        return primaryKey;    }
+
+    public String getShopKey() { return shopKey;    }
 
     public String getShopID_reviewID() {        return shopID_reviewID;    }
 
@@ -220,6 +225,8 @@ public class MyReviewModel extends Shop {
     public void setMyRating(float myRating) {        this.myRating = myRating;    }
 
     public void setSummary(String summary) {        this.summary = summary;    }
+
+    public void setShopkey(String shopKey) {this.shopKey = shopKey;}
 
     public void MyReviewModel(String uid, String shopName, double latitude, double longitude, String addressName, boolean pwayMobile,
                               boolean pwayCard, boolean pwayAccount, boolean pwayCash, boolean openMon, boolean openTue, boolean openWed,

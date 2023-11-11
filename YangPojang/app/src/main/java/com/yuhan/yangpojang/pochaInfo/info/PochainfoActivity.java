@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -24,6 +25,8 @@ import com.yuhan.yangpojang.model.Shop;
 import com.yuhan.yangpojang.pochaInfo.interfaces.OnFragmentReloadListener;
 import com.yuhan.yangpojang.pochaInfo.meeting.PochameetingFragment;
 import com.yuhan.yangpojang.pochaInfo.review.PochareviewFragment;
+
+import java.io.Serializable;
 
 // pch: pojangmacha
 // frg: fragment
@@ -124,10 +127,10 @@ public class PochainfoActivity extends AppCompatActivity implements OnFragmentRe
         ImageButton notgoodButton = findViewById(R.id.imgbtn_pochainfo_notgoodButton);
         ImageButton goodButton = findViewById(R.id.imgbtn_pochainfo_goodButton);
         HomeFragment homeFragment = new HomeFragment();
-        homeFragment.isLikeShop(shop.getShopKey(), notgoodButton, goodButton);
+        homeFragment.isLikeShop(shop.getPrimaryKey(), notgoodButton, goodButton);
 
         //heart리스너 설정
-        View.OnClickListener heartL = homeFragment.setHeartListener(getApplicationContext(), shop.getShopKey(), notgoodButton, goodButton);
+        View.OnClickListener heartL = homeFragment.setHeartListener(getApplicationContext(), shop.getPrimaryKey(), notgoodButton, goodButton);
         notgoodButton.setOnClickListener(heartL);
         goodButton.setOnClickListener(heartL);
     }

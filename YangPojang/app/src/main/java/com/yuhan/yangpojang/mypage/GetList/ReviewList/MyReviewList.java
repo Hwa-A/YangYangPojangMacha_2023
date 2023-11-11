@@ -67,6 +67,7 @@ public class MyReviewList {
                             String uid = snapshot.child(shopLink).child("uid").getValue(String.class);
                             boolean isVerified = snapshot.child(shopLink).child("verified").getValue(Boolean.class);
                             String primaryKey = shopLink;
+                            String shopKey = shopLink;
 
 
                             model.setUid(uid);
@@ -94,6 +95,7 @@ public class MyReviewList {
                             model.setGeohash(geohash);
                             model.setExteriorImagePath(exteriorImagePath);
                             model.setPrimaryKey(primaryKey);
+                            model.setShopkey(shopKey);
 
                             model.setShopID_reviewID(reviewDatas.get(i).getShopID_reviewID());
 

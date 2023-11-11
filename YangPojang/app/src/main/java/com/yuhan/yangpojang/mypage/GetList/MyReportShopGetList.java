@@ -35,7 +35,7 @@ public class MyReportShopGetList {
         databaseReference = firebaseDatabase.getReference("reportShop/"+UID);
         Log.d(TAG, "GetMyReportShopList: 테스트report 값 reportShop/" + UID );
 
-        databaseReference.addValueEventListener(new ValueEventListener() {
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot snap : snapshot.getChildren()) {
@@ -47,7 +47,7 @@ public class MyReportShopGetList {
                 // bflist에 있는 가게 정보를 가져오기 위한 루프
                 for (Object shopKey : bflist) {
                     DatabaseReference shopRef = FirebaseDatabase.getInstance().getReference("shops").child(shopKey.toString());
-                    shopRef.addValueEventListener(new ValueEventListener() {
+                    shopRef.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot shopSnapshot) {
                             if (shopSnapshot.exists()) {
@@ -79,13 +79,14 @@ public class MyReportShopGetList {
                                 String uid =  shopSnapshot.child("uid").getValue(String.class);
                                 boolean isVerified=  shopSnapshot.child("verified").getValue(boolean.class);
                                 String primaryKey = shopKey.toString();
+                                String sKey = shopKey.toString();
 
                                 // MyLikeShopModel 객체 생성 및 값 설정
                                 MyReportShopModel shop = new MyReportShopModel(uid, shopName, latitude, longitude ,  addressName, pwayMobile,  pwayCard,
                                         pwayAccount,  pwayCash,  openMon,  openTue,
                                         openWed,  openThu,  openFri,  openSat,
                                         openSun,  category ,  storeImageUri,  menuImageUri,
-                                        isVerified,  hasMeeting,  rating,  geohash, exteriorImagePath, primaryKey);
+                                        isVerified,  hasMeeting,  rating,  geohash, exteriorImagePath, primaryKey, sKey);
 
                                 shopDatas.add(shop); // 가져온 가게 정보를 likeShops 리스트에 추가
                                 Log.d("테스트report", "Category: " + category);

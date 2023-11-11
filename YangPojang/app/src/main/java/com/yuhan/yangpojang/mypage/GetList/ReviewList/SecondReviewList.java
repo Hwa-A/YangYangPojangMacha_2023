@@ -38,7 +38,7 @@ public class SecondReviewList {
         databaseReference = firebaseDatabase.getReference("myReview/" + UID);
         Log.d("프로필reviewSecond", "ZeroReviewList: 테스트report 값 myReviews/" + UID);
 
-        databaseReference.addValueEventListener(new ValueEventListener() {
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot snap : snapshot.getChildren()) {
@@ -51,7 +51,7 @@ public class SecondReviewList {
                     Log.d("프로필reviewSecond", "onDataChange: " + selectReview.size());
                 }
 
-                    reviewRef.addValueEventListener(new ValueEventListener() {
+                    reviewRef.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                             for (i = 0; i < selectShop.size(); i++) {
