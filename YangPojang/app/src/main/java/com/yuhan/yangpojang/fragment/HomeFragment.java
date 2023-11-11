@@ -306,8 +306,6 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, onPoch
         bottomNavigationView = requireActivity().findViewById(R.id.bottomNavigationView); // BottomNavigationView의 ID로 변경 필요
         if (bottomNavigationView != null) {
                     bottomNavigationView.setSelectedItemId(R.id.navigation_map); // 예시로 'navigation_home'을 HomeFragment에 해당하는 ID로 변경해야 합니다.
-
-
         }
 
         //위치를 반환하는 구현체인 FusedLocationSource 생성, locationSource를 초기화 하는 시점에 권한 허용여부를 확인한다(PermissionActivity의 onRequestPermissionResult())

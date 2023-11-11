@@ -1,18 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-    <!-- id 형식: view약자_속한xml명_view설명 -->
-    <!-- view 약자
-            frg: FragmentContainerView
-            img: ImageView
-            imgbtn: ImageButton
-            btn: Button
-            lin: LinearLayout
-            tv: TextView                       -->
+<!-- id 형식: view약자_속한xml명_view설명 -->
+<!-- view 약자
+        frg: FragmentContainerView
+        img: ImageView
+        imgbtn: ImageButton
+        btn: Button
+        lin: LinearLayout
+        tv: TextView                       -->
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".pochaInfo.info.PochainfoActivity"
-    android:id="@+id/fragment_container"
-
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true">
@@ -64,9 +62,10 @@
 
             <ImageView
                 android:id="@+id/img_pochainfo_pochaImage"
-                android:layout_width="318dp"
-                android:layout_height="157dp"
+                android:layout_width="312dp"
+                android:layout_height="131dp"
                 android:layout_marginTop="10dp"
+                android:background="@color/black"
                 android:scaleType="fitCenter"
                 app:layout_constraintDimensionRatio="H, 2:1"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -102,8 +101,7 @@
                 android:textSize="12sp"
                 app:layout_constraintBottom_toBottomOf="@id/tv_pochainfo_pochaname"
                 app:layout_constraintStart_toEndOf="@id/tv_pochainfo_pochaname"
-                app:layout_constraintTop_toTopOf="@id/tv_pochainfo_pochaname"
-                tools:ignore="TouchTargetSizeCheck" />
+                app:layout_constraintTop_toTopOf="@id/tv_pochainfo_pochaname" />
 
             <ImageView
                 android:layout_width="30dp"
@@ -127,15 +125,33 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/img_pochainfo_pochaImage">
 
-                <ImageButton
-                    android:id="@+id/imgbtn_pochainfo_goodButton"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:adjustViewBounds="true"
-                    android:background="@android:color/transparent"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/empty_heart"
-                    tools:ignore="SpeakableTextPresentCheck" />
+                <FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <ImageButton
+                        android:id="@+id/imgbtn_pochainfo_notgoodButton"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:adjustViewBounds="true"
+                        android:visibility="visible"
+                        android:background="@android:color/transparent"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/empty_heart"
+                        tools:ignore="SpeakableTextPresentCheck" />
+
+                    <ImageButton
+                        android:id="@+id/imgbtn_pochainfo_goodButton"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:adjustViewBounds="true"
+                        android:visibility="invisible"
+                        android:background="@android:color/transparent"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/full_heart"
+                        tools:ignore="SpeakableTextPresentCheck" />
+
+                </FrameLayout>
 
                 <TextView
                     android:layout_width="wrap_content"

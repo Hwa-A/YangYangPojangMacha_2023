@@ -87,7 +87,7 @@ public class PochainfoActivity extends AppCompatActivity implements Serializable
         TextView pchNameTv = findViewById(R.id.tv_pochainfo_pochaname);  // 포차 이름 TextView
         pchImgview = findViewById(R.id.img_pochainfo_pochaImage); // 포차 이미지
         categoryTv=findViewById(R.id.tv_pochainfo_category);
-        
+
         viewModel = new ViewModelProvider(this).get(PochaViewModel.class);
 
 
@@ -282,7 +282,7 @@ public class PochainfoActivity extends AppCompatActivity implements Serializable
         }
     }
 
-//    @Override
+    //    @Override
 //    public void onBackPressed() {
 //        // FragmentManager를 사용하여 HomeFragment로 교체
 //        FragmentManager fm = getSupportFragmentManager();
