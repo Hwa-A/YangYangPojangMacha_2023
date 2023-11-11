@@ -60,6 +60,8 @@ import com.naver.maps.map.widget.CompassView;
 import com.naver.maps.map.widget.LocationButtonView;
 import com.yuhan.yangpojang.home.CategoryListAdapter;
 import com.yuhan.yangpojang.model.LikeShopData;
+import com.yuhan.yangpojang.mypage.GetList.MeetingGetListCollection.GetAllMyMeetingItems;
+import com.yuhan.yangpojang.mypage.Model.MeetingModelCollection.AllMeetingItemModel;
 import com.yuhan.yangpojang.pochaInfo.info.PochainfoActivity;
 import com.yuhan.yangpojang.R;
 import com.yuhan.yangpojang.home.HttpResponse;
@@ -293,7 +295,6 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, onPoch
         }catch (ClassNotFoundException e){
             Toast.makeText(v.getContext(), "클래스 찾을 수 없음: PochainfoActivity", Toast.LENGTH_SHORT).show();
         }
-
     }
 
     @Override
@@ -319,8 +320,11 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, onPoch
         }
 
 
-        Log.d("digimon", "onCreate() 실행");
-        //제보 완료시 하단바 - 홈으로 이동시키기 위해 추가함(홍서빈)
+
+        Log.d("나만 볼거야", "onCreate() 실행");
+
+        introductionPopup();
+
 
 
         //위치를 반환하는 구현체인 FusedLocationSource 생성, locationSource를 초기화 하는 시점에 권한 허용여부를 확인한다(PermissionActivity의 onRequestPermissionResult())
@@ -404,8 +408,6 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, onPoch
             });
         }
 
-        introductionPopup();
-
         return homeview;
     } // onCreateView 끝
 
@@ -481,29 +483,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, onPoch
 
     }
 
-    private CameraPosition savedCameraPosition;
-    @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
 
-        if (mNaverMap != null) {
-            savedCameraPosition = mNaverMap.getCameraPosition(); // 현재 지도의 카메라 위치 저장
-            outState.putParcelable("camera_position", savedCameraPosition);
-        }
-    }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-
-        if (savedInstanceState != null) {
-            // 이전 상태를 복원
-            savedCameraPosition = savedInstanceState.getParcelable("camera_position");
-            if (savedCameraPosition != null && mNaverMap != null) {
-                mNaverMap.setCameraPosition(savedCameraPosition);
-            }
-        }
-    }
 
     @Override
     public void onStart() {
@@ -688,9 +668,9 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, onPoch
         //heart이미지 설정
         ImageButton empty_heart = homeview.findViewById(R.id.pochainfo_emptyheart);
         ImageButton full_heart = homeview.findViewById(R.id.pochainfo_fullheart);
-        isLikeShop(stores.get(index).getPrimaryKey(), empty_heart, full_heart);
+        isLikeShop(stores.get(index).getShopKey(), empty_heart, full_heart);
         //heart리스너 설정
-        View.OnClickListener heartL = setHeartListener(getActivity(), stores.get(index).getPrimaryKey(), empty_heart, full_heart);
+        View.OnClickListener heartL = setHeartListener(getActivity(), stores.get(index).getShopKey(), empty_heart, full_heart);
         empty_heart.setOnClickListener(heartL);
         full_heart.setOnClickListener(heartL);
 

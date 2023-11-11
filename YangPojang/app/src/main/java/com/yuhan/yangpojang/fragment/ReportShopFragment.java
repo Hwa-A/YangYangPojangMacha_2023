@@ -1,8 +1,8 @@
 package com.yuhan.yangpojang.fragment;
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.graphics.Color;
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -23,7 +23,6 @@ import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.activity.OnBackPressedCallback;
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
@@ -35,7 +34,6 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentResultListener;
 import androidx.fragment.app.FragmentTransaction;
-
 import com.firebase.geofire.GeoFireUtils;
 import com.firebase.geofire.GeoLocation;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -112,6 +110,7 @@ public class ReportShopFragment extends Fragment implements ShopDataListener
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
     {
+        Log.d("fffffff리포트샵온크리에트","");
         // 해당 class(ReprotShopFragment)에서 연결시킬 layout을 inflate한다
         // 즉 MainActivity 하단 네비게이션 바에서 클릭된 fragment ==>  fragment_report_shop.xml 레이아웃을 인플레이트 하면 되는것
         View viewReprotShop = inflater.inflate(R.layout.fragment_report_shop, container, false);
@@ -284,11 +283,16 @@ public class ReportShopFragment extends Fragment implements ShopDataListener
                                     menuImagePath= trimmedString;
                                     Log.d("dskfjaskdjl33",menuImagePath);
                                 }
+
                                 }
 
+                            }
+
+
                         }
-                    }
                 });
+
+
 
         // 제보버튼 눌렀을때 발생
         reportBtn.setOnClickListener(new View.OnClickListener()
@@ -299,6 +303,7 @@ public class ReportShopFragment extends Fragment implements ShopDataListener
                 saveShopData();
             }
         });
+
         //가게위치 선택하기 글자를 누르면 지도가 뜨게 구현 + 하단 네비게이션 바 감춤
         editShopPlaceBtn.setOnClickListener(v ->
         {
@@ -321,7 +326,6 @@ public class ReportShopFragment extends Fragment implements ShopDataListener
     @Override
     public void onStart (){
         super.onStart();
-        Log.d("ffffff리포트 온스타","");
 
         // OnBackPressedCallback 생성
         OnBackPressedCallback callback = new OnBackPressedCallback(true) {
@@ -329,13 +333,16 @@ public class ReportShopFragment extends Fragment implements ShopDataListener
             public void handleOnBackPressed() {
                 // 뒤로가기 버튼이 눌렸을 때 홈 프래그먼트로 이동
                 BottomNavigationView bottomNavigationView = getActivity().findViewById(R.id.bottomNavigationView);
-                bottomNavigationView.setSelectedItemId(R.id.navigation_map);
+                if(bottomNavigationView!=null) {
+                    bottomNavigationView.setSelectedItemId(R.id.navigation_map);
+                }
             }
         };
 
         // OnBackPressedCallback 추가
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), callback);
     }
+
 
     // 위치 선택 지도 팝업을 띄우는 메서드
     private void showMapLocationPopup() {
@@ -492,12 +499,14 @@ public class ReportShopFragment extends Fragment implements ShopDataListener
         }
         else // 제보에 필요한 정보를 모두 입력했을시
         {
+
              shop = new Shop(uid,shopName, latitude,longitude,addressName,isPwayMobile, isPwayCard, isPwayAccount, isPwayCash,
                     isOpenMon, isOpenTue, isOpenWed, isOpenThu, isOpenFri, isOpenSat, isOpenSun,selectedCategory,
                     isVerified,  hasMeeting, rating ,geohash,
                      (exteriorImagePath!= null) ? exteriorImagePath.toString() : "",
                      (menuImagePath != null) ? menuImagePath.toString() : ""
              );
+
             shop.setMenuImagePath(menuImagePath);
             shop.setExteriorImagePath(exteriorImagePath);
 
@@ -527,7 +536,9 @@ public class ReportShopFragment extends Fragment implements ShopDataListener
 
 
 
-  //   제보 완료하면 홈으로 보내기 위한 메서드
+
+
+    //  dkdk
     private void replaceFragment() {
 
         MainActivity mainActivity = (MainActivity) getActivity();

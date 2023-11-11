@@ -33,6 +33,7 @@ public class MyReportShopModel extends Shop {
     private String geohash;
     private String exteriorImagePath;
     private String primaryKey;
+    private String shopKey;
     private String uid;
 
 
@@ -41,10 +42,11 @@ public class MyReportShopModel extends Shop {
     }
 
     public MyReportShopModel(String uid, String shopName, double latitude, double longitude , String  addressName, boolean pwayMobile, boolean pwayCard,
-                             boolean pwayAccount, boolean pwayCash, boolean openMon, boolean openTue,
-                             boolean openWed, boolean openThu, boolean openFri, boolean openSat,
-                             boolean openSun, String category , String storeImageUri, String menuImageUri,
-                             boolean verified, boolean hasMeeting, float rating, String geohash, String exteriorImagePath, String primaryKey ) {
+                boolean pwayAccount, boolean pwayCash, boolean openMon, boolean openTue,
+                boolean openWed, boolean openThu, boolean openFri, boolean openSat,
+                boolean openSun, String category , String storeImageUri, String menuImageUri,
+                boolean verified, boolean hasMeeting, float rating, String geohash, String exteriorImagePath, String primaryKey , String shopKey) {
+
 
         this.uid= uid;
         this.shopName=shopName;
@@ -69,6 +71,8 @@ public class MyReportShopModel extends Shop {
         this.hasMeeting =hasMeeting;
         this.exteriorImagePath = exteriorImagePath;
         this.primaryKey = primaryKey;
+        this.shopKey = shopKey;
+
         this.rating= rating;
         this.geohash = geohash;
     }
@@ -180,6 +184,8 @@ public class MyReportShopModel extends Shop {
         return exteriorImagePath;
     }
     public String getPrimaryKey() { return primaryKey; }
+    public String getShopKey() { return shopKey;    }
+
 
     public void setLatitude(double latitude) {
         this.latitude = latitude;
@@ -282,5 +288,6 @@ public class MyReportShopModel extends Shop {
     }
     public void setExteriorImagePath(String exteriorImagePath) { this.exteriorImagePath = exteriorImagePath;}
     public void setPrimaryKey(String primaryKey) { this.primaryKey = primaryKey; }
+    public void setShopkey(String shopKey) {this.shopKey = shopKey;}
 
 }

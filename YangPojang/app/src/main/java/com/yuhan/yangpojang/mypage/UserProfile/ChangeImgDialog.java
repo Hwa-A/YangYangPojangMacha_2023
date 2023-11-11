@@ -114,6 +114,7 @@ public class ChangeImgDialog extends Dialog{
                     Glide.with(context)
                             .load(imageUrl)
                             .error(R.drawable.error)
+                            .circleCrop()
                             .into(userImg);
                     hideLoading();
                 })

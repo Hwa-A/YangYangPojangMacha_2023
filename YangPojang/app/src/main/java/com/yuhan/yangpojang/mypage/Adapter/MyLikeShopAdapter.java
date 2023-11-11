@@ -30,6 +30,7 @@ public class MyLikeShopAdapter extends RecyclerView.Adapter<MyLikeShopAdapter.My
 
 
     public MyLikeShopAdapter(ArrayList<MyLikeShopModel> likeList, Context context) {
+        this.likeList.clear();
         Log.d("LikeAdapter", "MyLikeShopAdapter: 진입");
         this.likeList = likeList;
         this.context = context;
@@ -44,13 +45,6 @@ public class MyLikeShopAdapter extends RecyclerView.Adapter<MyLikeShopAdapter.My
 
         MyLikeShopHolder(View itemview){
             super(itemview);
-
-//            itemview.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View view) {
-//
-//                }
-//            });
 
             myshop_name = itemview.findViewById(R.id.shopName);
             myshop_category = itemview.findViewById(R.id.shopCategory);
@@ -92,6 +86,8 @@ public class MyLikeShopAdapter extends RecyclerView.Adapter<MyLikeShopAdapter.My
                 intent.putExtra("shopInfo", selectedShop);  // MyLikeShopModel 객체를 추가 데이터로 전달
 
                 context.startActivity(intent); // 인텐트 실행
+
+
             }
         });
     }

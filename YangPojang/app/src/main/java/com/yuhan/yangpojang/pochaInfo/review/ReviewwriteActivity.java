@@ -572,33 +572,33 @@ public class ReviewwriteActivity extends AppCompatActivity {
             ImageButton imageClearBtn = imageClearBtns.get(i);
             FrameLayout imageContainer = imageContainers.get(i);
 
-                if (bitmap != null) {
-                    // 비트맵을 정상적으로 얻은 경우
-                    if (imageContainer.getVisibility() == View.GONE) {
-                        // 해당 이미지 컨테이너가 화면에 없는 상태인 경우
-                        imageContainer.setVisibility(View.VISIBLE);     // 화면에 보이도록 변경
-                    }
-                    imageBtn.setImageBitmap(bitmap);    // 현재 이미지 변경
-                    imageBtn.setClickable(false);       // 현재 이미지 버튼 클릭 막기
-                    if (imageClearBtn.getVisibility() == View.GONE) {
-                        // 해당 이미지 삭제 버튼이 화면에 없는 경우
-                        imageClearBtn.setVisibility(View.VISIBLE);     // 화면에 보이도록 변경
-                    }
-                    if(i < 2){
-                        ImageButton affterImageBtn = imageBtns.get(i+1);
-                        FrameLayout affterImageContainer = imageContainers.get(i+1);
-                        affterImageContainer.setVisibility(View.VISIBLE);     // 화면에 보이도록 변경
-                        affterImageBtn.setVisibility(View.VISIBLE);     // 다음 이미지 버튼이 보이도록 변경
-                    }
-                } else {
-                    if(i < selectedImageUris.size()){
-                        selectedImageCount--;       // 선택된 이미지 감소
-                        selectedImageUris.remove(i);    // 해당 인덱스의 uri 제거
-                        imageBitmaps.remove(i);     // 해당 인덱스의 비트맵 삭제 후, 삭제된 비트맵 반환
-                    }
-                    // 비트맵 못 얻은 경우
-                    Toast.makeText(getApplication(), "이미지를 제대로 로드하지 못하였습니다", Toast.LENGTH_LONG).show();
+            if (bitmap != null) {
+                // 비트맵을 정상적으로 얻은 경우
+                if (imageContainer.getVisibility() == View.GONE) {
+                    // 해당 이미지 컨테이너가 화면에 없는 상태인 경우
+                    imageContainer.setVisibility(View.VISIBLE);     // 화면에 보이도록 변경
                 }
+                imageBtn.setImageBitmap(bitmap);    // 현재 이미지 변경
+                imageBtn.setClickable(false);       // 현재 이미지 버튼 클릭 막기
+                if (imageClearBtn.getVisibility() == View.GONE) {
+                    // 해당 이미지 삭제 버튼이 화면에 없는 경우
+                    imageClearBtn.setVisibility(View.VISIBLE);     // 화면에 보이도록 변경
+                }
+                if(i < 2){
+                    ImageButton affterImageBtn = imageBtns.get(i+1);
+                    FrameLayout affterImageContainer = imageContainers.get(i+1);
+                    affterImageContainer.setVisibility(View.VISIBLE);     // 화면에 보이도록 변경
+                    affterImageBtn.setVisibility(View.VISIBLE);     // 다음 이미지 버튼이 보이도록 변경
+                }
+            } else {
+                if(i < selectedImageUris.size()){
+                    selectedImageCount--;       // 선택된 이미지 감소
+                    selectedImageUris.remove(i);    // 해당 인덱스의 uri 제거
+                    imageBitmaps.remove(i);     // 해당 인덱스의 비트맵 삭제 후, 삭제된 비트맵 반환
+                }
+                // 비트맵 못 얻은 경우
+                Toast.makeText(getApplication(), "이미지를 제대로 로드하지 못하였습니다", Toast.LENGTH_LONG).show();
+            }
         }
     }
 

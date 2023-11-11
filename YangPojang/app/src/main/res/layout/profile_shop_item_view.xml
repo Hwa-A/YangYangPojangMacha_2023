@@ -7,7 +7,7 @@
     android:layout_marginLeft="10dp"
     android:layout_marginRight="10dp"
     android:background="@drawable/border_rounded_coner_gray"
-    android:elevation="40dp">
+    android:elevation="5dp">
 
 
     <TextView
