@@ -470,29 +470,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, onPoch
 
     }
 
-    private CameraPosition savedCameraPosition;
-    @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
 
-        if (mNaverMap != null) {
-            savedCameraPosition = mNaverMap.getCameraPosition(); // 현재 지도의 카메라 위치 저장
-            outState.putParcelable("camera_position", savedCameraPosition);
-        }
-    }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-
-        if (savedInstanceState != null) {
-            // 이전 상태를 복원
-            savedCameraPosition = savedInstanceState.getParcelable("camera_position");
-            if (savedCameraPosition != null && mNaverMap != null) {
-                mNaverMap.setCameraPosition(savedCameraPosition);
-            }
-        }
-    }
 
     @Override
     public void onStart() {

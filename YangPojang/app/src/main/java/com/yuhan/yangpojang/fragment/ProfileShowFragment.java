@@ -87,7 +87,7 @@ public class ProfileShowFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = (ViewGroup) inflater.inflate(R.layout.fragment_profile, container, false);
 
-
+        Log.d("보라돌이", "onCreateView");
 
         // 화면 내의 활성화 되는 버튼들
         // accountBtn : 클릭 시 계정 설정 페이지로 넘어감 (accountPage.java , account_page.xml)
@@ -159,14 +159,12 @@ public class ProfileShowFragment extends Fragment {
         likeRecyclerView = view.findViewById(R.id.myLikeRecycle);
         likeRecyclerView.setHasFixedSize(true);
         likeRecyclerView.setLayoutManager(new LinearLayoutManager(view.getContext(), LinearLayoutManager.HORIZONTAL, false)); //리사이클 뷰의 아이템 배치 결정 (가로 스크롤 목록을 생성, 역방향 스크롤 비활성화)
-
         MyLikeShopGetList myLikeShopGetList = new MyLikeShopGetList();
 
         myLikeShopGetList.getMyLikeShopList(user_info_uid, new MyLikeShopGetList.dataLoadedCallback() {
             @Override
             public void onDataLoaded(ArrayList<MyLikeShopModel> shopDatas) {
                 if (shopDatas != null) {
-
                     Log.d("프로필", "onDataLoaded: in main");
                     likeAdapter = new MyLikeShopAdapter(shopDatas, getContext());
                     likeRecyclerView.setAdapter(likeAdapter);
@@ -237,6 +235,7 @@ public class ProfileShowFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d("보라돌이", "onCreate");
         //UID 가져오기
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
