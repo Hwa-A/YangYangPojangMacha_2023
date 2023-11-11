@@ -1,17 +1,11 @@
 package com.yuhan.yangpojang;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.location.Location;
-import android.location.LocationManager;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Switch;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -25,8 +19,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.naver.maps.map.util.FusedLocationSource;
-import com.yuhan.yangpojang.fragment.HomeFragment;
 import com.yuhan.yangpojang.login.LogindetailAct;
 import com.yuhan.yangpojang.login.User;
 
