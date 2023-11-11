@@ -296,7 +296,7 @@ public class PochainfoUpdate extends AppCompatActivity {
 
             if(shopkey!=null)
             {
-                Log.d("PochainfoUpdate- shopKey값 확인",shopkey);
+                Log.d("FFFFFFPochainfoUpdate- shopKey값 확인",shopkey);
                 detailShopRef= shopsRef.child(shopkey);
             }
 
@@ -325,7 +325,7 @@ public class PochainfoUpdate extends AppCompatActivity {
                     // Handle the upload success and failure
                     uploadTask.addOnSuccessListener(taskSnapshot -> {
 
-                        Log.d("fffhappy","aa"+exteriorRef);
+                        Log.d("fffhappy",""+exteriorRef);
                         exteriorRef.getDownloadUrl().addOnSuccessListener(uri -> {   // uri is the download URL for the exterior image
                              exteriorImageUrl = uri.toString();
                              Log.d("ffff받아진값",exteriorImageUrl);
@@ -378,6 +378,11 @@ public class PochainfoUpdate extends AppCompatActivity {
                     // Handle the upload success and failure
                     uploadTask.addOnSuccessListener(taskSnapshot -> {
                         Log.d("ㄹㄹㄹPochaInfoUpdate- Firebase", "메뉴이미지 정상 등록됌");
+                        Log.d("ㄹㄹㄹ메뉴사진", String.valueOf(menuBoardImageUri));
+//                        menuBoardImageUri= Uri.parse("");
+//                        Log.d("ㄹㄹㄹ메뉴사진초기화", String.valueOf(menuBoardImageUri));
+
+
                     }).addOnFailureListener(e -> {
                         Log.e("PochaInfoUpdate- Firebase", "메뉴 업로딩 과정중 오류", e);
                     });
@@ -409,20 +414,21 @@ public class PochainfoUpdate extends AppCompatActivity {
         {
             detailShopRef.updateChildren(updates)
                     .addOnSuccessListener(aVoid -> {
-                        Log.d("PochaInfoUpdate-Firebase", "데이터 업데이트 성공");
+                        Log.d("FFFFPochaInfoUpdate-Firebase", "데이터 업데이트 성공");
 
-                        Intent intent2 = new Intent(PochainfoUpdate.this, PochainfoActivity.class); // Replace NewActivity.class with the intended activity to start
-                        intent2.putExtra("shopInfo", shop);
-                        startActivity(intent2);
+//                        Intent intent2 = new Intent(PochainfoUpdate.this, PochainfoActivity.class); // Replace NewActivity.class with the intended activity to start
+//                        intent2.putExtra("shopInfo", shop);
+//                        startActivity(intent2);
+                        finish();
                     })
                     .addOnFailureListener(e -> {
-                        Log.e("PochaInfoUpdate-Firebase", "데이터 업데이트 실패", e);
+                        Log.e("FFFFPochaInfoUpdate-Firebase", "데이터 업데이트 실패", e);
                     });
 
         } else {
             Toast.makeText(PochainfoUpdate.this, "결제수단을 하나이상 선택해 주세요", Toast.LENGTH_SHORT).show();
 
-            Log.e("PochaInfoUpdate- firebase","detailShopRef를 찾을수 없습니다");
+            Log.e("FFFFPochaInfoUpdate- firebase","detailShopRef를 찾을수 없습니다");
         }
 
     }

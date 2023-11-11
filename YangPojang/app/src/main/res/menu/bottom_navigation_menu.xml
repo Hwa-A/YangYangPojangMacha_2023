@@ -2,12 +2,12 @@
 <menu xmlns:tools="http://schemas.android.com/tools"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+
     <item
         android:id="@+id/navigation_map"
-        app:showAsAction="always"
         android:enabled="true"
         android:icon="@drawable/map"
-
+        app:showAsAction="always"
         tools:ignore="MenuTitle" />
 
 

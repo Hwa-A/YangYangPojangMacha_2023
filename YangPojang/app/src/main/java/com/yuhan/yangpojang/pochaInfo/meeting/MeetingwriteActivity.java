@@ -30,9 +30,11 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.yuhan.yangpojang.R;
 import com.yuhan.yangpojang.pochaInfo.Dialog.UploadFailDialogFragment;
 import com.yuhan.yangpojang.pochaInfo.Dialog.UploadSuccessDialogFragment;
@@ -230,32 +232,48 @@ public class MeetingwriteActivity extends AppCompatActivity {
                 if ((minAgeTxtLay.getError() == null) && (maxAgeTxtLay.getError() == null)) {
                     progressDialog.show();      // 로딩 화면 표시
 
-                    // 번개 id 생성
+                    // 번개 id 생성 후 획득
                     String meetingKey = ref.child("meeting").push().getKey();
-                    // firebase에 저장
-                    Map<String, Object> meetingInsert = new HashMap<>();
-                    // meeting 테이블에 저장
-                    // meeting > 포차 id > 번개 id > 번개 정보
-                    meetingInsert.put("/meeting/"+pchKey+"/"+meetingKey, meeting);
-                    // myMeeting 테이블에 저장
-                    // myMeeting > uid > 번개 id : 포차 id
-                    meetingInsert.put("/myMeeting/"+meeting.getHostUid()+"/"+meetingKey, pchKey);
-
-                    // firebase에 업로드
-                    ref.updateChildren(meetingInsert, new DatabaseReference.CompletionListener() {
+                    ref.child("user-info/"+meeting.getHostUid()+"/user_Nickname").addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
-                        public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
-                            if (error == null){
-                                // 업로드 성공한 경우,
-                                progressDialog.dismiss();       // 로딩 화면 숨기기
-                                showUploadSuccessDialog();      // 성공 다이얼로그 출력
-                            }else {
-                                //  업로드 실패 경우
-                                progressDialog.dismiss();       // 로딩 화면 숨기기
-                                showUploadFailDialog();     // 실패 다이얼로그 출력
-                            }
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            String userNickName = snapshot.getValue(String.class);      // 개최자 닉네임 가져오기
+
+                            // firebase에 저장
+                            Map<String, Object> meetingInsert = new HashMap<>();
+                            // meeting 테이블에 저장
+                            // meeting > 포차 id > 번개 id > 번개 정보
+                            meetingInsert.put("/meeting/"+pchKey+"/"+meetingKey, meeting);
+                            // myMeeting 테이블에 저장
+                            // myMeeting > uid > 번개 id : 포차 id
+                            meetingInsert.put("/myMeeting/"+meeting.getHostUid()+"/"+meetingKey, pchKey);
+                            // meetingAttenders
+                            // meetingAttenders > 번개 id > uid : 닉네임
+                            meetingInsert.put("meetingAttenders/"+meetingKey+"/"+meeting.getHostUid(), userNickName);
+
+                            // firebase에 업로드
+                            ref.updateChildren(meetingInsert, new DatabaseReference.CompletionListener() {
+                                @Override
+                                public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
+                                    if (error == null){
+                                        // 업로드 성공한 경우,
+                                        progressDialog.dismiss();       // 로딩 화면 숨기기
+                                        showUploadSuccessDialog();      // 성공 다이얼로그 출력
+                                    }else {
+                                        //  업로드 실패 경우
+                                        progressDialog.dismiss();       // 로딩 화면 숨기기
+                                        showUploadFailDialog();     // 실패 다이얼로그 출력
+                                    }
+                                }
+                            });
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
                         }
                     });
+
                 }else {
                     Toast.makeText(getApplicationContext(), "입력된 연령대의 범위가 옳지 않습니다", Toast.LENGTH_SHORT).show();
                 }

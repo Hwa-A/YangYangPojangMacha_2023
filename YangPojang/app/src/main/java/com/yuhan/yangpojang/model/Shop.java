@@ -22,8 +22,8 @@ public class Shop implements Serializable {
     private String addressName;
     private String category;
     private String hash;
-        private String fbStoreImgurl; // 파이어베이스에 들어간 이미지 url [https://firebasestorage.googleapis.com///] 형태
-     private String fbMenuImgurl;  // 파이어베이스에 들어간 이미지 url https://firebasestorage.googleapis.com///][ 형태
+    private String fbStoreImgurl; // 파이어베이스에 들어간 이미지 url [https://firebasestorage.googleapis.com///] 형태
+    private String fbMenuImgurl;  // 파이어베이스에 들어간 이미지 url https://firebasestorage.googleapis.com///][ 형태
 
     private boolean verified; //인증 여부
     private boolean hasMeeting; //번개 여부
@@ -324,4 +324,3 @@ public class Shop implements Serializable {
                 '}';
     }
 }
-
