@@ -227,11 +227,12 @@ public class ReviewwriteActivity extends AppCompatActivity {
                 StorageReference storageRef = FirebaseStorage.getInstance().getReference()
                         .child("review/"+pchKey+"/"+reviewKey); // storage 참조 객체 생성 및 초기화
 
-                if(selectedImageUris != null){
+                if(selectedImageUris.size() > 0){
                     // 선택된 이미지가 있는 경우, storage에 업로드
                     uploadImageAndTransaction(storageRef, reviewKey, ref);
                 }else {
                     // 선택된 이미지가 없는 경우, 트랜잭션만 실행
+                    Log.e("test1", "선택된 이미지 없음");
                     runReviewTransaction(ref, reviewKey);
                 }
             }else {
