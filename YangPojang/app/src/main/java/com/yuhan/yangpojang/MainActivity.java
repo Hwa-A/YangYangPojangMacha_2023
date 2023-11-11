@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
     private ProgressBar progressBar;
     private AlertDialog alertDialog;
 
-    BottomNavigationView bottomNavigationView;
+    public BottomNavigationView bottomNavigationView;
     ReportShopFragment reportShopFragment;
     ProfileShowFragment profileShowFragment;
     HomeFragment homeFragment;

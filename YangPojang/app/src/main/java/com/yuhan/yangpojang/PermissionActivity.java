@@ -37,13 +37,12 @@ public class PermissionActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_permission);
 
+
         mDatabase = FirebaseDatabase.getInstance().getReference();
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
             user_info_uid = user.getUid();
         }
-
-
 
         permissionAccessButton = findViewById(R.id.permissionAccess);
 
