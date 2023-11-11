@@ -98,20 +98,19 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, onPoch
                              - 지도 초기화 및 사용자 정의 작업 수행, 지도가 초기화되고 사용 가능한 상태일 때 호출되는 콜백 */
     @Override
     public void onMapReady(@NonNull NaverMap naverMap) {
-
+        Log.d("나만 볼거야", "onMapReady() 실행");
         // NaverMap 객체 받아서 NaverMap 객체에 위치 소스 지정
         mNaverMap = naverMap;
 
         // 위치권한 여부에 따른 현위치 버튼 표시, 위치 권한 거부 시 서울 시청 기준으로 가게 띄우기
         if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             locationPermission();
-
+            mNaverMap.setLocationTrackingMode(LocationTrackingMode.Follow);
         }
         // 권한 부여가 되지 않은 경우 권한 부여 메세지 생성
         else
         {
             locationPermission();
-
             // 위치권한 거부 시 서울시청 중심으로 가게 데이터 요청
             StoreData.addLocation(37.566585801211325, 126.9777104192369, calculateRadius());
             loadStoreData();
@@ -297,16 +296,32 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, onPoch
 
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d("나만 볼거야", "onResume() 실행");
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause(); Log.d("나만 볼거야", "onPause() 실행");
+    }
+
     private ActivityResultLauncher<Intent> getSearchActivityResult;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //제보 완료시 하단바 - 홈으로 이동시키기 위해 추가함(홍서빈)
 
+        //제보 완료시 하단바 - 홈으로 이동시키기 위해 추가함(홍서빈)
         bottomNavigationView = requireActivity().findViewById(R.id.bottomNavigationView); // BottomNavigationView의 ID로 변경 필요
         if (bottomNavigationView != null) {
                     bottomNavigationView.setSelectedItemId(R.id.navigation_map); // 예시로 'navigation_home'을 HomeFragment에 해당하는 ID로 변경해야 합니다.
         }
+
+
+        Log.d("나만 볼거야", "onCreate() 실행");
+        //제보 완료시 하단바 - 홈으로 이동시키기 위해 추가함(홍서빈)
+
 
         //위치를 반환하는 구현체인 FusedLocationSource 생성, locationSource를 초기화 하는 시점에 권한 허용여부를 확인한다(PermissionActivity의 onRequestPermissionResult())
         locationSource = new FusedLocationSource(this, PERMISSION_REQUEST_CODE);
@@ -317,7 +332,6 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, onPoch
                     if (result.getResultCode() == RESULT_OK){
                         // 서브 액티비티의 입력 값을 메인에서 받아서 텍스트뷰에 표시 ...!
                         basemap(); // 기본 지도 형태(이전에 생성되었던 지도 상의 이벤트 원상복구)
-
 
                         Location recentLocation = result.getData().getParcelableExtra("select_recent_location"); //최근검색 - 위치값
                         String recentAddress = result.getData().getStringExtra("select_recent_address"); //최근검색 - 주소값
@@ -363,7 +377,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, onPoch
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         homeview = (ViewGroup) inflater.inflate(R.layout.fragment_home, container, false);
-
+        Log.d("나만 볼거야", "onCreateView() 실행");
         //지도 객체 생성하기 (xml에 있는 지도와 연결 후, 지도 출력)
         // MapFragment를 다른 프래그먼트 내에 배치할 경우 supportFragmentManager
         // 대신 childFragmentManager()를 사용해 MapFragment를 자식 프래그먼트로 두어야 함.
@@ -390,22 +404,111 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, onPoch
             });
         }
 
+        introductionPopup();
+
         return homeview;
     } // onCreateView 끝
+
+    // 앱 실행 시 팝업
+    public void introductionPopup(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+
+        LayoutInflater inflater = getLayoutInflater();
+        View customView = inflater.inflate(R.layout.app_introduction_popup, null);
+        builder.setView(customView);
+        final AlertDialog dialog = builder.create();
+
+        final TextView description = customView.findViewById(R.id.description);
+        final TextView authmeeting = customView.findViewById(R.id.authmeeting);
+        final ImageView auth = customView.findViewById(R.id.auth);
+        final ImageView meet = customView.findViewById(R.id.meet);
+        final Button end = customView.findViewById(R.id.end);
+
+        final String[] descriptions = {getActivity().getResources().getString(R.string.description1), getActivity().getResources().getString(R.string.description2), getActivity().getResources().getString(R.string.description3)};
+        final String[] authmeetings = {getActivity().getResources().getString(R.string.title1), getActivity().getResources().getString(R.string.title2), getActivity().getResources().getString(R.string.title3)};
+        final int[] currentIndex = {0};
+
+        Button cancel = customView.findViewById(R.id.cancel);
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) { dialog.dismiss(); }
+        });
+
+        Button next = customView.findViewById(R.id.next);
+        next.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // 배열에서 다음 텍스트를 가져와 설정
+                if (currentIndex[0] < descriptions.length) {
+                    currentIndex[0]++;
+                    if (currentIndex[0] == 1) {
+                        auth.setVisibility(VISIBLE);
+                        authmeeting.setVisibility(VISIBLE);
+                    } else if (currentIndex[0] == 2) {
+                        auth.setVisibility(INVISIBLE);
+                        meet.setVisibility(VISIBLE);
+                        cancel.setVisibility(INVISIBLE);
+                        next.setVisibility(INVISIBLE);
+                        end.setVisibility(VISIBLE);
+                    } else {
+                        auth.setVisibility(View.GONE);
+                        meet.setVisibility(View.GONE);
+                        authmeeting.setVisibility(View.GONE);
+                    }
+
+                    description.setText(descriptions[currentIndex[0]]);
+                    authmeeting.setText(authmeetings[currentIndex[0]]);
+                }
+            }
+        });
+
+        end.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) { dialog.dismiss(); }
+        });
+
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.show();
+    }
 
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         // request code와 권한 획득 여부 확인
         if(requestCode == PERMISSION_REQUEST_CODE){ // onMapReady()메서드에 요청한 권한 요청과 일치하는지 확인
             locationPermission();
+            mNaverMap.setLocationTrackingMode(LocationTrackingMode.Follow);
         }// onRequestPermissionsResult()메서드는 권한 요청 결과를 처리하고, 권한이 획득되었을 경우에만 NaverMap객체의 위치 추적 모드를 설정하는 역할을 함
 
+    }
+
+    private CameraPosition savedCameraPosition;
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        if (mNaverMap != null) {
+            savedCameraPosition = mNaverMap.getCameraPosition(); // 현재 지도의 카메라 위치 저장
+            outState.putParcelable("camera_position", savedCameraPosition);
+        }
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        if (savedInstanceState != null) {
+            // 이전 상태를 복원
+            savedCameraPosition = savedInstanceState.getParcelable("camera_position");
+            if (savedCameraPosition != null && mNaverMap != null) {
+                mNaverMap.setCameraPosition(savedCameraPosition);
+            }
+        }
     }
 
     @Override
     public void onStart() {
         super.onStart();
-
+        Log.d("나만 볼거야", "onStart() 실행");
         //주소 창 클릭 시 SearchActivity로 이동 후 검색 값 받아오기
         searchAdd = homeview.findViewById(R.id.searchAdd);
         searchAdd.setOnClickListener(new View.OnClickListener() {
@@ -421,7 +524,6 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, onPoch
         re_searchbtn.setVisibility(INVISIBLE);
 
         locationPermission();
-
     }
 
     // 위치 권한이 변경될 때 호출할 메소드
@@ -429,7 +531,6 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, onPoch
         if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             if(mNaverMap != null ){
                 mNaverMap.setLocationSource(locationSource);
-                mNaverMap.setLocationTrackingMode(LocationTrackingMode.Follow);
 
                 LocationButtonView locationButtonView = homeview.findViewById(R.id.location_btn);
                 locationButtonView.setMap(mNaverMap);
@@ -589,7 +690,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, onPoch
         ImageButton full_heart = homeview.findViewById(R.id.pochainfo_fullheart);
         isLikeShop(stores.get(index).getPrimaryKey(), empty_heart, full_heart);
         //heart리스너 설정
-        View.OnClickListener heartL = setHeartListener(stores.get(index).getPrimaryKey(), empty_heart, full_heart);
+        View.OnClickListener heartL = setHeartListener(getActivity(), stores.get(index).getPrimaryKey(), empty_heart, full_heart);
         empty_heart.setOnClickListener(heartL);
         full_heart.setOnClickListener(heartL);
 
@@ -629,21 +730,21 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, onPoch
     }
 
     // 하트 모양 리스너
-    public View.OnClickListener setHeartListener(String shopId, ImageButton empty_heart, ImageButton full_heart) {
+    public View.OnClickListener setHeartListener(Context context, String shopId, ImageButton empty_heart, ImageButton full_heart) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 int viewId = v.getId();
                 LikeShopData likeShopData = new LikeShopData();
 
-                if (viewId == R.id.pochainfo_emptyheart) {
+                if (viewId == R.id.pochainfo_emptyheart || viewId == R.id.imgbtn_pochainfo_notgoodButton) {
                     // 좋아요 목록에 추가
                     likeShopData.addLikedShop(shopId);
                     isLikeShop(shopId, empty_heart, full_heart);
-                    Toast.makeText(getActivity(), "좋아요 목록에 추가되었습니다", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "좋아요 목록에 추가되었습니다", Toast.LENGTH_SHORT).show();
 
 
-                } else if(viewId == R.id.pochainfo_fullheart){
+                } else if(viewId == R.id.pochainfo_fullheart || viewId == R.id.imgbtn_pochainfo_goodButton){
                     // 좋아요 목록에서 삭제
                     likeShopData.removeLikedShop(shopId);
                     isLikeShop(shopId, empty_heart, full_heart);
@@ -924,6 +1025,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, onPoch
     @Override
     public void onDestroy() {
         super.onDestroy();
+        Log.d("나만 볼거야", "onDestroy() 실행");
         if (mNaverMap != null) {
             mNaverMap.removeOnCameraChangeListener(cameraChangeListener); //리스너 해제(메모리 누수 방지)
         }

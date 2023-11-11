@@ -289,5 +289,39 @@ public class Shop implements Serializable {
 
     public void setPrimaryKey(String primaryKey) { this.primaryKey = primaryKey; }
 
+    @Override
+    public String toString() {
+        return "Shop{" +
+                "latitude=" + latitude +
+                ", longitude=" + longitude +
+                ", shopName='" + shopName + '\'' +
+                ", pwayMobile=" + pwayMobile +
+                ", pwayCard=" + pwayCard +
+                ", pwayAccount=" + pwayAccount +
+                ", pwayCash=" + pwayCash +
+                ", openMon=" + openMon +
+                ", openTue=" + openTue +
+                ", openWed=" + openWed +
+                ", openThu=" + openThu +
+                ", openFri=" + openFri +
+                ", openSat=" + openSat +
+                ", openSun=" + openSun +
+                ", storeImageUri='" + storeImageUri + '\'' +
+                ", menuImageUri='" + menuImageUri + '\'' +
+                ", addressName='" + addressName + '\'' +
+                ", category='" + category + '\'' +
+                ", hash='" + hash + '\'' +
+                ", fbStoreImgurl='" + fbStoreImgurl + '\'' +
+                ", fbMenuImgurl='" + fbMenuImgurl + '\'' +
+                ", verified=" + verified +
+                ", hasMeeting=" + hasMeeting +
+                ", rating=" + rating +
+                ", geohash='" + geohash + '\'' +
+                ", exteriorImagePath='" + exteriorImagePath + '\'' +
+                ", primaryKey='" + primaryKey + '\'' +
+                ", uid='" + uid + '\'' +
+                ", shopKey='" + shopKey + '\'' +
+                '}';
+    }
 }
 

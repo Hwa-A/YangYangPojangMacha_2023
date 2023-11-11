@@ -86,6 +86,7 @@ public class LoginActivity extends AppCompatActivity {
             // 기존에 로그인 했던 계정을 확인한다.
             gsa = GoogleSignIn.getLastSignedInAccount(LoginActivity.this);
 
+
             if (gsa != null) {// 로그인 되있는 경우
                 Toast.makeText(LoginActivity.this, R.string.status_login , Toast.LENGTH_SHORT).show();
                 Intent intent_main = new Intent(getApplicationContext(), PermissionActivity.class);
@@ -98,6 +99,7 @@ public class LoginActivity extends AppCompatActivity {
                 signIn();
         });
     }
+
 
 
     private void signIn(){

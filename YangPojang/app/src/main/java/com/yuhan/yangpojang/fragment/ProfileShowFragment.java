@@ -13,7 +13,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 
-import androidx.activity.OnBackPressedCallback;
+
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -50,7 +53,7 @@ public class ProfileShowFragment extends Fragment {
 
     private LoadUserProfile loadUserProfile; // 프로필을 부르기 위한 클래스
     private TextView userNick;
-    private ImageView userImg;
+    public ImageView userImg;
 
 
     // 현재 프래그먼트에서 작동하는 버튼들
@@ -63,6 +66,7 @@ public class ProfileShowFragment extends Fragment {
 
     View view;
 
+    private ActivityResultLauncher<String> getPicture;
     @Nullable  // null 체크유도, 경고를 통해 누락된 체크를 알려줄수 있음
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -77,8 +81,6 @@ public class ProfileShowFragment extends Fragment {
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), accountPage.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
             }
         });
@@ -89,12 +91,13 @@ public class ProfileShowFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Log.d("프로필", "onClick: changeUserImg");
-                ChangeImgDialog changeImgDialog = new ChangeImgDialog(getContext());
+                ChangeImgDialog changeImgDialog = new ChangeImgDialog(getContext(), getPicture, user_info_uid);
                 changeImgDialog.show();
-
+                changeImgDialog.setuserImg(userImg);
             }
         });
         // 화면 내의 활성화 되는 버튼들
+
 
 
         // 사용자 정보 불러오기
@@ -175,38 +178,8 @@ public class ProfileShowFragment extends Fragment {
         });
 
 
-//        // myReviewRecyclerView (내가 작성한 리뷰)
-//        reviewRecyclerView = view.findViewById(R.id.myReviewRecycle);
-//        reviewRecyclerView.setHasFixedSize(true);
-//        reviewRecyclerView.setLayoutManager(new LinearLayoutManager(view.getContext(), LinearLayoutManager.HORIZONTAL, false));
-//
-//        MyReviewList myReviewList = new MyReviewList();
-//        myReviewList.getReviewItemInfo(user_info_uid, new MyReviewList.dataLoadedCallback() {
-//            @Override
-//            public void onDataLoaded(ArrayList<MyReviewModel> shopDatas) {
-//                if (shopDatas != null) {
-//                    Log.d("프로필3", "onDataLoaded: myReportRecycle");
-//                    reviewAdapter = new MyReviewAdapter(shopDatas, getContext());
-//                    reviewRecyclerView.setAdapter(reviewAdapter);
-//                } else {
-//                    Log.d("프로필3", "shopDatas null");
-//                }
-//            }
-//        });
 
 
-//        MyReviewGetList myReviewGetList = new MyReviewGetList();
-//        myReviewGetList.setReviewAdapter(user_info_uid);
-
-
-
-
-//
-//
-//        //myMeetingRecyclerView (내 번개)
-//        meetingRecyclerView = view.findViewById(R.id.myMeetingRecycle);
-//        meetingRecyclerView.setHasFixedSize(true);
-//        meetingRecyclerView.setLayoutManager(new LinearLayoutManager(view.getContext(), LinearLayoutManager.HORIZONTAL, false));
         return view;
     }
 
@@ -214,33 +187,23 @@ public class ProfileShowFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         //UID 가져오기
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
             user_info_uid = user.getUid();
         }
 
+        // 갤러리에서 이미지를 선택하는 동작 처리(ActivityResultLauncher 정의)
+        getPicture = registerForActivityResult(new ActivityResultContracts.GetContent(),
+                new ActivityResultCallback<Uri>() {
+                    @Override
+                    public void onActivityResult(Uri result) {
+                        ChangeImgDialog.getPicUri(result);
+                        ChangeImgDialog.changeImg.setImageURI(result);
+                        ChangeImgDialog.changeImg.setScaleType(ImageView.ScaleType.FIT_CENTER);
+                    }
+                });
 
-        // 뒤로가기 버튼
-//        OnBackPressedCallback backPressedCallback = new OnBackPressedCallback(true) {
-//            @Override
-//            public void handleOnBackPressed() {
-//                FragmentManager fragmentManager = getParentFragmentManager();
-//                if(isAdded()){
-//                    FragmentTransaction transaction = fragmentManager.beginTransaction();   // 플래그먼트 전환을 위한 트랜잭션 시작
-//                    HomeFragment homeFragment = new HomeFragment();     // HomeFragment의 인스턴스를 생성
-//                    transaction.replace(R.id.fragmentProfileLayout,homeFragment);    // 기존 플래그먼로 교체
-//                    transaction.commit();  // 트랜잭션 커밋
-//
-//                    // 하단 탐색 바에서 Home 탭을 선택하도록 설정
-//                    BottomNavigationView bottomNavigationView = requireActivity().findViewById(R.id.bottomNavigationView);
-//                    bottomNavigationView.setSelectedItemId(R.id.navigation_map);
-//                }
-//            }
-//        };
-//        // OnBackPressedCallback 호출
-//        requireActivity().getOnBackPressedDispatcher().addCallback(this, backPressedCallback);
 
     }
 
