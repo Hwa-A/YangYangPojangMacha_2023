@@ -36,9 +36,6 @@ public class PermissionActivity extends AppCompatActivity {
         Log.d("권한", "onCreate: 권한");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_permission);
-        Intent intent_main = new Intent(getApplication(), MainActivity.class);
-        startActivity(intent_main);
-        finish();
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();

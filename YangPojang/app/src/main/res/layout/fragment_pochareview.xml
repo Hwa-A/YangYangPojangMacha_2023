@@ -13,10 +13,12 @@
         android:id="@+id/recyv_pochareview_reviewList"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:background="#25FF9800"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:padding="5dp" />
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabtn_pochareview_writeButton"
         android:layout_width="wrap_content"
