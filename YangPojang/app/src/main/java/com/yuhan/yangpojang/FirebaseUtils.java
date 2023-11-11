@@ -3,6 +3,7 @@ package com.yuhan.yangpojang;
 import android.net.Uri;
 import android.util.Log;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
@@ -14,33 +15,30 @@ import com.yuhan.yangpojang.model.Shop;
 
 public class FirebaseUtils {
 
+    private static Shop shop;
     private static ShopDataListener shopDataListener;
     private static StorageReference storageRef;
     private static StorageReference shopImagesRef;
-    Shop shop;
 
     public static void setShopDataListener(ShopDataListener listener) {
         shopDataListener = listener;
     }
 
-    public static void saveShopData(Shop shop, ReportShop reportShop, Uri exteriorImageUri, Uri menuImageUri) {
+    public static void saveShopData(Shop shop, ReportShop reportShop, Uri exteriorImageUri, Uri menuImageUri,String shopKey) {
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
-        String shopKey = databaseReference.child("shops").push().getKey();
+        Log.d("whatisthisthi", String.valueOf(exteriorImageUri));
+        Log.d("whatisthisthi", String.valueOf(menuImageUri));
+
         Log.d("king",shopKey);
         shop.setShopKey(shopKey);
         String shopkey=shop.getShopKey();
         Log.d("king2",shopKey);
-
-
 
         DatabaseReference shopRef = databaseReference.child("shops").child(shopKey);
         reportShop.setShopKey(shopKey);
 //        DatabaseReference reportShopRef = databaseReference.child("reportShop").child(reportShop.getUid()).child(shopKey);
 
         DatabaseReference reportShopRef = databaseReference.child("reportShop").child(reportShop.getUid()).child(shopKey);
-
-
-
         shopRef.setValue(shop)
                 .addOnSuccessListener(aVoid -> {
                     Log.d("bbbbbbbb", "가게 데이터가(이미지 제외) 성공적으로 저장되었습니다.");
@@ -57,19 +55,20 @@ public class FirebaseUtils {
                     // 외관 이미지  업로드
                     if (exteriorImageUri != null) {
                         Log.d("FirebaseUtils", "외관 이미지 업로드 시작");
-                        uploadImageToStorage(shopImagesRef, exteriorImageUri, shopRef.child("exteriorImagePath"), "exterior");
+                        uploadImageToStorage(shop,shopImagesRef, exteriorImageUri, shopRef.child("fbStoreImgurl"), "exterior");
 
                         if (menuImageUri != null) {
                             Log.d("FirebaseUtils", "메뉴 이미지 업로드 시작");
-                            uploadImageToStorage(shopImagesRef, menuImageUri, shopRef.child("menuImagePath"), "menu");
+                            uploadImageToStorage(shop,shopImagesRef, menuImageUri, shopRef.child("fbMenuImgurl"), "menu");
                         } else {
                             Log.d("FirebaseUtils", "메뉴 이미지 미선택");
                         }
-                    } else {
+                    }
+                    else {
                         Log.d("외관이미지는 선택되지 않았습니다", "외관이미지는 선택되지 않았습니다");
                         if (menuImageUri != null) {
                             Log.d("FirebaseUtils", "메뉴 이미지 업로드 시작");
-                            uploadImageToStorage(shopImagesRef, menuImageUri, shopRef.child("menuImagePath"), "menu");
+                            uploadImageToStorage(shop,shopImagesRef, menuImageUri, shopRef.child("menuImagePath"), "menu");
                         } else {
                             Log.d("메뉴이미지도 선택되지 않았습니다", "메뉴이미지도 선택되지 않았습니다");
                         }
@@ -91,25 +90,20 @@ public class FirebaseUtils {
         reportShopRef.setValue(true)
                 .addOnSuccessListener(aVoid -> {
                     Log.d("FirebaseUtils", "ReportShop 데이터가 성공적으로 저장되었습니다.");
-                    if (shopDataListener != null) {
-                        shopDataListener.onShopDataSaved();
-                    }
+//                    if (shopDataListener != null) {
+//                        shopDataListener.onShopDataSaved();
+//                    }
                 })
                 .addOnFailureListener(databaseException -> {
                     Log.e("FirebaseUtils", "ReportShop 데이터 저장 실패: " + databaseException.getMessage());
-                    if (shopDataListener != null) {
-                        shopDataListener.onShopDataSaved();
-                    }
+//                    if (shopDataListener != null) {
+//                        shopDataListener.onShopDataSaved();
+//                    }
                 });
-
-
-
-
-
 
     }
 
-    private static void uploadImageToStorage(StorageReference storageReference, Uri imageUri, DatabaseReference imagePathRef, String imageType) {
+    private static void uploadImageToStorage(Shop shop,StorageReference storageReference, Uri imageUri, DatabaseReference imagePathRef, String imageType) {
         String fileName;
         if (imageType.equals("exterior")) {
             fileName = "exterior.jpg";
@@ -124,13 +118,23 @@ public class FirebaseUtils {
         UploadTask uploadTask = imageRef.putFile(imageUri);
 
         uploadTask.addOnSuccessListener(taskSnapshot -> {
-            Log.d("FirebaseUtils", "이미지가 성공적으로 업로드되었습니다.");
+            Log.d("FirebaseUtils-uploadtask 부분", "이미지가 성공적으로 업로드되었습니다.");
 
-            String imagePath = imageRef.getPath();
-            imagePathRef.setValue(imagePath);
-            if (shopDataListener != null) {
-                shopDataListener.onShopDataSaved();
-            }
+            imageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                @Override
+                public void onSuccess(Uri uri) {
+                    // 이 uri가 웹에서 접근 가능한 URL입니다.
+                    String downloadUrl = uri.toString();
+                    Log.d("Download URL", downloadUrl);
+
+                    // 이미지 경로 대신 다운로드 URL을 저장합니다.
+                    imagePathRef.setValue(downloadUrl);
+
+                    if (shopDataListener != null) {
+                        shopDataListener.onShopDataSaved();
+                    }
+                }
+            });
         }).addOnFailureListener(exception -> {
             Log.e("FirebaseUtils", imageType + " 업로드 실패: " + exception.getMessage());
         });

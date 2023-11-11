@@ -312,6 +312,8 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, onPoch
         super.onCreate(savedInstanceState);
         Log.d("나만 볼거야", "onCreate() 실행");
 
+        introductionPopup();
+
         //위치를 반환하는 구현체인 FusedLocationSource 생성, locationSource를 초기화 하는 시점에 권한 허용여부를 확인한다(PermissionActivity의 onRequestPermissionResult())
         locationSource = new FusedLocationSource(this, PERMISSION_REQUEST_CODE);
 
@@ -392,8 +394,6 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, onPoch
 
             });
         }
-
-        introductionPopup();
 
         return homeview;
     } // onCreateView 끝

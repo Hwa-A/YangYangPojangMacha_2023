@@ -23,13 +23,14 @@ public class Shop implements Serializable {
     private String category;
     private String hash;
     private String fbStoreImgurl; // 파이어베이스에 들어간 이미지 url [https://firebasestorage.googleapis.com///] 형태
-    private String fbMenuImgurl;  // 파이어베이스에 들어간 이미지 url [https://firebasestorage.googleapis.com///] 형태
+    private String fbMenuImgurl;  // 파이어베이스에 들어간 이미지 url https://firebasestorage.googleapis.com///][ 형태
 
     private boolean verified; //인증 여부
     private boolean hasMeeting; //번개 여부
     private float rating; //가게 별점
     private String geohash;
     private String exteriorImagePath;
+    private String menuImagePath;
     private String primaryKey;
     private String uid;
 
@@ -42,8 +43,8 @@ public class Shop implements Serializable {
     public Shop(String uid,String shopName,double latitude, double longitude ,String  addressName, boolean pwayMobile, boolean pwayCard,
                 boolean pwayAccount, boolean pwayCash, boolean openMon, boolean openTue,
                 boolean openWed, boolean openThu, boolean openFri, boolean openSat,
-                boolean openSun, String category ,String storeImageUri, String menuImageUri,
-                boolean isVerified, boolean hasMeeting, float rating, String geohash ) {
+                boolean openSun, String category ,boolean isVerified, boolean hasMeeting, float rating, String geohash ,
+                String exteriorImagePath,String menuImagePath) {
 
         this.uid= uid;
         this.shopName=shopName;
@@ -68,6 +69,8 @@ public class Shop implements Serializable {
         this.hasMeeting =hasMeeting;
         this.rating= rating;
         this.geohash = geohash;
+        this.exteriorImagePath=exteriorImagePath;
+        this.menuImagePath=menuImagePath;
     }
 
     public String getShopKey() {  return shopKey; }
@@ -176,9 +179,10 @@ public class Shop implements Serializable {
     public String getGeohash() {
         return geohash;
     }
-    public String getExteriorImagePath() {
-        return exteriorImagePath;
-    }
+    public String getExteriorImagePath() { return exteriorImagePath;   }
+    public String getMenuImagePath() { return menuImagePath;   }
+
+
     public String getPrimaryKey() { return primaryKey; }
 
     public void setLatitude(double latitude) {
@@ -281,6 +285,8 @@ public class Shop implements Serializable {
         this.geohash = geohash;
     }
     public void setExteriorImagePath(String exteriorImagePath) { this.exteriorImagePath = exteriorImagePath;}
+    public void setMenuImagePath(String menuImagePath) { this.menuImagePath = menuImagePath;}
+
     public void setPrimaryKey(String primaryKey) { this.primaryKey = primaryKey; }
 
     @Override
@@ -318,4 +324,3 @@ public class Shop implements Serializable {
                 '}';
     }
 }
-

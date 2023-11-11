@@ -233,6 +233,24 @@ public class ProfileShowFragment extends Fragment {
     }
 
     @Override
+    public void onStart (){
+        super.onStart();
+
+        // OnBackPressedCallback 생성
+        OnBackPressedCallback callback = new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                // 뒤로가기 버튼이 눌렸을 때 홈 프래그먼트로 이동
+                BottomNavigationView bottomNavigationView = getActivity().findViewById(R.id.bottomNavigationView);
+                bottomNavigationView.setSelectedItemId(R.id.navigation_map);
+            }
+        };
+
+        // OnBackPressedCallback 추가
+        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), callback);
+    }
+
+    @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d("보라돌이", "onCreate");
@@ -255,25 +273,26 @@ public class ProfileShowFragment extends Fragment {
                 });
 
 
-        // 뒤로가기 버튼
-        OnBackPressedCallback backPressedCallback = new OnBackPressedCallback(true) {
-            @Override
-            public void handleOnBackPressed() {
-                FragmentManager fragmentManager = getParentFragmentManager();
-                if (isAdded()) {
-                    FragmentTransaction transaction = fragmentManager.beginTransaction();   // 플래그먼트 전환을 위한 트랜잭션 시작
-                    HomeFragment homeFragment = new HomeFragment();     // HomeFragment의 인스턴스를 생성
-                    transaction.replace(R.id.fragmentProfileLayout, homeFragment);    // 기존 플래그먼로 교체
-                    transaction.commit();  // 트랜잭션 커밋
+//        // 뒤로가기 버튼
+//        OnBackPressedCallback backPressedCallback = new OnBackPressedCallback(true) {
+//            @Override
+//            public void handleOnBackPressed() {
+//                FragmentManager fragmentManager = getParentFragmentManager();
+//                if (isAdded()) {
+//                    FragmentTransaction transaction = fragmentManager.beginTransaction();   // 플래그먼트 전환을 위한 트랜잭션 시작
+//                    HomeFragment homeFragment = new HomeFragment();     // HomeFragment의 인스턴스를 생성
+//                    transaction.replace(R.id.fragmentProfileLayout, homeFragment);    // 기존 플래그먼로 교체
+//                    transaction.commit();  // 트랜잭션 커밋
+//
+//                    // 하단 탐색 바에서 Home 탭을 선택하도록 설정
+//                    BottomNavigationView bottomNavigationView = requireActivity().findViewById(R.id.bottomNavigationView);
+//                    bottomNavigationView.setSelectedItemId(R.id.navigation_map);
+//                }
+//            }
+//        };
+//        // OnBackPressedCallback 호출
+//        requireActivity().getOnBackPressedDispatcher().addCallback(this, backPressedCallback);
 
-                    // 하단 탐색 바에서 Home 탭을 선택하도록 설정
-                    BottomNavigationView bottomNavigationView = requireActivity().findViewById(R.id.bottomNavigationView);
-                    bottomNavigationView.setSelectedItemId(R.id.navigation_map);
-                }
-            }
-        };
-        // OnBackPressedCallback 호출
-        requireActivity().getOnBackPressedDispatcher().addCallback(this, backPressedCallback);
 
     }
 

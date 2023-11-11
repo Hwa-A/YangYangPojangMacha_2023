@@ -2,6 +2,7 @@ package com.yuhan.yangpojang;
 
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 
@@ -34,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
     ReportShopFragment reportShopFragment;
     ProfileShowFragment profileShowFragment;
     HomeFragment homeFragment;
+    Fragment currentFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -47,41 +49,36 @@ public class MainActivity extends AppCompatActivity {
 
         // 프래그먼트 생성
         reportShopFragment = new ReportShopFragment();
-        profileShowFragment = new ProfileShowFragment();
         homeFragment = new HomeFragment();
 
         // 앱을 처음 켰을 때 보여지는 화면 -> HomeFragment
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container, homeFragment)
+                .add(R.id.fragment_container, homeFragment)
+                .add(R.id.fragment_container, reportShopFragment).hide(reportShopFragment)  // 리포트 샵 프래그먼트도 처음에 추가하고 숨김
                 .commitAllowingStateLoss();
+        currentFragment = homeFragment;
 
 
         // bottomnavigationview의 아이콘을 선택 했을 때 원하는 프래그먼트가 띄워질 수 있도록 리스너를 추가
         bottomNavigationView.setOnItemSelectedListener(
                 menuItem -> {
+                    FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                    transaction.hide(currentFragment);
                     int itemId = menuItem.getItemId();
                     if (itemId == R.id.navigation_map) {
-                        getSupportFragmentManager().beginTransaction()
-                                .replace(R.id.fragment_container, homeFragment)
-                                .addToBackStack(null) //뒤로가기 버튼 클릭 시 이전 페이지로
-                                .commitAllowingStateLoss();
-                        return true;
+                        transaction.show(homeFragment);
+                        currentFragment = homeFragment;
                     } else if (itemId == R.id.navigation_report_shop) {
-                        getSupportFragmentManager().beginTransaction()
-                                .replace(R.id.fragment_container, reportShopFragment)
-                                .addToBackStack(null)
-                                .commitAllowingStateLoss();
-                        return true;
+                        transaction.show(reportShopFragment);
+                        currentFragment = reportShopFragment;
                     } else if (itemId == R.id.navigation_profile_show) {
-                        getSupportFragmentManager().beginTransaction()
-                                .replace(R.id.fragment_container, profileShowFragment)
-                                .addToBackStack(null)
-                                .commitAllowingStateLoss();
-                        return true;
+                        profileShowFragment = new ProfileShowFragment(); // 프로필 쇼 프래그먼트를 매번 새로 생성
+                        transaction.add(R.id.fragment_container, profileShowFragment).hide(currentFragment);  // 프로필 쇼 프래그먼트를 추가하고 현재 프래그먼트를 숨김
+                        currentFragment = profileShowFragment;
                     }
-                    return false;
+                    transaction.commit();
+                    return true;
                 });
-
     }
 
 
