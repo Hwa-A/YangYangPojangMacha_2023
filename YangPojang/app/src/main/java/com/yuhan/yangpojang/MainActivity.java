@@ -2,15 +2,18 @@ package com.yuhan.yangpojang;
 
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.RecyclerView;
 
 
 import android.app.AlertDialog;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
-
+import android.widget.Toast;
 
 
 import com.naver.maps.map.MapFragment;
@@ -79,6 +82,32 @@ public class MainActivity extends AppCompatActivity {
                     transaction.commit();
                     return true;
                 });
+    }
+
+    private long backBtnTime = 0;
+
+    // 홈 프레그먼트의 뒤로가기 버튼 구현
+    @Override
+    public void onBackPressed() {
+        if (currentFragment.equals(homeFragment)) {
+            long curTime = System.currentTimeMillis();
+            long gapTime = curTime - backBtnTime;
+            ConstraintLayout pocha_info = findViewById(R.id.pocha_info);
+            RecyclerView pochalist_view = findViewById(R.id.pocha_list);
+            pocha_info.setVisibility(View.INVISIBLE);
+            pochalist_view.setVisibility(View.INVISIBLE);
+            homeFragment.basemap();
+
+            // 뒤로가기 버튼을 두 번 클릭한 경우(2초 내)
+            if (0 <= gapTime && 2000 >= gapTime) {
+                finish();
+            } else {
+                backBtnTime = curTime;
+                Toast.makeText(this, "한 번 더 누르면 종료됩니다.", Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            super.onBackPressed();
+        }
     }
 
 
