@@ -1,13 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?><!-- id 형식: view약자_속한xml명_view설명 -->
-<!-- view 약자
-        imgbtn: ImageButton
-        btn: AppCompatButton
-        tv: TextView
-        rtb: RatingBar
-        edt: EditText
-        lin: LinearLayout
-        txtLay: TextInputLayout
-        framLay: FrameLayout              -->
+
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"

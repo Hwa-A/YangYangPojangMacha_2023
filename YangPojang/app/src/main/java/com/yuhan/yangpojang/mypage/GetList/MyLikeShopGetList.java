@@ -38,6 +38,7 @@ public class MyLikeShopGetList {
         Log.d(TAG, "GetMyLikeShopList: 테스트like 값 likeShop/" + UID );
 
         databaseReference.addValueEventListener(new ValueEventListener() {
+
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 bflist.clear();
@@ -88,14 +89,12 @@ public class MyLikeShopGetList {
                                 String sKey = shopKey.toString();
 
 
-
                                 // MyLikeShopModel 객체 생성 및 값 설정
                                 MyLikeShopModel shop = new MyLikeShopModel(uid, shopName, latitude, longitude ,  addressName, pwayMobile,  pwayCard,
                                         pwayAccount,  pwayCash,  openMon,  openTue,
                                         openWed,  openThu,  openFri,  openSat,
                                         openSun,  category ,  storeImageUri,  menuImageUri,
                                         isVerified,  hasMeeting,  rating,  geohash, exteriorImagePath, primaryKey, sKey);
-
 
 
                                 shopDatas.add(shop); // 가져온 가게 정보를 likeShops 리스트에 추가
