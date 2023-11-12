@@ -31,6 +31,9 @@ public class StoreData {
     // 검색한 주소 위치 받아오기
     public static void addLocation(double latitude, double longitude, float searchRadiusInMeters){
         centerLocation = new GeoLocation(latitude, longitude);
+        if(searchRadiusInMeters > 2000){
+            searchRadiusInMeters = 2000;
+        }
         StoreData.searchRadiusInMeters = searchRadiusInMeters * 0.8;
 
         GeoHash geoHash = GeoHash.withCharacterPrecision(latitude, longitude, 12);
@@ -77,14 +80,6 @@ public class StoreData {
                         ArrayList<Shop> filteredStores = filterStoresByRadius(stores, centerLocation, searchRadiusInMeters);
                         callback.onDataLoaded(filteredStores);
 
-
-                        /*String hash = GeoFireUtils.getGeoHashForLocation(new GeoLocation(37.550097461351605, 126.84768605742251));
-                        Log.d("StoreData", "지오해시값(geofire) : " + hash);*/
-
-                        /*GeoHash geoHash = GeoHash.withCharacterPrecision(37.546676259306274, 126.87375270186654, 12);
-                        // GeoHash 값을 문자열로 얻기
-                        String geohashString = geoHash.toBase32();
-                        Log.d("StoreData", "지오해시값(geohash) : " + geohashString);*/
 
                     }
 
