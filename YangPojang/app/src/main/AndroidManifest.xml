@@ -49,11 +49,11 @@
 
         <activity android:name=".login.LogindetailAct"/>
 
-        <activity android:name=".Profile_setting"/>
         <activity android:name=".PermissionActivity"/>
         <activity android:name=".login.LoginActivity"/>
         <activity android:name=".mypage.account.accountPage"/>
-
+        <activity android:name=".pochaInfo.meeting.MeetingDetailData"/>
+        <activity android:name=".Splashoutimage"/>
         <meta-data
             android:name="com.naver.maps.map.CLIENT_ID"
             android:value="${MAP_API_KEY}"/>

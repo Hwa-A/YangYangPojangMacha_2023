@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -19,12 +20,16 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.yuhan.yangpojang.R;
 import com.yuhan.yangpojang.SplashImage;
+import com.yuhan.yangpojang.Splashoutimage;
 
 
 public class accountPage extends AppCompatActivity {
@@ -33,6 +38,7 @@ public class accountPage extends AppCompatActivity {
     private DatabaseReference mDatabase;
     Button logoutButton;
     Button deleteAccountButton;
+    TextView user_nickname;
     private FirebaseAuth mAuth ;
     private FirebaseUser user;
     private GoogleSignInClient mGoogleSignInClient;
@@ -48,7 +54,23 @@ public class accountPage extends AppCompatActivity {
         if (user != null) {
             user_info_uid = user.getUid();
         }
+        else {
 
+        }
+
+        user_nickname = findViewById(R.id.user_nickname);
+        FirebaseDatabase.getInstance().getReference("user-info").child(user_info_uid).child("user_Nickname").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                String value = snapshot.getValue(String.class);
+                user_nickname.setText(value + "님," + " " + "환영합니다.");
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
 
         logoutButton = findViewById(R.id.logoutButton);
         deleteAccountButton = findViewById(R.id.deleteAccountButton);
@@ -102,7 +124,8 @@ public class accountPage extends AppCompatActivity {
                             public void onClick(DialogInterface dialog, int i) {
                                 signOut();
                                 deleteAccount();
-                                Intent intent = new Intent(getApplicationContext(), SplashImage.class);
+                                Intent intent = new Intent(getApplicationContext(), Splashoutimage.class);
+                                intent.putExtra("uid", user_info_uid);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                 startActivity(intent);
@@ -138,20 +161,9 @@ public class accountPage extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 mGoogleSignInClient.revokeAccess();
-                deleteDB();
             }
         });
     }
 
-    private void deleteDB(){
-        StorageReference storageReference = FirebaseStorage.getInstance().getReference("profile").child(user_info_uid);
-        mDatabase.child("user-info").child(user_info_uid).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                storageReference.delete();
-            }
-        });
-
-    }
 
 }

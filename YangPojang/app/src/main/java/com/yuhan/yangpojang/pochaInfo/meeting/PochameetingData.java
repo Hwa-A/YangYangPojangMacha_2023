@@ -4,9 +4,9 @@ public class PochameetingData {
 
     private String date;
     private String hostUid;
-    private String maxAge;
-    private String maxMember;
-    private String minAge;
+    private int maxAge;
+    private int maxMember;
+    private int minAge;
     private String registerTime;
     private String time;
     private String title;
@@ -16,7 +16,7 @@ public class PochameetingData {
 
     public PochameetingData(){}
 
-    public PochameetingData(String date, String hostUid, String maxAge, String maxMember, String minAge, String registerTime, String time, String title, String yearDate){
+    public PochameetingData(String date, String hostUid, int maxAge, int maxMember, int minAge, String registerTime, String time, String title, String yearDate){
         this.date = date;
         this.hostUid = hostUid;
         this.maxAge = maxAge;
@@ -28,6 +28,7 @@ public class PochameetingData {
         this.yearDate = yearDate;
     }
 
+
     public String getDate() {
         return date;
     }
@@ -36,15 +37,15 @@ public class PochameetingData {
         return hostUid;
     }
 
-    public String getMaxAge() {
+    public int getMaxAge() {
         return maxAge;
     }
 
-    public String getMaxMember() {
+    public int getMaxMember() {
         return maxMember;
     }
 
-    public String getMinAge() {
+    public int getMinAge() {
         return minAge;
     }
 
@@ -72,15 +73,15 @@ public class PochameetingData {
         this.hostUid = hostUid;
     }
 
-    public void setMaxAge(String maxAge) {
+    public void setMaxAge(int maxAge) {
         this.maxAge = maxAge;
     }
 
-    public void setMaxMember(String maxMember) {
+    public void setMaxMember(int maxMember) {
         this.maxMember = maxMember;
     }
 
-    public void setMinAge(String minAge) {
+    public void setMinAge(int minAge) {
         this.minAge = minAge;
     }
 

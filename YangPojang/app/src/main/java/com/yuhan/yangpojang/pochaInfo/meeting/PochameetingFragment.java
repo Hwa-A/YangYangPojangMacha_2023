@@ -11,17 +11,31 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.yuhan.yangpojang.R;
 import com.yuhan.yangpojang.model.Shop;
+import com.yuhan.yangpojang.mypage.Adapter.MyReportShopAdapter;
+import com.yuhan.yangpojang.pochaInfo.meeting.MeetingAdapter;
+import com.yuhan.yangpojang.pochaInfo.meeting.PochameetingGetList;
+import com.yuhan.yangpojang.mypage.GetList.MyLikeShopGetList;
+import com.yuhan.yangpojang.mypage.GetList.MyReportShopGetList;
+import com.yuhan.yangpojang.mypage.Model.MyLikeShopModel;
+import com.yuhan.yangpojang.mypage.Model.MyReportShopModel;
 import com.yuhan.yangpojang.pochaInfo.interfaces.OnFragmentReloadListener;
 import com.yuhan.yangpojang.pochaInfo.meeting.MeetingwriteActivity;
+
+import java.util.ArrayList;
 
 public class PochameetingFragment extends Fragment {
     Shop shop;      // 포차 정보를 가진 객체
     String uid;     // 회원 id
     private OnFragmentReloadListener onFrgReloadListener;   // 프래그먼트 재실행하는 인터페이스
+
+    private RecyclerView recyv_pochameeting_meeetingList;
+    private RecyclerView.Adapter meetAdapter;
 
     // ▼ 인터페이스 객체 초기화 코드
     // onAttach(): 프래그먼트가 액티비티에 연결될 때 호출되는 콜백 메서드
@@ -67,6 +81,23 @@ public class PochameetingFragment extends Fragment {
                 intent.putExtra("pchName", shop.getShopName());     // 포차 이름
                 // Activity로 데이터 전달 및 이동
                 startActivity(intent);
+            }
+        });
+
+
+        recyv_pochameeting_meeetingList = view.findViewById(R.id.recyv_pochameeting_meeetingList);
+        recyv_pochameeting_meeetingList.setHasFixedSize(true);
+        recyv_pochameeting_meeetingList.setLayoutManager(new LinearLayoutManager(view.getContext(), LinearLayoutManager.VERTICAL, false));
+        PochameetingGetList pochameetingGetList = new PochameetingGetList();
+        String pochakey = shop.getPrimaryKey();
+
+        pochameetingGetList.getMeetingList(pochakey, new PochameetingGetList.dataLoadedCallback() {
+            @Override
+            public void onDataLoaded(ArrayList<PochameetingData> mtlist) {
+                if (mtlist != null){
+                    meetAdapter = new MeetingAdapter(mtlist,getContext());
+                    recyv_pochameeting_meeetingList.setAdapter(meetAdapter);
+                }
             }
         });
 
