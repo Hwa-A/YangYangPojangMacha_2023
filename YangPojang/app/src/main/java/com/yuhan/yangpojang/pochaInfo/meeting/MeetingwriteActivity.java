@@ -50,7 +50,7 @@ import java.util.Map;
 // pch: pojangmacha
 // txtLay: textInputLayout
 public class MeetingwriteActivity extends AppCompatActivity {
-//    private ConnectivityManager.NetworkCallback networkCallback;    // 인터넷 연결 여부 확인 콜백 메서드
+    //    private ConnectivityManager.NetworkCallback networkCallback;    // 인터넷 연결 여부 확인 콜백 메서드
     private String user_info_uid = null;    // 화원 uid
     private MeetingDTO meeting;              // 번개 객체
     private String pchKey;         // 포차 고유키

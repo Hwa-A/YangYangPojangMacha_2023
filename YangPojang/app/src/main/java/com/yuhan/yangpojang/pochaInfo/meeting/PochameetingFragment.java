@@ -11,17 +11,31 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.yuhan.yangpojang.R;
 import com.yuhan.yangpojang.model.Shop;
+
+import com.yuhan.yangpojang.mypage.Adapter.MyReviewAdapter;
 import com.yuhan.yangpojang.pochaInfo.interfaces.OnFragmentReloadListener;
-import com.yuhan.yangpojang.pochaInfo.meeting.MeetingwriteActivity;
+import com.yuhan.yangpojang.pochaInfo.meeting.getList.AttendersGetList;
+import com.yuhan.yangpojang.pochaInfo.meeting.model.MeetingData;
+
+import java.util.ArrayList;
+import java.util.Collections;
+
 
 public class PochameetingFragment extends Fragment {
-    Shop shop;      // 포차 정보를 가진 객체
-    String uid;     // 회원 id
+    private Shop shop;      // 포차 정보를 가진 객체
+    private String uid;     // 회원 id
     private OnFragmentReloadListener onFrgReloadListener;   // 프래그먼트 재실행하는 인터페이스
+
+    // 리사이클러 뷰와 리사이클러 뷰 어댑터
+    private RecyclerView meetingRecyclerView;
+
+    private RecyclerView.Adapter meetingAdapter;
 
     // ▼ 인터페이스 객체 초기화 코드
     // onAttach(): 프래그먼트가 액티비티에 연결될 때 호출되는 콜백 메서드
@@ -53,6 +67,7 @@ public class PochameetingFragment extends Fragment {
             return view;
         }
 
+
         // ▼ 번개 작성 페이지(MeetingwriteActivity)로 데이터 전달 및 이동 코드
         // 객체 생성 및 초기화
         FloatingActionButton meetingWriteFabtn;          // 번개 작성 버튼
@@ -71,6 +86,30 @@ public class PochameetingFragment extends Fragment {
         });
 
 
+        meetingRecyclerView = view.findViewById(R.id.recyv_pochameeting_meeetingList);
+        meetingRecyclerView.setHasFixedSize(true);
+        meetingRecyclerView.setLayoutManager(new LinearLayoutManager(view.getContext(), LinearLayoutManager.VERTICAL, false));
+
+        AttendersGetList attendersGetList = new AttendersGetList();
+        attendersGetList.getAttendersList(shop.getPrimaryKey(), new AttendersGetList.DataLoadedCallback() {
+            @Override
+            public void onDataLoaded(ArrayList<MeetingData> meetingData) {
+                if (meetingData != null) {
+                    Collections.reverse(meetingData); //역순 정렬
+                    Log.d("번개", "번개 onDataLoaded");
+                    meetingAdapter = new MeetingAdapter(meetingData, getContext());
+                    meetingRecyclerView.setAdapter(meetingAdapter);
+                } else {
+                    Log.d("번개", "shopDatas null");
+                }
+            }
+        });
+
+
+
         return view;
     }
+
+
+
 }
