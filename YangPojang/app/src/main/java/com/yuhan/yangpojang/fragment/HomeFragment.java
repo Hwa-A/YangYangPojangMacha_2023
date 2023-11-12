@@ -31,6 +31,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
+import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -268,12 +270,16 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, onPoch
     };
 
     RecyclerView pochalist_view;
+    AppCompatButton close_pochalist;
     ArrayList<Shop> pochaListPochas = new ArrayList<>();
     //포차리스트 구현
     public void PochaListView(ArrayList<Shop> pochas){
         pochaListPochas = pochas;
         pochalist_view = getActivity().findViewById(R.id.pocha_list); //리사이클러 뷰
-        pochalist_view.setVisibility(View.VISIBLE);
+        close_pochalist = getActivity().findViewById(R.id.close_pochalist);
+        showPochaListAni(pochalist_view, close_pochalist);
+        close_pochalist.setOnClickListener(close_pochalistL);
+
         PochaListAdapter pochaListAdapter = new PochaListAdapter(pochaListPochas, this, HomeFragment.this); // 어댑터
         pochalist_view.setAdapter(pochaListAdapter); //리사이클러뷰에 어댑터 장착
 
@@ -296,6 +302,42 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, onPoch
             Toast.makeText(v.getContext(), "클래스 찾을 수 없음: PochainfoActivity", Toast.LENGTH_SHORT).show();
         }
     }
+
+    // 포차리스트 출력 시 애니메이션
+    public void showPochaListAni(RecyclerView pochalist, AppCompatButton close){
+        TranslateAnimation animate = new TranslateAnimation(
+                0,                 // 시작 x 좌표
+                0,                 // 종료 x 좌표
+                pochalist.getHeight(),  // 시작 y 좌표
+                0);                // 종료 y 좌표
+        animate.setDuration(500);
+        pochalist.startAnimation(animate);
+        close.startAnimation(animate);
+        pochalist.setVisibility(View.VISIBLE);
+        close.setVisibility(View.VISIBLE);
+    }
+
+    // 닫기 버튼 클릭 시 애니메이션
+    public void hidePochaListAni(RecyclerView pochalist, AppCompatButton close){
+        TranslateAnimation animate = new TranslateAnimation(
+                0,                 // 시작 x 좌표
+                0,                 // 종료 x 좌표
+                0,                 // 시작 y 좌표
+                pochalist.getHeight()); // 종료 y 좌표
+        animate.setDuration(500);
+        pochalist.startAnimation(animate);
+        pochalist.setVisibility(View.INVISIBLE);
+        close.setVisibility(View.INVISIBLE);
+    }
+
+    View.OnClickListener close_pochalistL = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            if(pochalist_view != null && close_pochalist != null){
+                hidePochaListAni(pochalist_view, close_pochalist);
+            }
+        }
+    };
 
     @Override
     public void onResume() {
@@ -503,6 +545,12 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, onPoch
         AppCompatButton re_searchbtn = homeview.findViewById(R.id.re_searchbtn);
         re_searchbtn.setVisibility(INVISIBLE);
 
+        // 포차리스트 invisible
+        if(pochalist_view != null && close_pochalist != null){
+            pochalist_view.setVisibility(INVISIBLE);
+            close_pochalist.setVisibility(INVISIBLE);
+        }
+
         locationPermission();
     }
 
@@ -577,9 +625,6 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, onPoch
                         pochas.get(i).setOnClickListener(new Overlay.OnClickListener() {
                             @Override
                             public boolean onClick(@NonNull Overlay overlay) {
-                                //포차리스트 닫기
-                                if(pochalist_view != null)
-                                    pochalist_view.setVisibility(INVISIBLE);
 
                                 // 마커 클릭 시 크기 조절
                                 if(currentClickedMarker != null){  //이전에 클릭한 마커가 존재하는지 확인
@@ -851,8 +896,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, onPoch
             pocha_info.setVisibility(INVISIBLE); //가게 상세정보 탭 닫기
             ButtonPosition(uiSettings);
         }
-        if(pochalist_view != null)
-            pochalist_view.setVisibility(INVISIBLE); //포차리스트 닫기
+
     }
 
     // 인증, 번개 버튼 리스너
