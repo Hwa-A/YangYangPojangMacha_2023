@@ -5,7 +5,7 @@
     <item>
         <shape android:shape="rectangle">
             <gradient
-                android:startColor="#1E998B77"
+                android:startColor="#00FFFFFF"
             android:endColor="#00FFFFFF"
             android:angle="90"/> <!--  -->
             <corners android:radius="10dp" /> <!-- 테두리의 둥근 모양 활성화 -->

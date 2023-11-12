@@ -92,7 +92,6 @@
                 android:layout_marginTop="24dp"
                 android:text="내가 좋아요한 가게"
                 android:textSize="20dp"
-                android:fontFamily="@font/yeongdeok_sea"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.063"
@@ -102,15 +101,14 @@
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/myLikeRecycle"
-                android:layout_width="383dp"
-                android:layout_height="159dp"
+                android:layout_width="382dp"
+                android:layout_height="230dp"
                 android:orientation="horizontal"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/myLike"
-                app:layout_constraintVertical_bias="0.021"
-                />
+                app:layout_constraintVertical_bias="0.021" />
 
             <TextView
                 android:id="@+id/myReport"
@@ -119,7 +117,6 @@
                 android:layout_marginTop="28dp"
                 android:text="내가 제보한 가게"
                 android:textSize="20dp"
-                android:fontFamily="@font/yeongdeok_sea"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.051"
@@ -129,8 +126,8 @@
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/myReportRecycle"
-                android:layout_width="369dp"
-                android:layout_height="149dp"
+                android:layout_width="382dp"
+                android:layout_height="230dp"
                 android:layout_marginTop="4dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -146,7 +143,6 @@
                 android:layout_marginTop="28dp"
                 android:text="내가 작성한 리뷰"
                 android:textSize="20dp"
-                android:fontFamily="@font/yeongdeok_sea"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.048"
@@ -157,7 +153,7 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/myReviewRecycle"
                 android:layout_width="386dp"
-                android:layout_height="170dp"
+                android:layout_height="140dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.64"
@@ -172,7 +168,6 @@
                 android:layout_marginTop="28dp"
                 android:text="내 번개"
                 android:textSize="20dp"
-                android:fontFamily="@font/yeongdeok_sea"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.048"

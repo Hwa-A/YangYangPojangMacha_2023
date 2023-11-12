@@ -2,15 +2,23 @@ package com.yuhan.yangpojang.mypage.Adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
+import com.bumptech.glide.request.RequestOptions;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.yuhan.yangpojang.R;
 import com.yuhan.yangpojang.model.Shop;
 import com.yuhan.yangpojang.mypage.Model.MyLikeShopModel;
@@ -30,7 +38,6 @@ public class MyLikeShopAdapter extends RecyclerView.Adapter<MyLikeShopAdapter.My
 
 
     public MyLikeShopAdapter(ArrayList<MyLikeShopModel> likeList, Context context) {
-        this.likeList.clear();
         Log.d("LikeAdapter", "MyLikeShopAdapter: 진입");
         this.likeList = likeList;
         this.context = context;
@@ -42,6 +49,8 @@ public class MyLikeShopAdapter extends RecyclerView.Adapter<MyLikeShopAdapter.My
         TextView myshop_name;
         TextView myshop_category;
         TextView myshop_add;
+        TextView shopRatingProfile;
+        ImageView shopimg;
 
         MyLikeShopHolder(View itemview){
             super(itemview);
@@ -49,6 +58,8 @@ public class MyLikeShopAdapter extends RecyclerView.Adapter<MyLikeShopAdapter.My
             myshop_name = itemview.findViewById(R.id.shopName);
             myshop_category = itemview.findViewById(R.id.shopCategory);
             myshop_add = itemview.findViewById(R.id.shopAdd);
+            shopRatingProfile = itemView.findViewById(R.id.shopRatingProfile);
+            shopimg = itemView.findViewById(R.id.shopimg);
         }
 
     }
@@ -73,6 +84,35 @@ public class MyLikeShopAdapter extends RecyclerView.Adapter<MyLikeShopAdapter.My
         holder.myshop_name.setText(likeList.get(position).getShopName());
         holder.myshop_category.setText(likeList.get(position).getCategory());
         holder.myshop_add.setText(likeList.get(position).getAddressName());
+        holder.shopRatingProfile.setText(String.valueOf(likeList.get(position).getRating()));
+//        Log.d("제보Adapter", "onBindViewHolder: " + (int) reportList.get(position).getRating());
+
+        // 사진 받아오기
+        String ImgPath = likeList.get(position).getExteriorImagePath();
+        Log.d("제보 사진", "ImgPath : " + ImgPath);
+
+        if (ImgPath == null || ImgPath.equals("null")) {
+            Glide.with(context)
+                    .load(R.drawable.pocha)
+                    .centerCrop()
+                    .apply(RequestOptions.bitmapTransform(new RoundedCorners(14)))
+                    .into(holder.shopimg);
+        } else {
+            FirebaseStorage storage = FirebaseStorage.getInstance();
+            StorageReference storageRef = storage.getReference().child(ImgPath);
+
+            storageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                @Override
+                public void onSuccess(Uri uri) {
+                    Glide.with(context)
+                            .load(uri)
+                            .apply(RequestOptions.bitmapTransform(new RoundedCorners(14)))
+                            .centerCrop()
+                            .into(holder.shopimg);
+                }
+            });
+        }
+
 
         // 아이템 뷰 클릭시 상세페이지로 이동
         holder.itemView.setOnClickListener(new View.OnClickListener() {
