@@ -78,7 +78,8 @@
                 app:layout_constraintTop_toBottomOf="@id/tv_reviewwrite_ratingLabel"
                 app:layout_constraintBottom_toTopOf="@id/tv_reviewwrite_textContentLabel"
                 tools:ignore="SpeakableTextPresentCheck"
-                style="?android:attr/ratingBarStyleIndicator"/>
+                style="?android:attr/ratingBarStyleIndicator"
+                android:progressTint="#FFC107" />
             <TextView
                 android:id="@+id/tv_reviewwrite_textContentLabel"
                 android:layout_width="wrap_content"
