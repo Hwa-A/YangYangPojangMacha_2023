@@ -82,11 +82,14 @@ public class PochareviewFragment extends Fragment {
 
         // ▼ recyclerview 출력
         recyclerView = view.findViewById(R.id.recyv_pochareview_reviewList);
-        recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext(), LinearLayoutManager.HORIZONTAL, false));
-        ReviewGetList reviewList = new ReviewGetList(shop.getPrimaryKey(), new ReviewGetList.reviewDataLoadCallback() {
+        recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext(), LinearLayoutManager.VERTICAL, false));
+
+        ReviewGetList reviewList = new ReviewGetList();
+
+        reviewList.GetReviewList(shop.getPrimaryKey(), new ReviewGetList.reviewDataLoadCallback() {
             @Override
             public void onReviewDataLoad(ArrayList<ReviewListModel> reviewDatas) {
-                if(reviewDatas.size() > 0){
+                if(reviewDatas != null){
                     Log.e("test1", "리사이클러뷰 진짜 실행");
                     reviewAdapter = new ReviewAdapter(reviewDatas, getContext());
                     recyclerView.setAdapter(reviewAdapter);
@@ -95,6 +98,7 @@ public class PochareviewFragment extends Fragment {
                 }
             }
         });
+
 
 
 

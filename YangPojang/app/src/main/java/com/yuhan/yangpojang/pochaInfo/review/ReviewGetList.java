@@ -16,6 +16,8 @@ import com.yuhan.yangpojang.pochaInfo.model.ReviewListModel;
 import org.checkerframework.checker.units.qual.A;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 public class ReviewGetList {
@@ -25,7 +27,7 @@ public class ReviewGetList {
 
     private DatabaseReference ref = FirebaseDatabase.getInstance().getReference();  // firebase 참조 객체
 
-    public ReviewGetList(String pchKey, final ReviewGetList.reviewDataLoadCallback reviewCallback){
+    public  void GetReviewList(String pchKey, final ReviewGetList.reviewDataLoadCallback reviewCallback){
         this.pchKey = pchKey;   // 포차 id 연결
 
         // firebase에서 데이터 가져오기
@@ -34,7 +36,7 @@ public class ReviewGetList {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 // 리스트 초기화
                 reviewList.clear();
-                reviewDatas.size();
+                reviewDatas.clear();
                 Log.e("test1", "getList: 초기화");
 
                 // firebase에서 해당 포차의 리뷰 데이터 가져오기
@@ -42,9 +44,11 @@ public class ReviewGetList {
                     for (DataSnapshot snap : snapshot.getChildren()){
                         ReviewDTO review = snap.getValue(ReviewDTO.class);
                         reviewList.add(review);     // 리뷰 리스트에 해당 포차의 리뷰들 저장
+                        Log.e("test1", "=======================");
                         Log.e("test1", "리뷰id: "+review.getUid());
                         Log.e("test1", "사진: "+review.getPicUrl1());
                     }
+                    Collections.reverse(reviewList);    // 역순으로 재정렬
                     Log.e("test1", "getList: 리뷰 데이터 다 가져옴");
 
                     // reviewList의 uid를 얻어 회원 닉네임 가져오기
@@ -91,6 +95,8 @@ public class ReviewGetList {
                                     reviewDatas.add(reviewListmodel);
                                     Log.e("test1", "리뷰 리스트 추가");
                                 }
+                                    reviewCallback.onReviewDataLoad(reviewDatas);
+                                    Log.e("test1", "추가됨");
                             }
 
                             @Override
@@ -100,8 +106,6 @@ public class ReviewGetList {
                             }
                         });
                     }
-                    reviewCallback.onReviewDataLoad(reviewDatas);
-
                 }
                 // 데이터가 변경되었음을 Adapter에 알림
 //            carAdapter.notifyDataSetChanged();
@@ -113,9 +117,7 @@ public class ReviewGetList {
 
             }
         });
-
     }
-
 
     public interface reviewDataLoadCallback{
         void onReviewDataLoad(ArrayList<ReviewListModel> reviewDatas);
