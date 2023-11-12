@@ -25,6 +25,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.yuhan.yangpojang.R;
 import com.yuhan.yangpojang.mypage.Model.MyReviewModel;
+import com.yuhan.yangpojang.mypage.fixReview.ReviewFixPage;
 import com.yuhan.yangpojang.pochaInfo.info.PochainfoActivity;
 
 import java.util.ArrayList;
@@ -118,12 +119,12 @@ public class MyReviewAdapter extends RecyclerView.Adapter<MyReviewAdapter.MyRevi
             @Override
             public void onClick(View view) {
                 // 클릭한 항목의 가게 정보를 가져옵니다.
-                MyReviewModel selectedShop = reviewItemList.get(position);
+                MyReviewModel reviewModel = reviewItemList.get(position);
 
 
                 // 가게의 고유 식별자를 사용하여 가게 세부 정보 화면으로 이동하는 인텐트를 생성합니다.
                 Intent intent = new Intent(context, PochainfoActivity.class);
-                intent.putExtra("shopInfo", selectedShop);  // MyReportShopModel 객체를 추가 데이터로 전달
+                intent.putExtra("shopInfo", reviewModel);  // MyReportShopModel 객체를 추가 데이터로 전달
 
                 context.startActivity(intent); // 인텐트 실행
 
@@ -135,11 +136,13 @@ public class MyReviewAdapter extends RecyclerView.Adapter<MyReviewAdapter.MyRevi
             @Override
             public void onClick(View v) {
                 // 클릭한 버튼의 위치에 대한 로그 출력
-                Log.d("FixReviewBtn", "Button Clicked at position: " + position);
+                Log.d("리뷰 어댑터", "onClick: " + position);
+                MyReviewModel reviewModel = reviewItemList.get(position);
 
-//                Intent intent = new Intent(context, .class);
-//                intent.putExtra("shopInfo", selectedShop);  // MyReportShopModel 객체를 추가 데이터로 전달
-                // 여기에 수정 버튼을 눌렀을 때의 동작을 추가하세요.
+                Intent intent = new Intent(context, ReviewFixPage.class);
+                intent.putExtra("shopInfo", reviewModel);  // MyReportShopModel 객체를 추가 데이터로 전달
+
+                context.startActivity(intent);
             }
         });
 

@@ -84,14 +84,12 @@ public class MyReportShopGetList {
                                 String primaryKey = shopKey.toString();
                                 String sKey = shopKey.toString();
 
-
                                 // MyLikeShopModel 객체 생성 및 값 설정
                                 MyReportShopModel shop = new MyReportShopModel(uid, shopName, latitude, longitude ,  addressName, pwayMobile,  pwayCard,
                                         pwayAccount,  pwayCash,  openMon,  openTue,
                                         openWed,  openThu,  openFri,  openSat,
                                         openSun,  category ,  storeImageUri,  menuImageUri,
                                         isVerified,  hasMeeting,  rating,  geohash, exteriorImagePath, primaryKey, sKey);
-
 
                                 shopDatas.add(shop); // 가져온 가게 정보를 likeShops 리스트에 추가
                                 Log.d("테스트report", "Category: " + category);
