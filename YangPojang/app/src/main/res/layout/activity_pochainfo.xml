@@ -104,12 +104,13 @@
                 app:layout_constraintTop_toTopOf="@id/tv_pochainfo_pochaname" />
 
             <ImageView
+                android:id="@+id/img_pochainfo_verified"
                 android:layout_width="30dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
                 android:adjustViewBounds="true"
                 android:src="@drawable/pochainfo_verified"
-                android:visibility="visible"
+                android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="@id/tv_pochainfo_pochaname"
                 app:layout_constraintEnd_toStartOf="@id/tv_pochainfo_pochaname"
                 app:layout_constraintTop_toTopOf="@id/tv_pochainfo_pochaname"

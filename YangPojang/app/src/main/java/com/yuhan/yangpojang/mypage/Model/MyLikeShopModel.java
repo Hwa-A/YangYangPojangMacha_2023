@@ -2,8 +2,6 @@ package com.yuhan.yangpojang.mypage.Model;
 
 import com.yuhan.yangpojang.model.Shop;
 
-import java.io.Serializable;
-
 
 // Shop을 상속 받아 Adapter에서 강제적 형변환을 하지 않아도 괜찮다.
 public class MyLikeShopModel extends Shop {

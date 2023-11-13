@@ -2,8 +2,6 @@ package com.yuhan.yangpojang.mypage.Model;
 
 import com.yuhan.yangpojang.model.Shop;
 
-import java.io.Serializable;
-
 public class MyReportShopModel extends Shop {
     private double latitude; // x 좌표
     private double longitude; // y 좌표

@@ -70,6 +70,7 @@ public class PochainfoActivity extends AppCompatActivity implements OnFragmentRe
     private String exteriorImageUrl;
     private Handler backgroundHandler;    //  이미지 불러오기 지연 시키기 위해 선언한 핸들러
     private DatabaseReference shopReference;
+    private ImageView verifiedImg;      // 인증 이미지
 
     //    FirebaseDatabase ref = FirebaseDatabase.getInstance();
 //    DatabaseReference shops = ref.getReference("shops");
@@ -90,6 +91,8 @@ public class PochainfoActivity extends AppCompatActivity implements OnFragmentRe
         TextView pchNameTv = findViewById(R.id.tv_pochainfo_pochaname);  // 포차 이름 TextView
         pchImgview = findViewById(R.id.img_pochainfo_pochaImage); // 포차 이미지
         categoryTv=findViewById(R.id.tv_pochainfo_category);
+        verifiedImg = findViewById(R.id.img_pochainfo_verified);    // 인증 이미지
+
 
         viewModel = new ViewModelProvider(this).get(PochaViewModel.class);
 
@@ -103,8 +106,13 @@ public class PochainfoActivity extends AppCompatActivity implements OnFragmentRe
             shopKey= shop.getPrimaryKey(); // 포차 키 얻기
             String pchName = shop.getShopName(); // 포차 이름 얻기
             category= shop.getCategory();   // 포차 카테고리 얻기
+            Log.d("ffffffff히히,", String.valueOf(shop.getVerified()));
+            if(shop.getVerified()){
+                verifiedImg.setVisibility(View.VISIBLE);
+            } else {
+                verifiedImg.setVisibility(View.GONE);
 
-
+            }
             //포차 이미지 얻기 위한 firebase/firebaseStorage 호출
             FirebaseStorage storage = FirebaseStorage.getInstance();
 
@@ -258,6 +266,17 @@ public class PochainfoActivity extends AppCompatActivity implements OnFragmentRe
                     shop = dataSnapshot.getValue(Shop.class); // 최신의 Shop 데이터를 가져옴
                     category=shop.getCategory();
                     storeImageUrl= shop.getFbStoreImgurl();
+                    boolean isverifiedImg= shop.getVerified();
+
+                    if(isverifiedImg)
+                    {
+                        verifiedImg.setVisibility(View.VISIBLE);
+
+                    }
+                    else {
+                        verifiedImg.setVisibility(View.GONE);
+
+                    }
 
                     if(category!=null || category!="")
                     {
