@@ -1,6 +1,7 @@
 package com.yuhan.yangpojang.pochaInfo.meeting.smallpopup;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -28,13 +29,15 @@ public class WorkCancleBtn {
         this.user = user;
         this.context = context;
         this.meetingDatas = meetingDatas;
+        Log.d("번개WorkCancleBtn", "CntTodayMeet: 1 --- " + meetingDatas.size());
     }
 
     public void nonappearance(TextView attender, Button cancelBtn){
         DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("meetingAttenders/" + meetInfo.getMeetingKey());
 
         dbRef.child(user.getUID()).removeValue();
-        Toast.makeText(context, "떠난다니 아쉽군요...", Toast.LENGTH_SHORT).show();
+        Toast.makeText(context, "떠나신다니 아쉽군요...", Toast.LENGTH_SHORT).show();
+        meetingDatas.remove(meetInfo);  // 삭제한 번개를 리스트에서 제거
 
         cancelBtn.setVisibility(View.GONE);
 
@@ -51,6 +54,7 @@ public class WorkCancleBtn {
 
                 // 참석자가 0명이면 번개 삭제
                 if(attendCount == 0){
+
                     // meeting 테이블에서 삭제
                     DatabaseReference meetingRef = FirebaseDatabase.getInstance().getReference("meeting/" + meetInfo.getPochaKey() + "/" +meetInfo.getMeetingKey());
                     // meetingAttenders에서 삭제
@@ -62,9 +66,12 @@ public class WorkCancleBtn {
                     profileRef.child(meetInfo.getMeetingKey()).removeValue();
 
                     // 번개를 삭제한 후에 hasMeeting 값을 업데이트
-                    meetingDatas.remove(meetInfo);  // 삭제한 번개를 리스트에서 제거
-                    new CntTodayMeet(meetingDatas, meetInfo.getPochaKey());
+                    Log.d("번개WorkCancleBtn", "CntTodayMeet: 2 --- " + meetingDatas.size());
+                    new CntTodayMeet(meetingDatas, meetInfo);
+
                 }
+                Log.d("번개WorkCancleBtn", "CntTodayMeet: 3 --- " + meetingDatas.size());
+
 
             }
 

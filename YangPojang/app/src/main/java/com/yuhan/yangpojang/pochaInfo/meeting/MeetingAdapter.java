@@ -114,7 +114,7 @@ public class MeetingAdapter extends RecyclerView.Adapter<MeetingAdapter.MeetingH
                     Log.d("번개Adapter", "아이템 뷰 클릭 : " + position);
                     SmallBox smallBox = new SmallBox(meetList, meetList.get(position), user, primaryKey, context );
                     smallBox.ShowAttenders();
-                    new CntTodayMeet(meetList,primaryKey);
+//                    new CntTodayMeet(meetList,primaryKey);
                 }
             }
         });

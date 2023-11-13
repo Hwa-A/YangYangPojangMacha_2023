@@ -2,6 +2,7 @@ package com.yuhan.yangpojang.pochaInfo.meeting.smallpopup;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
@@ -43,19 +44,20 @@ public class SmallBox {
         Button attendBtn = popupView.findViewById(R.id.attend);
         Button cancelBtn = popupView.findViewById(R.id.cancel);
 
+        //참석자들 출력
         Map<String, String> attends = meetInfo.getAttends();
         StringBuilder attendsStr = new StringBuilder();
         for (Map.Entry<String, String> entry : attends.entrySet()) {
             attendsStr.append(entry.getValue()).append("\n");
         }
-
         attender.setText(attendsStr.toString());
+
 
         // 사용자의 UID가 참석자 테이블에 없는 경우 참석 버튼 띄움
         if (!attends.containsKey(user.getUID())) {
             attendBtn.setVisibility(View.VISIBLE);
             cancelBtn.setVisibility(View.GONE);
-
+            Log.d("번개smallbox", "// 사용자의 UID가 참석자 테이블에 없는 경우 참석 버튼 띄움 : ");
             WorkAttendBtn workAttendBtn = new WorkAttendBtn(meetInfo, user, context, meetList, primaryKey);
 
             if (meetInfo.getMaxMember() <= meetInfo.getNowMember()) {   // 정원이 다 찬 경우
@@ -89,10 +91,12 @@ public class SmallBox {
             cancelBtn.setVisibility(View.VISIBLE);
             WorkCancleBtn workCancleBtn = new WorkCancleBtn( meetInfo,  user,  context, meetList);
 
+            Log.d("번개smallbox", "// 사용자의 UID가 참석자 테이블에 있는 경우 참석 취소 버튼 띄움 --- : ");
+
             cancelBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-
+                    Log.d("번개smallbox", "// 사용자의 UID가 참석자 테이블에 있는 경우 참석 취소 버튼 띄움 onClick  ");
                     workCancleBtn.nonappearance(attender, cancelBtn);
                 }
             });
