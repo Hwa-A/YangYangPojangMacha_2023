@@ -349,8 +349,10 @@ public class ReviewFixPage  extends AppCompatActivity {
                 Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
                 imageBitmaps.add(bitmap);       // 이미지 비트맵 리스트에 추가
                 Log.e("test1", "비트맵으로 변환후, 리스트에 추가");
-                // 선택된 이미지를 화면에 출력
-                displaySelectedImages();
+                if(firstPicUrlCnt == imageBitmaps.size()){
+                    // 선택된 이미지를 화면에 출력
+                    displaySelectedImages();
+                }
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
