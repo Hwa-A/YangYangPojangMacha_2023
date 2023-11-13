@@ -47,6 +47,7 @@ import com.naver.maps.map.MapView;
 import com.naver.maps.map.NaverMap;
 import com.naver.maps.map.OnMapReadyCallback;
 import com.yuhan.yangpojang.R;
+import com.yuhan.yangpojang.fragment.HomeFragment;
 import com.yuhan.yangpojang.login.User;
 import com.yuhan.yangpojang.model.Shop;
 import com.yuhan.yangpojang.pochaInfo.interfaces.OnFragmentReloadListener;
@@ -357,43 +358,58 @@ public class PochadetailFragment extends Fragment {
         return view;
     }
 
-    private void checkVerifiedBool(Shop shop)
-    {
-        Log.d("bbbrudno?f", "A"+String.valueOf(countVerified));
-//        Log.d("bbbrudno????f","A"+ String.valueOf(shop.getCountVerified()));
+    private void checkVerifiedBool(Shop shop) {
+        DatabaseReference countVerifiedRef = FirebaseDatabase.getInstance().getReference()
+                .child("shops")
+                .child(useShopkey)
+                .child("countVerified");
 
-        if (countVerified != null && countVerified >= 3)
-        {
-            Log.d("bbbrudnocounv", String.valueOf(countVerified));
-            // If countVerified is not null and greater than or equal to 3, set verified to true
-            Log.d("bbbshop??", "a"+String.valueOf(shop));
-            shop.setVerified(true);
-            Log.d("bbbruuseshopkeyv", useShopkey);
+        countVerifiedRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                Integer newCountVerified = snapshot.getValue(Integer.class);
+                updateVerifiedStatus(shop, newCountVerified);
+            }
 
-            // Now you may want to update the Firebase database with the updated shop object
-            DatabaseReference shopReference = FirebaseDatabase.getInstance().getReference()
-                    .child("shops")
-                    .child(useShopkey)
-                    .child("verified");
-            shopReference.setValue(true)
-                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task)
-                        {
-                            if (task.isSuccessful())
-                            {
-                                Log.d("bbbbFirebase", "Shop verification status updated successfully");
-                            }
-                            else
-                            {
-                                Log.e("bbbbFirebase", "Failed to update shop verification status");
-                            }
-                        }
-                    });
-        }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.e("Firebase", "Database error: " + error.getMessage());
+            }
+        });
     }
 
+    private void updateVerifiedStatus(Shop shop, Integer countVerified) {
+        Log.d("bbbrudno?f", "A" + String.valueOf(countVerified));
 
+        if (countVerified != null && countVerified >= 3) {
+            // If countVerified is not null and greater than or equal to 3, set verified to true
+            shop.setVerified(true);
+            updateVerifiedStatusInDatabase(true);
+        } else {
+            // If countVerified is less than 3, set verified to false
+            shop.setVerified(false);
+            updateVerifiedStatusInDatabase(false);
+        }
+
+        updateVerifiedStatusInDatabase(shop.getVerified());
+    }
+    private void updateVerifiedStatusInDatabase(boolean newStatus) {
+        DatabaseReference shopReference = FirebaseDatabase.getInstance().getReference()
+                .child("shops")
+                .child(useShopkey)
+                .child("verified");
+        shopReference.setValue(newStatus)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Log.d("Firebase", "Shop verification status updated successfully");
+                        } else {
+                            Log.e("Firebase", "Failed to update shop verification status");
+                        }
+                    }
+                });
+    }
 
 
 
