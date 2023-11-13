@@ -27,36 +27,38 @@ public class ShopGetList {
         }
     }
 
-    public static void meetingDataLoad(final shopDataLoadedCallback callback){
+    public static void meetingDataLoad(final shopDataLoadedCallback callback) {
         shops.clear();
 
         final int[] remainingTasks = {shopIds.size()};
 
-        for(int i = 0; i < shopIds.size(); i++){
-            databaseReference = FirebaseDatabase.getInstance().getReference("shops/" + shopIds.get(i));
 
-            databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    Shop shop = snapshot.getValue(Shop.class);
-                    shop.setPrimaryKey(snapshot.getKey());
+        databaseReference = FirebaseDatabase.getInstance().getReference("shops/");
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (int i = 0; i < shopIds.size(); i++) {
+                    String link = shopIds.get(i);
+
+                    Shop shop = snapshot.child(link).getValue(Shop.class);
+                    shop.setPrimaryKey(shop.getShopKey());
                     shops.add(shop);
 
                     remainingTasks[0]--;
                     if (remainingTasks[0] == 0) {  // 모든 작업이 완료되었을 때
                         callback.onShopLoaded(shops);  // 콜백 호출
                     }
-                }
 
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-                    remainingTasks[0]--;
-                    if (remainingTasks[0] == 0) {  // 모든 작업이 완료되었을 때
-                        callback.onShopLoaded(shops);  // 콜백 호출
-                    }
+
                 }
-            });
-        }
+            }
+
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
 
     }
 
