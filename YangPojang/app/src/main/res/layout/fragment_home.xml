@@ -198,7 +198,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"/>
 
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/pocha_info"
         android:layout_width="match_parent"
@@ -280,6 +279,14 @@
             app:layout_constraintLeft_toLeftOf="parent"
             android:layout_marginLeft="370dp"
             android:layout_marginTop="15dp"/>
+        <View
+            android:id="@+id/view"
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="#C5C5C5"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
