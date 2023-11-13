@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?><!-- id 형식: view약자_속한xml명_view설명 -->
+<?xml version="1.0" encoding="utf-8"?>
+<!-- id 형식: view약자_속한xml명_view설명 -->
 
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -6,12 +7,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -19,7 +18,6 @@
             android:orientation="horizontal"
             android:paddingTop="10dp"
             android:paddingBottom="10dp">
-
             <TextView
                 android:id="@+id/myFixShopName"
                 android:layout_width="wrap_content"
@@ -33,7 +31,6 @@
                 android:textColor="@color/black"
                 android:textSize="25sp"
                 android:textStyle="bold" />
-
             <ImageView
                 android:id="@+id/myFixVerified"
                 android:layout_width="35dp"
@@ -43,19 +40,14 @@
                 android:src="@drawable/pochainfo_verified"
                 android:visibility="gone" />
         </LinearLayout>
-
-
         <TextView
             android:layout_width="match_parent"
             android:layout_height="10dp"
             android:background="@drawable/pochainfo_linearline_bottom" />
-
-
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:padding="15dp">
-
             <TextView
                 android:id="@+id/myFixMyRatingIs"
                 android:layout_width="wrap_content"
@@ -67,7 +59,6 @@
                 app:layout_constraintBottom_toTopOf="@id/myFixMyRating"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
-
             <RatingBar
                 android:id="@+id/myFixMyRating"
                 style="?android:attr/ratingBarStyleIndicator"
@@ -81,7 +72,6 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/myFixMyRatingIs"
                 tools:ignore="SpeakableTextPresentCheck" />
-
             <TextView
                 android:id="@+id/myFixSummaryIs"
                 android:layout_width="wrap_content"
@@ -94,7 +84,6 @@
                 app:layout_constraintBottom_toTopOf="@id/myFixSummaryOutfit"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/myFixMyRating" />
-
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/myFixSummaryOutfit"
                 android:layout_width="0dp"
@@ -108,7 +97,6 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/myFixSummaryIs">
-
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/myFixSummaryEdit"
                     android:layout_width="match_parent"
@@ -117,8 +105,6 @@
                     android:maxLength="150"
                     android:textSize="15sp" />
             </com.google.android.material.textfield.TextInputLayout>
-
-
             <TextView
                 android:id="@+id/myFixUpLoadPicIs"
                 android:layout_width="wrap_content"
@@ -131,7 +117,6 @@
                 app:layout_constraintBottom_toTopOf="@id/myFixUpLoadPicContain"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/myFixSummaryOutfit" />
-
             <LinearLayout
                 android:id="@+id/myFixUpLoadPicContain"
                 android:layout_width="match_parent"
@@ -142,13 +127,11 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/myFixUpLoadPicIs">
-
                 <FrameLayout
                     android:id="@+id/myFixPicScope1"
                     android:layout_width="97dp"
                     android:layout_height="97dp"
                     android:layout_marginRight="10dp">
-
                     <ImageButton
                         android:id="@+id/myFixPicImgBtn1"
                         android:layout_width="90dp"
@@ -158,7 +141,6 @@
                         android:background="#CFCFCF"
                         android:src="@drawable/pochareview_camera"
                         tools:ignore="SpeakableTextPresentCheck" />
-
                     <ImageButton
                         android:id="@+id/myFixPicCancelBtn1"
                         android:layout_width="25dp"
@@ -170,15 +152,12 @@
                         android:visibility="gone"
                         tools:ignore="SpeakableTextPresentCheck" />
                 </FrameLayout>
-
-
                 <FrameLayout
                     android:id="@+id/myFixPicScope2"
                     android:layout_width="97dp"
                     android:layout_height="97dp"
                     android:layout_marginRight="10dp"
                     android:visibility="gone">
-
                     <ImageButton
                         android:id="@+id/myFixPicImgBtn2"
                         android:layout_width="90dp"
@@ -188,7 +167,6 @@
                         android:background="#CFCFCF"
                         android:src="@drawable/pochareview_camera"
                         tools:ignore="SpeakableTextPresentCheck" />
-
                     <ImageButton
                         android:id="@+id/myFixPicCancelBtn2"
                         android:layout_width="25dp"
@@ -200,14 +178,12 @@
                         android:visibility="gone"
                         tools:ignore="SpeakableTextPresentCheck" />
                 </FrameLayout>
-
                 <FrameLayout
                     android:id="@+id/myFixPicScope3"
                     android:layout_width="97dp"
                     android:layout_height="97dp"
                     android:layout_marginRight="10dp"
                     android:visibility="gone">
-
                     <ImageButton
                         android:id="@+id/myFixPicImgBtn3"
                         android:layout_width="90dp"
@@ -217,7 +193,6 @@
                         android:background="#CFCFCF"
                         android:src="@drawable/pochareview_camera"
                         tools:ignore="SpeakableTextPresentCheck" />
-
                     <ImageButton
                         android:id="@+id/myFixPicCancelBtn3"
                         android:layout_width="25dp"
@@ -230,8 +205,6 @@
                         tools:ignore="SpeakableTextPresentCheck" />
                 </FrameLayout>
             </LinearLayout>
-
-
             <LinearLayout
                 android:id="@+id/myFixExecuteContainer"
                 android:layout_width="match_parent"
@@ -243,7 +216,6 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/myFixUpLoadPicContain">
-
                 <Button
                     android:id="@+id/myFixCancleBtn"
                     android:layout_width="wrap_content"
@@ -254,7 +226,6 @@
                     android:text="취소"
                     android:textColor="@color/white"
                     android:textSize="20sp" />
-
                 <Button
                     android:id="@+id/myFixApplyBtn"
                     android:layout_width="wrap_content"
@@ -265,9 +236,6 @@
                     android:textColor="@color/white"
                     android:textSize="20sp" />
             </LinearLayout>
-
         </androidx.constraintlayout.widget.ConstraintLayout>
-
     </LinearLayout>
-
 </ScrollView>

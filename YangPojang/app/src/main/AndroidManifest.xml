@@ -25,7 +25,8 @@
             android:windowSoftInputMode="adjustNothing"/>
         <activity
             android:name=".pochaInfo.review.ReviewwriteActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:windowSoftInputMode="adjustNothing"/>
 
         <activity
             android:name=".SplashImage"
@@ -53,6 +54,8 @@
         <activity android:name=".PermissionActivity"/>
         <activity android:name=".login.LoginActivity"/>
         <activity android:name=".mypage.account.accountPage"/>
+        <activity android:name=".mypage.fixReview.ReviewFixPage"
+            android:windowSoftInputMode="adjustNothing"/>
 
         <meta-data
             android:name="com.naver.maps.map.CLIENT_ID"

@@ -13,6 +13,11 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.yuhan.yangpojang.R;
 import com.yuhan.yangpojang.model.Shop;
 import com.yuhan.yangpojang.pochaInfo.interfaces.OnFragmentReloadListener;
@@ -61,12 +66,32 @@ public class PochameetingFragment extends Fragment {
         meetingWriteFabtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), MeetingwriteActivity.class);
-                // intent에 MeetingwriteActivity에 전달할 데이터 추가
-                intent.putExtra("pchKey", shop.getPrimaryKey());    // 포차 고유키
-                intent.putExtra("pchName", shop.getShopName());     // 포차 이름
-                // Activity로 데이터 전달 및 이동
-                startActivity(intent);
+                // firebase에서 포차 인증 여부 읽어오기
+                String pchKey = shop.getPrimaryKey();       // 포차 고유키
+                DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+                // shops 테이블에서 포차 인증 여부 얻기
+                // shops > 포차 id > verified 값
+                ref.child("shops/"+pchKey+"/verified").addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        Boolean verified = snapshot.getValue(Boolean.class);    // 포차 인증 여부
+
+                        Intent intent = new Intent(getActivity(), MeetingwriteActivity.class);
+                        // intent에 MeetingwriteActivity에 전달할 데이터 추가
+                        intent.putExtra("pchKey", shop.getPrimaryKey());    // 포차 고유키
+                        intent.putExtra("pchName", shop.getShopName());     // 포차 이름
+                        intent.putExtra("verified", verified);  // 포차 인증 여부
+
+                        // Activity로 데이터 전달 및 이동
+                        startActivity(intent);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        // 에러 처리
+                    }
+                });
+
             }
         });
 

@@ -2,7 +2,9 @@ package com.yuhan.yangpojang.mypage.Model;
 
 import com.yuhan.yangpojang.model.Shop;
 
-public class MyReviewModel extends Shop {
+import java.io.Serializable;
+
+public class MyReviewModel extends Shop implements Serializable {
 
     private double latitude; // x 좌표
     private double longitude; // y 좌표

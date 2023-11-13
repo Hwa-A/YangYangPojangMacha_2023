@@ -22,6 +22,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -99,6 +100,7 @@ public class MeetingwriteActivity extends AppCompatActivity {
         titleTxtLay = findViewById(R.id.txtLay_meetingwrite_titleContainer);    // 번개 소개글 컨테이너
         TextView dateTv = findViewById(R.id.tv_meetingwrite_date);      // 번개 날짜(당일) TextView
         TextView timeTv = findViewById(R.id.tv_meetingwrite_time);      // 번개 시간 TextView
+        ImageView verifiedImg = findViewById(R.id.img_meetingwrite_verified);   // 포차 인증 여부
         maxMemberTv = findViewById(R.id.autoTxt_meetingwrite_member);  // 번개 정원 autoCompleteTextView
         maxMembers = getResources().getStringArray(R.array.maxMembers);     // 정원 item
         // new ArrayAdapter<>(눈에 나타낼 xml, drop down되는 xml, 표시할 배열)
@@ -115,6 +117,16 @@ public class MeetingwriteActivity extends AppCompatActivity {
         if (intent != null){
             pchKey = intent.getStringExtra("pchKey");         // 포차 고유키
             String pchName = intent.getStringExtra("pchName");      // 포차 이름
+            Boolean verified = intent.getBooleanExtra("verified", false);   // 포차 인증 여부
+
+            if(verified){
+                // 인증된 포차인 경우, 인증 이미지가 보이도록 설정
+                verifiedImg.setVisibility(View.VISIBLE);
+            }else {
+                // 인증되지 않은 포차인 경우, 인증 이미지가 안 보이도록 설정
+                verifiedImg.setVisibility(View.GONE);
+            }
+
             // 포차 이름 변경
             pchNameTv.setText(pchName);
         }
