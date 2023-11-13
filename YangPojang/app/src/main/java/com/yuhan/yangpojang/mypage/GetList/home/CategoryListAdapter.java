@@ -1,22 +1,18 @@
-package com.yuhan.yangpojang.home;
+package com.yuhan.yangpojang.mypage.GetList.home;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.Toast;
 
-import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.yuhan.yangpojang.R;
-import com.yuhan.yangpojang.fragment.HomeFragment;
 
 import java.util.ArrayList;
 import java.util.Arrays;

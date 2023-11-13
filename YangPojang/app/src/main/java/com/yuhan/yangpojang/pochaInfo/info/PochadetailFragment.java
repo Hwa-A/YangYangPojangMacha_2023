@@ -138,7 +138,7 @@ public class PochadetailFragment extends Fragment {
                 double longitude = shop.getLongitude();
                 useShopkey = shop.getPrimaryKey();
 
-                Log.d("ffff;rfdae", useShopkey);
+                //Log.d("ffff;rfdae", useShopkey);
                 if (address != null && !address.isEmpty()) { //주소가 비어있지 않으면
                     detailAddressTv.setText(address); //주소 설정
                 } else {
