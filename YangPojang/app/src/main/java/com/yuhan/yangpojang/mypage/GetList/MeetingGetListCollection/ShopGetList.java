@@ -39,6 +39,7 @@ public class ShopGetList {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     Shop shop = snapshot.getValue(Shop.class);
+                    shop.setPrimaryKey(snapshot.getKey());
                     shops.add(shop);
 
                     remainingTasks[0]--;
