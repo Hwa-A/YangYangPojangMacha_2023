@@ -132,6 +132,7 @@ public class MyReviewAdapter extends RecyclerView.Adapter<MyReviewAdapter.MyRevi
             }
         });
 
+        // 버튼 클릭한 경우, 리뷰 정보 수정 액티비티로 이동
         holder.fixReviewBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -140,9 +141,10 @@ public class MyReviewAdapter extends RecyclerView.Adapter<MyReviewAdapter.MyRevi
                 MyReviewModel reviewModel = reviewItemList.get(position);
 
                 Intent intent = new Intent(context, ReviewFixPage.class);
-                intent.putExtra("shopInfo", reviewModel);  // MyReportShopModel 객체를 추가 데이터로 전달
+                intent.putExtra("myReviewInfo", reviewModel);  // MyReportShopModel 객체를 추가 데이터로 전달
 
                 context.startActivity(intent);
+
             }
         });
 

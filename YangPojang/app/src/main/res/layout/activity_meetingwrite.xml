@@ -43,6 +43,7 @@
                 android:textStyle="bold"
                 android:letterSpacing="0.1"/>
             <ImageView
+                android:id="@+id/img_meetingwrite_verified"
                 android:layout_width="35dp"
                 android:layout_height="wrap_content"
                 android:src="@drawable/pochainfo_verified"
@@ -215,7 +216,7 @@
                     android:layout_height="wrap_content"
                     app:errorEnabled="true"
                     app:endIconMode="none"
-                    android:hint="만 19세~">
+                    android:hint="19세 ~">
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/edt_meetingwrite_minAge"
                         android:layout_width="match_parent"
@@ -241,7 +242,7 @@
                     android:layout_height="wrap_content"
                     app:errorEnabled="true"
                     app:endIconMode="none"
-                    android:hint="~만 99세"
+                    android:hint="~ 99세"
                     android:layout_marginRight="10dp" >
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/edt_meetingwrite_maxAge"

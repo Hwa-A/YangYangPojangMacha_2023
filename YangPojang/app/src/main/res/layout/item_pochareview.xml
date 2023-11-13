@@ -5,25 +5,32 @@
         imgbtn: ImageButton
         btn: Button
         lin: LinearLayout
-        tv: TextView             -->
+        tv: TextView
+        rtb: RatingBar          -->
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:padding="10dp">
+    android:background="@drawable/border_review_recyclerview_item"
+    android:padding="17dp"
+    android:layout_marginBottom="8dp"
+    android:layout_marginRight="5dp"
+    android:layout_marginLeft="5dp"
+    android:elevation="3dp">
     <TextView
         android:id="@+id/tv_pochareview_writerName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="익명"
         android:textColor="#FE7E44"
-        android:textSize="22sp"
+        android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
     <TextView
+        android:id="@+id/tv_pochareview_nameCoontainer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="님의 글"
@@ -31,55 +38,99 @@
         android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintStart_toEndOf="@id/tv_pochareview_writerName"
-        app:layout_constraintBaseline_toBaselineOf="@id/tv_pochareview_writerName"
-        android:layout_marginLeft="5dp"/>
+        app:layout_constraintBottom_toBottomOf="@id/tv_pochareview_writerName"
+        android:layout_marginLeft="3dp"/>
+    <TextView
+        android:id="@+id/tv_pochareview_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="2023/11/12"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@id/tv_pochareview_nameCoontainer"
+        app:layout_constraintBottom_toBottomOf="@id/tv_pochareview_writerName"
+        android:layout_marginLeft="8dp"/>
+    <!--
+    <ImageButton
+        android:id="@+id/imgbtn_pochareview_report"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:src="@drawable/pochadetail_report"
+        android:adjustViewBounds="true"
+        android:scaleType="fitCenter"
+        android:background="@android:color/transparent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tv_pochareview_writerName"
+        app:layout_constraintBottom_toBottomOf="@id/tv_pochareview_writerName"
+        tools:ignore="SpeakableTextPresentCheck" />
+        -->
+    <RatingBar
+        android:id="@+id/rtb_pochareview_ratingImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:isIndicator="true"
+        android:numStars="1"
+        android:rating="1"
+        app:layout_constraintEnd_toStartOf="@id/tv_pochareview_rating"
+        app:layout_constraintTop_toTopOf="@id/tv_pochareview_writerName"
+        app:layout_constraintBottom_toBottomOf="@id/tv_pochareview_writerName"
+        android:layout_marginRight="2dp"
+        style="?android:attr/ratingBarStyleIndicator"
+        android:progressTint="#FFC107" />
+    <TextView
+        android:id="@+id/tv_pochareview_rating"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="5.0"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/rtb_pochareview_ratingImage"
+        app:layout_constraintBottom_toBottomOf="@id/rtb_pochareview_ratingImage"
+        android:layout_marginRight="3dp"/>
     <LinearLayout
         android:id="@+id/lin_pochareview_imageContainer"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_pochareview_writerName"
+        app:layout_constraintTop_toBottomOf="@id/rtb_pochareview_ratingImage"
         android:layout_marginTop="5dp">
         <ImageView
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+            android:id="@+id/img_pochareview_picUri1"
+            android:layout_width="90dp"
+            android:layout_height="90dp"
             android:background="@color/black"
+            android:adjustViewBounds="true"
             android:layout_marginRight="5dp"/>
         <ImageView
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+            android:id="@+id/img_pochareview_picUri2"
+            android:layout_width="90dp"
+            android:layout_height="90dp"
             android:background="@color/black"
+            android:adjustViewBounds="true"
             android:layout_marginRight="5dp"/>
         <ImageView
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+            android:id="@+id/img_pochareview_picUri3"
+            android:layout_width="90dp"
+            android:layout_height="90dp"
             android:background="@color/black"
+            android:adjustViewBounds="true"
             android:layout_marginRight="5dp"/>
     </LinearLayout>
     <TextView
-        android:id="@+id/tv_pochareview_textContent"
+        android:id="@+id/tv_pochareview_summary"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="여기 맛집으로 추천!!\n다음에도 반드시 사먹을게요~"
+        android:text="여기 맛집으로 추천!!\n다음에도 반드시 사먹을게sdrsrsrsrsdsdrsdrsdrsdrsdrsdr요~"
         android:textColor="@color/black"
-        android:textSize="18sp"
+        android:textSize="15sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/lin_pochareview_imageContainer"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="8dp"
         />
-    <ImageButton
-        android:id="@+id/imgbtn_pochareview_report"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:src="@drawable/pochadetail_report"
-        android:adjustViewBounds="true"
-        android:scaleType="fitCenter"
-        android:background="@android:color/transparent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_pochareview_textContent"
-        tools:ignore="SpeakableTextPresentCheck" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

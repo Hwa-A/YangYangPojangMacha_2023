@@ -16,7 +16,11 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:paddingRight="5dp"
+        android:paddingLeft="5dp"
+        android:paddingBottom="5dp"
+        android:paddingTop="10dp"/>
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabtn_pochareview_writeButton"
         android:layout_width="wrap_content"
