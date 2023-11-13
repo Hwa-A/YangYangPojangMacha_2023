@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 
 import android.Manifest;
+import android.animation.ValueAnimator;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -31,6 +32,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
+import android.view.animation.LinearInterpolator;
 import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -275,7 +278,16 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, onPoch
         pochaListPochas = pochas;
         pochalist_view = getActivity().findViewById(R.id.pocha_list); //리사이클러 뷰
         close_pochalist = getActivity().findViewById(R.id.close_pochalist);
-        showPochaListAni(pochalist_view, close_pochalist);
+        pochalist_view.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                // 이곳에서 애니메이션을 시작
+                showPochaListAni(pochalist_view, close_pochalist);
+
+                // 애니메이션을 시작한 후에는 리스너를 제거
+                pochalist_view.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+            }
+        });
         close_pochalist.setOnClickListener(close_pochalistL);
 
         PochaListAdapter pochaListAdapter = new PochaListAdapter(pochaListPochas, this, HomeFragment.this); // 어댑터
@@ -997,51 +1009,44 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, onPoch
 
     }
 
-
-
-
     public void ButtonPosition(UiSettings uiSettings) {
         LocationButtonView locationButtonView = getActivity().findViewById(R.id.location_btn);
         ImageButton location_btn_custom = getActivity().findViewById(R.id.location_btn_custom);
 
         if(pocha_info.getVisibility() == View.VISIBLE){
-            ConstraintLayout.LayoutParams layoutParams1 = (ConstraintLayout.LayoutParams) meetingoff.getLayoutParams();
-            layoutParams1.bottomMargin = 420;
-            meetingoff.setLayoutParams(layoutParams1);
-
-            ConstraintLayout.LayoutParams layoutParams2 = (ConstraintLayout.LayoutParams) meetingon.getLayoutParams();
-            layoutParams2.bottomMargin = 420;
-            meetingon.setLayoutParams(layoutParams2);
-
-            ConstraintLayout.LayoutParams layoutParams3 = (ConstraintLayout.LayoutParams) locationButtonView.getLayoutParams();
-            layoutParams3.bottomMargin = 480;
-            locationButtonView.setLayoutParams(layoutParams3);
-
-            ConstraintLayout.LayoutParams layoutParams4 = (ConstraintLayout.LayoutParams) location_btn_custom.getLayoutParams();
-            layoutParams4.bottomMargin = 480;
-            location_btn_custom.setLayoutParams(layoutParams4);
-
+            animateBottomMargin(meetingoff, 420);
+            animateBottomMargin(meetingon, 420);
+            animateBottomMargin(locationButtonView, 480);
+            animateBottomMargin(location_btn_custom, 480);
             uiSettings.setLogoMargin(30, 0, 0, 430);
 
         }else{
-            ConstraintLayout.LayoutParams layoutParams1 = (ConstraintLayout.LayoutParams) meetingoff.getLayoutParams();
-            layoutParams1.bottomMargin = 190;
-            meetingoff.setLayoutParams(layoutParams1);
-
-            ConstraintLayout.LayoutParams layoutParams2 = (ConstraintLayout.LayoutParams) meetingon.getLayoutParams();
-            layoutParams2.bottomMargin = 190;
-            meetingon.setLayoutParams(layoutParams2);
-
-            ConstraintLayout.LayoutParams layoutParams3 = (ConstraintLayout.LayoutParams) locationButtonView.getLayoutParams();
-            layoutParams3.bottomMargin = 80;
-            locationButtonView.setLayoutParams(layoutParams3);
-
-            ConstraintLayout.LayoutParams layoutParams4 = (ConstraintLayout.LayoutParams) location_btn_custom.getLayoutParams();
-            layoutParams4.bottomMargin = 80;
-            location_btn_custom.setLayoutParams(layoutParams4);
-
+            // 각 뷰의 시작 값과 끝 값을 지정하고 애니메이션을 시작
+            animateBottomMargin(meetingoff, 190);
+            animateBottomMargin(meetingon, 190);
+            animateBottomMargin(locationButtonView, 80);
+            animateBottomMargin(location_btn_custom, 80);
             uiSettings.setLogoMargin(30, 0, 0, 30);
         }
+    }
+
+    //하단 탭 생성 시 현위치버튼, 인증&번개 버튼 위치 애니메이션
+    private void animateBottomMargin(View view, int endValue) {
+        ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) view.getLayoutParams();
+        int startValue = layoutParams.bottomMargin;
+
+        ValueAnimator animator = ValueAnimator.ofInt(startValue, endValue);
+        animator.setDuration(150);  // 애니메이션 지속 시간을 500ms로 설정
+        animator.setInterpolator(new LinearInterpolator());  // 애니메이션 속도를 일정하게 설정
+        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                int value = (int) animation.getAnimatedValue();
+                layoutParams.bottomMargin = value;
+                view.setLayoutParams(layoutParams);
+            }
+        });
+        animator.start();  // 애니메이션 시작
     }
 
     @Override
