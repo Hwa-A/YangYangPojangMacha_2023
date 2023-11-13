@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.AlertDialog;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
@@ -51,16 +52,26 @@ public class MainActivity extends AppCompatActivity {
 
 //        String naverMapsClientId = BuildConfig.NAVER_CLIENT_ID;
 
-        // 프래그먼트 생성
-        reportShopFragment = new ReportShopFragment();
-        homeFragment = new HomeFragment();
+        // 액티비티가 처음 실행됐을 때
+        if (savedInstanceState == null) {
+            // 프래그먼트 생성
+            reportShopFragment = new ReportShopFragment();
+            homeFragment = new HomeFragment();
 
-        // 앱을 처음 켰을 때 보여지는 화면 -> HomeFragment
-        getSupportFragmentManager().beginTransaction()
-                .add(R.id.fragment_container, homeFragment)
-                .add(R.id.fragment_container, reportShopFragment).hide(reportShopFragment)  // 리포트 샵 프래그먼트도 처음에 추가하고 숨김
-                .commitAllowingStateLoss();
-        currentFragment = homeFragment;
+            // 앱을 처음 켰을 때 보여지는 화면 -> HomeFragment
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.fragment_container, homeFragment, "homeFragmentTag")
+                    .add(R.id.fragment_container, reportShopFragment, "reportShopFragmentTag")
+                    .hide(reportShopFragment)  // 리포트 샵 프래그먼트도 처음에 추가하고 숨김
+                    .commitAllowingStateLoss(); //트랜잭션 실행
+            currentFragment = homeFragment;
+        }
+        // 액티비티가 재생성되는 경우
+        else {
+            homeFragment = (HomeFragment) getSupportFragmentManager().findFragmentByTag("homeFragmentTag");
+            reportShopFragment = (ReportShopFragment) getSupportFragmentManager().findFragmentByTag("reportShopFragmentTag");
+            currentFragment = homeFragment;
+        }
 
 
         // bottomnavigationview의 아이콘을 선택 했을 때 원하는 프래그먼트가 띄워질 수 있도록 리스너를 추가
@@ -112,7 +123,6 @@ public class MainActivity extends AppCompatActivity {
             super.onBackPressed();
         }
     }
-
 
 
 }

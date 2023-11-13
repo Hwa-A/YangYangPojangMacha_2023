@@ -117,7 +117,9 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, onPoch
         {
             locationPermission();
             // 위치권한 거부 시 서울시청 중심으로 가게 데이터 요청
-            StoreData.addLocation(37.566585801211325, 126.9777104192369, calculateRadius());
+            // 위치권한 거부 시 현재 카메라 위치 기준으로 가게 데이터 요청
+            CameraPosition cameraposition = mNaverMap.getCameraPosition();
+            StoreData.addLocation(cameraposition.target.latitude, cameraposition.target.longitude, calculateRadius());
             loadStoreData();
         }
 
@@ -564,6 +566,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, onPoch
         locationPermission();
     }
 
+
     // 위치 권한이 변경될 때 호출할 메소드
     private void locationPermission() {
         if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
@@ -577,7 +580,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, onPoch
                 location_btn_custom.setVisibility(INVISIBLE);
 
             }
-        } else {
+        } else if(ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_DENIED){
             if (mNaverMap != null) {
                 mNaverMap.setLocationTrackingMode(LocationTrackingMode.None); // 위치 추적 모드 중지
             }

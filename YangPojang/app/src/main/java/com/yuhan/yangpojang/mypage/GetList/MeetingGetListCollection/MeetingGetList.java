@@ -32,13 +32,15 @@ public class MeetingGetList {
 
         final int[] remainingTasks = {routes.size()};
 
-        for(int i = 0; i < routes.size(); i++){
-            databaseReference = FirebaseDatabase.getInstance().getReference("meeting/" + routes.get(i));
+        databaseReference = FirebaseDatabase.getInstance().getReference("meeting/");//
 
-            databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    MeetingModel meetingModel = snapshot.getValue(MeetingModel.class);
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (int i = 0; i < routes.size(); i++) {
+                    String link = routes.get(i);
+
+                    MeetingModel meetingModel = snapshot.child(link).getValue(MeetingModel.class);
                     meetings.add(meetingModel);
 
                     remainingTasks[0]--;
@@ -47,15 +49,15 @@ public class MeetingGetList {
                     }
                 }
 
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-                    remainingTasks[0]--;
-                    if (remainingTasks[0] == 0) {  // 모든 작업이 완료되었을 때
-                        callback.onMeetingLoaded(meetings);  // 콜백 호출
-                    }
-                }
-            });
-        }
+            }
+
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+
+        });
 
     }
 
