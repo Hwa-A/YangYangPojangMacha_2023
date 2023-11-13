@@ -1,16 +1,13 @@
-package com.yuhan.yangpojang.home;
+package com.yuhan.yangpojang.mypage.GetList.home;
 
 import android.content.Context;
 import android.location.Address;
 import android.location.Geocoder;
-import android.location.LocationManager;
 import android.util.Log;
 import android.util.LruCache;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.helper.widget.MotionEffect;
-
-import com.yuhan.yangpojang.BuildConfig;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -24,7 +21,6 @@ import org.locationtech.proj4j.ProjCoordinate;
 import java.io.IOException;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 

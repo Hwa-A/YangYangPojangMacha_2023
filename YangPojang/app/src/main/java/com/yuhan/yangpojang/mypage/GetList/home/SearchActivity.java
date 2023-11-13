@@ -1,4 +1,4 @@
-package com.yuhan.yangpojang.home;
+package com.yuhan.yangpojang.mypage.GetList.home;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -25,12 +25,6 @@ import android.widget.Toast;
 
 
 import com.yuhan.yangpojang.R;
-
-import org.locationtech.proj4j.CRSFactory;
-import org.locationtech.proj4j.CoordinateReferenceSystem;
-import org.locationtech.proj4j.ProjCoordinate;
-import org.locationtech.proj4j.CoordinateTransform;
-import org.locationtech.proj4j.CoordinateTransformFactory;
 
 import java.io.IOException;
 import java.util.ArrayList;

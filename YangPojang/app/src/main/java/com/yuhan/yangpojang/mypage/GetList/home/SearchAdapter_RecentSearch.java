@@ -1,4 +1,4 @@
-package com.yuhan.yangpojang.home;
+package com.yuhan.yangpojang.mypage.GetList.home;
 
 import android.content.Context;
 import android.util.Log;

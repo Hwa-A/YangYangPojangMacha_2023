@@ -2,7 +2,6 @@ package com.yuhan.yangpojang.mypage.Adapter;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,12 +20,9 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.yuhan.yangpojang.R;
-import com.yuhan.yangpojang.fragment.ProfileShowFragment;
-import com.yuhan.yangpojang.home.onPochaListItemClickListener;
 import com.yuhan.yangpojang.mypage.GetList.MeetingGetListCollection.GetAllMyMeetingItems;
 import com.yuhan.yangpojang.mypage.Model.MeetingModelCollection.AllMeetingItemModel;
 import com.yuhan.yangpojang.mypage.Model.MeetingModelCollection.MeetingAttendersModel;
-import com.yuhan.yangpojang.pochaInfo.meeting.getList.GetUserInfo;
 import com.yuhan.yangpojang.pochaInfo.meeting.model.UserInfoModel;
 
 import java.util.ArrayList;
