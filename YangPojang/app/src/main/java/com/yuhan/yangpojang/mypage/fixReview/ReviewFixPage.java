@@ -7,7 +7,9 @@ import android.graphics.BitmapFactory;
 import android.graphics.ImageDecoder;
 import android.graphics.Rect;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -33,8 +35,10 @@ import androidx.fragment.app.FragmentManager;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
@@ -47,7 +51,9 @@ import com.google.firebase.database.MutableData;
 import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageException;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.StreamDownloadTask;
 import com.google.firebase.storage.UploadTask;
 import com.yuhan.yangpojang.R;
 import com.yuhan.yangpojang.model.Shop;
@@ -57,6 +63,13 @@ import com.yuhan.yangpojang.pochaInfo.Dialog.UploadSuccessDialogFragment;
 import com.yuhan.yangpojang.pochaInfo.model.ReviewDTO;
 import com.yuhan.yangpojang.pochaInfo.review.ReviewwriteActivity;
 
+import org.checkerframework.checker.index.qual.LengthOf;
+
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -88,6 +101,7 @@ public class ReviewFixPage  extends AppCompatActivity {
     private float originRating;   // 수정전 별점
     private int firstPicUrlCnt;     // 처음 수정할 데이터 중 PicUrl(이미지url)의 개수
     final long ONE_MEGABYTE = 1024 * 1024; // 1MB: storage에서 이미지를 받아 변환할 비트맵 크기 지정
+
 
     // 액티비티 종료 시, 메모리 해제
     @Override
@@ -156,19 +170,10 @@ public class ReviewFixPage  extends AppCompatActivity {
         // ▼ 전달 받은 MyReivewModel 객체 처리
         Intent intent = getIntent();
         if(intent != null){
-//            model = (MyReviewModel) intent.getSerializableExtra("myReviewInfo");
-//            pchKey = model.getPrimaryKey();
-//            Log.d("리뷰Fixpage", "onCreate: " + model.getSummary());
+            model = (MyReviewModel) intent.getSerializableExtra("myReviewInfo");
+            pchKey = model.getPrimaryKey();
+            Log.d("리뷰Fixpage", "onCreate: " + model.getSummary());
 
-            model = new MyReviewModel();
-
-            model.setUid("oHsMwIYtdjSntQ5Rj0tXBHWMRfL2");
-            model.setPicUrl1("/review/-NiHpZji83NXr3Kmn4Nf/-Nj0yq_oOOMwcJhcIhHX/pic1");
-            model.setRating(4.5f);
-            model.setSummary("굿굿굿");
-            model.setShopName("양양");
-            pchKey = "-NiHpZji83NXr3Kmn4Nf";
-            model.setVerified(true);
 
             Boolean verified = model.getVerified();     // 포차 인증 여부
 
@@ -191,19 +196,44 @@ public class ReviewFixPage  extends AppCompatActivity {
             // ▼ 리뷰 사진
             if(model.getPicUrl1() != null){
                 firstPicUrlCnt++;
+                Log.e("test1", "model로부터 리뷰 사진 획득1");
             }
             if(model.getPicUrl2() != null){
                 firstPicUrlCnt++;
+                Log.e("test1", "model로부터 리뷰 사진 획득2");
+
             }
             if(model.getPicUrl3() != null){
                 firstPicUrlCnt++;
+                Log.e("test1", "model로부터 리뷰 사진 획득3");
+
             }
 
             // firebase storage 참조 객체 생성 및 초기화
             StorageReference storageRef = FirebaseStorage.getInstance().getReference();
 
+
             if(model.getPicUrl1() != null){
                 // getDownloadUrl()로 이미지 URL 얻기
+//                storageRef.child(model.getPicUrl1()).getBytes(1024 * 1024).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+//                    @Override
+//                    public void onSuccess(byte[] bytes) {
+//                        // 이미지 다운로드 성공
+//                        Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+//                        imageBitmaps.add(bitmap);       // 이미지 비트맵 리스트에 추가
+//
+//                        Log.e("test1", "비트맵 개수: "+imageBitmaps.size());
+//
+//                    }
+//                }).addOnFailureListener(new OnFailureListener() {
+//                    @Override
+//                    public void onFailure(@NonNull Exception e) {
+//                        Log.e("test1", "비트맵 오류: "+e.getMessage());
+//                    }
+//                });
+
+
+
                 storageRef.child(model.getPicUrl1()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
                     public void onSuccess(Uri uri1) {
@@ -213,58 +243,72 @@ public class ReviewFixPage  extends AppCompatActivity {
                         Log.e("test1", "선택된 이미지 개수: "+selectedImageUris.size());
                         Log.e("test1", "선택된 이미지: "+selectedImageUris.get(0).toString());
                         selectedImageCount++;   // 이미지 선택 수 증가
-                        imageBytes(model.getPicUrl1());   // url를 통해 bitmap을 얻고, 리스트에 추가하는 함수
-                        Log.e("test1", "비트맵 개수: "+imageBitmaps.size());
-                        
-                        
-                        if(model.getPicUrl2() != null){
-                            storageRef.child(model.getPicUrl2()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                @Override
-                                public void onSuccess(Uri uri2) {
-                                    // firebase storage에서 제공하는 이미지2 url 얻음
-                                    selectedImageUris.add(uri2);    // 리스트에 추가
-                                    // 선택된 이미지 수가 최대 선택 가능한 이미지 수 이하인 경우
-                                    Log.e("test2", "선택된 이미지 개수: "+selectedImageUris.size());
-                                    Log.e("test2", "선택된 이미지: "+selectedImageUris.get(0).toString());
-                                    selectedImageCount++;   // 이미지 선택 수 증가
-                                    imageBytes(model.getPicUrl2());   // url를 통해 bitmap을 얻고, 리스트에 추가하는 함수
-                                    Log.e("test2", "비트맵 개수: "+imageBitmaps.size());
+                        try {
+                            InputStream stream = new URL(uri1.toString()).openStream();
+                            Bitmap bitmap = BitmapFactory.decodeStream(stream);
+                            imageBitmaps.add(bitmap);       // 이미지 비트맵 리스트에 추가
 
-                                    if(model.getPicUrl3() != null){
-                                        storageRef.child(model.getPicUrl3()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                            @Override
-                                            public void onSuccess(Uri uri3) {
-                                                // firebase storage에서 제공하는 이미지3 url 얻음
-                                                selectedImageUris.add(uri3);    // 리스트에 추가
-                                                // 선택된 이미지 수가 최대 선택 가능한 이미지 수 이하인 경우
-                                                Log.e("test3", "선택된 이미지 개수: "+selectedImageUris.size());
-                                                Log.e("test3", "선택된 이미지: "+selectedImageUris.get(0).toString());
-                                                selectedImageCount++;   // 이미지 선택 수 증가
-                                                imageBytes(model.getPicUrl3());   // url를 통해 bitmap을 얻고, 리스트에 추가하는 함수
-                                                Log.e("test3", "비트맵 개수: "+imageBitmaps.size());
 
-                                            }
-                                        });
-                                    }
-                                }
-                            });
+                        }catch (Exception e){
+                            // 오류 처리
+                            e.printStackTrace();
                         }
+                        Log.e("test1", "비트맵으로 변환후, 리스트에 추가");
+                        if(firstPicUrlCnt == imageBitmaps.size()){
+                            // 선택된 이미지를 화면에 출력
+                            displaySelectedImages();
+                        }
+                        Log.e("test1", "비트맵 개수: "+imageBitmaps.size());
+//
+//
+//                        if(model.getPicUrl2() != null){
+//                            storageRef.child(model.getPicUrl2()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+//                                @Override
+//                                public void onSuccess(Uri uri2) {
+//                                    // firebase storage에서 제공하는 이미지2 url 얻음
+//                                    selectedImageUris.add(uri2);    // 리스트에 추가
+//                                    // 선택된 이미지 수가 최대 선택 가능한 이미지 수 이하인 경우
+//                                    Log.e("test1", "선택된 이미지 개수: "+selectedImageUris.size());
+//                                    Log.e("test1", "선택된 이미지: "+selectedImageUris.get(1).toString());
+//                                    selectedImageCount++;   // 이미지 선택 수 증가
+//                                    imageBytes(model.getPicUrl2());   // url를 통해 bitmap을 얻고, 리스트에 추가하는 함수
+//                                    Log.e("test1", "비트맵 개수: "+imageBitmaps.size());
+//
+//                                    if(model.getPicUrl3() != null){
+//                                        storageRef.child(model.getPicUrl3()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+//                                            @Override
+//                                            public void onSuccess(Uri uri3) {
+//                                                // firebase storage에서 제공하는 이미지3 url 얻음
+//                                                selectedImageUris.add(uri3);    // 리스트에 추가
+//                                                // 선택된 이미지 수가 최대 선택 가능한 이미지 수 이하인 경우
+//                                                Log.e("test1", "선택된 이미지 개수: "+selectedImageUris.size());
+//                                                Log.e("test1", "선택된 이미지: "+selectedImageUris.get(2).toString());
+//                                                selectedImageCount++;   // 이미지 선택 수 증가
+//                                                imageBytes(model.getPicUrl3());   // url를 통해 bitmap을 얻고, 리스트에 추가하는 함수
+//                                                Log.e("test1", "비트맵 개수: "+imageBitmaps.size());
+//
+//                                            }
+//                                        });
+//                                    }
+//                                }
+//                            });
+//                        }
                     }
                 });
             }
         }
 
         // firebase에서 회원 id 가져오기
-//        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-//        if (user != null) {
-//            user_info_uid = user.getUid();
-//            // 회원 id를 리뷰 객체(ReviewDTO)에 저장
-//            model.setUid(user_info_uid);
-//        }else {
-//            // 로그인 회원 id를 못 가져온 경우
-//            Toast.makeText(getApplicationContext(),"사용자 로그인 정보를 찾을 수 없습니다\n다시 로그인 후 사용해주시기 바랍니다", Toast.LENGTH_LONG).show();
-//            finish();   // 현재 액티비티 종료
-//        }
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            user_info_uid = user.getUid();
+            // 회원 id를 리뷰 객체(ReviewDTO)에 저장
+            model.setUid(user_info_uid);
+        }else {
+            // 로그인 회원 id를 못 가져온 경우
+            Toast.makeText(getApplicationContext(),"사용자 로그인 정보를 찾을 수 없습니다\n다시 로그인 후 사용해주시기 바랍니다", Toast.LENGTH_LONG).show();
+            finish();   // 현재 액티비티 종료
+        }
 
         // 등록 로딩 다이얼로그 설정
         progressDialog.setMessage("리뷰 수정 중...");    // 로딩 메시지 설정
@@ -337,30 +381,28 @@ public class ReviewFixPage  extends AppCompatActivity {
         }
     };
 
-    // ▼ 이미지 URL 사용해 byte[]로 변환
+    // ▼ 이미지 URL 사용해 비트맵(byte[])으로 변환
     private void imageBytes(String imageUri){
         Log.e("test1", imageUri);
-        StorageReference storageRef = FirebaseStorage.getInstance().getReference();
 
-        storageRef.child(imageUri).getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
-            @Override
-            public void onSuccess(byte[] bytes) {
+                Log.e("test1","진입");
                 // Bitmap으로 변환
-                Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                imageBitmaps.add(bitmap);       // 이미지 비트맵 리스트에 추가
+                try {
+                    InputStream stream = new URL(imageUri).openStream();
+                    Bitmap bitmap = BitmapFactory.decodeStream(stream);
+                    imageBitmaps.add(bitmap);       // 이미지 비트맵 리스트에 추가
+
+
+                }catch (Exception e){
+                    // 오류 처리
+                    e.printStackTrace();
+                }
                 Log.e("test1", "비트맵으로 변환후, 리스트에 추가");
                 if(firstPicUrlCnt == imageBitmaps.size()){
                     // 선택된 이미지를 화면에 출력
                     displaySelectedImages();
                 }
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                // 실패 처리
-                Log.e("test1", "비트맵으로 변환 실패: "+e.getMessage());
-            }
-        });
+
     }
 
     // ▼ 이미지 업로드
@@ -663,11 +705,13 @@ public class ReviewFixPage  extends AppCompatActivity {
     // ▼ 비트맵을 로드
     private Bitmap loadBitmapFromUri(Uri imageUri){
         try {
+            Log.e("test1", "비트맵 실행");
             // 받아온 Uri로부터 비트맵 생성
             Bitmap bitmap = ImageDecoder.decodeBitmap(ImageDecoder.createSource(this.getContentResolver(), imageUri));
             Log.e("test1", "비트맵 생성");
             return bitmap;  // 비트맵 반환
         } catch (Exception e) {
+            Log.e("test1", "비트맵 오류: " + e.getMessage());
             e.printStackTrace();
             return null;
         }
