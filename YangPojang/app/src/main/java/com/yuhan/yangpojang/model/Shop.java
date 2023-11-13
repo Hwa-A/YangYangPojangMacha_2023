@@ -33,6 +33,8 @@ public class Shop implements Serializable {
     private String menuImagePath;
     private String primaryKey;
     private String uid;
+    private int countVerified;
+    private int countSingo;
 
     private String shopKey;
 
@@ -44,6 +46,7 @@ public class Shop implements Serializable {
                 boolean pwayAccount, boolean pwayCash, boolean openMon, boolean openTue,
                 boolean openWed, boolean openThu, boolean openFri, boolean openSat,
                 boolean openSun, String category ,boolean isVerified, boolean hasMeeting, float rating, String geohash ,
+                int countVerified, int countSingo,
                 String exteriorImagePath,String menuImagePath) {
 
         this.uid= uid;
@@ -71,6 +74,7 @@ public class Shop implements Serializable {
         this.geohash = geohash;
         this.exteriorImagePath=exteriorImagePath;
         this.menuImagePath=menuImagePath;
+        this.countVerified=countVerified;
     }
 
     public String getShopKey() {  return shopKey; }
@@ -288,6 +292,19 @@ public class Shop implements Serializable {
     public void setMenuImagePath(String menuImagePath) { this.menuImagePath = menuImagePath;}
 
     public void setPrimaryKey(String primaryKey) { this.primaryKey = primaryKey; }
+
+
+    public int getCountVerified() {
+        return countVerified;
+    }
+
+    public void setCountVerified(int countVerified) {
+        this.countVerified = countVerified;
+    }
+
+    public int getCountSingo() {  return countSingo; }
+
+    public void setCountSingo(int countSingo) {  this.countSingo = countSingo; }
 
     @Override
     public String toString() {

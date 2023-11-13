@@ -40,6 +40,8 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.io.File;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 
 public class LogindetailAct extends AppCompatActivity {
 
@@ -134,6 +136,7 @@ public class LogindetailAct extends AppCompatActivity {
                 String getUserSex = sexchecked.getText().toString();
                 String getUserimg = User_img;
 
+
                 if(userNickname.length()==0){Toast.makeText(getApplicationContext(),"닉네임을 입력하세요",Toast.LENGTH_LONG).show();}
                 else {
                     if(getUserDate == ""){Toast.makeText(getApplicationContext(),"날짜를 선택해주세요",Toast.LENGTH_LONG).show();}
@@ -224,6 +227,8 @@ public class LogindetailAct extends AppCompatActivity {
                         Toast.makeText(LogindetailAct.this, "회원가입 실패!", Toast.LENGTH_SHORT).show();
                     }
                 });
+
+
 
     }
 }

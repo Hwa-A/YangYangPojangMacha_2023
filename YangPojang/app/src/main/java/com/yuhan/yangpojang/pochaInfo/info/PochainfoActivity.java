@@ -26,6 +26,8 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.StartupTime;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -143,8 +145,19 @@ public class PochainfoActivity extends AppCompatActivity implements OnFragmentRe
         }
 
 
-        // uid 임의 값 넣어 테스트(추후 삭제 예정)
-        String uid = "롤로";
+        // uid
+        String uid=null; // FIREBASE에 USERID
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        Log.d("hong", String.valueOf(user));
+        if(user!=null) {
+            uid = user.getUid();
+        }
+        else
+        {
+            Log.e("ReportShopFragment- userid 오류", "userid 값이 없음");
+            user = FirebaseAuth.getInstance().getCurrentUser();
+
+        }
 
         // ▼ fragment에 데이터 전달 코드       // Bundle: Map형태로 여러가지의 타입의 값을 저장하는 클래스
         Bundle bundle = new Bundle();               // 전달하기 위해 포차 객체와 회원ID 담을 객체
