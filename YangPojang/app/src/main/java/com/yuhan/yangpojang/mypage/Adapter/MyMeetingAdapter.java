@@ -26,12 +26,16 @@ import com.yuhan.yangpojang.home.onPochaListItemClickListener;
 import com.yuhan.yangpojang.mypage.GetList.MeetingGetListCollection.GetAllMyMeetingItems;
 import com.yuhan.yangpojang.mypage.Model.MeetingModelCollection.AllMeetingItemModel;
 import com.yuhan.yangpojang.mypage.Model.MeetingModelCollection.MeetingAttendersModel;
+import com.yuhan.yangpojang.pochaInfo.meeting.getList.GetUserInfo;
+import com.yuhan.yangpojang.pochaInfo.meeting.model.UserInfoModel;
 
 import java.util.ArrayList;
 
 public class MyMeetingAdapter extends RecyclerView.Adapter<MyMeetingAdapter.ViewHolder> {
 
     private Context context;
+    private UserInfoModel userInfo = new UserInfoModel();
+
 
     ArrayList<AllMeetingItemModel> allMeetingItemModels = new ArrayList<>();
     public MyMeetingAdapter(Context context, ArrayList<AllMeetingItemModel> allMeetingItemModel){

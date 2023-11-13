@@ -144,7 +144,7 @@ public class PochainfoActivity extends AppCompatActivity implements OnFragmentRe
 
 
         // uid 임의 값 넣어 테스트(추후 삭제 예정)
-        String uid = "롤로";
+        String uid = "etB0MsCiB2eym52VbUQsHaeqc6k1";
 
         // ▼ fragment에 데이터 전달 코드       // Bundle: Map형태로 여러가지의 타입의 값을 저장하는 클래스
         Bundle bundle = new Bundle();               // 전달하기 위해 포차 객체와 회원ID 담을 객체

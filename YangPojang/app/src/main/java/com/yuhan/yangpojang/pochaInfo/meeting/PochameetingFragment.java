@@ -21,7 +21,9 @@ import com.yuhan.yangpojang.model.Shop;
 import com.yuhan.yangpojang.mypage.Adapter.MyReviewAdapter;
 import com.yuhan.yangpojang.pochaInfo.interfaces.OnFragmentReloadListener;
 import com.yuhan.yangpojang.pochaInfo.meeting.getList.AttendersGetList;
+import com.yuhan.yangpojang.pochaInfo.meeting.getList.GetUserInfo;
 import com.yuhan.yangpojang.pochaInfo.meeting.model.MeetingData;
+import com.yuhan.yangpojang.pochaInfo.meeting.model.UserInfoModel;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -31,6 +33,7 @@ public class PochameetingFragment extends Fragment {
     private Shop shop;      // 포차 정보를 가진 객체
     private String uid;     // 회원 id
     private OnFragmentReloadListener onFrgReloadListener;   // 프래그먼트 재실행하는 인터페이스
+    UserInfoModel newUserInfo = new UserInfoModel();
 
     // 리사이클러 뷰와 리사이클러 뷰 어댑터
     private RecyclerView meetingRecyclerView;
@@ -42,10 +45,10 @@ public class PochameetingFragment extends Fragment {
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        if(context instanceof OnFragmentReloadListener){    // 호스트 액티비티가 해당 인터페이스를 구현한 액티비티인지 확인
+        if (context instanceof OnFragmentReloadListener) {    // 호스트 액티비티가 해당 인터페이스를 구현한 액티비티인지 확인
             // 현재 연결된 (호스트)액티비티를 형변환해 onFrgReloadListener에 할당
             onFrgReloadListener = (OnFragmentReloadListener) context;   // 초기화
-        }else {
+        } else {
             // 에러 처리
             throw new RuntimeException(context.toString() + "must implement OnFragmentReloadListener");
         }
@@ -58,10 +61,10 @@ public class PochameetingFragment extends Fragment {
 
         // ▼ PochainfoActivity.java에서 전달한 데이터를 받는 코드
         Bundle bundle = getArguments();
-        if(bundle != null){
-            shop = (Shop)bundle.getSerializable("shopInfo");    // 포차 객체 초기화
-            uid = (String)bundle.getString("uid");             // 회원 id 초기화
-        }else {
+        if (bundle != null) {
+            shop = (Shop) bundle.getSerializable("shopInfo");    // 포차 객체 초기화
+            uid = (String) bundle.getString("uid");             // 회원 id 초기화
+        } else {
             // bundle이 null인 경우, 프래그먼트 재실행
             onFrgReloadListener.onFragmentReload("pchMeeting");
             return view;
@@ -90,26 +93,32 @@ public class PochameetingFragment extends Fragment {
         meetingRecyclerView.setHasFixedSize(true);
         meetingRecyclerView.setLayoutManager(new LinearLayoutManager(view.getContext(), LinearLayoutManager.VERTICAL, false));
 
-        AttendersGetList attendersGetList = new AttendersGetList();
-        attendersGetList.getAttendersList(shop.getPrimaryKey(), new AttendersGetList.DataLoadedCallback() {
+        GetUserInfo getUserInfo = new GetUserInfo(uid, new GetUserInfo.UserDataCallback() {
             @Override
-            public void onDataLoaded(ArrayList<MeetingData> meetingData) {
-                if (meetingData != null) {
-                    Collections.reverse(meetingData); //역순 정렬
-                    Log.d("번개", "번개 onDataLoaded");
-                    meetingAdapter = new MeetingAdapter(meetingData, getContext());
-                    meetingRecyclerView.setAdapter(meetingAdapter);
-                } else {
-                    Log.d("번개", "shopDatas null");
-                }
+            public void userDataLoaded(UserInfoModel userInfo) {
+                Log.d("번개", "userDataLoaded: " + userInfo.getUID());
+                AttendersGetList attendersGetList = new AttendersGetList();
+                attendersGetList.getAttendersList(shop.getPrimaryKey(), new AttendersGetList.DataLoadedCallback() {
+                    @Override
+                    public void onDataLoaded(ArrayList<MeetingData> meetingData) {
+                        if (meetingData != null) {
+                            Collections.reverse(meetingData); //역순 정렬
+                            Log.d("번개", "번개 onDataLoaded");
+                            meetingAdapter = new MeetingAdapter(uid, userInfo, meetingData, getContext());
+                            meetingRecyclerView.setAdapter(meetingAdapter);
+                        } else {
+                            Log.d("번개", "shopDatas null");
+                        }
+                    }
+                });
+
+
             }
         });
 
 
-
         return view;
     }
-
 
 
 }
