@@ -10,35 +10,101 @@
     <TextView
         android:id="@+id/user_nickname"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:background="@drawable/border_rounded_coner_gray"
-        android:text="TextView"
-        android:textSize="30dp"
+        android:layout_height="58dp"
+        android:background="@drawable/white_coner"
+        android:elevation="14dp"
         android:gravity="center"
-        android:textStyle =""
-        app:layout_constraintTop_toTopOf="parent"
-        tools:layout_editor_absoluteX="0dp" />
+        android:text="님, 반갑습니다."
+        android:textSize="20dp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/logoutButton"
+    <TextView
+        android:id="@+id/logout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="30dp"
         android:layout_marginTop="16dp"
-        android:background="@drawable/border_rounded_coner_gray"
-        android:text="로그아웃"
-        android:textColor="@color/black"
-        app:layout_constraintTop_toBottomOf="@+id/user_nickname"
-        tools:layout_editor_absoluteX="0dp" />
+        android:clickable="true"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/user_nickname" />
 
-    <Button
-        android:id="@+id/deleteAccountButton"
+    <TextView
+        android:id="@+id/deleteaccount"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:background="@drawable/border_rounded_coner_gray"
+        android:layout_height="30dp"
+        android:layout_marginTop="12dp"
+        android:clickable="true"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/logout" />
+
+    <ImageView
+        android:id="@+id/googleicon"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:clickable="true"
+        app:layout_constraintBottom_toBottomOf="@+id/logout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/logout"
+        app:layout_constraintTop_toTopOf="@+id/logout"
+        app:layout_constraintVertical_bias="0.0"
+        app:srcCompat="@drawable/common_google_signin_btn_icon_dark" />
+
+    <TextView
+        android:id="@+id/googletext"
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:text="구글 계정 회원"
+        android:clickable="true"
+        android:gravity="center"
+        app:layout_constraintBottom_toBottomOf="@+id/logout"
+        app:layout_constraintEnd_toEndOf="@+id/logout"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/googleicon"
+        app:layout_constraintTop_toTopOf="@+id/logout"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
+        android:id="@+id/logouttext"
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:text="로그아웃"
+        android:clickable="true"
+        android:textColor="#ff0000"
+        android:gravity="center"
+        app:layout_constraintBottom_toBottomOf="@+id/logout"
+        app:layout_constraintEnd_toEndOf="@+id/logout"
+        app:layout_constraintTop_toTopOf="@+id/logout" />
+
+    <ImageView
+        android:id="@+id/deleteicon"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:clickable="true"
+        app:layout_constraintBottom_toBottomOf="@+id/deleteaccount"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/deleteaccount"
+        app:layout_constraintTop_toTopOf="@+id/deleteaccount"
+        app:layout_constraintVertical_bias="1.0"
+        app:srcCompat="@drawable/deleteaccount" />
+
+    <TextView
+        android:id="@+id/deletetext"
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:gravity="center"
+        android:clickable="true"
         android:text="회원탈퇴"
-        android:textColor="@color/black"
-        app:layout_constraintTop_toBottomOf="@+id/logoutButton"
-        tools:layout_editor_absoluteX="0dp" />
+        app:layout_constraintBottom_toBottomOf="@+id/deleteaccount"
+        app:layout_constraintEnd_toEndOf="@+id/deleteaccount"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/deleteicon"
+        app:layout_constraintTop_toTopOf="@+id/deleteaccount"
+        app:layout_constraintVertical_bias="1.0" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

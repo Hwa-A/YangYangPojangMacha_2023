@@ -28,7 +28,7 @@
     <!--    tools:context=".ReportShop-->
 
     <TextView
-        android:id="@+id/reportshopTitle"
+        android:id="@+id/user_nickname"
         android:layout_width="match_parent"
         android:layout_height="58dp"
         android:background="@drawable/white_coner"
