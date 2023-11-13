@@ -189,10 +189,10 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
-    <androidx.recyclerview.widget.RecyclerView
+    <com.yuhan.yangpojang.home.pochaListRecyclerView
         android:id="@+id/pocha_list"
         android:layout_width="match_parent"
-        android:layout_height="500dp"
+        android:layout_height="wrap_content"
         android:background="@color/white"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"

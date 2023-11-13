@@ -31,7 +31,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -61,9 +60,8 @@ import com.naver.maps.map.util.MarkerIcons;
 import com.naver.maps.map.widget.CompassView;
 import com.naver.maps.map.widget.LocationButtonView;
 import com.yuhan.yangpojang.home.CategoryListAdapter;
+import com.yuhan.yangpojang.home.pochaListRecyclerView;
 import com.yuhan.yangpojang.model.LikeShopData;
-import com.yuhan.yangpojang.mypage.GetList.MeetingGetListCollection.GetAllMyMeetingItems;
-import com.yuhan.yangpojang.mypage.Model.MeetingModelCollection.AllMeetingItemModel;
 import com.yuhan.yangpojang.pochaInfo.info.PochainfoActivity;
 import com.yuhan.yangpojang.R;
 import com.yuhan.yangpojang.home.HttpResponse;
@@ -269,7 +267,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, onPoch
         }
     };
 
-    RecyclerView pochalist_view;
+    pochaListRecyclerView pochalist_view;
     AppCompatButton close_pochalist;
     ArrayList<Shop> pochaListPochas = new ArrayList<>();
     //포차리스트 구현

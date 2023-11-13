@@ -2,6 +2,7 @@ package com.yuhan.yangpojang;
 
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
@@ -97,6 +98,8 @@ public class MainActivity extends AppCompatActivity {
             pocha_info.setVisibility(View.INVISIBLE);
             pochalist_view.setVisibility(View.INVISIBLE);
             homeFragment.basemap();
+            AppCompatButton close_pochalist = findViewById(R.id.close_pochalist);
+            close_pochalist.setVisibility(View.INVISIBLE);
 
             // 뒤로가기 버튼을 두 번 클릭한 경우(2초 내)
             if (0 <= gapTime && 2000 >= gapTime) {
