@@ -47,6 +47,7 @@ import com.yuhan.yangpojang.FirebaseUtils;
 import com.yuhan.yangpojang.MainActivity;
 import com.yuhan.yangpojang.R;
 import com.yuhan.yangpojang.ShopDataListener;
+import com.yuhan.yangpojang.login.User;
 import com.yuhan.yangpojang.model.ReportShop;
 import com.yuhan.yangpojang.model.Shop;
 
@@ -98,6 +99,9 @@ public class ReportShopFragment extends Fragment implements ShopDataListener
     private MapLocationPopupFragment mapLocationPopupFragment;
     private boolean isVerified; // 인증된 가게인가
     private boolean hasMeeting;  // 번개가 잡힌 가게인가
+    private int countVerified; // 인증횟수
+    private int countSingo; // 신고횟수
+
     private float rating; // 별점
     private String geohash; // 지오해쉬
     private Shop shop;
@@ -144,7 +148,6 @@ public class ReportShopFragment extends Fragment implements ShopDataListener
         shopKey = databaseReference.child("shops").push().getKey();
 
         shopReference = databaseReference.child("shops").child(shopKey);
-
 
         //hash= GeoFireUtils.getGeoHashForLocation(new GeoLocation(latitude,longitude));  // 나은 언니 hash 넣을 때 사용
         if(addressName!=null)
@@ -335,6 +338,7 @@ public class ReportShopFragment extends Fragment implements ShopDataListener
                 BottomNavigationView bottomNavigationView = getActivity().findViewById(R.id.bottomNavigationView);
                 if(bottomNavigationView!=null) {
                     bottomNavigationView.setSelectedItemId(R.id.navigation_map);
+                    clearForm();  ////fffffffffffffffffff
                 }
             }
         };
@@ -502,7 +506,7 @@ public class ReportShopFragment extends Fragment implements ShopDataListener
 
              shop = new Shop(uid,shopName, latitude,longitude,addressName,isPwayMobile, isPwayCard, isPwayAccount, isPwayCash,
                     isOpenMon, isOpenTue, isOpenWed, isOpenThu, isOpenFri, isOpenSat, isOpenSun,selectedCategory,
-                    isVerified,  hasMeeting, rating ,geohash,
+                    isVerified,  hasMeeting, rating ,geohash,countVerified,countSingo,
                      (exteriorImagePath!= null) ? exteriorImagePath.toString() : "",
                      (menuImagePath != null) ? menuImagePath.toString() : ""
              );
@@ -511,13 +515,12 @@ public class ReportShopFragment extends Fragment implements ShopDataListener
             shop.setExteriorImagePath(exteriorImagePath);
 
             ReportShop reportShop= new ReportShop(uid);
+            User user= new User();
 
             scrollView.setBackgroundColor(Color.parseColor("#000000")); // 제보버튼 누르면 배경색이 약간 어두어지게 연출
             textboard.setVisibility(View.VISIBLE);
 
-            FirebaseUtils.saveShopData(shop, reportShop , storeExteriorImageUri, menuBoardImageUri,shopKey); //FirebaseUtils에 별도로 firebase에 넣는 코드 작성함
-
-
+            FirebaseUtils.saveShopData(shop, reportShop ,user, storeExteriorImageUri, menuBoardImageUri,shopKey); //FirebaseUtils에 별도로 firebase에 넣는 코드 작성함
 
 
         }

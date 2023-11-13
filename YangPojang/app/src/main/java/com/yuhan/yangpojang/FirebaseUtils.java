@@ -10,6 +10,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.yuhan.yangpojang.fragment.ReportShopFragment;
+import com.yuhan.yangpojang.login.User;
 import com.yuhan.yangpojang.model.ReportShop;
 import com.yuhan.yangpojang.model.Shop;
 
@@ -24,7 +25,7 @@ public class FirebaseUtils {
         shopDataListener = listener;
     }
 
-    public static void saveShopData(Shop shop, ReportShop reportShop, Uri exteriorImageUri, Uri menuImageUri,String shopKey) {
+    public static void saveShopData(Shop shop, ReportShop reportShop, User user, Uri exteriorImageUri, Uri menuImageUri, String shopKey) {
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
         Log.d("fffffffffdskfjask2", String.valueOf(exteriorImageUri));
         Log.d("fffffffffdskfjask3", String.valueOf(menuImageUri));

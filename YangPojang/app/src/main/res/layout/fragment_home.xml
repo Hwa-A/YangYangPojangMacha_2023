@@ -115,33 +115,33 @@
 
     <ImageButton
         android:id="@+id/authoff"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="51dp"
+        android:layout_height="51dp"
+        android:layout_marginEnd="12dp"
+        android:layout_marginBottom="14dp"
+        android:background="#00000000"
         android:scaleType="fitXY"
         android:src="@drawable/authoff"
-        android:background="#00000000"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@id/meetingoff"
-        android:layout_marginEnd="12dp"
-        android:layout_marginBottom="8dp" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <ImageButton
         android:id="@+id/authon"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="51dp"
+        android:layout_height="51dp"
+        android:layout_marginEnd="12dp"
+        android:layout_marginBottom="14dp"
+        android:background="#00000000"
         android:scaleType="fitXY"
         android:src="@drawable/authon"
         android:visibility="invisible"
-        android:background="#00000000"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@id/meetingoff"
-        android:layout_marginEnd="12dp"
-        android:layout_marginBottom="8dp"/>
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <ImageButton
         android:id="@+id/meetingoff"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="51dp"
+        android:layout_height="51dp"
         android:scaleType="fitXY"
         android:src="@drawable/meetingoff"
         android:background="#00000000"
@@ -153,8 +153,8 @@
 
     <ImageButton
         android:id="@+id/meetingon"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="51dp"
+        android:layout_height="51dp"
         android:scaleType="fitXY"
         android:src="@drawable/meetingon"
         android:visibility="invisible"
@@ -257,21 +257,22 @@
             app:layout_constraintStart_toStartOf="@+id/pocha_name"
             android:layout_marginLeft="-2dp"
             android:layout_marginTop="8dp"/>
+
         <ImageButton
             android:id="@+id/pochainfo_fullheart"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="#00000000"
-            android:visibility="invisible"
-            android:src="@drawable/full_heart"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
             android:layout_marginLeft="370dp"
-            android:layout_marginTop="15dp"/>
+            android:layout_marginTop="15dp"
+            android:background="#00000000"
+            android:src="@drawable/full_heart"
+            android:visibility="visible"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
         <ImageButton
             android:id="@+id/pochainfo_emptyheart"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
             android:background="#00000000"
             android:visibility="visible"
             android:src="@drawable/empty_heart"

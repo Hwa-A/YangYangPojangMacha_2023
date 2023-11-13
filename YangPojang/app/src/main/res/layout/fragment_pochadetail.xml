@@ -16,53 +16,79 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="10dp">
+
+
     <LinearLayout
         android:id="@+id/lin_pochadetail_reportContainer"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:layout_width="204dp"
+        android:layout_height="76dp"
+        android:layout_marginStart="4dp"
         android:gravity="center_vertical"
+        android:orientation="horizontal"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageButton
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginRight="5dp"
+            android:id="@+id/btn_pocha_singo"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginRight="2dp"
             android:adjustViewBounds="true"
             android:background="@android:color/transparent"
             android:scaleType="fitCenter"
             android:src="@drawable/pochadetail_report"
             tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="신고하기"
-            android:textColor="@color/black"
-            android:textSize="15sp"
-            android:textStyle="bold"/>
+            android:layout_marginTop="10dp"
+            android:text="신고횟수:"
+                android:textColor="#EC1818"
+            android:textSize="18dp"
+            android:textStyle="bold"
+            tools:ignore="TextSizeCheck" />
+
+        <TextView
+            android:id="@+id/tv_count_singo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="7dp"
+            android:layout_marginTop="10dp"
+            android:text="."
+            android:textColor="#000000"
+            android:textSize="18dp"
+            android:textStyle="bold"
+            tools:ignore="TextSizeCheck" />
+
     </LinearLayout>
+
 
     <android.widget.Button
         android:id="@+id/btn_pochainfo_verify"
         android:layout_width="75dp"
         android:layout_height="39dp"
+        android:layout_marginEnd="4dp"
         android:text="방문 인증"
         android:textColor="@color/black"
         android:textSize="13sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@id/lin_pochadetail_reportContainer"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.995"
+        app:layout_constraintStart_toEndOf="@+id/lin_pochadetail_reportContainer"
         app:layout_constraintTop_toTopOf="@id/lin_pochadetail_reportContainer"
+        app:layout_constraintVertical_bias="1.0"
         tools:ignore="TouchTargetSizeCheck" />
-
 
     <com.naver.maps.map.MapView
         android:id="@+id/map_pochadetail_location"
         android:layout_width="408dp"
         android:layout_height="251dp"
+        android:layout_marginTop="8dp"
         app:layout_constraintDimensionRatio="H, 2:1"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.454"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/lin_pochadetail_reportContainer"
         app:layout_constraintWidth_default="percent"
@@ -73,14 +99,15 @@
         android:id="@+id/tv_pochadetail_address"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
         android:text="..."
         android:textColor="@color/black"
         android:textSize="16sp"
         android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/map_pochadetail_location"
-        android:layout_marginTop="15dp"/>
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/map_pochadetail_location" />
 
     <RatingBar
         android:id="@+id/rtb_pochadetail_rating"
@@ -95,6 +122,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_pochadetail_address" />
+
     <LinearLayout
         android:id="@+id/lin_pochadetail_payContainer"
         android:layout_width="wrap_content"
@@ -154,7 +182,7 @@
         android:id="@+id/btn_pochadetail_pochaUpdate"
         android:layout_width="82dp"
         android:layout_height="40dp"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="14dp"
         android:text="정보수정"
         android:textColor="@color/black"
         android:textSize="15sp"
@@ -164,4 +192,5 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/lin_pochadetail_openContainer"
         tools:ignore="TouchTargetSizeCheck" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
