@@ -1,4 +1,4 @@
-package com.yuhan.yangpojang.mypage.GetList.home;
+package com.yuhan.yangpojang.home;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
@@ -75,7 +75,7 @@ public class CategoryListAdapter extends RecyclerView.Adapter<CategoryListAdapte
 
         // 기본 화면
         if (Objects.equals(item, "전체")) {
-            if (selectedPosition == -1) { // 선택된 아이템이 없을 경우 -> "전체"에 포커스
+            if (selectedPosition == -1 || currentPosition == selectedPosition) { // 선택된 아이템이 없을 경우 -> "전체"에 포커스
                 holder.category_item.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.btn_color)));
                 holder.category_item.setTextColor(Color.WHITE);
             } else { // 선택된 아이템이 있을 경우 -> 선택된 아이템에 포커스
@@ -83,8 +83,17 @@ public class CategoryListAdapter extends RecyclerView.Adapter<CategoryListAdapte
                 holder.category_item.setTextColor(Color.parseColor("#878787"));
             }
         } else { // 다른 아이템의 경우
-            holder.category_item.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.white)));
-            holder.category_item.setTextColor(Color.parseColor("#878787"));
+            if (currentPosition == selectedPosition) {
+                if(currentCategoryLists.equals(categoryLists)) {
+                    holder.category_item.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.btn_color))); // 여기를 노란색으로 변경
+                } else if(currentCategoryLists.equals(categoryAlcoholLists)) {
+                    holder.category_item.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.btn_color1))); // 여기를 초록색으로 변경
+                }
+                holder.category_item.setTextColor(Color.WHITE);
+            } else {
+                holder.category_item.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.white)));
+                holder.category_item.setTextColor(Color.parseColor("#878787"));
+            }
         }
 
 
@@ -109,12 +118,6 @@ public class CategoryListAdapter extends RecyclerView.Adapter<CategoryListAdapte
                 }
             }
         });
-
-        // 선택된 위치에 포커스
-        if (currentPosition == selectedPosition) {
-            holder.category_item.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.btn_color)));
-            holder.category_item.setTextColor(Color.WHITE);
-        }
 
     }
 
