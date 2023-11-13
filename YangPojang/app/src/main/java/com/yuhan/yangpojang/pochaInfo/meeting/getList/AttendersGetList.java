@@ -33,7 +33,7 @@ public class AttendersGetList {
                 DatabaseReference attenderRef = FirebaseDatabase.getInstance().getReference("meetingAttenders/");
                 Log.d("번개AttendersGetList", "selectMeeting.size() : " + selectMeeting.size());
 
-                attenderRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                attenderRef.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         attendersData.clear();
@@ -79,6 +79,7 @@ public class AttendersGetList {
                             model.setTitle(meetingDatas.get(i).getTitle());
                             model.setYearDate(meetingDatas.get(i).getYearDate());
                             model.setMeetingKey(meetingDatas.get(i).getMeetingKey());
+                            model.setPochaKey(meetingDatas.get(i).getPochaKey());
 
                             for (Map.Entry<String, String> entry : model.getAttends().entrySet()) {
                                 String key = entry.getKey();

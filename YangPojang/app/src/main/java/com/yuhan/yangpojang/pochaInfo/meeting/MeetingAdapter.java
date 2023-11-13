@@ -14,10 +14,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.yuhan.yangpojang.R;
 import com.yuhan.yangpojang.pochaInfo.meeting.model.MeetingData;
 import com.yuhan.yangpojang.pochaInfo.meeting.model.UserInfoModel;
+import com.yuhan.yangpojang.pochaInfo.meeting.smallpopup.CntTodayMeet;
 import com.yuhan.yangpojang.pochaInfo.meeting.smallpopup.SmallBox;
 
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 
 public class MeetingAdapter extends RecyclerView.Adapter<MeetingAdapter.MeetingHolder> {
@@ -25,6 +28,7 @@ public class MeetingAdapter extends RecyclerView.Adapter<MeetingAdapter.MeetingH
     private ArrayList<MeetingData> meetList = new ArrayList<>();
     private Context context;
     private String UID;
+    private String primaryKey; // 가게 id
     private UserInfoModel user = new UserInfoModel();
 
     public void catchUserInfo(UserInfoModel user) {
@@ -33,14 +37,14 @@ public class MeetingAdapter extends RecyclerView.Adapter<MeetingAdapter.MeetingH
     }
 
 
-    public MeetingAdapter(String UID, UserInfoModel userInfo, ArrayList<MeetingData> meetList, Context context) {
+    public MeetingAdapter(String UID, UserInfoModel userInfo, ArrayList<MeetingData> meetList, String primaryKey, Context context) {
         this.UID = UID;
         Log.d("번개Adapter", " this.UID = UID; : " + UID);
         this.user = userInfo;
         this.meetList.clear();
         this.meetList = meetList;
+        this.primaryKey = primaryKey;
         this.context = context;
-
     }
 
 
@@ -94,20 +98,30 @@ public class MeetingAdapter extends RecyclerView.Adapter<MeetingAdapter.MeetingH
         holder.meeting_MaxNumber.setText(String.valueOf(meetList.get(position).getMaxMember()));
         holder.meeting_participation.setText(String.valueOf(meetList.get(position).getNowMember()));
 
+        // 오늘 날짜와 비교
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
+        String currentDate = sdf.format(new Date());
 
+        // 지날 날짜의 경우 클릭 안됨
+        if (!currentDate.equals(meetList.get(position).getYearDate())) {
+            holder.itemView.setEnabled(false);
+        }else {
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d("번개Adapter", "아이템 뷰 클릭 : " + position);
-
-                // 팝업창 출력
-                SmallBox smallBox = new SmallBox(meetList.get(position), user, context);
-                smallBox.ShowAttenders();
-
+                // 오늘 날짜에만 클릭 가능
+                if (view.isEnabled()) {
+                    Log.d("번개Adapter", "아이템 뷰 클릭 : " + position);
+                    SmallBox smallBox = new SmallBox(meetList, meetList.get(position), user, primaryKey, context );
+                    smallBox.ShowAttenders();
+                    new CntTodayMeet(meetList,primaryKey);
+                }
             }
         });
-
     }
+    }
+
+
 
 
     @Override

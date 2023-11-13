@@ -1,4 +1,4 @@
-package com.yuhan.yangpojang.mypage.GetList.home;
+package com.yuhan.yangpojang.home;
 
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;

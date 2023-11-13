@@ -1,4 +1,4 @@
-package com.yuhan.yangpojang.mypage.GetList.home;
+package com.yuhan.yangpojang.home;
 
 import android.content.Context;
 import android.view.LayoutInflater;

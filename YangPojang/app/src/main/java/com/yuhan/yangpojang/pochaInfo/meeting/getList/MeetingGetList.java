@@ -64,12 +64,13 @@ public class MeetingGetList {
                     String yearDate = snapshot.child(meetingLink).child("yearDate").getValue(String.class);
                     String meetingKey = meetingLink.toString();
 
+
                     Log.d("번개getList", "snapshot.child(date) : " + date);
                     Log.d("번개getList", "snapshot.child(hostUid) : " + hostUid);
                     Log.d("번개getList", "snapshot.child(meetingKey) : " + meetingKey);
 
                     MeetingData model = new MeetingData(date, hostUid, maxAge, maxMember, minAge,
-                            registerTime, time, title, yearDate, meetingKey);
+                            registerTime, time, title, yearDate, meetingKey, pochaKey);
 
                     meetingDatas.add(model);
 
