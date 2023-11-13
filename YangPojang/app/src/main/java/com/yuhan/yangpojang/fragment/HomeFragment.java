@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 
 import android.Manifest;
+import android.animation.ValueAnimator;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -31,6 +32,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
+import android.view.animation.LinearInterpolator;
+import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -59,9 +63,8 @@ import com.naver.maps.map.util.MarkerIcons;
 import com.naver.maps.map.widget.CompassView;
 import com.naver.maps.map.widget.LocationButtonView;
 import com.yuhan.yangpojang.home.CategoryListAdapter;
+import com.yuhan.yangpojang.home.pochaListRecyclerView;
 import com.yuhan.yangpojang.model.LikeShopData;
-import com.yuhan.yangpojang.mypage.GetList.MeetingGetListCollection.GetAllMyMeetingItems;
-import com.yuhan.yangpojang.mypage.Model.MeetingModelCollection.AllMeetingItemModel;
 import com.yuhan.yangpojang.pochaInfo.info.PochainfoActivity;
 import com.yuhan.yangpojang.R;
 import com.yuhan.yangpojang.home.HttpResponse;
@@ -267,13 +270,26 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, onPoch
         }
     };
 
-    RecyclerView pochalist_view;
+    pochaListRecyclerView pochalist_view;
+    AppCompatButton close_pochalist;
     ArrayList<Shop> pochaListPochas = new ArrayList<>();
     //포차리스트 구현
     public void PochaListView(ArrayList<Shop> pochas){
         pochaListPochas = pochas;
         pochalist_view = getActivity().findViewById(R.id.pocha_list); //리사이클러 뷰
-        pochalist_view.setVisibility(View.VISIBLE);
+        close_pochalist = getActivity().findViewById(R.id.close_pochalist);
+        pochalist_view.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                // 이곳에서 애니메이션을 시작
+                showPochaListAni(pochalist_view, close_pochalist);
+
+                // 애니메이션을 시작한 후에는 리스너를 제거
+                pochalist_view.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+            }
+        });
+        close_pochalist.setOnClickListener(close_pochalistL);
+
         PochaListAdapter pochaListAdapter = new PochaListAdapter(pochaListPochas, this, HomeFragment.this); // 어댑터
         pochalist_view.setAdapter(pochaListAdapter); //리사이클러뷰에 어댑터 장착
 
@@ -296,6 +312,42 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, onPoch
             Toast.makeText(v.getContext(), "클래스 찾을 수 없음: PochainfoActivity", Toast.LENGTH_SHORT).show();
         }
     }
+
+    // 포차리스트 출력 시 애니메이션
+    public void showPochaListAni(RecyclerView pochalist, AppCompatButton close){
+        TranslateAnimation animate = new TranslateAnimation(
+                0,                 // 시작 x 좌표
+                0,                 // 종료 x 좌표
+                pochalist.getHeight(),  // 시작 y 좌표
+                0);                // 종료 y 좌표
+        animate.setDuration(500);
+        pochalist.startAnimation(animate);
+        close.startAnimation(animate);
+        pochalist.setVisibility(View.VISIBLE);
+        close.setVisibility(View.VISIBLE);
+    }
+
+    // 닫기 버튼 클릭 시 애니메이션
+    public void hidePochaListAni(RecyclerView pochalist, AppCompatButton close){
+        TranslateAnimation animate = new TranslateAnimation(
+                0,                 // 시작 x 좌표
+                0,                 // 종료 x 좌표
+                0,                 // 시작 y 좌표
+                pochalist.getHeight()); // 종료 y 좌표
+        animate.setDuration(500);
+        pochalist.startAnimation(animate);
+        pochalist.setVisibility(View.INVISIBLE);
+        close.setVisibility(View.INVISIBLE);
+    }
+
+    View.OnClickListener close_pochalistL = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            if(pochalist_view != null && close_pochalist != null){
+                hidePochaListAni(pochalist_view, close_pochalist);
+            }
+        }
+    };
 
     @Override
     public void onResume() {
@@ -503,6 +555,12 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, onPoch
         AppCompatButton re_searchbtn = homeview.findViewById(R.id.re_searchbtn);
         re_searchbtn.setVisibility(INVISIBLE);
 
+        // 포차리스트 invisible
+        if(pochalist_view != null && close_pochalist != null){
+            pochalist_view.setVisibility(INVISIBLE);
+            close_pochalist.setVisibility(INVISIBLE);
+        }
+
         locationPermission();
     }
 
@@ -577,9 +635,6 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, onPoch
                         pochas.get(i).setOnClickListener(new Overlay.OnClickListener() {
                             @Override
                             public boolean onClick(@NonNull Overlay overlay) {
-                                //포차리스트 닫기
-                                if(pochalist_view != null)
-                                    pochalist_view.setVisibility(INVISIBLE);
 
                                 // 마커 클릭 시 크기 조절
                                 if(currentClickedMarker != null){  //이전에 클릭한 마커가 존재하는지 확인
@@ -851,8 +906,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, onPoch
             pocha_info.setVisibility(INVISIBLE); //가게 상세정보 탭 닫기
             ButtonPosition(uiSettings);
         }
-        if(pochalist_view != null)
-            pochalist_view.setVisibility(INVISIBLE); //포차리스트 닫기
+
     }
 
     // 인증, 번개 버튼 리스너
@@ -955,51 +1009,44 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, onPoch
 
     }
 
-
-
-
     public void ButtonPosition(UiSettings uiSettings) {
         LocationButtonView locationButtonView = getActivity().findViewById(R.id.location_btn);
         ImageButton location_btn_custom = getActivity().findViewById(R.id.location_btn_custom);
 
         if(pocha_info.getVisibility() == View.VISIBLE){
-            ConstraintLayout.LayoutParams layoutParams1 = (ConstraintLayout.LayoutParams) meetingoff.getLayoutParams();
-            layoutParams1.bottomMargin = 420;
-            meetingoff.setLayoutParams(layoutParams1);
-
-            ConstraintLayout.LayoutParams layoutParams2 = (ConstraintLayout.LayoutParams) meetingon.getLayoutParams();
-            layoutParams2.bottomMargin = 420;
-            meetingon.setLayoutParams(layoutParams2);
-
-            ConstraintLayout.LayoutParams layoutParams3 = (ConstraintLayout.LayoutParams) locationButtonView.getLayoutParams();
-            layoutParams3.bottomMargin = 480;
-            locationButtonView.setLayoutParams(layoutParams3);
-
-            ConstraintLayout.LayoutParams layoutParams4 = (ConstraintLayout.LayoutParams) location_btn_custom.getLayoutParams();
-            layoutParams4.bottomMargin = 480;
-            location_btn_custom.setLayoutParams(layoutParams4);
-
+            animateBottomMargin(meetingoff, 420);
+            animateBottomMargin(meetingon, 420);
+            animateBottomMargin(locationButtonView, 480);
+            animateBottomMargin(location_btn_custom, 480);
             uiSettings.setLogoMargin(30, 0, 0, 430);
 
         }else{
-            ConstraintLayout.LayoutParams layoutParams1 = (ConstraintLayout.LayoutParams) meetingoff.getLayoutParams();
-            layoutParams1.bottomMargin = 190;
-            meetingoff.setLayoutParams(layoutParams1);
-
-            ConstraintLayout.LayoutParams layoutParams2 = (ConstraintLayout.LayoutParams) meetingon.getLayoutParams();
-            layoutParams2.bottomMargin = 190;
-            meetingon.setLayoutParams(layoutParams2);
-
-            ConstraintLayout.LayoutParams layoutParams3 = (ConstraintLayout.LayoutParams) locationButtonView.getLayoutParams();
-            layoutParams3.bottomMargin = 80;
-            locationButtonView.setLayoutParams(layoutParams3);
-
-            ConstraintLayout.LayoutParams layoutParams4 = (ConstraintLayout.LayoutParams) location_btn_custom.getLayoutParams();
-            layoutParams4.bottomMargin = 80;
-            location_btn_custom.setLayoutParams(layoutParams4);
-
+            // 각 뷰의 시작 값과 끝 값을 지정하고 애니메이션을 시작
+            animateBottomMargin(meetingoff, 190);
+            animateBottomMargin(meetingon, 190);
+            animateBottomMargin(locationButtonView, 80);
+            animateBottomMargin(location_btn_custom, 80);
             uiSettings.setLogoMargin(30, 0, 0, 30);
         }
+    }
+
+    //하단 탭 생성 시 현위치버튼, 인증&번개 버튼 위치 애니메이션
+    private void animateBottomMargin(View view, int endValue) {
+        ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) view.getLayoutParams();
+        int startValue = layoutParams.bottomMargin;
+
+        ValueAnimator animator = ValueAnimator.ofInt(startValue, endValue);
+        animator.setDuration(150);  // 애니메이션 지속 시간을 500ms로 설정
+        animator.setInterpolator(new LinearInterpolator());  // 애니메이션 속도를 일정하게 설정
+        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                int value = (int) animation.getAnimatedValue();
+                layoutParams.bottomMargin = value;
+                view.setLayoutParams(layoutParams);
+            }
+        });
+        animator.start();  // 애니메이션 시작
     }
 
     @Override

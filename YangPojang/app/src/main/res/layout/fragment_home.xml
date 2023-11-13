@@ -177,16 +177,26 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"/>
 
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/close_pochalist"
+        android:layout_width="65dp"
+        android:layout_height="35dp"
+        android:text="닫기"
+        android:textSize="10sp"
+        android:backgroundTint="@color/white"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/pocha_list"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
-    <androidx.recyclerview.widget.RecyclerView
+    <com.yuhan.yangpojang.home.pochaListRecyclerView
         android:id="@+id/pocha_list"
         android:layout_width="match_parent"
-        android:layout_height="500dp"
+        android:layout_height="wrap_content"
         android:background="@color/white"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"/>
-
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/pocha_info"
@@ -269,6 +279,14 @@
             app:layout_constraintLeft_toLeftOf="parent"
             android:layout_marginLeft="370dp"
             android:layout_marginTop="15dp"/>
+        <View
+            android:id="@+id/view"
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="#C5C5C5"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

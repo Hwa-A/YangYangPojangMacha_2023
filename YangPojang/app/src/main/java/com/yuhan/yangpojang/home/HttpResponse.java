@@ -5,6 +5,7 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.LocationManager;
 import android.util.Log;
+import android.util.LruCache;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.helper.widget.MotionEffect;
@@ -41,18 +42,50 @@ public class HttpResponse {
     static double currentLongitude;
     static String addressName = null;
 
+    private static final int CACHE_SIZE = 50; //캐시 크기
+
+    // LruCache : 가장 오랫동안 사용되지 않은 항목이 먼저 제거됨, 가장 최근에 사용한 항목 50개만 유지
+    private static LruCache<String, LinkedHashMap<String, ArrayList<String>>> mCache
+            = new LruCache<>(CACHE_SIZE);
+
+
+    //서버로부터의 응답 처리
+    private static final Callback callback1 = new Callback() {
+        @Override
+        public void onFailure(@NonNull Call call, @NonNull IOException e) {
+
+        }
+
+        @Override
+        public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+            // 네트워크 요청 성공 시 검색 결과를 캐시에 추가
+
+            LinkedHashMap<String, ArrayList<String>> placeInfo = new LinkedHashMap<>(); //검색 결과를 담을 변수
+
+            mCache.put(keyword, placeInfo); //검색어-키, 검색 결과-값
+
+        }
+    };
+
 
     //새로운 스레드에 네트워크 요청 보내는 메서드 -> 네트워크 작업이 백그라운드에서 수행
     public static void sendData(Context context, String newText, DataCallback callback1){
         dataCallback = callback1; //SearchActivity.class로 데이터를 보내기 위한 콜백
         keyword = newText; //검색어 업데이트
-        Log.d("HttpResponse", "검색어 : " + keyword);
-        new Thread(){
-            public void run(){
-                conn.requestWebServer(keyword, "http://localhost:8080", "25", "1", "0E895A6037E6B2A5478DFD072465A01B", "poi", callback);
-                //HttpConnection 클래스의 requestWebServer 메서드를 호출하여 서버로 데이터 전달
-            }
-        }.start();
+
+        // 캐시에서 검색 결과 가져옴(keyword와 일치하는 키에 대한 검색결과를 가져옴)
+        LinkedHashMap<String, ArrayList<String>> cachedResult = mCache.get(keyword);
+        if (cachedResult != null) {
+            // 캐시에 검색 결과가 있으면 콜백을 호출하여 결과를 반환
+            dataCallback.onDataLoaded(cachedResult);
+        } else {
+            // 캐시에 검색 결과가 없으면 서버에 요청
+            new Thread(){
+                public void run(){
+                    conn.requestWebServer(keyword, "http://localhost:8080", "25", "1", "0E895A6037E6B2A5478DFD072465A01B", "poi", callback);
+                }
+            }.start();
+        }
     }
 
     // 사용자의 현재 위치
