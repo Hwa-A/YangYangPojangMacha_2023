@@ -109,10 +109,11 @@
                 android:layout_marginLeft="5dp"
                 android:adjustViewBounds="true"
                 android:src="@drawable/pochainfo_verified"
-                android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="@id/lin_pochainfo_goodContainer"
-                app:layout_constraintStart_toEndOf="@id/tv_pochainfo_pochaname"
-                app:layout_constraintTop_toBottomOf="@id/img_pochainfo_pochaImage" />
+                android:visibility="visible"
+                app:layout_constraintBottom_toBottomOf="@id/tv_pochainfo_pochaname"
+                app:layout_constraintEnd_toStartOf="@id/tv_pochainfo_pochaname"
+                app:layout_constraintTop_toTopOf="@id/tv_pochainfo_pochaname"
+                android:layout_marginRight="5dp"/>
 
             <LinearLayout
                 android:id="@+id/lin_pochainfo_goodContainer"

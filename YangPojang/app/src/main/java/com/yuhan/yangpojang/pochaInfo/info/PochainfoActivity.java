@@ -51,7 +51,6 @@ import java.net.URL;
 // frg: fragment
 // tv: TextView
 public class PochainfoActivity extends AppCompatActivity implements OnFragmentReloadListener {
-    private String user_info_uid = null;    // 화원 uid
     PochadetailFragment pchDetailFrg;      // 포차 상세정보 Fragment
     PochareviewFragment pchReviewFrg;      // 포차 리뷰 Fragment
     PochameetingFragment pchMeetingFrg;        // 포차 번개 Fragment
@@ -152,6 +151,16 @@ public class PochainfoActivity extends AppCompatActivity implements OnFragmentRe
         Log.d("hong", String.valueOf(user));
         if(user!=null) {
             uid = user.getUid();
+
+            // ▼ fragment에 데이터 전달 코드       // Bundle: Map형태로 여러가지의 타입의 값을 저장하는 클래스
+            Bundle bundle = new Bundle();               // 전달하기 위해 포차 객체와 회원ID 담을 객체
+            bundle.putSerializable("shopInfo", shop);   // 포차 객체
+            bundle.putString("uid", uid);               // 회원 id
+            // 프래그먼트에 포차 객체 넘기기
+            pchDetailFrg.setArguments(bundle);          // 포차 상세 정보 프래그먼트에 전달
+            pchReviewFrg.setArguments(bundle);          // 포차 리뷰 프래그먼트에 전달
+            pchMeetingFrg.setArguments(bundle);         // 포차 번개 프래그먼트에 전달
+
         }
         else
         {
@@ -159,8 +168,6 @@ public class PochainfoActivity extends AppCompatActivity implements OnFragmentRe
             user = FirebaseAuth.getInstance().getCurrentUser();
 
         }
-
-
 
         // 탭 버튼 클릭 시, 화면 전환 - 포차 상세 정보, 리뷰 리스트, 번개 리스트
         pchDetailBtn.setOnClickListener(onClickListener);       // 포차 상세 정보
