@@ -172,19 +172,6 @@ public class MeetingwriteActivity extends AppCompatActivity {
         // 번개 최대 연령대 입력에 따른 에러 메시지 출력
         maxAgeErrorMessage(maxAgeEdt, maxAgeTxtLay);
 
-        // ▼ 번개 최소 연령대 한 자릿 수 입력한 경우, 나이 19으로 고정
-        minAgeEdt.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if(!hasFocus){
-                    String minAge = minAgeEdt.getText().toString();
-                    if( Integer.parseInt(minAge) < 19){
-                        minAgeEdt.setText("19");
-                    }
-                }
-            }
-        });
-
         // 번개 시간을 선택할 리스너 연결
         timeTv.setOnClickListener(selectTime);
         // 번개 등록 리스너 연결
