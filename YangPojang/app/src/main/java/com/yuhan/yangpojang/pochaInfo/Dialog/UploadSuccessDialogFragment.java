@@ -36,9 +36,7 @@ public class UploadSuccessDialogFragment extends DialogFragment {
                         // "확인" 버튼을 클릭한 경우
                         dialog.dismiss();   // 다이얼로그 종료
                         if (getActivity() != null){
-
-                             getActivity().finish();     // 해당 액티비티 삭제
-                            
+                            getActivity().finish();     // 해당 액티비티 삭제
                         }
                     }
                 });

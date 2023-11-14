@@ -35,6 +35,7 @@ import androidx.fragment.app.FragmentManager;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
+import com.google.android.gms.common.util.Strings;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -104,8 +105,9 @@ public class ReviewFixPage  extends AppCompatActivity {
     private float originRating;   // 수정전 별점
     private int firstPicUrlCnt;     // 처음 수정할 데이터 중 PicUrl(이미지url)의 개수
     private String pchKey_reviewKey;       // 포차 id / 리뷰 id
-    private float firstRating;        // 처음 별점 값
     private List<Uri> firstImageUris = new ArrayList<>();      // storage의 이미지를 로컬 이미지로 만들었을 때의 파일 경로를 담는 리스트
+    private List<String> selectedImageStringUris = new ArrayList<>();      // storage의 이미지를 로컬 이미지로 만들었을 때의 파일 경로를 담는 리스트
+
 
     // 액티비티 종료 시, 메모리 해제
     @Override
@@ -187,16 +189,23 @@ public class ReviewFixPage  extends AppCompatActivity {
         if(intent != null){
             pullLoadingDialog.show();       // 정보 불러오기 다이얼로그 띄우기
 
+            // 받은 객체 처리
             model = (MyReviewModel) intent.getSerializableExtra("myReviewInfo");
+            // 포차 키
             pchKey = model.getPrimaryKey();
-            Log.d("리뷰Fixpage", "onCreate: " + model.getSummary());
+            Log.d("test1", "포차 키: " + pchKey);
 
-            pchKey_reviewKey = model.getShopID_reviewID();  // 포차id / 리뷰 id
+            // 포차와 리뷰 고유키(형식: 포차id / 리뷰id)
+            pchKey_reviewKey = model.getShopID_reviewID();
+            Log.d("test1", "포차_리뷰 키: " + pchKey_reviewKey);
 
-            Boolean verified = model.getVerified();     // 포차 인증 여부
+            // 포차 인증 여부
+            Boolean verified = model.getVerified();
+            Log.d("test1", "포차 인증 여부: " + verified);
 
             // 포차 이름 변경
             pchNameTv.setText(model.getShopName());
+
             // 포차 인증 여부
             if(verified){
                 // 인증된 포차인 경우, 인증 이미지가 보이도록 설정
@@ -210,31 +219,36 @@ public class ReviewFixPage  extends AppCompatActivity {
             if(String.valueOf(model.getMyRating()) == null){
                 Log.e("test1", "originRating");
             }else {
-                originRating = model.getMyRating();
-                firstRating = originRating;     // 처음 받아온 별점 빼두기
-                starRtb.setRating(firstRating);
-                Log.e("test1", String.valueOf(originRating));
+                originRating = model.getMyRating();     // 처음 받아온 별점 빼두기
+                starRtb.setRating(originRating);
+                Log.e("test1", "별점: " + String.valueOf(originRating));
             }
-
 
             // 리뷰 내용
             summaryEdt.setText(model.getSummary());
+            Log.e("test1", "리뷰 내용: " + model.getSummary());
+
 
             // ▼ 리뷰 사진
             if(model.getPicUrl1() != null){
+                // 이미지가 있는 경우
                 firstPicUrlCnt++;
                 Log.e("test1", "model로부터 리뷰 사진 획득1");
-            }
-            if(model.getPicUrl2() != null){
-                firstPicUrlCnt++;
-                Log.e("test1", "model로부터 리뷰 사진 획득2");
 
-            }
-            if(model.getPicUrl3() != null){
-                firstPicUrlCnt++;
-                Log.e("test1", "model로부터 리뷰 사진 획득3");
+                if(model.getPicUrl2() != null){
+                    // 이미지가 있는 경우
+                    firstPicUrlCnt++;
+                    Log.e("test1", "model로부터 리뷰 사진 획득2");
 
+                    if(model.getPicUrl3() != null){
+                        // 이미지가 있는 경우
+                        firstPicUrlCnt++;
+                        Log.e("test1", "model로부터 리뷰 사진 획득3");
+
+                    }
+                }
             }
+
 
             if(firstPicUrlCnt == 0){
                 pullLoadingDialog.dismiss();    // 리뷰 초기 정보 불러오기 종료
@@ -242,15 +256,16 @@ public class ReviewFixPage  extends AppCompatActivity {
 
             // firebase storage 참조 객체 생성 및 초기화
             StorageReference storeRef = FirebaseStorage.getInstance().getReference();
-
+            // 이미지 파일 경로 지정
             if(model.getPicUrl1() != null) {
                 storeRef.child(model.getPicUrl1()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
                     public void onSuccess(Uri uri1) {
-                        Log.e("test1", "시작");
+                        Log.e("test1", "초기 이미지1 url 가져오기 성공");
                         firstImageUris.add(uri1);
                         selectedImageUris.add(uri1);    // 리스트에 추가
                         selectedImageCount++;   // 이미지 선택 수 증가
+                        selectedImageStringUris.add(uri1.toString());
                         model.setPicUrl1(null);
 
                         if (firstPicUrlCnt == selectedImageCount) {
@@ -258,7 +273,7 @@ public class ReviewFixPage  extends AppCompatActivity {
                             // AsyncTask를 사용해 백그라운드 스레드에서 이미지를 비트맵으로 변환
                             // toArray() : 배열로 만듦
                             // new Uri[0]: 빈 배열을 만듦
-                             new LoadImageTask().execute(selectedImageUris.toArray(new Uri[0]));
+                            new DownloadImageTask().execute(selectedImageStringUris.toArray(new String[0]));
                         }
 
 
@@ -269,10 +284,11 @@ public class ReviewFixPage  extends AppCompatActivity {
                                     firstImageUris.add(uri2);
                                     selectedImageUris.add(uri2);    // 리스트에 추가
                                     selectedImageCount++;   // 이미지 선택 수 증가
+                                    selectedImageStringUris.add(uri2.toString());
                                     model.setPicUrl2(null);
 
                                     if (firstPicUrlCnt == selectedImageCount) {
-                                        new LoadImageTask().execute(selectedImageUris.toArray(new Uri[0]));
+                                        new DownloadImageTask().execute(selectedImageStringUris.toArray(new String[0]));
                                     }
 
                                     if(model.getPicUrl3() != null){
@@ -282,10 +298,11 @@ public class ReviewFixPage  extends AppCompatActivity {
                                                 firstImageUris.add(uri3);
                                                 selectedImageUris.add(uri3);    // 리스트에 추가
                                                 selectedImageCount++;   // 이미지 선택 수 증가
+                                                selectedImageStringUris.add(uri3.toString());
                                                 model.setPicUrl3(null);
 
                                                 if (firstPicUrlCnt == selectedImageCount) {
-                                                    new LoadImageTask().execute(selectedImageUris.toArray(new Uri[0]));
+                                                    new DownloadImageTask().execute(selectedImageStringUris.toArray(new String[0]));
                                                 }
                                             }
                                         }).addOnFailureListener(new OnFailureListener() {
@@ -540,7 +557,7 @@ public class ReviewFixPage  extends AppCompatActivity {
                                     }
                                 }
                                 // 평균 구하기(현재 작성 중인 리뷰도 포함)
-                                ratingTotal = ratingTotal + model.getMyRating() - firstRating;  // 총합
+//                                ratingTotal = ratingTotal + model.getMyRating() - firstRating;  // 총합
                                 float avgRating = getAvgRating(ratingTotal, reviewCnt);   // 평균 구하기
                                 avgRatingRef.set(avgRating);
                                 Log.e("test1", "평균: "+avgRating);
@@ -558,6 +575,8 @@ public class ReviewFixPage  extends AppCompatActivity {
                             // review 테이블에 저장
                             // reviews > 포차 id > 리뷰 id > 별점
                             uploadReviewMap.put("reviews/" + pchKey_reviewKey + "/rating", model.getMyRating());
+                            Log.e("test1", "리뷰 별점: "+model.getMyRating());
+
                             // reviews > 포차 id > 리뷰 id > 내용
                             uploadReviewMap.put("reviews/" + pchKey_reviewKey + "/summary", model.getSummary());
                             Log.e("test1", "리뷰 내용: "+model.getSummary());
@@ -582,12 +601,15 @@ public class ReviewFixPage  extends AppCompatActivity {
 
                             // firebase에 업로드
                             ref.updateChildren(uploadReviewMap);
+
                         }
 
                         @Override
                         public void onCancelled(@NonNull DatabaseError error) {
                             // 읽기 취소될 때
                             Log.e("test1", error.getMessage());
+//                            progressDialog.dismiss();       // 로딩 화면 숨기기
+//                            showUploadSuccessDialog();      // 성공 다이얼로그 출력
                         }
                     });
                 }
@@ -822,11 +844,7 @@ public class ReviewFixPage  extends AppCompatActivity {
                     selectedImageCount--;       // 선택된 이미지 감소
                     selectedImageUris.remove(index);    // 해당 인덱스의 uri 제거
                     Bitmap bitmap = imageBitmaps.remove(index);     // 해당 인덱스의 비트맵 삭제 후, 삭제된 비트맵 반환
-                    // 비트맵 메모리 해제
-                    if (bitmap != null) {
-                        bitmap.recycle();
-                        bitmap = null;
-                    }
+
                     // 맨 끝의 이미지 버튼 비활성
                     int uriSize = selectedImageUris.size();
                     ImageButton maxImageBtn = imageBtns.get(uriSize);
@@ -917,58 +935,81 @@ public class ReviewFixPage  extends AppCompatActivity {
     }
 
     // ▼ storage에서 얻은 이미지를 백그라운드 스레드를 통해 Bitmap으로 전환
-    private class LoadImageTask extends AsyncTask<Uri, Void, List<Bitmap>>{
+    private class DownloadImageTask extends AsyncTask<String, Void, List<Bitmap>>{
 
         @Override
-        protected List<Bitmap> doInBackground(Uri... uris) {
-            try{
-                if(uris.length > 0) {
-                    // 여러 개의 Uri 받아 처리
-                    for (Uri uri : uris) {
-                        // 각각의 Uri에 대한 작업 수행
-                        Bitmap bitmap = Glide.with(ReviewFixPage.this)
-                                .asBitmap()
-                                .load(uri) // 전달된 Uri를 로드
-                                .submit()      // 이미지 로드를 시작하고 비동기적으로 작업을 진행
-                                .get();        // 작업이 완료될 때까지 대기하고 비트맵을 반환
+        protected List<Bitmap> doInBackground(String... urls) {
+            Log.e("test1", "백그라운드 스레드 실행");
+            for(String url : urls){
+                Bitmap bitmap = null;
+                try{
+                    // URL에서 데이터를 읽기 위한 InputStream을 열고 그 참조를 in에 할당
+                    InputStream in = new java.net.URL(url).openStream();
 
-                        imageBitmaps.add(bitmap);       // 이미지 비트맵 리스트에 추가
-                    }
+                    // 비트맵 옵션을 설정하여 원본 이미지의 크기를 가져옴
+                    BitmapFactory.Options options = new BitmapFactory.Options();
+                    options.inJustDecodeBounds = true;
+                    BitmapFactory.decodeStream(in, null, options);
+                    int imageHeight = options.outHeight;
+                    int imageWidth = options.outWidth;
+
+                    // 원하는 크기 설정
+                    int reqHeight = 500;    // 픽셀 단위
+                    int reqWidth = 500;     // 픽셀 단위
+
+                    // inSampleSize 계산 : 이미지의 원본 크기를 결정하는데 사용
+                    options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
+
+                    // 실제로 비트맵 디코딩
+                    options.inJustDecodeBounds = false;
+                    in.close();
+                    in = new java.net.URL(url).openStream();
+                    bitmap = BitmapFactory.decodeStream(in, null, options);
+
+                    in.close();
+                    imageBitmaps.add(bitmap);
+                } catch (Exception e) {
+                    Log.e("test1", "비트맵 변환 중 에러: "+e.getMessage());
                 }
-
-            } catch (Exception e) {
-                e.printStackTrace();
-                Log.e("test1", "Bitmap 변환중 에러: "+e.getMessage());
-                return null; // 예외 발생 시 null 반환
             }
             return imageBitmaps;
         }
 
         @Override
         protected void onPostExecute(List<Bitmap> bitmaps) {
-            super.onPostExecute(bitmaps);
-            if(bitmaps.size() == firstPicUrlCnt){
-                // 비동기 작업이 완료된 후 호출되는 메서드
-                // 변환된 Bitmap 사용
-                // 주로 UI 업데이트 등을 수행
+            // 비트맵을 성공적으로 다운로드한 경우
+            // 화면에 이미지가 보이도록
+            if(bitmaps.size() == firstPicUrlCnt) {
                 Log.e("test1", "Bitmap 변환 성공");
                 displaySelectedImages();
-                if(model.getPicUrl1() == null){
-                    Log.e("test1", "초기 이미지1: null");
-                }
-                if(model.getPicUrl2() == null){
-                    Log.e("test1", "초기 이미지2: null");
-                }
-                if(model.getPicUrl3() == null){
-                    Log.e("test3", "초기 이미지3: null");
-                }
 
             } else {
                 // 변환에 실패한 경우
                 Log.e("test1", "Bitmap 변환 실패");
             }
             Log.e("test1", "작업 끝: 이전에 반환 결과 메시지를 봤어야 함");
+
+            super.onPostExecute(bitmaps);
         }
+
+        public static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
+            // 원본 이미지의 크기
+            final int height = options.outHeight;
+            final int width = options.outWidth;
+            int inSampleSize = 1;
+
+            if (height > reqHeight || width > reqWidth) {
+                final int halfHeight = height / 2;
+                final int halfWidth = width / 2;
+
+                // 가로, 세로 크기가 요구 크기의 2배가 될 때까지 inSampleSize를 2배씩 늘립니다.
+                while ((halfHeight / inSampleSize) >= reqHeight && (halfWidth / inSampleSize) >= reqWidth) {
+                    inSampleSize *= 2;
+                }
+            }
+            return inSampleSize;
+        }
+
     }
 
 }

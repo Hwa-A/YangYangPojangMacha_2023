@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.yuhan.yangpojang.R;
 import com.yuhan.yangpojang.pochaInfo.meeting.model.MeetingData;
 import com.yuhan.yangpojang.pochaInfo.meeting.model.UserInfoModel;
+import com.yuhan.yangpojang.pochaInfo.meeting.smallpopup.CntTodayMeet;
 import com.yuhan.yangpojang.pochaInfo.meeting.smallpopup.SmallBox;
 
 
@@ -101,10 +102,12 @@ public class MeetingAdapter extends RecyclerView.Adapter<MeetingAdapter.MeetingH
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
         String currentDate = sdf.format(new Date());
 
+
         // 지날 날짜의 경우 클릭 안됨
         if (!currentDate.equals(meetList.get(position).getYearDate())) {
             holder.itemView.setEnabled(false);
         } else {
+
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
