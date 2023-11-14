@@ -68,17 +68,6 @@ public class LoginActivity extends AppCompatActivity {
             user_info_uid = user.getUid();
         }
 
-        Intent intent_delete = getIntent();
-        deleteUseruid = intent_delete.getStringExtra("uid");
-
-        if (deleteUseruid != null){
-            mDatabase.child("user-info").child(deleteUseruid).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
-                @Override
-                public void onComplete(@NonNull Task<Void> task) {
-                    Toast.makeText(LoginActivity.this, "탈퇴처리 완료됨" , Toast.LENGTH_SHORT).show();
-                }
-            });
-        }
 
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();

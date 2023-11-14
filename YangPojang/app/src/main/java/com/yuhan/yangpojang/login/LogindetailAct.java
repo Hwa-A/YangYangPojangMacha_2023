@@ -26,6 +26,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
@@ -209,12 +210,12 @@ public class LogindetailAct extends AppCompatActivity {
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        // Write was successful!
                         Toast.makeText(LogindetailAct.this, "회원가입 완료!.", Toast.LENGTH_SHORT).show();
-                        Intent intent_main = new Intent(getApplication(), MainActivity.class);
-                        intent_main.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        intent_main.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        startActivity(intent_main);
+                        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
+                        if(bottomNavigationView!=null)
+                        {
+                            bottomNavigationView.setSelectedItemId(R.id.navigation_map);
+                        }
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {

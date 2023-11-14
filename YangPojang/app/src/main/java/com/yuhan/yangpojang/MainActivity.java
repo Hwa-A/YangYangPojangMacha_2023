@@ -2,15 +2,20 @@ package com.yuhan.yangpojang;
 
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatButton;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.RecyclerView;
 
 
 import android.app.AlertDialog;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
-
+import android.widget.Toast;
 
 
 import com.naver.maps.map.MapFragment;
@@ -47,16 +52,26 @@ public class MainActivity extends AppCompatActivity {
 
 //        String naverMapsClientId = BuildConfig.NAVER_CLIENT_ID;
 
-        // 프래그먼트 생성
-        reportShopFragment = new ReportShopFragment();
-        homeFragment = new HomeFragment();
+        // 액티비티가 처음 실행됐을 때
+        if (savedInstanceState == null) {
+            // 프래그먼트 생성
+            reportShopFragment = new ReportShopFragment();
+            homeFragment = new HomeFragment();
 
-        // 앱을 처음 켰을 때 보여지는 화면 -> HomeFragment
-        getSupportFragmentManager().beginTransaction()
-                .add(R.id.fragment_container, homeFragment)
-                .add(R.id.fragment_container, reportShopFragment).hide(reportShopFragment)  // 리포트 샵 프래그먼트도 처음에 추가하고 숨김
-                .commitAllowingStateLoss();
-        currentFragment = homeFragment;
+            // 앱을 처음 켰을 때 보여지는 화면 -> HomeFragment
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.fragment_container, homeFragment, "homeFragmentTag")
+                    .add(R.id.fragment_container, reportShopFragment, "reportShopFragmentTag")
+                    .hide(reportShopFragment)  // 리포트 샵 프래그먼트도 처음에 추가하고 숨김
+                    .commitAllowingStateLoss(); //트랜잭션 실행
+            currentFragment = homeFragment;
+        }
+        // 액티비티가 재생성되는 경우
+        else {
+            homeFragment = (HomeFragment) getSupportFragmentManager().findFragmentByTag("homeFragmentTag");
+            reportShopFragment = (ReportShopFragment) getSupportFragmentManager().findFragmentByTag("reportShopFragmentTag");
+            currentFragment = homeFragment;
+        }
 
 
         // bottomnavigationview의 아이콘을 선택 했을 때 원하는 프래그먼트가 띄워질 수 있도록 리스너를 추가
@@ -81,6 +96,33 @@ public class MainActivity extends AppCompatActivity {
                 });
     }
 
+    private long backBtnTime = 0;
+
+    // 홈 프레그먼트의 뒤로가기 버튼 구현
+    @Override
+    public void onBackPressed() {
+        if (currentFragment.equals(homeFragment)) {
+            long curTime = System.currentTimeMillis();
+            long gapTime = curTime - backBtnTime;
+            ConstraintLayout pocha_info = findViewById(R.id.pocha_info);
+            RecyclerView pochalist_view = findViewById(R.id.pocha_list);
+            pocha_info.setVisibility(View.INVISIBLE);
+            pochalist_view.setVisibility(View.INVISIBLE);
+            homeFragment.basemap();
+            AppCompatButton close_pochalist = findViewById(R.id.close_pochalist);
+            close_pochalist.setVisibility(View.INVISIBLE);
+
+            // 뒤로가기 버튼을 두 번 클릭한 경우(2초 내)
+            if (0 <= gapTime && 2000 >= gapTime) {
+                finish();
+            } else {
+                backBtnTime = curTime;
+                Toast.makeText(this, "한 번 더 누르면 종료됩니다.", Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            super.onBackPressed();
+        }
+    }
 
 
 }

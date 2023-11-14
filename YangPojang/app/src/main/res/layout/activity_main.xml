@@ -31,5 +31,12 @@
         app:itemBackground="@color/white"
         app:menu="@menu/bottom_navigation_menu" />
 
+    <View
+        android:id="@+id/line"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="#C5C5C5"
+        app:layout_constraintBottom_toTopOf="@+id/bottomNavigationView" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
