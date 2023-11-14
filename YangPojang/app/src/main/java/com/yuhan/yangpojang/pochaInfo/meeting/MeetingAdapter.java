@@ -105,23 +105,22 @@ public class MeetingAdapter extends RecyclerView.Adapter<MeetingAdapter.MeetingH
         // 지날 날짜의 경우 클릭 안됨
         if (!currentDate.equals(meetList.get(position).getYearDate())) {
             holder.itemView.setEnabled(false);
-        }else {
+        } else {
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     // 오늘 날짜에만 클릭 가능
                     if (view.isEnabled()) {
                         Log.d("번개Adapter", "아이템 뷰 클릭 : " + position);
-                        SmallBox smallBox = new SmallBox(meetList, meetList.get(position), user, primaryKey, context );
+                        SmallBox smallBox = new SmallBox(meetList, meetList.get(position), user, primaryKey, context);
                         smallBox.ShowAttenders();
 //                    new CntTodayMeet(meetList,primaryKey);
                     }
                 }
             });
+
         }
     }
-
-
 
 
     @Override

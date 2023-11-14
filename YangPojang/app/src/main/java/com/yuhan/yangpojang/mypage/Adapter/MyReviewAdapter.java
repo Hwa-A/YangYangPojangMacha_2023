@@ -91,7 +91,7 @@ public class MyReviewAdapter extends RecyclerView.Adapter<MyReviewAdapter.MyRevi
         String ImgPath = reviewItemList.get(position).getPicUrl1();
         Log.d("리뷰 사진", "ImgPath : " + ImgPath);
 
-        if (ImgPath == "null" || ImgPath.isEmpty()) {
+        if (ImgPath == null || ImgPath.isEmpty()) {
             Glide.with(context)
                     .load(R.drawable.no_image_pic)
                     .into(holder.pic1);
