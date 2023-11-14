@@ -144,13 +144,13 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/myReviewRecycle"
                 android:layout_width="386dp"
-                android:layout_height="210dp"
+                android:layout_height="310dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.64"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/myReview"
-                app:layout_constraintVertical_bias="0.042" />
+                app:layout_constraintVertical_bias="0.055" />
 
             <TextView
                 android:id="@+id/myMeeting"
@@ -170,16 +170,15 @@
                 android:id="@+id/myMeetingRecycle"
                 android:layout_width="386dp"
                 android:layout_height="320dp"
-                android:layout_marginBottom="20dp"
                 android:layout_marginTop="18dp"
+                android:layout_marginBottom="20dp"
                 android:nestedScrollingEnabled="false"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.64"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/myMeeting"
-                app:layout_constraintVertical_bias="1.0" />
-
+                app:layout_constraintVertical_bias="0.0" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
