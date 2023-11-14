@@ -11,10 +11,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.AlertDialog;
 import android.os.Bundle;
-<<<<<<< HEAD
-=======
-import android.util.Log;
->>>>>>> b0c15c6
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;

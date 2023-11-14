@@ -39,8 +39,11 @@ public class WorkAttendBtn {
 
     public void addAttender(TextView attender, Button attendBtn) {
         DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("meetingAttenders/" + meetInfo.getMeetingKey());
+        DatabaseReference myMeetRef = FirebaseDatabase.getInstance().getReference("myMeeting/" + user.getUID());
+
 
         dbRef.child(user.getUID()).setValue(user.getNick());    // 새로운 참석자 삽입
+        myMeetRef.child(meetInfo.getMeetingKey()).setValue(meetInfo.getPochaKey()); // 마이미팅 테이블 추가
         Toast.makeText(context, "파티원이 되었습니다.", Toast.LENGTH_SHORT).show();
 
         attendBtn.setVisibility(View.GONE);
