@@ -13,13 +13,14 @@ import androidx.fragment.app.DialogFragment;
 // firebase 업로드 성공한 경우, 출력할 Dialog
 public class UploadSuccessDialogFragment extends DialogFragment {
     private String confirmPlace;        // 어느 activity인지 확인  ex.MeetingwriteActivity에서 불렸는지
+    private String uploadAction;        // 어떤 동작을 하는지 확인  ex. 수정 or 업로드
 
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         // AlertDialog.Builder: AlertDialog 생성 가능한 API 제공해주는 클래스
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setMessage(confirmPlace + " 업로드 성공")
+        builder.setMessage(confirmPlace + " "+ uploadAction+" 성공")
                 .setPositiveButton("확인", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -38,7 +39,8 @@ public class UploadSuccessDialogFragment extends DialogFragment {
     }
 
     // ▼ 다이얼로그를 호출한 액티비티를 분별(번개 or 리뷰인지)
-    public void setDialogCallPlace(String confirmPlace) {
+    public void setDialogCallPlace(String confirmPlace, String uploadAction) {
         this.confirmPlace = confirmPlace;
+        this.uploadAction = uploadAction;
     }
 }

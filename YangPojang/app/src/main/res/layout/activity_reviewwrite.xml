@@ -149,6 +149,8 @@
                         android:adjustViewBounds="true"
                         android:background="#CFCFCF"
                         tools:ignore="SpeakableTextPresentCheck"
+                        android:scaleType="centerCrop"
+                        android:padding="0dp"
                         android:layout_gravity="left|bottom"/>
                     <ImageButton
                         android:id="@+id/imgbtn_reviewwrite_pictureCancel1"
@@ -175,6 +177,8 @@
                         android:adjustViewBounds="true"
                         android:background="#CFCFCF"
                         tools:ignore="SpeakableTextPresentCheck"
+                        android:scaleType="centerCrop"
+                        android:padding="0dp"
                         android:layout_gravity="left|bottom"/>
                     <ImageButton
                         android:id="@+id/imgbtn_reviewwrite_pictureCancel2"
@@ -201,6 +205,8 @@
                         android:adjustViewBounds="true"
                         android:background="#CFCFCF"
                         tools:ignore="SpeakableTextPresentCheck"
+                        android:scaleType="centerCrop"
+                        android:padding="0dp"
                         android:layout_gravity="left|bottom"/>
                     <ImageButton
                         android:id="@+id/imgbtn_reviewwrite_pictureCancel3"

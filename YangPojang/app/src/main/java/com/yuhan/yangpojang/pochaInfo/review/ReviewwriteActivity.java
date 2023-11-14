@@ -421,7 +421,7 @@ public class ReviewwriteActivity extends AppCompatActivity {
     private void showUploadSuccessDialog() {
         FragmentManager frgManager = getSupportFragmentManager();
         UploadSuccessDialogFragment successDialog = new UploadSuccessDialogFragment(); // 업로드 확인 다이어로그 생성 및 초기화
-        successDialog.setDialogCallPlace("리뷰");   // 리뷰에서 다이얼로그를 호출함을 전달
+        successDialog.setDialogCallPlace("리뷰", "등록");   // 리뷰에서 다이얼로그를 호출함을 전달
         successDialog.show(frgManager, "upload_success_review");
     }
 
@@ -429,7 +429,7 @@ public class ReviewwriteActivity extends AppCompatActivity {
     private void showUploadFailDialog() {
         FragmentManager frgManager = getSupportFragmentManager();
         UploadFailDialogFragment failDialog = new UploadFailDialogFragment(); // 업로드 확인 다이어로그 생성 및 초기화
-        failDialog.setDialogCallPlace("리뷰");   // 리뷰에서 다이얼로그를 호출함을 전달
+        failDialog.setDialogCallPlace("리뷰", "등록");   // 리뷰에서 다이얼로그를 호출함을 전달
         failDialog.show(frgManager, "upload_fail_review");
     }
 
