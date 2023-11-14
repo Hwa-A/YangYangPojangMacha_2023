@@ -14,7 +14,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.yuhan.yangpojang.R;
 import com.yuhan.yangpojang.pochaInfo.meeting.model.MeetingData;
 import com.yuhan.yangpojang.pochaInfo.meeting.model.UserInfoModel;
-import com.yuhan.yangpojang.pochaInfo.meeting.smallpopup.CntTodayMeet;
 import com.yuhan.yangpojang.pochaInfo.meeting.smallpopup.SmallBox;
 
 
@@ -123,7 +122,7 @@ public class MeetingAdapter extends RecyclerView.Adapter<MeetingAdapter.MeetingH
 
 
 
-
+git 
     @Override
     public int getItemCount() {
         return (meetList != null ? meetList.size() : 0);
