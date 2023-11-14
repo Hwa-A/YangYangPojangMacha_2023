@@ -71,7 +71,8 @@
                 app:layout_constraintBottom_toTopOf="@id/myFixSummaryIs"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/myFixMyRatingIs"
-                tools:ignore="SpeakableTextPresentCheck" />
+                tools:ignore="SpeakableTextPresentCheck"
+                android:progressTint="#FFC107" />
             <TextView
                 android:id="@+id/myFixSummaryIs"
                 android:layout_width="wrap_content"
@@ -140,6 +141,8 @@
                         android:adjustViewBounds="true"
                         android:background="#CFCFCF"
                         android:src="@drawable/pochareview_camera"
+                        android:scaleType="centerCrop"
+                        android:padding="0dp"
                         tools:ignore="SpeakableTextPresentCheck" />
                     <ImageButton
                         android:id="@+id/myFixPicCancelBtn1"
@@ -166,6 +169,8 @@
                         android:adjustViewBounds="true"
                         android:background="#CFCFCF"
                         android:src="@drawable/pochareview_camera"
+                        android:scaleType="centerCrop"
+                        android:padding="0dp"
                         tools:ignore="SpeakableTextPresentCheck" />
                     <ImageButton
                         android:id="@+id/myFixPicCancelBtn2"
@@ -192,6 +197,8 @@
                         android:adjustViewBounds="true"
                         android:background="#CFCFCF"
                         android:src="@drawable/pochareview_camera"
+                        android:scaleType="centerCrop"
+                        android:padding="0dp"
                         tools:ignore="SpeakableTextPresentCheck" />
                     <ImageButton
                         android:id="@+id/myFixPicCancelBtn3"

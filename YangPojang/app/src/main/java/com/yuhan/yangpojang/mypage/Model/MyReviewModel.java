@@ -216,7 +216,7 @@ public class MyReviewModel extends Shop implements Serializable {
 
     public void setPrimaryKey(String primaryKey) {        this.primaryKey = primaryKey;    }
 
-    public void setShopID_reviewID(String shopID) {        this.shopID_reviewID = shopID_reviewID;    }
+    public void setShopID_reviewID(String shopID_reviewID) {        this.shopID_reviewID = shopID_reviewID;    }
 
     public void setPicUrl1(String picUrl1) {        this.picUrl1 = picUrl1;    }
 
