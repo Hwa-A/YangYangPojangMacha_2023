@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <solid android:color="#f4f4f4" /> <!-- 약간 연한 회색 배경색 설정 -->
+    <solid android:color="#C2F5F5F5" /> <!-- 약간 연한 회색 배경색 설정 -->
 </shape>
 

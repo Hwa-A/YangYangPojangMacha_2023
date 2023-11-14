@@ -4,4 +4,10 @@
     <color name="white">#FFFFFF</color>
     <color name="btn_color">#FCB854</color>
     <color name="btn_color1">#4CAF50</color>
+
+    <color name="border_tint_color">#DF793E</color> <!-- 테두리 틴트 색상 -->
+    <color name="button_background_color">#FFFFFF</color> <!-- 버튼 배경색 -->
+    <dimen name="border_radius">4dp</dimen> <!-- 테두리 radius -->
+
+
 </resources>

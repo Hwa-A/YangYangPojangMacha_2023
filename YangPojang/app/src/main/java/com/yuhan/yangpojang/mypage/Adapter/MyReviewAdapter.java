@@ -123,6 +123,7 @@ public class MyReviewAdapter extends RecyclerView.Adapter<MyReviewAdapter.MyRevi
 
 
 
+
         // 아이템 뷰 클릭시 상세페이지로 이동
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override

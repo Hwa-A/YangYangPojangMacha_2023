@@ -1,25 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:paddingTop="20dp">
+
 
     <TextView
         android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/title1"
-        android:textSize="18sp"
-        android:textColor="#000000"
-        android:textStyle="bold"
         android:paddingBottom="10dp"
-        android:layout_marginStart="-15dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        android:text="@string/title1"
+        android:textColor="#000000"
+        android:textSize="18dp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/authmeeting"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/yuhan" />
+
+    <TextView
+        android:id="@+id/authmeeting"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:text="@string/title2"
+        android:textColor="#000000"
+        android:textSize="18dp"
+        android:textStyle="bold"
+        android:visibility="gone"
+        app:layout_constraintEnd_toStartOf="@+id/auth"
+        app:layout_constraintHorizontal_bias="0.913"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/title" />
 
     <ImageView
         android:id="@+id/yuhan"
@@ -27,25 +42,10 @@
         android:layout_height="30dp"
         android:src="@drawable/yuhan"
         android:visibility="visible"
-        android:layout_marginStart="-3dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/title"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/authmeeting"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/title2"
-        android:textSize="18sp"
-        android:textColor="#000000"
-        android:textStyle="bold"
-        android:visibility="gone"
-        android:layout_marginTop="10dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/title"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/description"/>
 
     <ImageView
         android:id="@+id/auth"
@@ -53,12 +53,13 @@
         android:layout_height="30dp"
         android:src="@drawable/authon"
         android:visibility="gone"
-        android:layout_marginStart="-120dp"
-        android:layout_marginBottom="10dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/authmeeting"
+
         app:layout_constraintBottom_toTopOf="@+id/description"
-        app:layout_constraintTop_toBottomOf="@+id/title"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.54"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/title"
+        app:layout_constraintVertical_bias="0.571" />
 
     <ImageView
         android:id="@+id/meet"
@@ -66,74 +67,74 @@
         android:layout_height="30dp"
         android:src="@drawable/meetingon"
         android:visibility="gone"
-        android:layout_marginStart="-120dp"
-        android:layout_marginBottom="10dp"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/authmeeting"
+        app:layout_constraintEnd_toEndOf="@+id/title"
+        app:layout_constraintHorizontal_bias="0.088"
         app:layout_constraintStart_toEndOf="@+id/authmeeting"
-        app:layout_constraintBottom_toTopOf="@+id/description"
-        app:layout_constraintTop_toBottomOf="@+id/title" />
-
+        app:layout_constraintTop_toBottomOf="@+id/title"
+        app:layout_constraintVertical_bias="1.0" />
 
     <TextView
         android:id="@+id/description"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/description1"
-        android:textSize="12sp"
-        android:textColor="#000000"
-        android:gravity=""
+        android:layout_marginTop="12dp"
         android:padding="10dp"
-        android:layout_marginTop="15dp"
-        app:layout_constraintStart_toStartOf="parent"
+        android:text="@string/description1"
+        android:textAlignment="center"
+        android:textColor="#000000"
+        android:textSize="11dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/authmeeting"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/authmeeting" />
 
     <Button
         android:id="@+id/cancel"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text="닫기"
-        android:textSize="14sp"
-        android:backgroundTint="#00673AB7"
-        android:textColor="#FF5722"
         android:layout_marginTop="15dp"
+        android:layout_weight="1"
+        android:backgroundTint="#00673AB7"
+        android:text="닫기"
+        android:textColor="#FF5722"
+        android:textSize="14dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/next"
-        app:layout_constraintTop_toBottomOf="@id/description"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/description" />
 
     <Button
         android:id="@+id/next"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text="다음"
-        android:textSize="14sp"
-        android:backgroundTint="#00673AB7"
-        android:textColor="#FF5722"
         android:layout_marginTop="15dp"
+        android:layout_weight="1"
+        android:backgroundTint="#00673AB7"
+        android:text="다음"
+        android:textColor="#FF5722"
+        android:textSize="14dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/cancel"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/cancel"
         app:layout_constraintTop_toBottomOf="@id/description" />
 
     <Button
         android:id="@+id/end"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:visibility="invisible"
-        android:layout_weight="1"
-        android:text="닫기"
-        android:textSize="14sp"
-        android:backgroundTint="#00673AB7"
-        android:textColor="#FF5722"
         android:layout_marginTop="15dp"
+        android:layout_weight="1"
+        android:backgroundTint="#00673AB7"
+        android:text="닫기"
+        android:textColor="#FF5722"
+        android:textSize="14dp"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/description" />
-
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/description"
+        app:layout_constraintVertical_bias="1.0" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

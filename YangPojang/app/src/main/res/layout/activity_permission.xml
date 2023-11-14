@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -8,35 +7,38 @@
 
     <TextView
         android:id="@+id/mainText"
-        android:layout_width="0dp"
-        android:layout_height="64dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:text="양양 포장마차 이용을 위해 \n\n 아래 권한을 허용해주세요."
-        android:textSize="15dp"
+        android:layout_width="309dp"
+        android:layout_height="76dp"
+        android:layout_marginStart="18dp"
+        android:gravity="center"
+        android:text="양양 포장마차 이용을 위해 \n 아래 권한을 허용해주세요."
+        android:textAlignment="center"
+        android:textSize="20dp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/permissionAccess"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/appiconImage"
+        app:layout_constraintHorizontal_bias="0.348"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.133" />
+        app:layout_constraintVertical_bias="0.196" />
 
     <ImageView
         android:id="@+id/appiconImage"
-        android:layout_width="75dp"
-        android:layout_height="64dp"
-        android:layout_marginStart="36dp"
-        android:layout_marginTop="104dp"
-        app:layout_constraintBottom_toBottomOf="@+id/mainText"
+        android:layout_width="66dp"
+        android:layout_height="69dp"
+        app:layout_constraintBottom_toBottomOf="@+id/permissionAccess"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.052"
         app:srcCompat="@drawable/app_icon" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/permissionAccess"
         android:layout_width="0dp"
         android:layout_height="60dp"
-        android:backgroundTint="#FF8C00"
+        android:backgroundTint="#DF793E"
         android:text="확인"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -44,54 +46,100 @@
 
     <View
         android:id="@+id/separation"
-        android:layout_width="0dp"
+        android:layout_width="300dp"
         android:layout_height="2dp"
-        android:layout_marginTop="28dp"
+        android:layout_marginTop="174dp"
         android:background="#000000"
-        app:layout_constraintEnd_toEndOf="@+id/mainText"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/appiconImage"
-        app:layout_constraintTop_toBottomOf="@+id/appiconImage" />
+        app:layout_constraintBottom_toTopOf="@+id/permissionAccess"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.504"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/appiconImage"
+        app:layout_constraintVertical_bias="0.0" />
 
     <ImageView
         android:id="@+id/MapImage"
         android:layout_width="49dp"
         android:layout_height="49dp"
-        android:layout_marginStart="36dp"
-        android:layout_marginTop="28dp"
+        android:layout_marginTop="36dp"
+        app:layout_constraintBottom_toTopOf="@+id/permissionAccess"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.154"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/separation"
-        app:srcCompat="@android:drawable/ic_dialog_map" />
+        app:layout_constraintVertical_bias="0.013"
+        app:srcCompat="@drawable/ic_dialog_map" />
 
     <TextView
         android:id="@+id/MapText"
-        android:layout_width="0dp"
-        android:layout_height="50dp"
-        android:layout_marginStart="16dp"
-        android:text="위치권한 \n 지도 및 기기의 현위치 정보 수집"
+        android:layout_width="236dp"
+        android:layout_height="28dp"
+        android:layout_marginTop="4dp"
+        android:text="위치권한"
+        android:textSize="16dp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/textView2"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.342"
         app:layout_constraintStart_toEndOf="@+id/MapImage"
-        app:layout_constraintTop_toTopOf="@+id/MapImage" />
+        app:layout_constraintTop_toTopOf="@+id/MapImage"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
+        android:id="@+id/galleryText"
+        android:layout_width="177dp"
+        android:layout_height="37dp"
+        android:layout_marginStart="8dp"
+        android:text="갤러리"
+        android:textSize="16dp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/GalleryImage"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.116"
+        app:layout_constraintStart_toEndOf="@+id/GalleryImage"
+        app:layout_constraintTop_toTopOf="@+id/GalleryImage"
+        app:layout_constraintVertical_bias="0.086" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="277dp"
+        android:layout_height="25dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="68dp"
+        android:layout_marginBottom="28dp"
+        android:text="지도 및 기기의 현위치 정보 수집"
+        app:layout_constraintBottom_toTopOf="@+id/galleryText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.761"
+        app:layout_constraintStart_toEndOf="@+id/MapImage"
+        app:layout_constraintTop_toBottomOf="@+id/separation"
+        app:layout_constraintVertical_bias="0.571" />
+
+    <TextView
+        android:layout_width="270dp"
+        android:layout_height="47dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="36dp"
+        android:text=" 사진, 동영상 등 기기 내 \n 저장된 파일 및 외부 저장소를 사용"
+        app:layout_constraintBottom_toTopOf="@+id/permissionAccess"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.518"
+        app:layout_constraintStart_toEndOf="@+id/GalleryImage"
+        app:layout_constraintTop_toTopOf="@+id/galleryText"
+        app:layout_constraintVertical_bias="0.0" />
 
     <ImageView
         android:id="@+id/GalleryImage"
         android:layout_width="50dp"
         android:layout_height="60dp"
-        android:layout_marginTop="36dp"
+        android:layout_marginTop="40dp"
+        app:layout_constraintBottom_toTopOf="@+id/permissionAccess"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/MapImage"
         app:layout_constraintTop_toBottomOf="@+id/MapImage"
-        app:srcCompat="@android:drawable/ic_menu_gallery" />
+        app:layout_constraintVertical_bias="0.0"
+        app:srcCompat="@drawable/ic_menu_gallery" />
 
-    <TextView
-        android:id="@+id/galleryText"
-        android:layout_width="0dp"
-        android:layout_height="60dp"
-        android:layout_marginStart="16dp"
-        android:text="갤러리 \n 사진, 동영상 등 기기 내 \n 저장된 파일 및 외부 저장소를 사용"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.647"
-        app:layout_constraintStart_toEndOf="@+id/GalleryImage"
-        app:layout_constraintTop_toTopOf="@+id/GalleryImage" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

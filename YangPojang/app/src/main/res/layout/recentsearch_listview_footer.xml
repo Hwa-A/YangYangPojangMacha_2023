@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:text="히스토리 삭제"
         android:textColor="#7A7A7A"
-        android:textSize="13sp"
+        android:textSize="13dp"
         android:layout_gravity="center"/>
 
 

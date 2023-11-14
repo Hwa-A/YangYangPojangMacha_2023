@@ -1,5 +1,6 @@
 package com.yuhan.yangpojang.fragment;
 import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.app.Activity;
@@ -57,7 +58,6 @@ public class ReportShopFragment extends Fragment implements ShopDataListener
     ScrollView scrollView; // 스크롤 뷰
     ActivityResultLauncher<Intent> galleryLauncher; // 갤러리 오픈을 위한 intent launcher
     private static final int PICK_EXTERIOR_IMAGE_REQUEST = 1;    // 가게-외관이미지 선택
-    private static final int PICK_MENU_IMAGE_REQUEST = 2;    // 가게-메뉴이미지 선택
     private TextView shopLocationText; // [위치선택 버튼으로 위치를 선택하세요] 글씨
     private EditText shopNameEditText; // [ex)) 영희네 or 별빛아파트 앞] => 가게이름을 설정하는 부분
     private CheckBox pwayCashCheckBox; // 결제방식 - 현금
@@ -74,28 +74,23 @@ public class ReportShopFragment extends Fragment implements ShopDataListener
     private Spinner categorySpinner; // 가게 카테고리 선택하는 스피너
     private String selectedCategory; // 선택한 카테고리를 저장하는 변수
 
-    //db와는 무관하게 ui에 무슨 이미지를 선택했는지 나타내기 위한 storeExteriorPhoto , menuBoardPhoto
+    //db와는 무관하게 ui에 무슨 이미지를 선택했는지 나타내기 위한 storeExteriorPhoto
     private ImageView storeExteriorPhoto; // 가게 외관 이미지를 표시하는 이미지뷰
-    private ImageView menuBoardPhoto; // 가게 메뉴 이미지를 표시하는 이미지뷰
 
-    //db에 넣을때 필요한 이미지들의 uri:  storeExteriorImageUri,menuBoardImageUri;
+    //db에 넣을때 필요한 이미지들의 uri:  storeExteriorImageUri
     private Uri storeExteriorImageUri; // 가게 외관 이미지의 URI
-    private Uri menuBoardImageUri; // 가게 메뉴 이미지의 URI
     private String exteriorImagePath;
-    private String menuImagePath;
 
     private Uri imageUri;
     private String uid; // uid
     private TextView storePhotoTextView; // 가게 사진 선택하기 글씨
-    private TextView menuPhotoTextView; // 메뉴사진 선택하기 글씨
     private Button reportBtn;  // 가게 정보를 제보하는 버튼
     private Button editShopPlaceBtn; // 위치선택 버튼
     private String addressName; // 가게 위치 주소 ( 불광로 4) 정보를 넣는 변수
-    private int requestCode; // 이미지 선택 요청 코드( 1 or 2) ->  PICK_EXTERIOR_IMAGE_REQUEST = 1 , PICK_MENU_IMAGE_REQUEST = 2;
+    private int requestCode; // 이미지 선택 요청 코드( 1 or 2) ->  PICK_EXTERIOR_IMAGE_REQUEST = 1
     private BottomNavigationView bottomNavigationView;   // 하단 네비게이션 뷰
     private double latitude; // 가게 위도
     private double longitude; // 가게 경도
-    private TextView textboard; // 제보시 나오는 toast 메세지 [✨✨가게 정보가 업로드 중입니다✨✨] -> 안나오므로 보류
     private MapLocationPopupFragment mapLocationPopupFragment;
     private boolean isVerified; // 인증된 가게인가
     private boolean hasMeeting;  // 번개가 잡힌 가게인가
@@ -109,6 +104,11 @@ public class ReportShopFragment extends Fragment implements ShopDataListener
     private DatabaseReference databaseReference ;
     private String shopKey;
     private DatabaseReference shopReference ;
+
+    private ProgressDialog progressDialog;      // 등록 로딩 다이얼로그
+
+
+
     @SuppressLint("ClickableViewAccessibility")
     @Nullable
     @Override
@@ -134,16 +134,19 @@ public class ReportShopFragment extends Fragment implements ShopDataListener
         sunCheckBox = viewReprotShop.findViewById(R.id.sun);
         editShopPlaceBtn = viewReprotShop.findViewById(R.id.editShopplace);
         storeExteriorPhoto = viewReprotShop.findViewById(R.id.storeExteriorPhoto); // 선택된 외관 이미지를 보기 위함 - db와 무관
-        menuBoardPhoto = viewReprotShop.findViewById(R.id.menuBoardPhoto);  // 선택된 메뉴 이미지를 보기 위함 - db와 무관
         reportBtn = viewReprotShop.findViewById(R.id.reportBtn); // 제보하기 버튼
-        textboard = viewReprotShop.findViewById(R.id.textboard);  // 보류: 제보시 나오는 toast 메세지 [✨✨가게 정보가 업로드 중입니다✨✨]
         categorySpinner = viewReprotShop.findViewById(R.id.categorySpinner);  // 카테고리 스피너 -  res/values/strings에 카테고리 목록 지정해놓음
         mapLocationPopupFragment = new MapLocationPopupFragment();  // 제보할 가게 위치 선택을 위한 지도
         storePhotoTextView= viewReprotShop.findViewById(R.id.storeBoardText); // 가게 사진 선택하기 글씨
-        menuPhotoTextView= viewReprotShop.findViewById(R.id.menuBoardText);  // 메뉴 사진 선택하기 글씨
         bottomNavigationView= getActivity().findViewById(R.id.bottomNavigationView); // 하단 네비게이션 바
         bottomNavigationView.setVisibility(View.VISIBLE);
-
+        progressDialog=new ProgressDialog(getActivity());
+        
+        // 가게 제보 진행바 추가
+        progressDialog.setMessage("가게 등록 중 ...");
+        progressDialog.setCancelable(false);    // 취소 불가능
+        progressDialog.setCanceledOnTouchOutside(false);     // 외부 터치 불가능
+        
         databaseReference = FirebaseDatabase.getInstance().getReference();
         shopKey = databaseReference.child("shops").push().getKey();
 
@@ -212,16 +215,7 @@ public class ReportShopFragment extends Fragment implements ShopDataListener
                 openGallery();
             }
         });
-        menuBoardPhoto.setOnClickListener(new View.OnClickListener()
-                //메뉴 사진 등록하기틀 누르면 갤러리 오픈
-        {
-            @Override
-            public void onClick(View v)
-            {
-                requestCode=PICK_MENU_IMAGE_REQUEST;  // 요청코드: 메뉴판 사진을 선택하는 것
-                openGallery();
-            }
-        });
+
         /*순서
          *  1. openGallery 호출로 갤러리가 열리고 사용자가 이미지를 선택한다
          *  2. 이미지 선택을 결과에 대한 코드가 다음줄부터 진행된다*/
@@ -254,15 +248,8 @@ public class ReportShopFragment extends Fragment implements ShopDataListener
                                         storePhotoTextView.setVisibility(View.GONE);
                                         filename= "exterior.jpg";
 //                                        path="exteriorImagePath";
-                                    } else if (requestCode == PICK_MENU_IMAGE_REQUEST) //2 requestCode가 메뉴판 사진
-                                    {
-                                        menuBoardImageUri = imageUri;   // db에 넣기위해선 이미지를 uri로
-                                        menuBoardPhoto.setImageURI(imageUri);   // 이미지뷰에 선택한 이미지 단순표시
-                                        menuBoardPhoto.setBackground(null);
-                                        menuPhotoTextView.setVisibility(View.GONE);
-                                        filename="menu.jpg";
-//                                        path="menuImagePath";
                                     }
+
 
                                 }
                             }
@@ -277,14 +264,6 @@ public class ReportShopFragment extends Fragment implements ShopDataListener
                                     String trimmedString = originalString.substring(originalString.indexOf("/shops"));
                                     exteriorImagePath= trimmedString;
 //                                    shop.setExteriorImagePath(trimmedString);
-                                }
-                                else if (filename=="menu.jpg")
-                                {
-                                    String originalString= String.valueOf(shopImagesRef);
-                                    String trimmedString = originalString.substring(originalString.indexOf("/shops"));
-//                                    shop.setMenuImagePath(trimmedString);
-                                    menuImagePath= trimmedString;
-                                    Log.d("dskfjaskdjl33",menuImagePath);
                                 }
 
                                 }
@@ -407,11 +386,9 @@ public class ReportShopFragment extends Fragment implements ShopDataListener
     void setImagesFromMapFragment() {
         // Store the current image URIs
         Uri tempStoreExteriorImageUri = storeExteriorImageUri;
-        Uri tempMenuBoardImageUri = menuBoardImageUri;
 
         // Instead of resetting image URIs, use the temp URIs set prior to opening the map fragment
         storeExteriorImageUri = tempStoreExteriorImageUri;
-        menuBoardImageUri = tempMenuBoardImageUri;
 
         // Update image views only if the URIs are not null
         if (storeExteriorImageUri != null) {
@@ -420,11 +397,7 @@ public class ReportShopFragment extends Fragment implements ShopDataListener
             storePhotoTextView.setVisibility(View.GONE);
         }
 
-        if (menuBoardImageUri != null) {
-            menuBoardPhoto.setImageURI(menuBoardImageUri);
-            menuBoardPhoto.setBackground(null);
-            menuPhotoTextView.setVisibility(View.GONE);
-        }
+
     }
 
 
@@ -451,6 +424,7 @@ public class ReportShopFragment extends Fragment implements ShopDataListener
     }
     private void saveShopData()
     {
+
         String shopName = shopNameEditText.getText().toString();
         boolean isPwayMobile = pwayMobileCheckBox.isChecked();
         boolean isPwayCard = pwayCardCheckBox.isChecked();
@@ -496,31 +470,26 @@ public class ReportShopFragment extends Fragment implements ShopDataListener
         {
             Toast.makeText(getContext(), " 가게 사진을 선택하세요.", Toast.LENGTH_SHORT).show();
         }
-        else if(menuBoardImageUri==null)
-        {
-            Toast.makeText(getContext(), "메뉴 사진을  선택하세요.", Toast.LENGTH_SHORT).show();
 
-        }
         else // 제보에 필요한 정보를 모두 입력했을시
         {
+            progressDialog.show();
 
-             shop = new Shop(uid,shopName, latitude,longitude,addressName,isPwayMobile, isPwayCard, isPwayAccount, isPwayCash,
+
+            shop = new Shop(uid,shopName, latitude,longitude,addressName,isPwayMobile, isPwayCard, isPwayAccount, isPwayCash,
                     isOpenMon, isOpenTue, isOpenWed, isOpenThu, isOpenFri, isOpenSat, isOpenSun,selectedCategory,
                     isVerified,  hasMeeting, rating ,geohash,countVerified,countSingo,
-                     (exteriorImagePath!= null) ? exteriorImagePath.toString() : "",
-                     (menuImagePath != null) ? menuImagePath.toString() : ""
+                     (exteriorImagePath!= null) ? exteriorImagePath.toString() : ""
              );
 
-            shop.setMenuImagePath(menuImagePath);
             shop.setExteriorImagePath(exteriorImagePath);
 
             ReportShop reportShop= new ReportShop(uid);
             User user= new User();
 
             scrollView.setBackgroundColor(Color.parseColor("#000000")); // 제보버튼 누르면 배경색이 약간 어두어지게 연출
-            textboard.setVisibility(View.VISIBLE);
 
-            FirebaseUtils.saveShopData(shop, reportShop ,user, storeExteriorImageUri, menuBoardImageUri,shopKey); //FirebaseUtils에 별도로 firebase에 넣는 코드 작성함
+            FirebaseUtils.saveShopData(shop, reportShop ,user, storeExteriorImageUri,shopKey); //FirebaseUtils에 별도로 firebase에 넣는 코드 작성함
 
 
         }
@@ -529,15 +498,13 @@ public class ReportShopFragment extends Fragment implements ShopDataListener
     @Override
     public void onShopDataSaved()
     {
-
+        progressDialog.dismiss();       // 로딩 화면 숨기기
         Toast.makeText(getActivity(), "가게가 정상적으로 등록되었습니다! ", Toast.LENGTH_SHORT).show();
 
         reportBtn.setClickable(false); // 제보 여러번 연타 못하게 버튼 클릭 비활성화
         clearForm();  // 저장이 되는경우 기존에 작성된 폼 지움
         replaceFragment(); // 저장이 되는 경우 home으로 이동 하기 위한 메서드 호출
         }
-
-
 
 
 
@@ -556,7 +523,6 @@ public class ReportShopFragment extends Fragment implements ShopDataListener
         reportBtn.setClickable(true);
         scrollView.setBackgroundColor(Color.parseColor("#ffffff")); // 배경색을 원래대로 하얀색으로
         shopNameEditText.setText(""); // 가게 이름 입력란 초기화
-        textboard.setVisibility(View.GONE);
         pwayMobileCheckBox.setChecked(false);
         pwayCardCheckBox.setChecked(false);
         pwayAccountCheckBox.setChecked(false);
@@ -570,17 +536,13 @@ public class ReportShopFragment extends Fragment implements ShopDataListener
         sunCheckBox.setChecked(false);
         addressName="위치선택 버튼을 클릭하세요";
         storeExteriorPhoto.setImageDrawable(null);
-        menuBoardPhoto.setImageDrawable(null);
         storeExteriorPhoto.setBackgroundResource(R.drawable.border_rounded_coner);
-        menuBoardPhoto.setBackgroundResource(R.drawable.border_rounded_coner);
-        menuBoardImageUri = null;
         storeExteriorImageUri=null;
         categorySpinner.setSelection(0); // Spinner 초기화 (카테고리 선택을 "선택 안함"으로)
         shopLocationText.setText("위치선택 버튼을 클릭하세요");  // 주소 텍스트 초기화
         latitude = 0.0; // 위도 초기화
         longitude = 0.0; //경도 초기화
         storePhotoTextView.setVisibility(View.VISIBLE); // 외관사진 표시 지우기
-        menuPhotoTextView.setVisibility(View.VISIBLE); // 메뉴판 사진 표시 지우기
         isVerified=false;
         hasMeeting=false;
         geohash="";
@@ -595,21 +557,3 @@ public class ReportShopFragment extends Fragment implements ShopDataListener
         }
     }
 }
-
-
-
-//a
-//보류
-//                     MapLocationPopupFragment fragment = new MapLocationPopupFragment();
-//                     // 위치 정보를 번들에 추가
-//                     Bundle locationBundle = new Bundle();
-//                     locationBundle.putString("currentLocation",addressName);
-//                     locationBundle.putDouble("currentLatitude",latitude);
-//                     locationBundle.putDouble("currentLongitude",longitude);
-//                     popupFragment.setArguments(locationBundle);
-//                     FragmentManager fragmentManager = getParentFragmentManager();
-//                     FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-//                     fragmentTransaction.addToBackStack(null);
-//                     fragmentTransaction.replace(R.id.fragment_container, popupFragment);
-//                     Log.d("ReportShopFragment- 번들 테스트", String.valueOf(locationBundle));
-//                     fragmentTransaction.commit();

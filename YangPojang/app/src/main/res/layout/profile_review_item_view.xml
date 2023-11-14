@@ -2,11 +2,11 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="300dp"
-    android:layout_height="140dp"
+    android:layout_width="320dp"
+    android:layout_height="200dp"
     android:layout_marginLeft="10dp"
     android:layout_marginRight="10dp"
-    android:background="@drawable/border_rounded_coner_gray"
+    android:background="@drawable/border_review_recyclerview_item"
     android:elevation="5dp">
 
 
@@ -15,38 +15,66 @@
         android:layout_width="187dp"
         android:layout_height="20dp"
         android:text="test shop"
+        android:textColor="#DF793E"
+        android:textSize="17dp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.752"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintHorizontal_bias="0.207"
+        app:layout_constraintStart_toEndOf="@+id/myReviewImage"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.058" />
+        app:layout_constraintVertical_bias="0.114" />
+
 
     <TextView
         android:id="@+id/myReviewShopAdd"
         android:layout_width="195dp"
-        android:layout_height="13dp"
+        android:layout_height="wrap_content"
         android:text="address"
-        android:textSize="10sp"
+        android:textSize="12dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.333"
+        app:layout_constraintHorizontal_bias="0.644"
         app:layout_constraintStart_toEndOf="@+id/myReviewImage"
         app:layout_constraintTop_toBottomOf="@+id/myReviewShopName"
-        app:layout_constraintVertical_bias="0.04000002" />
+        app:layout_constraintVertical_bias="0.074" />
+
+    <TextView
+        android:id="@+id/textView8"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="📍 "
+        app:layout_constraintBottom_toBottomOf="@+id/myReviewShopAdd"
+        app:layout_constraintEnd_toStartOf="@+id/myReviewShopAdd"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@+id/myReviewImage"
+        app:layout_constraintTop_toTopOf="@+id/myReviewShopAdd"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <TextView
+        android:id="@+id/textView11"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="📍 "
+        app:layout_constraintBottom_toBottomOf="@+id/myReviewCategory"
+        app:layout_constraintEnd_toStartOf="@+id/myReviewCategory"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@+id/myReviewImage"
+        app:layout_constraintTop_toTopOf="@+id/myReviewCategory"
+        app:layout_constraintVertical_bias="0.6" />
 
     <TextView
         android:id="@+id/myReviewCategory"
         android:layout_width="78dp"
         android:layout_height="14dp"
         android:text="shopCategory"
-        android:textSize="10sp"
+        android:textSize="12dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.067"
+        app:layout_constraintHorizontal_bias="0.179"
         app:layout_constraintStart_toEndOf="@+id/myReviewImage"
         app:layout_constraintTop_toBottomOf="@+id/myReviewShopAdd"
-        app:layout_constraintVertical_bias="0.101" />
+        app:layout_constraintVertical_bias="0.104" />
 
     <ImageView
         android:id="@+id/myReviewImage"
@@ -54,37 +82,37 @@
         android:layout_height="62dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.03"
+        app:layout_constraintHorizontal_bias="0.047"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.089"
+        app:layout_constraintVertical_bias="0.163"
         app:srcCompat="@drawable/no_image_pic" />
 
     <TextView
         android:id="@+id/myReviewSummary"
-        android:layout_width="279dp"
-        android:layout_height="55dp"
-        android:layout_marginTop="4dp"
+        android:layout_width="295dp"
+        android:layout_height="85dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="12dp"
+        android:background="@drawable/border_review_recyclerview_item"
+        android:paddingLeft="20dp"
+        android:paddingTop="14dp"
         android:text="TextView"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.523"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/myReviewCategory"
-        app:layout_constraintVertical_bias="0.166" />
+        app:layout_constraintTop_toBottomOf="@+id/myReviewRatingBar" />
 
     <ImageButton
         android:id="@+id/myReviewFixBtn"
-        android:layout_width="16dp"
-        android:layout_height="16dp"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="2dp"
+        android:layout_marginTop="8dp"
         android:backgroundTint="#00FFFFFF"
         android:foregroundTint="#FFFFFF"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.26"
-        app:layout_constraintStart_toEndOf="@+id/myReviewRatingBar"
-        app:layout_constraintTop_toBottomOf="@+id/myReviewShopAdd"
-        app:layout_constraintVertical_bias="0.054"
+        app:layout_constraintStart_toEndOf="@+id/myReviewShopName"
+        app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/pochareview_writebutton"
         app:tint="#AEA298" />
 
@@ -93,14 +121,13 @@
         style="?android:attr/ratingBarStyleSmall"
         android:layout_width="80dp"
         android:layout_height="16dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="8dp"
         android:isIndicator="true"
         android:numStars="5"
-        android:progressTint="#FFC107"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:progressTint="#F8D15D"
         app:layout_constraintStart_toEndOf="@+id/myReviewCategory"
-        app:layout_constraintTop_toBottomOf="@+id/myReviewShopAdd"
-        app:layout_constraintVertical_bias="0.054" />
+        app:layout_constraintTop_toBottomOf="@+id/myReviewShopAdd" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

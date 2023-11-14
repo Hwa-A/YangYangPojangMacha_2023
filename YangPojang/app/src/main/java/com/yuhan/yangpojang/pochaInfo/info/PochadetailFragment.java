@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -85,6 +86,8 @@ public class PochadetailFragment extends Fragment {
     private Integer useCountSingo;
 
     private TextView countSingoTv;
+    private RatingBar ratingBar;
+
 
 
     // ▼ 인터페이스 객체 초기화 코드
@@ -112,7 +115,7 @@ public class PochadetailFragment extends Fragment {
 
         countSingoTv = view.findViewById(R.id.tv_count_singo);
 
-
+        ratingBar= view.findViewById(R.id.rtb_pochadetail_rating);
         DatabaseReference shopReference; // Firebase Database reference
 
         viewModel = new ViewModelProvider(requireActivity()).get(PochaViewModel.class);
@@ -461,6 +464,8 @@ public class PochadetailFragment extends Fragment {
             countSingoTv.setTextColor(Color.parseColor("#EC1818"));
         }
 
+        float shopRating = shop.getRating(); // Replace with the actual field name
+        ratingBar.setRating(shopRating);
 
 
 
