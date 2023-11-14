@@ -110,11 +110,12 @@ public class ReviewFixPage  extends AppCompatActivity {
     // 액티비티 종료 시, 메모리 해제
     @Override
     protected void onDestroy() {
-        if(imageBitmaps != null){
-            for(int i=0; i < imageBitmaps.size(); i++){
-                Bitmap bitmap = imageBitmaps.get(i);
-                bitmap.recycle();
-                bitmap = null;
+        if(imageBitmaps.size() > 0){
+            for(Bitmap bitmap : imageBitmaps){
+                if(bitmap != null){
+                    bitmap.recycle();
+                    bitmap = null;
+                }
             }
         }
         super.onDestroy();
@@ -207,15 +208,10 @@ public class ReviewFixPage  extends AppCompatActivity {
             }
 
             // 리뷰 별점
-            if(String.valueOf(model.getMyRating()) == null){
-                Log.e("test1", "originRating");
-            }else {
-                originRating = model.getMyRating();
-                firstRating = originRating;     // 처음 받아온 별점 빼두기
-                starRtb.setRating(firstRating);
-                Log.e("test1", String.valueOf(originRating));
-            }
-
+            originRating = model.getMyRating();
+            firstRating = originRating;     // 처음 받아온 별점 빼두기
+            starRtb.setRating(firstRating);
+            Log.e("test1", String.valueOf(originRating));
 
             // 리뷰 내용
             summaryEdt.setText(model.getSummary());
@@ -238,7 +234,9 @@ public class ReviewFixPage  extends AppCompatActivity {
 
             if(firstPicUrlCnt == 0){
                 pullLoadingDialog.dismiss();    // 리뷰 초기 정보 불러오기 종료
+                Log.e("test1", "사진 없음");
             }
+            Log.e("test1", "사진 있음");
 
             // firebase storage 참조 객체 생성 및 초기화
             StorageReference storeRef = FirebaseStorage.getInstance().getReference();
@@ -251,6 +249,7 @@ public class ReviewFixPage  extends AppCompatActivity {
                         firstImageUris.add(uri1);
                         selectedImageUris.add(uri1);    // 리스트에 추가
                         selectedImageCount++;   // 이미지 선택 수 증가
+                        model.setPicUrl1(null);
 
                         if (firstPicUrlCnt == selectedImageCount) {
                             // storage에서 이미지의 다운로드 URL를 얻은 경우
@@ -267,6 +266,7 @@ public class ReviewFixPage  extends AppCompatActivity {
                                     firstImageUris.add(uri2);
                                     selectedImageUris.add(uri2);    // 리스트에 추가
                                     selectedImageCount++;   // 이미지 선택 수 증가
+                                    model.setPicUrl2(null);
 
                                     if (firstPicUrlCnt == selectedImageCount) {
                                         new LoadImageTask().execute(selectedImageUris.toArray(new Uri[0]));
@@ -279,6 +279,7 @@ public class ReviewFixPage  extends AppCompatActivity {
                                                 firstImageUris.add(uri3);
                                                 selectedImageUris.add(uri3);    // 리스트에 추가
                                                 selectedImageCount++;   // 이미지 선택 수 증가
+                                                model.setPicUrl3(null);
 
                                                 if (firstPicUrlCnt == selectedImageCount) {
                                                     new LoadImageTask().execute(selectedImageUris.toArray(new Uri[0]));
@@ -478,15 +479,6 @@ public class ReviewFixPage  extends AppCompatActivity {
 
     // ▼ 이미지 경로를 review 객체에 저장
     private void setReviewImageUrl(List<String> uploadImagePaths, DatabaseReference ref){
-        model.setPicUrl1(null);
-        Log.e("test1", "이미지1 사전 작업: "+model.getPicUrl1());
-
-        model.setPicUrl2(null);
-        Log.e("test1", "이미지2 사전 작업: "+model.getPicUrl2());
-
-        model.setPicUrl3(null);
-        Log.e("test1", "이미지3 사전 작업: "+model.getPicUrl3());
-
         for(int i=0; i < uploadImagePaths.size(); i++){
             String imagePath = uploadImagePaths.get(i);    // 해당 인덱스의 경로 가져오기
             char finalCharPath = imagePath.charAt(imagePath.length() - 1);     // 경로의 마지막 문자 가져오기
@@ -498,7 +490,7 @@ public class ReviewFixPage  extends AppCompatActivity {
                 model.setPicUrl2(imagePath);
                 Log.e("test1", "이미지2: "+model.getPicUrl2());
             }else {
-                model.setPicUrl3(uploadImagePaths.get(i));
+                model.setPicUrl3(imagePath);
                 Log.e("test1", "이미지3: "+model.getPicUrl3());
             }
         }
@@ -955,6 +947,16 @@ public class ReviewFixPage  extends AppCompatActivity {
                 Log.e("test1", "Bitmap 변환 성공");
                 displaySelectedImages();
 
+                if(model.getPicUrl1() == null){
+                    Log.e("test1", "초기 이미지1: 지금 null이야");
+                }
+                if(model.getPicUrl2() == null){
+                    Log.e("test1", "초기 이미지2: 지금 null이야");
+                }
+                if(model.getPicUrl3() == null){
+                    Log.e("test1", "초기 이미지3: 지금 null이야");
+                }
+
             } else {
                 // 변환에 실패한 경우
                 Log.e("test1", "Bitmap 변환 실패");
@@ -962,20 +964,5 @@ public class ReviewFixPage  extends AppCompatActivity {
             Log.e("test1", "작업 끝: 이전에 반환 결과 메시지를 봤어야 함");
         }
     }
-
-
-    private File saveBitmapToFile(Bitmap bitmap) {
-        File file = new File(getFilesDir(), "local_image.jpg");
-        try {
-            FileOutputStream fos = new FileOutputStream(file);
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
-            fos.flush();
-            fos.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return file;
-    }
-
 
 }
