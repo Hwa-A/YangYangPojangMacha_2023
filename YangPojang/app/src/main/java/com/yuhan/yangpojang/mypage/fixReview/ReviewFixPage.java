@@ -104,18 +104,16 @@ public class ReviewFixPage  extends AppCompatActivity {
     private float originRating;   // 수정전 별점
     private int firstPicUrlCnt;     // 처음 수정할 데이터 중 PicUrl(이미지url)의 개수
     private String pchKey_reviewKey;       // 포차 id / 리뷰 id
-    private float firstRating;        // 처음 별점 값
     private List<Uri> firstImageUris = new ArrayList<>();      // storage의 이미지를 로컬 이미지로 만들었을 때의 파일 경로를 담는 리스트
 
     // 액티비티 종료 시, 메모리 해제
     @Override
     protected void onDestroy() {
-        if(imageBitmaps.size() > 0){
-            for(Bitmap bitmap : imageBitmaps){
-                if(bitmap != null){
-                    bitmap.recycle();
-                    bitmap = null;
-                }
+        if(imageBitmaps != null){
+            for(int i=0; i < imageBitmaps.size(); i++){
+                Bitmap bitmap = imageBitmaps.get(i);
+                bitmap.recycle();
+                bitmap = null;
             }
         }
         super.onDestroy();
@@ -186,18 +184,25 @@ public class ReviewFixPage  extends AppCompatActivity {
         // ▼ 전달 받은 MyReivewModel 객체 처리
         Intent intent = getIntent();
         if(intent != null){
-            pullLoadingDialog.show();       // 정보 불러오기 다이얼로그 띄우기
+//            pullLoadingDialog.show();       // 정보 불러오기 다이얼로그 띄우기
 
+            // 받은 객체 처리
             model = (MyReviewModel) intent.getSerializableExtra("myReviewInfo");
+            // 포차 키
             pchKey = model.getPrimaryKey();
-            Log.d("리뷰Fixpage", "onCreate: " + model.getSummary());
+            Log.d("test1", "포차 키: " + pchKey);
 
-            pchKey_reviewKey = model.getShopID_reviewID();  // 포차id / 리뷰 id
+            // 포차와 리뷰 고유키(형식: 포차id / 리뷰id)
+            pchKey_reviewKey = model.getShopID_reviewID();
+            Log.d("test1", "포차_리뷰 키: " + pchKey_reviewKey);
 
-            Boolean verified = model.getVerified();     // 포차 인증 여부
+            // 포차 인증 여부
+            Boolean verified = model.getVerified();
+            Log.d("test1", "포차 인증 여부: " + verified);
 
             // 포차 이름 변경
             pchNameTv.setText(model.getShopName());
+
             // 포차 인증 여부
             if(verified){
                 // 인증된 포차인 경우, 인증 이미지가 보이도록 설정
@@ -208,35 +213,43 @@ public class ReviewFixPage  extends AppCompatActivity {
             }
 
             // 리뷰 별점
-            originRating = model.getMyRating();
-            firstRating = originRating;     // 처음 받아온 별점 빼두기
-            starRtb.setRating(firstRating);
-            Log.e("test1", String.valueOf(originRating));
+            if(String.valueOf(model.getMyRating()) == null){
+                Log.e("test1", "originRating");
+            }else {
+                originRating = model.getMyRating();     // 처음 받아온 별점 빼두기
+                starRtb.setRating(originRating);
+                Log.e("test1", "별점: " + String.valueOf(originRating));
+            }
 
             // 리뷰 내용
             summaryEdt.setText(model.getSummary());
+            Log.e("test1", "리뷰 내용: " + model.getSummary());
+
 
             // ▼ 리뷰 사진
             if(model.getPicUrl1() != null){
+                // 이미지가 있는 경우
                 firstPicUrlCnt++;
                 Log.e("test1", "model로부터 리뷰 사진 획득1");
-            }
-            if(model.getPicUrl2() != null){
-                firstPicUrlCnt++;
-                Log.e("test1", "model로부터 리뷰 사진 획득2");
 
-            }
-            if(model.getPicUrl3() != null){
-                firstPicUrlCnt++;
-                Log.e("test1", "model로부터 리뷰 사진 획득3");
+                if(model.getPicUrl2() != null){
+                    // 이미지가 있는 경우
+                    firstPicUrlCnt++;
+                    Log.e("test1", "model로부터 리뷰 사진 획득2");
 
+                    if(model.getPicUrl3() != null){
+                        // 이미지가 있는 경우
+                        firstPicUrlCnt++;
+                        Log.e("test1", "model로부터 리뷰 사진 획득3");
+
+                    }
+                }
             }
 
-            if(firstPicUrlCnt == 0){
-                pullLoadingDialog.dismiss();    // 리뷰 초기 정보 불러오기 종료
-                Log.e("test1", "사진 없음");
-            }
-            Log.e("test1", "사진 있음");
+
+//            if(firstPicUrlCnt == 0){
+//                pullLoadingDialog.dismiss();    // 리뷰 초기 정보 불러오기 종료
+//            }
 
             // firebase storage 참조 객체 생성 및 초기화
             StorageReference storeRef = FirebaseStorage.getInstance().getReference();
@@ -256,8 +269,9 @@ public class ReviewFixPage  extends AppCompatActivity {
                             // AsyncTask를 사용해 백그라운드 스레드에서 이미지를 비트맵으로 변환
                             // toArray() : 배열로 만듦
                             // new Uri[0]: 빈 배열을 만듦
-                             new LoadImageTask().execute(selectedImageUris.toArray(new Uri[0]));
+                            new LoadImageTask().execute(selectedImageUris.toArray(new Uri[0]));
                         }
+
 
                         if(model.getPicUrl2() != null){
                             storeRef.child(model.getPicUrl2()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
@@ -345,6 +359,8 @@ public class ReviewFixPage  extends AppCompatActivity {
         deleteSelectedImage(imageClearBtn1, 0);
         deleteSelectedImage(imageClearBtn2, 1);
         deleteSelectedImage(imageClearBtn3, 2);
+
+
     }
 
     // ▼ 클릭한 경우, 리뷰 등록
@@ -479,6 +495,7 @@ public class ReviewFixPage  extends AppCompatActivity {
 
     // ▼ 이미지 경로를 review 객체에 저장
     private void setReviewImageUrl(List<String> uploadImagePaths, DatabaseReference ref){
+
         for(int i=0; i < uploadImagePaths.size(); i++){
             String imagePath = uploadImagePaths.get(i);    // 해당 인덱스의 경로 가져오기
             char finalCharPath = imagePath.charAt(imagePath.length() - 1);     // 경로의 마지막 문자 가져오기
@@ -490,7 +507,7 @@ public class ReviewFixPage  extends AppCompatActivity {
                 model.setPicUrl2(imagePath);
                 Log.e("test1", "이미지2: "+model.getPicUrl2());
             }else {
-                model.setPicUrl3(imagePath);
+                model.setPicUrl3(uploadImagePaths.get(i));
                 Log.e("test1", "이미지3: "+model.getPicUrl3());
             }
         }
@@ -534,7 +551,7 @@ public class ReviewFixPage  extends AppCompatActivity {
                                     }
                                 }
                                 // 평균 구하기(현재 작성 중인 리뷰도 포함)
-                                ratingTotal = ratingTotal + model.getMyRating() - firstRating;  // 총합
+//                                ratingTotal = ratingTotal + model.getMyRating() - firstRating;  // 총합
                                 float avgRating = getAvgRating(ratingTotal, reviewCnt);   // 평균 구하기
                                 avgRatingRef.set(avgRating);
                                 Log.e("test1", "평균: "+avgRating);
@@ -545,26 +562,27 @@ public class ReviewFixPage  extends AppCompatActivity {
                             }
                             Float finalAvgRating = avgRatingRef.get();  // avgRatingRef에 저장된 값 가져오기
 
+
                             // firebase에 업로드할 경로와 데이터를 저장할 Map
                             Map<String, Object> uploadReviewMap = new HashMap<>();
 
                             // review 테이블에 저장
                             // reviews > 포차 id > 리뷰 id > 별점
-                            uploadReviewMap.put("/reviews/" + pchKey_reviewKey + "/rating", model.getMyRating());
+                            uploadReviewMap.put("reviews/" + pchKey_reviewKey + "/rating", model.getMyRating());
                             // reviews > 포차 id > 리뷰 id > 내용
-                            uploadReviewMap.put("/reviews/" + pchKey_reviewKey + "/summary", model.getSummary());
+                            uploadReviewMap.put("reviews/" + pchKey_reviewKey + "/summary", model.getSummary());
                             Log.e("test1", "리뷰 내용: "+model.getSummary());
 
                             // reviews > 포차 id > 리뷰 id > 이미지1
-                            uploadReviewMap.put("/reviews/" + pchKey_reviewKey + "/picUrl1", model.getPicUrl1());
+                            uploadReviewMap.put("reviews/" + pchKey_reviewKey + "/picUrl1", model.getPicUrl1());
                             Log.e("test1", "이미지1: "+model.getPicUrl1());
 
                             // reviews > 포차 id > 리뷰 id > 이미지2
-                            uploadReviewMap.put("/reviews/" + pchKey_reviewKey + "/picUrl2", model.getPicUrl2());
+                            uploadReviewMap.put("reviews/" + pchKey_reviewKey + "/picUrl2", model.getPicUrl2());
                             Log.e("test1", "이미지2: "+model.getPicUrl2());
 
                             // reviews > 포차 id > 리뷰 id > 이미지3
-                            uploadReviewMap.put("/reviews/" + pchKey_reviewKey + "/picUrl3", model.getPicUrl3());
+                            uploadReviewMap.put("reviews/" + pchKey_reviewKey + "/picUrl3", model.getPicUrl3());
                             Log.e("test1", "이미지3: "+model.getPicUrl3());
 
 
@@ -946,15 +964,14 @@ public class ReviewFixPage  extends AppCompatActivity {
                 // 주로 UI 업데이트 등을 수행
                 Log.e("test1", "Bitmap 변환 성공");
                 displaySelectedImages();
-
                 if(model.getPicUrl1() == null){
-                    Log.e("test1", "초기 이미지1: 지금 null이야");
+                    Log.e("test1", "초기 이미지1: null");
                 }
                 if(model.getPicUrl2() == null){
-                    Log.e("test1", "초기 이미지2: 지금 null이야");
+                    Log.e("test1", "초기 이미지2: null");
                 }
                 if(model.getPicUrl3() == null){
-                    Log.e("test1", "초기 이미지3: 지금 null이야");
+                    Log.e("test3", "초기 이미지3: null");
                 }
 
             } else {
