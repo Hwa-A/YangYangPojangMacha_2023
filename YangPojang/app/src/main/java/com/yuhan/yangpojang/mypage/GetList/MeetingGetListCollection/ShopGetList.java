@@ -14,7 +14,8 @@ import com.yuhan.yangpojang.mypage.Model.MeetingModelCollection.MyMeetingModel;
 
 import java.util.ArrayList;
 
-public class ShopGetList {
+public class
+ShopGetList {
     private static DatabaseReference databaseReference;
     static ArrayList<Shop> shops = new ArrayList<>();
     static ArrayList<String> shopIds = new ArrayList<>(); // 내가 속한 번개의 가게 id
