@@ -227,6 +227,7 @@ public class accountPage extends AppCompatActivity {
                 .setPositiveButton("네", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int i) {
+                        signOut();
                         deleteAccount();
                         Intent intent = new Intent(getApplicationContext(), SplashImage.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
