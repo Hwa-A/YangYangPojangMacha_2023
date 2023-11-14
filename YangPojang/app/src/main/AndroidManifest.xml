@@ -22,15 +22,18 @@
         <activity
             android:name=".pochaInfo.meeting.MeetingwriteActivity"
             android:exported="false"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustNothing"/>
         <activity
             android:name=".pochaInfo.review.ReviewwriteActivity"
             android:exported="false"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustNothing"/>
 
         <activity
             android:name=".SplashImage"
-            android:exported="true">
+            android:exported="true"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -39,22 +42,31 @@
 
         <activity
             android:name=".pochaInfo.info.PochainfoActivity"
+            android:screenOrientation="portrait"
             android:exported="true">
         </activity>
-        <activity android:name=".pochaInfo.info.PochainfoUpdate"/>
+        <activity android:name=".pochaInfo.info.PochainfoUpdate"
+            android:screenOrientation="portrait"/>
 
         <activity android:name=".MainActivity"
-            android:windowSoftInputMode="adjustPan"/>
+            android:windowSoftInputMode="adjustPan"
+            android:screenOrientation="portrait"/>
 
-        <activity android:name=".home.SearchActivity"/>
+        <activity android:name=".home.SearchActivity"
+            android:screenOrientation="portrait"/>
 
-        <activity android:name=".login.LogindetailAct"/>
+        <activity android:name=".login.LogindetailAct"
+            android:screenOrientation="portrait"/>
 
-        <activity android:name=".PermissionActivity"/>
-        <activity android:name=".login.LoginActivity"/>
-        <activity android:name=".mypage.account.accountPage"/>
+        <activity android:name=".PermissionActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".login.LoginActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".mypage.account.accountPage"
+            android:screenOrientation="portrait"/>
         <activity android:name=".mypage.fixReview.ReviewFixPage"
-            android:windowSoftInputMode="adjustNothing"/>
+            android:windowSoftInputMode="adjustNothing"
+            android:screenOrientation="portrait"/>
 
         <meta-data
             android:name="com.naver.maps.map.CLIENT_ID"

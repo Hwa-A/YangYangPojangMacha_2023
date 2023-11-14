@@ -17,8 +17,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.yuhan.yangpojang.R;
 import com.yuhan.yangpojang.mypage.GetList.MeetingGetListCollection.GetAllMyMeetingItems;
 import com.yuhan.yangpojang.mypage.Model.MeetingModelCollection.AllMeetingItemModel;
@@ -157,9 +160,29 @@ public class MyMeetingAdapter extends RecyclerView.Adapter<MyMeetingAdapter.View
                                         }
                                     });
 
+                                    // 참석자가 0명일 경우 해당 번개 삭제
                                     if(allMeetingItemModel.getCountAttenders() == 1){
                                         DatabaseReference meetingDatabaseRef = FirebaseDatabase.getInstance().getReference("meeting/" + allMeetingItemModel.getShop().getPrimaryKey());
                                         meetingDatabaseRef.child(allMeetingItemModel.getMeetingId()).removeValue();
+
+                                        // 삭제 시 해당 가게의 번개 갯수가 0이면 가게의 hasMeeting값을 true -> false로 설정
+                                        final long[] cnt = new long[1];
+                                        meetingDatabaseRef.addValueEventListener(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                cnt[0] = snapshot.getChildrenCount();
+                                                if(cnt[0] == 0){
+                                                    DatabaseReference shopDatabaseRef = FirebaseDatabase.getInstance().getReference("shops/" + allMeetingItemModel.getShop().getPrimaryKey());
+                                                    shopDatabaseRef.child("hasMeeting").setValue(false);
+                                                }
+                                            }
+
+                                            @Override
+                                            public void onCancelled(@NonNull DatabaseError error) {
+
+                                            }
+                                        });
+
                                     }
 
                                 } else {
