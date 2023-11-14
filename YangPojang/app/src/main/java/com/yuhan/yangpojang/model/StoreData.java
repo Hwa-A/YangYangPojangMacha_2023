@@ -31,9 +31,6 @@ public class StoreData {
     // 검색한 주소 위치 받아오기
     public static void addLocation(double latitude, double longitude, float searchRadiusInMeters){
         centerLocation = new GeoLocation(latitude, longitude);
-        if(searchRadiusInMeters > 5000){
-            searchRadiusInMeters = 5000;
-        }
         StoreData.searchRadiusInMeters = searchRadiusInMeters * 0.8;
 
         GeoHash geoHash = GeoHash.withCharacterPrecision(latitude, longitude, 12);
