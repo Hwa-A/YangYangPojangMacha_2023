@@ -130,11 +130,6 @@ public class MyMeetingAdapter extends RecyclerView.Adapter<MyMeetingAdapter.View
         holder.cancelJoin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //int position = holder.getBindingAdapterPosition();
-                //allMeetingItemModels.remove(position);
-                //notifyItemRemoved(position);
-                //notifyItemRangeChanged(position, allMeetingItemModels.size());
-                //Log.d("ㅈㅂ", "어댑터에 변화(postion)  " + allMeetingItemModels.size());
                 int position = holder.getBindingAdapterPosition();
                 if (position != RecyclerView.NO_POSITION) {
                     popup(allMeetingItemModel.getTitle(), new AnswerCallback() {
@@ -161,6 +156,11 @@ public class MyMeetingAdapter extends RecyclerView.Adapter<MyMeetingAdapter.View
                                             allMeetingItemModels = allMeetingItemMode;
                                         }
                                     });
+
+                                    if(allMeetingItemModel.getCountAttenders() == 1){
+                                        DatabaseReference meetingDatabaseRef = FirebaseDatabase.getInstance().getReference("meeting/" + allMeetingItemModel.getShop().getPrimaryKey());
+                                        meetingDatabaseRef.child(allMeetingItemModel.getMeetingId()).removeValue();
+                                    }
 
                                 } else {
                                     Log.e("MyMeetingAdapter", "User UID is null");
