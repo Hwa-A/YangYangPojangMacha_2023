@@ -11,10 +11,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.AlertDialog;
 import android.os.Bundle;
-<<<<<<< HEAD
-=======
-import android.util.Log;
->>>>>>> b0c15c6
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
@@ -117,13 +113,13 @@ public class MainActivity extends AppCompatActivity {
 
             // 뒤로가기 버튼을 두 번 클릭한 경우(2초 내)
             if (0 <= gapTime && 2000 >= gapTime) {
-                finish();
+                super.onBackPressed();
             } else {
                 backBtnTime = curTime;
                 Toast.makeText(this, "한 번 더 누르면 종료됩니다.", Toast.LENGTH_SHORT).show();
             }
         } else {
-            super.onBackPressed();
+            bottomNavigationView.setSelectedItemId(R.id.navigation_map);  // HomeFragment로 이동
         }
     }
 

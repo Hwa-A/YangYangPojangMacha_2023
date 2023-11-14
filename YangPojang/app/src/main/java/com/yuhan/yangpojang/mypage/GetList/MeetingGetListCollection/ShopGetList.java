@@ -29,15 +29,14 @@ ShopGetList {
     }
 
     public static void meetingDataLoad(final shopDataLoadedCallback callback) {
-        shops.clear();
 
         final int[] remainingTasks = {shopIds.size()};
 
-
         databaseReference = FirebaseDatabase.getInstance().getReference("shops/");
-        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+        databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                shops.clear();
                 for (int i = 0; i < shopIds.size(); i++) {
                     String link = shopIds.get(i);
 
@@ -49,7 +48,6 @@ ShopGetList {
                     if (remainingTasks[0] == 0) {  // 모든 작업이 완료되었을 때
                         callback.onShopLoaded(shops);  // 콜백 호출
                     }
-
 
                 }
             }

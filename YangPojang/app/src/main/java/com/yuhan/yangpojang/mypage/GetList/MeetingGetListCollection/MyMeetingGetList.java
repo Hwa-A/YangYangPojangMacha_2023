@@ -32,13 +32,13 @@ public class MyMeetingGetList {
     }
 
     public static void myMeetingDataLoad(final myMeetingDataLoadedCallback callback){
-        myMeetings.clear();
 
         databaseReference = FirebaseDatabase.getInstance().getReference("myMeeting/" + getUserUID());
 
-        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+        databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                myMeetings.clear();
                 for(DataSnapshot snap : snapshot.getChildren()){
                     MyMeetingModel myMeetingModel = new MyMeetingModel();
                     myMeetingModel.setMeetingId(snap.getKey());
