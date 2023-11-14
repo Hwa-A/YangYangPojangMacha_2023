@@ -41,7 +41,6 @@ public class SecondReviewList {
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                reviewDatas.clear(); // 리스트 초기화
                 selectReview.clear(); // 리스트 초기화
                 selectShop.clear();
                 for (DataSnapshot snap : snapshot.getChildren()) {
@@ -57,6 +56,7 @@ public class SecondReviewList {
                 reviewRef.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        reviewDatas.clear(); // 리스트 초기화
                         for (i = 0; i < selectShop.size(); i++) {
                             String reviewString = selectReview.get(i).toString();
                             MyReviewModel model = new MyReviewModel();
