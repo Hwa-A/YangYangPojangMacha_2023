@@ -53,6 +53,10 @@ public class LogindetailAct extends AppCompatActivity {
     DatePickerDialog datePickerDialog;
     RadioGroup radioGroup;
     TextView sexchecked;
+
+    //서빈추가 필요
+    TextView textView;
+
     ImageView profileImage;
     private Uri User_profileuri;
     private String User_img;
@@ -80,7 +84,7 @@ public class LogindetailAct extends AppCompatActivity {
         sexchecked = findViewById(R.id.sex);
         profileImage = findViewById(R.id.profileImagesetting);
         User_img = "/profile/"+user_info_uid;
-
+        textView= findViewById(R.id.textView);
 
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -203,6 +207,10 @@ public class LogindetailAct extends AppCompatActivity {
                     if(result.getResultCode() == RESULT_OK && result.getData() != null) {
                         User_profileuri = result.getData().getData();
                         profileImage.setImageURI(User_profileuri);
+                        // 서빈 추가
+                        profileImage.setBackground(null);
+                        textView.setVisibility(View.GONE);
+
                     }
                 }
             });

@@ -1,35 +1,48 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="250dp"
-    android:layout_height="300dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:background="@drawable/rounded_white_background_meeting_popup"
     android:padding="16dp">
 
     <TextView
         android:id="@+id/title"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="참가자 목록"
-        android:textSize="18sp"
+        android:textAlignment="center"
+        android:textSize="19dp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.095"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.022" />
+        app:layout_constraintVertical_bias="0.214" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="🙋🙋"
+        android:textSize="15dp"
+        app:layout_constraintBottom_toTopOf="@+id/title"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/popupClose"
+        app:layout_constraintVertical_bias="1.0" />
 
     <ScrollView
         android:id="@+id/scrollView"
-        android:layout_width="134dp"
+        android:layout_width="match_parent"
         android:layout_height="163dp"
         android:layout_below="@+id/title"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/title"
-        app:layout_constraintVertical_bias="0.3">
+        app:layout_constraintVertical_bias="0.107">
 
         <TextView
             android:id="@+id/attender"
@@ -37,7 +50,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="참가자"
-            android:textSize="16sp" />
+            android:textSize="15dp" />
     </ScrollView>
 
     <Button
@@ -45,10 +58,10 @@
         android:layout_width="54dp"
         android:layout_height="28dp"
         android:layout_below="@+id/scrollView"
-        android:text="참석"
-        android:visibility="gone"
         android:padding="0dp"
+        android:text="참석"
         android:textSize="10dp"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.505"
@@ -62,9 +75,9 @@
         android:layout_width="54dp"
         android:layout_height="28dp"
         android:layout_below="@+id/scrollView"
+        android:padding="0dp"
         android:text="참석 취소"
         android:textSize="10dp"
-        android:padding="0dp"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -75,16 +88,18 @@
 
     <ImageButton
         android:id="@+id/popupClose"
-        android:layout_width="46dp"
-        android:layout_height="40dp"
+        android:layout_width="28dp"
+        android:layout_height="32dp"
         android:layout_alignParentEnd="true"
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="88dp"
         android:background="@android:color/transparent"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/title"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.55"
-        app:layout_constraintStart_toEndOf="@+id/title"
+        app:layout_constraintHorizontal_bias="0.958"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.026"
+        app:layout_constraintVertical_bias="0.187"
         app:srcCompat="@drawable/reviewwrite_picture_clear"
         app:tint="#000000" />
 </androidx.constraintlayout.widget.ConstraintLayout>
