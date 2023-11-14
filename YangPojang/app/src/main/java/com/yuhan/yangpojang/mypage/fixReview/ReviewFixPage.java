@@ -105,6 +105,7 @@ public class ReviewFixPage  extends AppCompatActivity {
     private float originRating;   // 수정전 별점
     private int firstPicUrlCnt;     // 처음 수정할 데이터 중 PicUrl(이미지url)의 개수
     private String pchKey_reviewKey;       // 포차 id / 리뷰 id
+    private float firstRating;      // 초기 별점
     private List<Uri> firstImageUris = new ArrayList<>();      // storage의 이미지를 로컬 이미지로 만들었을 때의 파일 경로를 담는 리스트
     private List<String> selectedImageStringUris = new ArrayList<>();      // storage의 이미지를 로컬 이미지로 만들었을 때의 파일 경로를 담는 리스트
 
@@ -220,7 +221,8 @@ public class ReviewFixPage  extends AppCompatActivity {
             if(String.valueOf(model.getMyRating()) == null){
                 Log.e("test1", "originRating");
             }else {
-                originRating = model.getMyRating();     // 처음 받아온 별점 빼두기
+                firstRating = model.getMyRating();     // 처음 받아온 별점 빼두기
+                originRating = firstRating;
                 starRtb.setRating(originRating);
                 Log.e("test1", "별점: " + String.valueOf(originRating));
             }
@@ -558,7 +560,7 @@ public class ReviewFixPage  extends AppCompatActivity {
                                     }
                                 }
                                 // 평균 구하기(현재 작성 중인 리뷰도 포함)
-//                                ratingTotal = ratingTotal + model.getMyRating() - firstRating;  // 총합
+                                ratingTotal = ratingTotal + model.getMyRating() - firstRating;  // 총합
                                 float avgRating = getAvgRating(ratingTotal, reviewCnt);   // 평균 구하기
                                 avgRatingRef.set(avgRating);
                                 Log.e("test1", "평균: "+avgRating);
@@ -598,7 +600,7 @@ public class ReviewFixPage  extends AppCompatActivity {
                             // shops 테이블의 해당 포차의 별점 수정
                             // shops > 포차 id > rating
                             uploadReviewMap.put("shops/" + pchKey + "/rating", finalAvgRating);
-                            Log.e("test1", "별점: "+finalAvgRating);
+                            Log.e("test1", "포차 평균 별점: "+finalAvgRating);
 
                             // firebase에 업로드
                             ref.updateChildren(uploadReviewMap);
