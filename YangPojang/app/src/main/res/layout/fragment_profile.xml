@@ -31,40 +31,33 @@
 
             <LinearLayout
                 android:id="@+id/makeAccountBtn"
-                android:layout_width="59dp"
-                android:layout_height="54dp"
-                android:layout_marginTop="12dp"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginTop="2dp"
                 android:orientation="vertical"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.97"
+                app:layout_constraintHorizontal_bias="0.976"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
                 <ImageButton
                     android:id="@+id/accountBtn"
                     android:layout_width="match_parent"
-                    android:layout_height="30dp"
+                    android:layout_height="wrap_content"
                     android:background="#00FFFFFF"
                     android:backgroundTint="#FFFFFF"
-                    android:src="@drawable/profile__user_logout" />
+                    android:src="@drawable/profile_logout_btn" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_toEndOf="@+id/accountBtn"
-                    android:text="계정 설정"
-                    android:textColor="#3A3838"
-                    tools:layout_editor_absoluteX="340dp"
-                    tools:layout_editor_absoluteY="53dp" />
 
             </LinearLayout>
 
             <TextView
                 android:id="@+id/userNickname"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="27dp"
                 android:layout_marginTop="20dp"
+                android:textStyle="bold"
+                android:textSize="20dp"
                 android:text="test user"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -74,11 +67,9 @@
 
             <ImageButton
                 android:id="@+id/changeImg"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="104dp"
-                android:background="@drawable/set_button_round"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_marginTop="112dp"
                 android:src="@drawable/settings"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
@@ -90,8 +81,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
-                android:text="내가 좋아요한 가게"
-                android:textSize="20dp"
+                android:text=" 💞 내가 좋아요한 가게"
+                android:textSize="16dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.063"
@@ -102,7 +93,7 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/myLikeRecycle"
                 android:layout_width="382dp"
-                android:layout_height="230dp"
+                android:layout_height="265dp"
                 android:orientation="horizontal"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -115,8 +106,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="28dp"
-                android:text="내가 제보한 가게"
-                android:textSize="20dp"
+                android:text="📣  내가 제보한 가게"
+                android:textSize="16dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.051"
@@ -127,7 +118,7 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/myReportRecycle"
                 android:layout_width="382dp"
-                android:layout_height="230dp"
+                android:layout_height="265dp"
                 android:layout_marginTop="4dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -141,8 +132,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="28dp"
-                android:text="내가 작성한 리뷰"
-                android:textSize="20dp"
+                android:text="✒️  내가 작성한 리뷰"
+                android:textSize="16dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.048"
@@ -153,7 +144,7 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/myReviewRecycle"
                 android:layout_width="386dp"
-                android:layout_height="140dp"
+                android:layout_height="210dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.64"
@@ -166,8 +157,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="28dp"
-                android:text="내 번개"
-                android:textSize="20dp"
+                android:text="⚡  내 번개"
+                android:textSize="16dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.048"
@@ -178,7 +169,7 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/myMeetingRecycle"
                 android:layout_width="386dp"
-                android:layout_height="200dp"
+                android:layout_height="320dp"
                 android:layout_marginBottom="20dp"
                 android:layout_marginTop="18dp"
                 android:nestedScrollingEnabled="false"

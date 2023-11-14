@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- 테두리 설정 -->
+    <stroke
+        android:width="3dp"
+        android:color="#DF793E" /> <!-- 테두리 색은 ?attr/border_tint_color 로 지정 -->
+
+    <!-- 나머지 배경 -->
+    <solid android:color="@color/white" /> <!-- 배경 색은 ?attr/button_background_color 로 지정 -->
+    <!-- 모서리 둥글기 설정 -->
+    <corners android:radius="160dp" />
+</shape>

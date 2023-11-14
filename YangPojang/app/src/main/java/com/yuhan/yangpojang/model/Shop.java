@@ -18,19 +18,16 @@ public class Shop implements Serializable {
     private boolean openSat;
     private boolean openSun;
     private String storeImageUri; //[content://media/external/images/media/~] 형태의 주소
-    private String menuImageUri;   //[content://media/external/images/media/~] 형태의 주소 ( 외부에서 가져온 이미지라는 뜻)
     private String addressName;
     private String category;
     private String hash;
     private String fbStoreImgurl; // 파이어베이스에 들어간 이미지 url [https://firebasestorage.googleapis.com///] 형태
-    private String fbMenuImgurl;  // 파이어베이스에 들어간 이미지 url https://firebasestorage.googleapis.com///][ 형태
 
     private boolean verified; //인증 여부
     private boolean hasMeeting; //번개 여부
     private float rating; //가게 별점
     private String geohash;
     private String exteriorImagePath;
-    private String menuImagePath;
     private String primaryKey;
     private String uid;
     private int countVerified;
@@ -47,7 +44,7 @@ public class Shop implements Serializable {
                 boolean openWed, boolean openThu, boolean openFri, boolean openSat,
                 boolean openSun, String category ,boolean isVerified, boolean hasMeeting, float rating, String geohash ,
                 int countVerified, int countSingo,
-                String exteriorImagePath,String menuImagePath) {
+                String exteriorImagePath) {
 
         this.uid= uid;
         this.shopName=shopName;
@@ -67,13 +64,11 @@ public class Shop implements Serializable {
         this.openSun = openSun;
         this.category = category;
         this.storeImageUri = storeImageUri;
-        this.menuImageUri = menuImageUri;
         this.verified = verified;
         this.hasMeeting =hasMeeting;
         this.rating= rating;
         this.geohash = geohash;
         this.exteriorImagePath=exteriorImagePath;
-        this.menuImagePath=menuImagePath;
         this.countVerified=countVerified;
     }
 
@@ -144,9 +139,7 @@ public class Shop implements Serializable {
         return storeImageUri;
     }
 
-    public String getMenuImageUri() {
-        return menuImageUri;
-    }
+
 
     public String getAddressName() {
         return addressName;
@@ -164,9 +157,6 @@ public class Shop implements Serializable {
         return fbStoreImgurl;
     }
 
-    public String getFbMenuImgurl() {
-        return fbMenuImgurl;
-    }
 
     public boolean getVerified() {
         return verified;
@@ -184,7 +174,6 @@ public class Shop implements Serializable {
         return geohash;
     }
     public String getExteriorImagePath() { return exteriorImagePath;   }
-    public String getMenuImagePath() { return menuImagePath;   }
 
 
     public String getPrimaryKey() { return primaryKey; }
@@ -249,9 +238,6 @@ public class Shop implements Serializable {
         this.storeImageUri = storeImageUri;
     }
 
-    public void setMenuImageUri(String menuImageUri) {
-        this.menuImageUri = menuImageUri;
-    }
 
     public void setAddressName(String addressName) {
         this.addressName = addressName;
@@ -269,9 +255,6 @@ public class Shop implements Serializable {
         this.fbStoreImgurl = fbStoreImgurl;
     }
 
-    public void setFbMenuImgurl(String fbMenuImgurl) {
-        this.fbMenuImgurl = fbMenuImgurl;
-    }
 
     public void setVerified(boolean verified) {
         this.verified = verified;
@@ -289,7 +272,6 @@ public class Shop implements Serializable {
         this.geohash = geohash;
     }
     public void setExteriorImagePath(String exteriorImagePath) { this.exteriorImagePath = exteriorImagePath;}
-    public void setMenuImagePath(String menuImagePath) { this.menuImagePath = menuImagePath;}
 
     public void setPrimaryKey(String primaryKey) { this.primaryKey = primaryKey; }
 
@@ -324,12 +306,10 @@ public class Shop implements Serializable {
                 ", openSat=" + openSat +
                 ", openSun=" + openSun +
                 ", storeImageUri='" + storeImageUri + '\'' +
-                ", menuImageUri='" + menuImageUri + '\'' +
                 ", addressName='" + addressName + '\'' +
                 ", category='" + category + '\'' +
                 ", hash='" + hash + '\'' +
                 ", fbStoreImgurl='" + fbStoreImgurl + '\'' +
-                ", fbMenuImgurl='" + fbMenuImgurl + '\'' +
                 ", verified=" + verified +
                 ", hasMeeting=" + hasMeeting +
                 ", rating=" + rating +
