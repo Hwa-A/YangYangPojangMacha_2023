@@ -22,7 +22,7 @@ import com.yuhan.yangpojang.login.User;
 
 public class SplashImage extends AppCompatActivity {
 
-    private static final int SPLASH_TIMEOUT = 2000; // 스플래시 화면을 보여줄 시간 (밀리초)
+    private static final int SPLASH_TIMEOUT = 4000; // 스플래시 화면을 보여줄 시간 (밀리초)
     private DatabaseReference mDatabase;
     private String user_info_uid = null;
     private FirebaseAuth mAuth;
