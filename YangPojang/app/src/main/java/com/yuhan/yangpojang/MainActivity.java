@@ -86,6 +86,11 @@ public class MainActivity extends AppCompatActivity {
                         transaction.show(reportShopFragment);
                         currentFragment = reportShopFragment;
                     } else if (itemId == R.id.navigation_profile_show) {
+                        // 이전에 추가된 ProfileShowFragment 인스턴스를 제거
+                        Fragment prevFragment = getSupportFragmentManager().findFragmentByTag("profileShowFragmentTag");
+                        if (prevFragment != null) {
+                            transaction.remove(prevFragment);
+                        }
                         profileShowFragment = new ProfileShowFragment(); // 프로필 쇼 프래그먼트를 매번 새로 생성
                         transaction.add(R.id.fragment_container, profileShowFragment).hide(currentFragment);  // 프로필 쇼 프래그먼트를 추가하고 현재 프래그먼트를 숨김
                         currentFragment = profileShowFragment;
@@ -113,13 +118,13 @@ public class MainActivity extends AppCompatActivity {
 
             // 뒤로가기 버튼을 두 번 클릭한 경우(2초 내)
             if (0 <= gapTime && 2000 >= gapTime) {
-                super.onBackPressed();
+                finish();
             } else {
                 backBtnTime = curTime;
                 Toast.makeText(this, "한 번 더 누르면 종료됩니다.", Toast.LENGTH_SHORT).show();
             }
         } else {
-            bottomNavigationView.setSelectedItemId(R.id.navigation_map);  // HomeFragment로 이동
+            super.onBackPressed();
         }
     }
 

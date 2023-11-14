@@ -57,6 +57,7 @@ public class SecondReviewList {
                 reviewRef.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        reviewDatas.clear();
                         for (i = 0; i < selectShop.size(); i++) {
                             String reviewString = selectReview.get(i).toString();
                             MyReviewModel model = new MyReviewModel();

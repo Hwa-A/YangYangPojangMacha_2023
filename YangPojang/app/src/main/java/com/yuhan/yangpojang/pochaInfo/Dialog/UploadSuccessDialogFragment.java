@@ -36,20 +36,9 @@ public class UploadSuccessDialogFragment extends DialogFragment {
                         // "확인" 버튼을 클릭한 경우
                         dialog.dismiss();   // 다이얼로그 종료
                         if (getActivity() != null){
-                            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                            fragmentTransaction.replace(R.id.fragment_container, new ProfileShowFragment());
-                            fragmentTransaction.commit();
 
-//                            BottomNavigationView bottomNavigationView = getActivity().findViewById(R.id.bottomNavigationView);
-//                            bottomNavigationView.setSelectedItemId(R.id.navigation_profile_show);
+                            getActivity().finish();
 
-//                             getActivity().finish();     // 해당 액티비티 삭제
-//                            BottomNavigationView bottomNavigationView = getActivity().findViewById(R.id.bottomNavigationView);
-//                            if(bottomNavigationView!=null)
-//                            {
-//                                bottomNavigationView.setSelectedItemId(R.id.navigation_map);
-//                            }
                         }
                     }
                 });
