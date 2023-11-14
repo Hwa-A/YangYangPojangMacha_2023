@@ -41,7 +41,6 @@ public class MyReviewList {
                         for (int i = 0; i < reviewDatas.size(); i++) {
                             String shopLink = selectShop.get(i).toString();
 
-
                             MyReviewModel model = new MyReviewModel();
                             Log.d("프로필reviewGetList", "ZeroReviewList: 가게 정보 가져오기 ");
                             String category = snapshot.child(shopLink).child("category").getValue(String.class);
