@@ -10,6 +10,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.yuhan.yangpojang.R;
+
 // firebase 업로드 성공한 경우, 출력할 Dialog
 public class UploadSuccessDialogFragment extends DialogFragment {
     private String confirmPlace;        // 어느 activity인지 확인  ex.MeetingwriteActivity에서 불렸는지
@@ -27,7 +30,12 @@ public class UploadSuccessDialogFragment extends DialogFragment {
                         // "확인" 버튼을 클릭한 경우
                         dialog.dismiss();   // 다이얼로그 종료
                         if (getActivity() != null){
-                            getActivity().finish();     // 해당 액티비티 삭제
+                             getActivity().finish();     // 해당 액티비티 삭제
+//                            BottomNavigationView bottomNavigationView = getActivity().findViewById(R.id.bottomNavigationView);
+//                            if(bottomNavigationView!=null)
+//                            {
+//                                bottomNavigationView.setSelectedItemId(R.id.navigation_map);
+//                            }
                         }
                     }
                 });

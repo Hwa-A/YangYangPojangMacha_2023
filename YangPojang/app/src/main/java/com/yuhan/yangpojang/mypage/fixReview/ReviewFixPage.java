@@ -251,6 +251,7 @@ public class ReviewFixPage  extends AppCompatActivity {
                         firstImageUris.add(uri1);
                         selectedImageUris.add(uri1);    // 리스트에 추가
                         selectedImageCount++;   // 이미지 선택 수 증가
+                        model.setPicUrl1(null);
 
                         if (firstPicUrlCnt == selectedImageCount) {
                             // storage에서 이미지의 다운로드 URL를 얻은 경우
@@ -260,6 +261,7 @@ public class ReviewFixPage  extends AppCompatActivity {
                              new LoadImageTask().execute(selectedImageUris.toArray(new Uri[0]));
                         }
 
+
                         if(model.getPicUrl2() != null){
                             storeRef.child(model.getPicUrl2()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                                 @Override
@@ -267,6 +269,7 @@ public class ReviewFixPage  extends AppCompatActivity {
                                     firstImageUris.add(uri2);
                                     selectedImageUris.add(uri2);    // 리스트에 추가
                                     selectedImageCount++;   // 이미지 선택 수 증가
+                                    model.setPicUrl2(null);
 
                                     if (firstPicUrlCnt == selectedImageCount) {
                                         new LoadImageTask().execute(selectedImageUris.toArray(new Uri[0]));
@@ -279,6 +282,7 @@ public class ReviewFixPage  extends AppCompatActivity {
                                                 firstImageUris.add(uri3);
                                                 selectedImageUris.add(uri3);    // 리스트에 추가
                                                 selectedImageCount++;   // 이미지 선택 수 증가
+                                                model.setPicUrl3(null);
 
                                                 if (firstPicUrlCnt == selectedImageCount) {
                                                     new LoadImageTask().execute(selectedImageUris.toArray(new Uri[0]));
@@ -344,6 +348,8 @@ public class ReviewFixPage  extends AppCompatActivity {
         deleteSelectedImage(imageClearBtn1, 0);
         deleteSelectedImage(imageClearBtn2, 1);
         deleteSelectedImage(imageClearBtn3, 2);
+
+
     }
 
     // ▼ 클릭한 경우, 리뷰 등록
@@ -478,14 +484,6 @@ public class ReviewFixPage  extends AppCompatActivity {
 
     // ▼ 이미지 경로를 review 객체에 저장
     private void setReviewImageUrl(List<String> uploadImagePaths, DatabaseReference ref){
-        model.setPicUrl1(null);
-        Log.e("test1", "이미지1 사전 작업: "+model.getPicUrl1());
-
-        model.setPicUrl2(null);
-        Log.e("test1", "이미지2 사전 작업: "+model.getPicUrl2());
-
-        model.setPicUrl3(null);
-        Log.e("test1", "이미지3 사전 작업: "+model.getPicUrl3());
 
         for(int i=0; i < uploadImagePaths.size(); i++){
             String imagePath = uploadImagePaths.get(i);    // 해당 인덱스의 경로 가져오기
@@ -553,26 +551,27 @@ public class ReviewFixPage  extends AppCompatActivity {
                             }
                             Float finalAvgRating = avgRatingRef.get();  // avgRatingRef에 저장된 값 가져오기
 
+
                             // firebase에 업로드할 경로와 데이터를 저장할 Map
                             Map<String, Object> uploadReviewMap = new HashMap<>();
 
                             // review 테이블에 저장
                             // reviews > 포차 id > 리뷰 id > 별점
-                            uploadReviewMap.put("/reviews/" + pchKey_reviewKey + "/rating", model.getMyRating());
+                            uploadReviewMap.put("reviews/" + pchKey_reviewKey + "/rating", model.getMyRating());
                             // reviews > 포차 id > 리뷰 id > 내용
-                            uploadReviewMap.put("/reviews/" + pchKey_reviewKey + "/summary", model.getSummary());
+                            uploadReviewMap.put("reviews/" + pchKey_reviewKey + "/summary", model.getSummary());
                             Log.e("test1", "리뷰 내용: "+model.getSummary());
 
                             // reviews > 포차 id > 리뷰 id > 이미지1
-                            uploadReviewMap.put("/reviews/" + pchKey_reviewKey + "/picUrl1", model.getPicUrl1());
+                            uploadReviewMap.put("reviews/" + pchKey_reviewKey + "/picUrl1", model.getPicUrl1());
                             Log.e("test1", "이미지1: "+model.getPicUrl1());
 
                             // reviews > 포차 id > 리뷰 id > 이미지2
-                            uploadReviewMap.put("/reviews/" + pchKey_reviewKey + "/picUrl2", model.getPicUrl2());
+                            uploadReviewMap.put("reviews/" + pchKey_reviewKey + "/picUrl2", model.getPicUrl2());
                             Log.e("test1", "이미지2: "+model.getPicUrl2());
 
                             // reviews > 포차 id > 리뷰 id > 이미지3
-                            uploadReviewMap.put("/reviews/" + pchKey_reviewKey + "/picUrl3", model.getPicUrl3());
+                            uploadReviewMap.put("reviews/" + pchKey_reviewKey + "/picUrl3", model.getPicUrl3());
                             Log.e("test1", "이미지3: "+model.getPicUrl3());
 
 
@@ -954,6 +953,15 @@ public class ReviewFixPage  extends AppCompatActivity {
                 // 주로 UI 업데이트 등을 수행
                 Log.e("test1", "Bitmap 변환 성공");
                 displaySelectedImages();
+                if(model.getPicUrl1() == null){
+                    Log.e("test1", "초기 이미지1: null");
+                }
+                if(model.getPicUrl2() == null){
+                    Log.e("test1", "초기 이미지2: null");
+                }
+                if(model.getPicUrl3() == null){
+                    Log.e("test3", "초기 이미지3: null");
+                }
 
             } else {
                 // 변환에 실패한 경우
@@ -962,20 +970,5 @@ public class ReviewFixPage  extends AppCompatActivity {
             Log.e("test1", "작업 끝: 이전에 반환 결과 메시지를 봤어야 함");
         }
     }
-
-
-    private File saveBitmapToFile(Bitmap bitmap) {
-        File file = new File(getFilesDir(), "local_image.jpg");
-        try {
-            FileOutputStream fos = new FileOutputStream(file);
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
-            fos.flush();
-            fos.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return file;
-    }
-
 
 }

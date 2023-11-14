@@ -18,7 +18,7 @@ public class MyReviewList {
 
 
     private String UID;
-    int i = 0;
+//    int i = 0;
 
     public void getReviewItemInfo(String UID, final MyReviewList.dataLoadedCallback callback) {
 
@@ -33,11 +33,12 @@ public class MyReviewList {
 
                 DatabaseReference shopRef = FirebaseDatabase.getInstance().getReference("shops/");//.child(shopLink.toString());
                 Log.d("프로필reviewGetList", "selectShop.size() : " + shopRef);
-                shopRef.addValueEventListener(new ValueEventListener() {
+                shopRef.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         shopDatas.clear();
-                        for (i = 0; i < reviewDatas.size(); i++) {
+
+                        for (int i = 0; i < reviewDatas.size(); i++) {
                             String shopLink = selectShop.get(i).toString();
 
 
@@ -46,7 +47,7 @@ public class MyReviewList {
                             String category = snapshot.child(shopLink).child("category").getValue(String.class);
                             String addressName = snapshot.child(shopLink).child("addressName").getValue(String.class);
                             String shopName = snapshot.child(shopLink).child("shopName").getValue(String.class);
-                            String exteriorImagePath = snapshot.child(shopLink).child(shopLink).child("exteriorImagePath").getValue(String.class);
+                            String exteriorImagePath = snapshot.child(shopLink).child("exteriorImagePath").getValue(String.class);
                             String geohash = snapshot.child(shopLink).child("geohash").getValue(String.class);
                             boolean hasMeeting = snapshot.child(shopLink).child("hasMeeting").getValue(boolean.class);
                             double latitude = snapshot.child(shopLink).child("latitude").getValue(Double.class);

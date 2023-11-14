@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -105,7 +106,15 @@ public class MyReviewAdapter extends RecyclerView.Adapter<MyReviewAdapter.MyRevi
                     Glide.with(context)
                             .load(uri)
                             .fitCenter()
-                            .apply(RequestOptions.bitmapTransform(new RoundedCorners(14)))
+                            .into(holder.pic1);
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    // 사진을 가져오는데 실패했을 때의 동작을 여기에 정의합니다.
+                    // 예를 들어, 기본 이미지를 로드할 수 있습니다.
+                    Glide.with(context)
+                            .load(R.drawable.no_image_pic)
                             .into(holder.pic1);
                 }
             });
