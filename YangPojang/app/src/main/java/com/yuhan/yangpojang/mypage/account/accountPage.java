@@ -39,10 +39,6 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.yuhan.yangpojang.R;
 import com.yuhan.yangpojang.SplashImage;
-//import com.yuhan.yangpojang.Splashoutimage;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -238,7 +234,6 @@ public class accountPage extends AppCompatActivity {
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(intent);
                         finish();
-
                     }
                 })
                 .setNegativeButton("아니요", new DialogInterface.OnClickListener() {
@@ -255,7 +250,11 @@ public class accountPage extends AppCompatActivity {
 
 
     private void signOut() {
-        // Implement your sign-out logic here
+        mGoogleSignInClient.signOut()
+                .addOnCompleteListener(this, task -> {
+                    mAuth.getInstance().signOut();
+                    gsa = null;
+                });
     }
 
 
@@ -271,15 +270,14 @@ public class accountPage extends AppCompatActivity {
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-              user.delete();
-              mGoogleSignInClient.revokeAccess();
-              storageReference.delete();
+                user.delete();
+                mGoogleSignInClient.revokeAccess();
+                storageReference.delete();
             }
         });
     }
 
 
 }
-
 
 
