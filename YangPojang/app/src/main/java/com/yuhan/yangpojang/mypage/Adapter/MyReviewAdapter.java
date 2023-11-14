@@ -91,25 +91,25 @@ public class MyReviewAdapter extends RecyclerView.Adapter<MyReviewAdapter.MyRevi
         String ImgPath = reviewItemList.get(position).getPicUrl1();
         Log.d("리뷰 사진", "ImgPath : " + ImgPath);
 
-        if (ImgPath == "null" || ImgPath.isEmpty()) {
-            Glide.with(context)
-                    .load(R.drawable.no_image_pic)
-                    .into(holder.pic1);
-        } else {
-            FirebaseStorage storage = FirebaseStorage.getInstance();
-            StorageReference storageRef = storage.getReference().child(ImgPath);
-
-            storageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                @Override
-                public void onSuccess(Uri uri) {
-                    Glide.with(context)
-                            .load(uri)
-                            .fitCenter()
-                            .apply(RequestOptions.bitmapTransform(new RoundedCorners(14)))
-                            .into(holder.pic1);
-                }
-            });
-        }
+//        if (ImgPath == "null" || ImgPath.isEmpty()) {
+//            Glide.with(context)
+//                    .load(R.drawable.no_image_pic)
+//                    .into(holder.pic1);
+//        } else {
+//            FirebaseStorage storage = FirebaseStorage.getInstance();
+//            StorageReference storageRef = storage.getReference().child(ImgPath);
+//
+//            storageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+//                @Override
+//                public void onSuccess(Uri uri) {
+//                    Glide.with(context)
+//                            .load(uri)
+//                            .fitCenter()
+//                            .apply(RequestOptions.bitmapTransform(new RoundedCorners(14)))
+//                            .into(holder.pic1);
+//                }
+//            });
+//        }
 
 
 

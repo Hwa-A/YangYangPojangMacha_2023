@@ -10,22 +10,7 @@
     android:outlineSpotShadowColor="#ffffff">
 
     <!--    drawable -toast-shape로 모양 잡음-->
-    <TextView
-        android:id="@+id/textboard"
-        android:layout_width="334dp"
-        android:layout_height="68dp"
-        android:background="@drawable/toast_shape"
-        android:gravity="center"
-        android:visibility="gone"
-        android:padding="20dp"
-        android:text="✨✨가게 정보가 업로드 중입니다✨✨"
-        android:textColor="#800000"
-        android:textSize="15dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-    <!--    tools:context=".ReportShop-->
+
 
     <TextView
         android:id="@+id/reportshopTitle"
@@ -43,6 +28,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0" />
+
+
     <!--        />-->
     <ScrollView
         android:id="@+id/scrollView2"
@@ -69,7 +56,7 @@
                 android:background="@drawable/lightgray"
                 android:gravity="center_vertical"
                 android:paddingLeft="40dp"
-                android:text="가게 주소"
+                android:text="📌  가게 주소"
                 android:textSize="14dp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -106,8 +93,8 @@
                 android:gravity="center_vertical"
                 android:onClick="@putAdd"
                 android:paddingLeft="15dp"
-                android:text="수정하기"
-                android:textColor="#ef7466"
+                android:text="위치 선택하기"
+                android:textColor="#DD7C14"
                 android:textSize="12dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="1.0"
@@ -119,11 +106,11 @@
                 android:id="@+id/ShopNameIs"
                 android:layout_width="match_parent"
                 android:layout_height="62dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="12dp"
                 android:gravity="center_vertical"
                 android:paddingLeft="40dp"
-                android:text="가게 이름"
-                android:textSize="14dp"
+                android:text="📌  가게 이름"
+                android:textSize="15dp"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
@@ -152,8 +139,8 @@
                 android:layout_marginTop="24dp"
                 android:gravity="center_vertical"
                 android:paddingLeft="40dp"
-                android:text="카테고리"
-                android:textSize="14dp"
+                android:text="📌  카테고리"
+                android:textSize="15dp"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
@@ -181,6 +168,7 @@
                 android:layout_marginTop="4dp"
                 android:buttonTint="#dbdada"
                 android:text="계좌이체"
+                android:textSize="14dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.516"
                 app:layout_constraintStart_toEndOf="@+id/pwayMobile"
@@ -193,8 +181,8 @@
                 android:layout_marginTop="36dp"
                 android:gravity="center_vertical"
                 android:paddingLeft="40dp"
-                android:text="결제 방식 (중복가능)"
-                android:textSize="14dp"
+                android:text="📌  결제 방식 (중복가능)"
+                android:textSize="15dp"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="1.0"
@@ -209,7 +197,7 @@
                 android:layout_marginTop="8dp"
                 android:buttonTint="#dbdada"
                 android:text="모바일"
-
+                android:textSize="14dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.206"
                 app:layout_constraintStart_toStartOf="parent"
@@ -222,6 +210,7 @@
                 android:layout_marginTop="8dp"
                 android:buttonTint="#dbdada"
                 android:text="카드"
+                android:textSize="14dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.204"
                 app:layout_constraintStart_toStartOf="parent"
@@ -234,6 +223,7 @@
                 android:layout_marginTop="12dp"
                 android:buttonTint="#dbdada"
                 android:text="현금"
+                android:textSize="14dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.482"
                 app:layout_constraintStart_toEndOf="@+id/pwayCard"
@@ -260,8 +250,8 @@
                 android:layout_marginTop="8dp"
                 android:gravity="center_vertical"
                 android:paddingLeft="40dp"
-                android:text="출몰 시기"
-                android:textSize="14dp"
+                android:text="📌  출몰 시기"
+                android:textSize="15dp"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.486"
@@ -289,6 +279,7 @@
                 android:layout_marginStart="12dp"
                 android:layout_marginTop="8dp"
                 android:text="화"
+                android:textSize="13dp"
                 android:buttonTint="#dbdada"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
@@ -303,6 +294,7 @@
                 android:layout_marginTop="8dp"
                 android:text="수"
                 android:buttonTint="#dbdada"
+                android:textSize="13dp"
 
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
@@ -317,6 +309,7 @@
                 android:layout_marginTop="8dp"
                 android:text="목"
                 android:buttonTint="#dbdada"
+                android:textSize="13dp"
 
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
@@ -331,6 +324,7 @@
                 android:layout_marginTop="8dp"
                 android:text="일"
                 android:buttonTint="#dbdada"
+                android:textSize="13dp"
 
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
@@ -345,6 +339,7 @@
                 android:layout_marginTop="8dp"
                 android:text="토"
                 android:buttonTint="#dbdada"
+                android:textSize="13dp"
 
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
@@ -354,12 +349,11 @@
 
             <ImageView
                 android:id="@+id/storeExteriorPhoto"
-                android:layout_width="107dp"
-                android:layout_height="107dp"
+                android:layout_width="195dp"
+                android:layout_height="111dp"
                 android:layout_marginTop="16dp"
                 android:background="@drawable/border_rounded_coner"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.213"
                 app:layout_constraintHorizontal_chainStyle="packed"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/mon" />
@@ -369,43 +363,20 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="가게사진을\n넣어주세요"
-                android:textSize="16sp"
+                android:text="가게사진 등록\n📷"
+                android:textAlignment="center"
+                android:textSize="14dp"
                 app:layout_constraintBottom_toBottomOf="@id/storeExteriorPhoto"
                 app:layout_constraintEnd_toEndOf="@id/storeExteriorPhoto"
                 app:layout_constraintStart_toStartOf="@id/storeExteriorPhoto"
                 app:layout_constraintTop_toTopOf="@id/storeExteriorPhoto" />
 
 
-            <ImageView
-                android:id="@+id/menuBoardPhoto"
-                android:layout_width="107dp"
-                android:layout_height="107dp"
-                android:layout_marginTop="16dp"
-                android:background="@drawable/border_rounded_coner"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.803"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/Fri" />
-
-            <TextView
-                android:id="@+id/menuBoardText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="메뉴판사진을\n넣어주세요"
-                android:textSize="16sp"
-                app:layout_constraintBottom_toBottomOf="@id/menuBoardPhoto"
-                app:layout_constraintEnd_toEndOf="@id/menuBoardPhoto"
-                app:layout_constraintStart_toStartOf="@id/menuBoardPhoto"
-                app:layout_constraintTop_toTopOf="@id/menuBoardPhoto" />
-
-
             <android.widget.Button
                 android:id="@+id/reportBtn"
                 android:layout_width="88dp"
                 android:layout_height="40dp"
-                android:layout_marginTop="12dp"
+                android:layout_marginTop="20dp"
                 android:background="@drawable/register_btn"
                 android:text="등록"
                 android:textColor="#ffffff"
@@ -415,7 +386,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/menuBoardPhoto"
+                app:layout_constraintTop_toBottomOf="@+id/storeExteriorPhoto"
                 tools:ignore="TextContrastCheck,TextSizeCheck,TouchTargetSizeCheck" />
 
 

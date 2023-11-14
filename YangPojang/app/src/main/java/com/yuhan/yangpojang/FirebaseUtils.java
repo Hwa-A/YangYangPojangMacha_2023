@@ -25,10 +25,9 @@ public class FirebaseUtils {
         shopDataListener = listener;
     }
 
-    public static void saveShopData(Shop shop, ReportShop reportShop, User user, Uri exteriorImageUri, Uri menuImageUri, String shopKey) {
+    public static void saveShopData(Shop shop, ReportShop reportShop, User user, Uri exteriorImageUri, String shopKey) {
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
         Log.d("fffffffffdskfjask2", String.valueOf(exteriorImageUri));
-        Log.d("fffffffffdskfjask3", String.valueOf(menuImageUri));
 
         Log.d("fffffffffdskfjas4k",shopKey);
         shop.setShopKey(shopKey);
@@ -59,28 +58,11 @@ public class FirebaseUtils {
                         Log.d(" fffffffffdskfjask 2323 FirebaseUtils", "외관 이미지 업로드 시작");
                         uploadImageToStorage(shop,shopImagesRef, exteriorImageUri, shopRef.child("fbStoreImgurl"), "exterior");
 
-                        if (menuImageUri != null)
-                        {
-                            Log.d(" fffffffffdskfjask 4545 FirebaseUtils", "메뉴 이미지 업로드 시작");
-                            uploadImageToStorage(shop,shopImagesRef, menuImageUri, shopRef.child("fbMenuImgurl"), "menu");
-                        }
-                        else
-                        {
-                            Log.d("fffffffffFirebaseUtils", "메뉴 이미지 미선택");
-                        }
                     }
                     else {
 
                         Log.d(" fffffffffdskfjask 6060 외관이미지는 선택되지 않았습니다", "외관이미지는 선택되지 않았습니다");
-                        if (menuImageUri != null)
-                        {
-                            Log.d("fffffffffFirebaseUtils", "메뉴 이미지 업로드 시작");
-                            uploadImageToStorage(shop,shopImagesRef, menuImageUri, shopRef.child("menuImagePath"), "menu");
-                        }
-                        else
-                        {
-                            Log.d("fffffffffdskfjask4094290982 메뉴이미지도 선택되지 않았습니다", "메뉴이미지도 선택되지 않았습니다");
-                        }
+
                     }
                     if (shopDataListener != null) {
                         shopDataListener.onShopDataSaved();
@@ -116,9 +98,8 @@ public class FirebaseUtils {
         String fileName;
         if (imageType.equals("exterior")) {
             fileName = "exterior.jpg";
-        } else if (imageType.equals("menu")) {
-            fileName = "menu.jpg";
-        } else {
+        }
+        else {
             return; // 이미지 타입이 올바르지 않을 경우 아무 작업도 수행하지 않음
         }
 

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="130dp"
     xmlns:app="http://schemas.android.com/apk/res-auto">
@@ -18,7 +19,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="가게 이름"
-        android:textSize="20sp"
+        android:textSize="18dp"
         android:textStyle="bold"
         android:layout_marginStart="20dp"
         app:layout_constraintTop_toTopOf="parent"
@@ -30,7 +31,7 @@
         android:layout_height="wrap_content"
         android:textColor="#A4A3A3"
         android:text="카테고리"
-        android:textSize="12sp"
+        android:textSize="12dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toEndOf="@+id/pochalist_name"
         android:layout_marginTop="28dp"
@@ -65,17 +66,18 @@
         app:layout_constraintLeft_toLeftOf="parent"
         android:layout_marginLeft="370dp"
         android:layout_marginTop="15dp"/>
+
     <ImageButton
         android:id="@+id/pochalist_emptyheart"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="#00000000"
-        android:visibility="visible"
-        android:src="@drawable/empty_heart"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_width="19dp"
+        android:layout_height="22dp"
         android:layout_marginLeft="370dp"
-        android:layout_marginTop="15dp"/>
+        android:layout_marginTop="15dp"
+        android:background="#00000000"
+        android:src="@drawable/empty_heart"
+        android:visibility="visible"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <View
         android:layout_width="match_parent"

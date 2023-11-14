@@ -68,7 +68,7 @@
                 android:layout_marginTop="24dp"
                 android:gravity="center_vertical"
                 android:paddingLeft="40dp"
-                android:text="카테고리"
+                android:text="📌  카테고리"
                 android:textSize="14dp"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -121,7 +121,7 @@
                 android:layout_marginTop="36dp"
                 android:gravity="center_vertical"
                 android:paddingLeft="40dp"
-                android:text="결제 방식 (중복가능)"
+                android:text="📌  결제 방식 (중복가능)"
                 android:textSize="14dp"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -175,7 +175,7 @@
                 android:layout_marginTop="36dp"
                 android:gravity="center_vertical"
                 android:paddingLeft="40dp"
-                android:text="출몰 시기"
+                android:text="📌  출몰 시기"
                 android:textSize="14dp"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -281,45 +281,34 @@
 
             <ImageView
                 android:id="@+id/storeExteriorPhoto"
-                android:layout_width="107dp"
-                android:layout_height="107dp"
-                android:layout_marginTop="52dp"
+                android:layout_width="195dp"
+                android:layout_height="111dp"
+                android:layout_marginTop="16dp"
                 android:background="@drawable/border_rounded_coner"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.23"
                 app:layout_constraintHorizontal_chainStyle="packed"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/mon" />
 
-            <ImageView
-                android:id="@+id/menuBoardPhoto"
-                android:layout_width="107dp"
-                android:layout_height="107dp"
-                android:layout_marginTop="52dp"
-                android:background="@drawable/border_rounded_coner"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.822"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/Fri" />
-
             <TextView
-                android:id="@+id/menuBoardText"
+                android:id="@+id/storeBoardText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="메뉴판사진을\n넣어주세요"
-                android:textSize="16sp"
-                app:layout_constraintBottom_toBottomOf="@id/menuBoardPhoto"
-                app:layout_constraintEnd_toEndOf="@id/menuBoardPhoto"
-                app:layout_constraintStart_toStartOf="@id/menuBoardPhoto"
-                app:layout_constraintTop_toTopOf="@id/menuBoardPhoto"
-                app:layout_constraintVertical_bias="0.508" />
+                android:text="가게사진 등록\n📷"
+                android:textAlignment="center"
+                android:textSize="14dp"
+                app:layout_constraintBottom_toBottomOf="@id/storeExteriorPhoto"
+                app:layout_constraintEnd_toEndOf="@id/storeExteriorPhoto"
+                app:layout_constraintStart_toStartOf="@id/storeExteriorPhoto"
+                app:layout_constraintTop_toTopOf="@id/storeExteriorPhoto" />
+
 
             <android.widget.Button
                 android:id="@+id/reportBtn"
                 android:layout_width="88dp"
                 android:layout_height="40dp"
-                android:layout_marginTop="12dp"
+                android:layout_marginTop="20dp"
                 android:background="@drawable/register_btn"
                 android:text="등록"
                 android:textColor="#ffffff"
@@ -327,25 +316,11 @@
                 app:iconTint="#FF5722"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.517"
+                app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/menuBoardPhoto"
-                app:layout_constraintVertical_bias="1.0"
+                app:layout_constraintTop_toBottomOf="@+id/storeExteriorPhoto"
                 tools:ignore="TextContrastCheck,TextSizeCheck,TouchTargetSizeCheck" />
 
-            <TextView
-                android:id="@+id/storeBoardText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="가게사진을\n넣어주세요"
-                android:textSize="16sp"
-                app:layout_constraintBottom_toBottomOf="@id/storeExteriorPhoto"
-                app:layout_constraintEnd_toEndOf="@id/storeExteriorPhoto"
-                app:layout_constraintHorizontal_bias="0.484"
-                app:layout_constraintStart_toStartOf="@id/storeExteriorPhoto"
-                app:layout_constraintTop_toTopOf="@id/storeExteriorPhoto"
-                app:layout_constraintVertical_bias="0.508" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

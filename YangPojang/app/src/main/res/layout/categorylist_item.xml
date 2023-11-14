@@ -16,7 +16,7 @@
         android:background="@drawable/custom_category_button"
         android:text="붕어빵"
         android:textColor="#878787"
-        android:textSize="13sp"
+        android:textSize="13dp"
         android:gravity="center"
         android:layout_marginRight="5dp"
         app:layout_constraintEnd_toEndOf="parent"

@@ -1,10 +1,15 @@
 package com.yuhan.yangpojang.login;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.widget.CompoundButton;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.Manifest;
 import android.content.pm.PackageManager;
@@ -81,6 +86,22 @@ public class LoginActivity extends AppCompatActivity {
         mGoogleSignInClient = GoogleSignIn.getClient(this, googleSignInOptions);
 
         btnGoogleLogin = findViewById(R.id.btn_google_sign_in);
+
+
+        // 서빈 추가
+        TextView textView = findViewById(R.id.googleTextView);
+        String fullText = "구글 계정으로\n초간단 로그인 가능";
+        Spannable spannable = new SpannableString(fullText);
+        // 인덱스를 찾아서 해당 부분만 색을 변경.
+        int startIndex = fullText.indexOf("구글");
+        int endIndex = startIndex + "구글".length();// #fff3o02를 Color.parseColor를 사용하여 지정합니다.
+        int color = Color.parseColor("#CC33CC");
+        spannable.setSpan(new ForegroundColorSpan(color), startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        textView.setText(spannable);
+        //여기까지 새로 추가
+
+
 
         btnGoogleLogin.setOnClickListener(view -> {
             // 기존에 로그인 했던 계정을 확인한다.

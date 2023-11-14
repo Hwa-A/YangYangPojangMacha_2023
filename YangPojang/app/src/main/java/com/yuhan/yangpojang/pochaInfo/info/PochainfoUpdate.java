@@ -1,6 +1,7 @@
 package com.yuhan.yangpojang.pochaInfo.info;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -76,17 +77,16 @@ public class PochainfoUpdate extends AppCompatActivity {
 
     CheckBox pwayCash, pwayCard, pwayMobile, pwayAccount;  // 정보수정 - 결제수단
     CheckBox mon, tue, wed, thu, fri, sat, sun;  // 정보수정 - 요일 수정
-    ImageView storeExteriorPhoto, menuBoardPhoto;   // 정보수정 - 외관사진, 메뉴판 사진 수정
+    ImageView storeExteriorPhoto;  // 정보수정 - 외관사진
     Button reportBtn; // 정보 수정 버튼 ( 제출버튼)
+    private ProgressDialog progressDialog;      // 등록 로딩 다이얼로그
 
     private FirebaseDatabase database ;
     private DatabaseReference shopsRef ;
     private DatabaseReference detailShopRef;  // .child(shopkey) 까지 찾아놓은 db레퍼런스
     private Uri imageUri;
     private Uri storeExteriorImageUri; // 가게 외관 이미지의 URI
-    private Uri menuBoardImageUri; // 가게 메뉴 이미지의 URI
     private TextView storePhotoTextView; // 가게 사진 선택하기 글씨
-    private TextView menuPhotoTextView; // 메뉴사진 선택하기 글씨
     private String shopkey;
     private int requestCode;   // 어떤 사진을 선택중인지 판별위한 code
     private  String exteriorImageUrl;
@@ -99,7 +99,6 @@ public class PochainfoUpdate extends AppCompatActivity {
 
     private BottomNavigationView bottomNavigationView;
     private static final int PICK_EXTERIOR_IMAGE_REQUEST = 1;    // 가게-외관이미지 선택
-    private static final int PICK_MENU_IMAGE_REQUEST = 2; // 가게- 메뉴판 이미지 선택
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,12 +113,14 @@ public class PochainfoUpdate extends AppCompatActivity {
         database = FirebaseDatabase.getInstance();
         shopsRef = database.getReference("shops");
         storeExteriorPhoto = findViewById(R.id.storeExteriorPhoto);
-        menuBoardPhoto = findViewById(R.id.menuBoardPhoto);
         storePhotoTextView= findViewById(R.id.storeBoardText); // 가게 사진 선택하기 글씨
-        menuPhotoTextView= findViewById(R.id.menuBoardText);  //
         storeExteriorPhoto = findViewById(R.id.storeExteriorPhoto);
-        menuBoardPhoto = findViewById(R.id.menuBoardPhoto);
+        progressDialog= new ProgressDialog(this);
 
+        // 가게 제보 진행바 추가
+        progressDialog.setMessage("가게 정보 수정 중 ...");
+        progressDialog.setCancelable(false);    // 취소 불가능
+        progressDialog.setCanceledOnTouchOutside(false);     // 외부 터치 불가능
 
         storeExteriorPhoto.setOnClickListener(new View.OnClickListener() // 가게 외관 사진 등록하기 누르면  갤러리 오픈
         {
@@ -132,16 +133,6 @@ public class PochainfoUpdate extends AppCompatActivity {
         });
 
 
-        menuBoardPhoto.setOnClickListener(new View.OnClickListener()
-                //메뉴 사진 등록하기틀 누르면 갤러리 오픈
-        {
-            @Override
-            public void onClick(View v)
-            {
-                requestCode=PICK_MENU_IMAGE_REQUEST;  // 요청코드: 메뉴판 사진을 선택하는 것
-                openGallery();
-            }
-        });
 
 
         /*순서
@@ -170,13 +161,6 @@ public class PochainfoUpdate extends AppCompatActivity {
                                         storeExteriorPhoto.setImageURI(imageUri);  // 이미지뷰에 선택한 이미지 단순표시
                                         storeExteriorPhoto.setBackground(null);
                                         storePhotoTextView.setVisibility(View.GONE);
-                                    } else if (requestCode == PICK_MENU_IMAGE_REQUEST) //2
-                                    {
-                                        menuBoardImageUri = imageUri;   // db에 넣기위해선 이미지를 uri로
-                                        menuBoardPhoto.setImageURI(imageUri);   // 이미지뷰에 선택한 이미지 단순표시
-                                        menuBoardPhoto.setBackground(null);
-                                        menuPhotoTextView.setVisibility(View.GONE);
-
                                     }
                                 }
                             }
@@ -198,7 +182,6 @@ public class PochainfoUpdate extends AppCompatActivity {
         sat = findViewById(R.id.sat);
         sun = findViewById(R.id.sun);
         storeExteriorPhoto = findViewById(R.id.storeExteriorPhoto);
-        menuBoardPhoto = findViewById(R.id.menuBoardPhoto);
         reportBtn = findViewById(R.id.reportBtn);
 
         // Spinner에 카테고리 목록 설정 -> res/values/strings에 목록있음
@@ -258,6 +241,9 @@ public class PochainfoUpdate extends AppCompatActivity {
                 if (sat.isChecked()) { selectedDays.add("토"); }
                 if (sun.isChecked()) { selectedDays.add("일"); }
             }
+
+
+            progressDialog.show();
             // 파이어 베이스에 새 데이터 삽입
             updateInformation(selectedCategory, paymentMethods, selectedDays);
         });
@@ -356,41 +342,7 @@ public class PochainfoUpdate extends AppCompatActivity {
             }).start();
         }
 
-        if (menuBoardImageUri != null) {
 
-            // 메뉴판 이미지 파이어베이스에 넣기
-            StorageReference menuRef = storageRef.child("shops/" + shopkey + "/images/menu.jpg");
-            FutureTarget<Bitmap> futureTarget = Glide.with(PochainfoUpdate.this)
-                    .asBitmap()
-                    .load(storeExteriorImageUri)
-                    .submit(500, 500); // max width & height
-
-            new Thread(() -> {
-                try {
-                    // Get the Bitmap from the FutureTarget
-                    Bitmap bitmap = futureTarget.get();
-                    // Compress the Bitmap and upload to Firebase Storage
-                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 80, baos);
-                    byte[] data = baos.toByteArray();
-                    UploadTask uploadTask = menuRef.putBytes(data);
-
-                    // Handle the upload success and failure
-                    uploadTask.addOnSuccessListener(taskSnapshot -> {
-                        Log.d("ㄹㄹㄹPochaInfoUpdate- Firebase", "메뉴이미지 정상 등록됌");
-                        Log.d("ㄹㄹㄹ메뉴사진", String.valueOf(menuBoardImageUri));
-//                        menuBoardImageUri= Uri.parse("");
-//                        Log.d("ㄹㄹㄹ메뉴사진초기화", String.valueOf(menuBoardImageUri));
-
-
-                    }).addOnFailureListener(e -> {
-                        Log.e("PochaInfoUpdate- Firebase", "메뉴 업로딩 과정중 오류", e);
-                    });
-                } catch (InterruptedException | ExecutionException e) {
-                    e.printStackTrace();
-                }
-            }).start();
-        }
 
         // 업데이트할 데이터를 Map으로 제작
         Map<String, Object> updates = new HashMap<>();
@@ -419,6 +371,7 @@ public class PochainfoUpdate extends AppCompatActivity {
 //                        Intent intent2 = new Intent(PochainfoUpdate.this, PochainfoActivity.class); // Replace NewActivity.class with the intended activity to start
 //                        intent2.putExtra("shopInfo", shop);
 //                        startActivity(intent2);
+                        progressDialog.dismiss();
                         finish();
                     })
                     .addOnFailureListener(e -> {

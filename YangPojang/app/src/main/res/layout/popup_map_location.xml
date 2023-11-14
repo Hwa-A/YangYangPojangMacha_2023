@@ -46,7 +46,7 @@
             android:layout_height="49dp"
             android:background="@color/white"
             android:queryBackground="@color/white"
-            android:textSize="12sp"
+            android:textSize="12dp"
             app:closeIcon="@drawable/xicon"
             app:iconifiedByDefault="false"
             app:layout_constraintBottom_toBottomOf="parent"

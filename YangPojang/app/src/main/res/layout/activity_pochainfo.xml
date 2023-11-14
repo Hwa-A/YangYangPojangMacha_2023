@@ -33,13 +33,13 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:maxWidth="310sp"
+                    android:maxWidth="310dp"
                     android:text="양양포차"
                     android:singleLine="true"
                     android:ellipsize="marquee"
                     android:marqueeRepeatLimit="marquee_forever"
                     android:textColor="@color/black"
-                    android:textSize="25sp"
+                    android:textSize="25dp"
                     android:textStyle="bold"
                     android:letterSpacing="0.1"/>
                 <ImageView
@@ -65,7 +65,6 @@
                 android:layout_width="312dp"
                 android:layout_height="131dp"
                 android:layout_marginTop="10dp"
-                android:background="@color/white"
                 android:scaleType="fitCenter"
                 app:layout_constraintDimensionRatio="H, 2:1"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -79,42 +78,48 @@
                 android:id="@+id/tv_pochainfo_pochaname"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:gravity="center"
                 android:letterSpacing="0.1"
                 android:text="양양포차"
+                android:textAlignment="center"
                 android:textColor="@color/black"
-                android:textSize="25sp"
+                android:textSize="20dp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="@id/lin_pochainfo_goodContainer"
                 app:layout_constraintStart_toStartOf="@id/img_pochainfo_pochaImage"
-                app:layout_constraintTop_toBottomOf="@id/img_pochainfo_pochaImage" />
+                app:layout_constraintTop_toBottomOf="@id/img_pochainfo_pochaImage"
+                app:layout_constraintVertical_bias="0.454" />
 
-            <Button
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/tv_pochainfo_category"
-                android:layout_width="60dp"
+                android:layout_width="91dp"
                 android:layout_height="30dp"
-                android:layout_marginLeft="10dp"
-                android:backgroundTint="#A5FF9800"
+                android:layout_marginLeft="2dp"
+                android:layout_marginTop="3dp"
+                android:background="@drawable/button_border_tint"
                 android:enabled="false"
                 android:padding="0dp"
                 android:text="붕어빵"
-                android:textColor="@color/white"
-                android:textSize="12sp"
+                android:textColor="#DF793E"
+                android:textStyle="bold"
+                android:textSize="12dp"
                 app:layout_constraintBottom_toBottomOf="@id/tv_pochainfo_pochaname"
                 app:layout_constraintStart_toEndOf="@id/tv_pochainfo_pochaname"
                 app:layout_constraintTop_toTopOf="@id/tv_pochainfo_pochaname" />
 
             <ImageView
                 android:id="@+id/img_pochainfo_verified"
-                android:layout_width="30dp"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:layout_marginRight="5dp"
                 android:adjustViewBounds="true"
                 android:src="@drawable/pochainfo_verified"
-                android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="@id/tv_pochainfo_pochaname"
                 app:layout_constraintEnd_toStartOf="@id/tv_pochainfo_pochaname"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@id/tv_pochainfo_pochaname"
-                android:layout_marginRight="5dp"/>
+                app:layout_constraintVertical_bias="0.384" />
 
             <LinearLayout
                 android:id="@+id/lin_pochainfo_goodContainer"
@@ -133,8 +138,8 @@
 
                     <ImageButton
                         android:id="@+id/imgbtn_pochainfo_notgoodButton"
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
                         android:adjustViewBounds="true"
                         android:background="@android:color/transparent"
                         android:scaleType="fitCenter"
@@ -144,8 +149,8 @@
 
                     <ImageButton
                         android:id="@+id/imgbtn_pochainfo_goodButton"
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
                         android:adjustViewBounds="true"
                         android:background="@android:color/transparent"
                         android:scaleType="fitCenter"
@@ -159,14 +164,17 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="10dp"
-                    android:text="good"
+                    android:text="GOOD"
                     android:textColor="@color/black"
-                    android:textSize="15sp" />
+                    android:textSize="12dp" />
+                <!--                android:text="good"-->
+
+
             </LinearLayout>
 
             <TextView
-                android:layout_width="0dp"
-                android:layout_height="10dp"
+                android:layout_width="411dp"
+                android:layout_height="5dp"
                 android:background="@drawable/pochainfo_linearline_bottom"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -176,12 +184,12 @@
                 android:id="@+id/btn_pochainfo_detailTab"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="12dp"
                 android:layout_marginRight="2dp"
                 android:background="@drawable/pochainfo_allbutton_selected"
                 android:text="가게 정보"
                 android:textColor="@color/white"
-                android:textSize="15sp"
+                android:textSize="15dp"
                 android:textStyle="bold"
                 app:layout_constraintDimensionRatio="H, 2.8:1"
                 app:layout_constraintEnd_toStartOf="@id/btn_pochainfo_reviewTab"
@@ -193,37 +201,37 @@
                 app:layout_constraintWidth_percent="0.33" />
 
             <android.widget.Button
-                android:id="@+id/btn_pochainfo_reviewTab"
+                android:id="@+id/btn_pochainfo_meetingTab"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:layout_marginTop="20dp"
-                android:layout_marginRight="2dp"
+                android:layout_marginTop="12dp"
                 android:background="@drawable/pochainfo_allbutton_unselected"
-                android:text="리뷰"
-                android:textColor="@color/black"
-                android:textSize="15sp"
+                android:text="번개"
+                android:textColor="@color/white"
+                android:textSize="15dp"
                 android:textStyle="bold"
                 app:layout_constraintDimensionRatio="H, 2.8:1"
-                app:layout_constraintEnd_toStartOf="@id/btn_pochainfo_meetingTab"
-                app:layout_constraintStart_toEndOf="@id/btn_pochainfo_detailTab"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/btn_pochainfo_reviewTab"
                 app:layout_constraintTop_toBottomOf="@id/lin_pochainfo_goodContainer"
                 app:layout_constraintWidth_default="percent"
                 app:layout_constraintWidth_max="133dp"
                 app:layout_constraintWidth_percent="0.33" />
 
             <android.widget.Button
-                android:id="@+id/btn_pochainfo_meetingTab"
+                android:id="@+id/btn_pochainfo_reviewTab"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginRight="2dp"
                 android:background="@drawable/pochainfo_allbutton_unselected"
-                android:text="번개"
-                android:textColor="@color/black"
-                android:textSize="15sp"
+                android:text="리뷰"
+                android:textColor="@color/white"
+                android:textSize="15dp"
                 android:textStyle="bold"
                 app:layout_constraintDimensionRatio="H, 2.8:1"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/btn_pochainfo_reviewTab"
+                app:layout_constraintEnd_toStartOf="@id/btn_pochainfo_meetingTab"
+                app:layout_constraintStart_toEndOf="@id/btn_pochainfo_detailTab"
                 app:layout_constraintTop_toBottomOf="@id/lin_pochainfo_goodContainer"
                 app:layout_constraintWidth_default="percent"
                 app:layout_constraintWidth_max="133dp"
