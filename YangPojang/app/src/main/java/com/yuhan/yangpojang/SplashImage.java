@@ -41,7 +41,7 @@ public class SplashImage extends AppCompatActivity {
 
         Glide.with(this)
                 .asGif()
-                .load(R.drawable.splashgif)
+                .load(R.drawable.splashgif3)
                 .into((imageView));
 
         new Handler().postDelayed(new Runnable() {
