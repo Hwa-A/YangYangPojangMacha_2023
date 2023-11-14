@@ -28,18 +28,19 @@ public class MeetingAttendersGetList {
     }
 
     public static void attendersDataLoad(final attenderDataLoadedCallback callback){
-        attenders.clear();
 
         final int[] remainingTasks = {meetingIds.size()};
 
-        for(int i = 0; i < meetingIds.size(); i++){
-            databaseReference = FirebaseDatabase.getInstance().getReference("meetingAttenders/" + meetingIds.get(i));
+            databaseReference = FirebaseDatabase.getInstance().getReference("meetingAttenders/");
 
-            databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            databaseReference.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    ArrayList<MeetingAttendersModel> models = new ArrayList<>();
-                    for(DataSnapshot snap : snapshot.getChildren()){
+                    attenders.clear();
+                    for(int i = 0; i < meetingIds.size(); i++){
+                        String link = meetingIds.get(i);
+                        ArrayList<MeetingAttendersModel> models = new ArrayList<>();
+                    for(DataSnapshot snap : snapshot.child(link).getChildren()){
                         MeetingAttendersModel meetingAttendersModel = new MeetingAttendersModel();
                         meetingAttendersModel.setAttender(snap.getKey());
                         meetingAttendersModel.setNickName(snap.getValue(String.class));
@@ -53,16 +54,13 @@ public class MeetingAttendersGetList {
                         callback.onAttenderLoaded(attenders);  // 콜백 호출
                     }
                 }
+            }
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {
-                    remainingTasks[0]--;
-                    if (remainingTasks[0] == 0) {  // 모든 작업이 완료되었을 때
-                        callback.onAttenderLoaded(attenders);  // 콜백 호출
-                    }
+
                 }
             });
-        }
 
     }
 

@@ -17,6 +17,7 @@ public class MeetingData {
     private String title;
     private String yearDate;
     private String meetingKey;
+    private String pochaKey;
 
     private Map<String, String> attends;
 
@@ -26,7 +27,7 @@ public class MeetingData {
 
     public MeetingData(String date, String hostUid, int maxAge, int maxMember, int minAge,
                        String registerTime, String time, String title, String yearDate,
-                       String meetingKey){
+                       String meetingKey, String pochaKey){
 
         this.date = date;
         this.hostUid = hostUid;
@@ -38,6 +39,7 @@ public class MeetingData {
         this.title = title;
         this.yearDate = yearDate;
         this.meetingKey = meetingKey;
+        this.pochaKey = pochaKey;
 
     }
 
@@ -103,6 +105,8 @@ public class MeetingData {
 
     public int getNowMember() {    return nowMember;    }
 
+    public String getPochaKey() {        return pochaKey;    }
+
     public void setDate(String date) {
         this.date = date;
     }
@@ -146,4 +150,6 @@ public class MeetingData {
     }
 
     public void setNowMember(int nowMember) {    this.nowMember = nowMember;    }
+
+    public void setPochaKey(String pochaKey) {        this.pochaKey = pochaKey;    }
 }

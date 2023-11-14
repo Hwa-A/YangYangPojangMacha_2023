@@ -14,7 +14,8 @@ import com.yuhan.yangpojang.mypage.Model.MeetingModelCollection.MyMeetingModel;
 
 import java.util.ArrayList;
 
-public class ShopGetList {
+public class
+ShopGetList {
     private static DatabaseReference databaseReference;
     static ArrayList<Shop> shops = new ArrayList<>();
     static ArrayList<String> shopIds = new ArrayList<>(); // 내가 속한 번개의 가게 id
@@ -28,15 +29,14 @@ public class ShopGetList {
     }
 
     public static void meetingDataLoad(final shopDataLoadedCallback callback) {
-        shops.clear();
 
         final int[] remainingTasks = {shopIds.size()};
 
-
         databaseReference = FirebaseDatabase.getInstance().getReference("shops/");
-        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+        databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                shops.clear();
                 for (int i = 0; i < shopIds.size(); i++) {
                     String link = shopIds.get(i);
 
@@ -48,7 +48,6 @@ public class ShopGetList {
                     if (remainingTasks[0] == 0) {  // 모든 작업이 완료되었을 때
                         callback.onShopLoaded(shops);  // 콜백 호출
                     }
-
 
                 }
             }
