@@ -26,6 +26,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -256,8 +257,6 @@ public class accountPage extends AppCompatActivity {
     }
 
 
-
-
     private void deleteAccount() {
         user = FirebaseAuth.getInstance().getCurrentUser();
         StorageReference storageReference = FirebaseStorage.getInstance().getReference("profile").child(user_info_uid);
@@ -266,6 +265,13 @@ public class accountPage extends AppCompatActivity {
             public void onComplete(@NonNull Task<Void> task) {
                 mGoogleSignInClient.revokeAccess();
                 storageReference.delete();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+              user.delete();
+              mGoogleSignInClient.revokeAccess();
+              storageReference.delete();
             }
         });
     }
