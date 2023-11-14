@@ -127,9 +127,10 @@ public class PochameetingFragment extends Fragment {
                     @Override
                     public void onDataLoaded(ArrayList<MeetingData> meetingData) {
                         if (meetingData != null) {
-                            Collections.reverse(meetingData); //역순 정렬
                             Log.d("번개", "번개 onDataLoaded");
-                            meetingAdapter = new MeetingAdapter(uid, userInfo, meetingData, getContext());
+                            // MeetingData list를 날짜를 기준으로 내림차순 정렬
+                            Collections.sort(meetingData, (o1, o2) -> o2.getYearDate().compareTo(o1.getYearDate()));
+                            meetingAdapter = new MeetingAdapter(uid, userInfo, meetingData, shop.getPrimaryKey(), getContext());
                             meetingRecyclerView.setAdapter(meetingAdapter);
                         } else {
                             Log.d("번개", "shopDatas null");

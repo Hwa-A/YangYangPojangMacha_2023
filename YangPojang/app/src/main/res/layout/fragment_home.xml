@@ -189,11 +189,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
-    <com.yuhan.yangpojang.mypage.GetList.home.pochaListRecyclerView
+
+    <com.yuhan.yangpojang.home.pochaListRecyclerView
         android:id="@+id/pocha_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
+        android:background="@drawable/rounded_top_background"
+        android:elevation="2dp"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"/>
@@ -205,7 +207,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:background="@color/white"
+        android:background="@drawable/rounded_top_background"
+        android:elevation="2dp"
         android:visibility="invisible">
 
         <ImageView

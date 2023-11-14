@@ -44,6 +44,7 @@ public class PermissionActivity extends AppCompatActivity {
             user_info_uid = user.getUid();
         }
 
+
         permissionAccessButton = findViewById(R.id.permissionAccess);
 
         permissionAccessButton.setOnClickListener(new View.OnClickListener() {
@@ -60,7 +61,7 @@ public class PermissionActivity extends AppCompatActivity {
 
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_REQUEST_CODE);
         } else {
-            mDatabase.child("user-info").child(user_info_uid).addValueEventListener(new ValueEventListener() {
+            mDatabase.child("user-info").child(user_info_uid).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     User user_check = snapshot.getValue(User.class);
@@ -85,6 +86,7 @@ public class PermissionActivity extends AppCompatActivity {
 
                 }
             });
+
         }
     }
 
@@ -94,7 +96,7 @@ public class PermissionActivity extends AppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                mDatabase.child("user-info").child(user_info_uid).addValueEventListener(new ValueEventListener() {
+                mDatabase.child("user-info").child(user_info_uid).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         User user_check = snapshot.getValue(User.class);
@@ -121,7 +123,7 @@ public class PermissionActivity extends AppCompatActivity {
                 });
             }
             else {
-                mDatabase.child("user-info").child(user_info_uid).addValueEventListener(new ValueEventListener() {
+                mDatabase.child("user-info").child(user_info_uid).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         User user_check = snapshot.getValue(User.class);

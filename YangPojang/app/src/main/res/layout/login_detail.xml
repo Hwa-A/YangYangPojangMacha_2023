@@ -12,7 +12,7 @@
         tools:context=".LoginPUserInfo">
 
         <TextView
-            android:id="@+id/reportshopTitle"
+            android:id="@+id/user_nickname"
             android:layout_width="match_parent"
             android:layout_height="58dp"
             android:background="@drawable/white_coner"
@@ -53,7 +53,7 @@
             app:layout_constraintBottom_toBottomOf="@+id/nickname"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/userNickname"
-            app:layout_constraintTop_toBottomOf="@+id/reportshopTitle"
+            app:layout_constraintTop_toBottomOf="@+id/user_nickname"
             app:layout_constraintVertical_bias="0.865"
             tools:ignore="MissingConstraints,TextSizeCheck" />
 
@@ -114,9 +114,9 @@
             android:layout_height="35dp"
             android:layout_marginTop="28dp"
             android:ems="10"
+            android:gravity="center"
             android:hint="입력된 생일"
             android:textColorHint="#787878"
-
             android:textSize="15dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.301"
@@ -130,9 +130,10 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="36dp"
             android:layout_marginTop="44dp"
+            android:gravity="center"
             android:text="입니다."
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintHorizontal_bias="0.174"
             app:layout_constraintStart_toEndOf="@+id/showDate"
             app:layout_constraintTop_toBottomOf="@+id/selectDateBtn" />
 

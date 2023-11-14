@@ -51,7 +51,7 @@ public class SplashImage extends AppCompatActivity {
                 mAuth = FirebaseAuth.getInstance();
                 FirebaseUser currentUser = mAuth.getCurrentUser();
                 if (currentUser != null) {
-                    mDatabase.child("user-info").child(user_info_uid).addValueEventListener(new ValueEventListener() {
+                    mDatabase.child("user-info").child(user_info_uid).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                             User user_check = snapshot.getValue(User.class);

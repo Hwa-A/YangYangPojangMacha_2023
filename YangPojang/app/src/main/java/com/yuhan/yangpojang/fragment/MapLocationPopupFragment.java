@@ -48,8 +48,8 @@ import com.naver.maps.map.util.FusedLocationSource;
 import com.naver.maps.map.overlay.Marker;
 import com.naver.maps.map.overlay.OverlayImage;
 import com.yuhan.yangpojang.R;
-import com.yuhan.yangpojang.mypage.GetList.home.HttpResponse;
-import com.yuhan.yangpojang.mypage.GetList.home.SearchAdapter_AutoComplete;
+import com.yuhan.yangpojang.home.HttpResponse;
+import com.yuhan.yangpojang.home.SearchAdapter_AutoComplete;
 import com.yuhan.yangpojang.model.Shop;
 
 import java.io.IOException;

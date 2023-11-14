@@ -55,6 +55,7 @@ public class LoginActivity extends AppCompatActivity {
     private SignInButton btnGoogleLogin;
     private String user_info_uid = null;
     private DatabaseReference mDatabase;
+    private String deleteUseruid = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
