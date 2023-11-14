@@ -28,15 +28,15 @@ public class MeetingGetList {
     }
 
     public static void meetingDataLoad(final meetingDataLoadedCallback callback){
-        meetings.clear();
 
         final int[] remainingTasks = {routes.size()};
 
         databaseReference = FirebaseDatabase.getInstance().getReference("meeting/");//
 
-        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+        databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                meetings.clear();
                 for (int i = 0; i < routes.size(); i++) {
                     String link = routes.get(i);
 
