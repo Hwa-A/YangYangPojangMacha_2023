@@ -103,11 +103,12 @@ public class ReviewwriteActivity extends AppCompatActivity {
     // 액티비티 종료 시, 메모리 해제
     @Override
     protected void onDestroy() {
-        if(imageBitmaps != null){
-            for(int i=0; i < imageBitmaps.size(); i++){
-                Bitmap bitmap = imageBitmaps.get(i);
-                bitmap.recycle();
-                bitmap = null;
+        if(imageBitmaps.size() > 0){
+            for(Bitmap bitmap : imageBitmaps){
+                if(bitmap != null){
+                    bitmap.recycle();
+                    bitmap = null;
+                }
             }
         }
         super.onDestroy();
@@ -612,11 +613,6 @@ public class ReviewwriteActivity extends AppCompatActivity {
                     selectedImageCount--;       // 선택된 이미지 감소
                     selectedImageUris.remove(index);    // 해당 인덱스의 uri 제거
                     Bitmap bitmap = imageBitmaps.remove(index);     // 해당 인덱스의 비트맵 삭제 후, 삭제된 비트맵 반환
-                    // 비트맵 메모리 해제
-                    if (bitmap != null) {
-                        bitmap.recycle();
-                        bitmap = null;
-                    }
                     // 맨 끝의 이미지 버튼 비활성
                     int uriSize = selectedImageUris.size();
                     ImageButton maxImageBtn = imageBtns.get(uriSize);

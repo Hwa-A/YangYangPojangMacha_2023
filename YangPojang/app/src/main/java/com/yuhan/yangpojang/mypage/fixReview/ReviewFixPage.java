@@ -112,11 +112,12 @@ public class ReviewFixPage  extends AppCompatActivity {
     // 액티비티 종료 시, 메모리 해제
     @Override
     protected void onDestroy() {
-        if(imageBitmaps != null){
-            for(int i=0; i < imageBitmaps.size(); i++){
-                Bitmap bitmap = imageBitmaps.get(i);
-                bitmap.recycle();
-                bitmap = null;
+        if(imageBitmaps.size() > 0){
+            for(Bitmap bitmap : imageBitmaps){
+                if(bitmap != null){
+                    bitmap.recycle();
+                    bitmap = null;
+                }
             }
         }
         super.onDestroy();
