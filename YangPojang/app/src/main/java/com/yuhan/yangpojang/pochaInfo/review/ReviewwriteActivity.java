@@ -35,7 +35,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -94,11 +93,12 @@ public class ReviewwriteActivity extends AppCompatActivity {
     private int selectedImageCount = 0;     // 선택된 이미지 개수
     private static final int MAX_IMAGE_COUNT = 3;   // 최대 선택 가능한 이미지 수
     private ProgressDialog progressDialog;      // 등록 로딩 다이얼로그
+    private Boolean uploadImageCheck = true;    // storeage에 이미지 업로드 성공 여부
 
-    private TextView pchNameTv;          // 포차 이름
-    private TextInputLayout summaryTxtLay;      // 리뷰 내용 컨테이너
-    private TextInputEditText summaryEdt;      // 리뷰 내용
-    private RatingBar starRtb;            // 리뷰 별점
+    TextView pchNameTv;          // 포차 이름
+    TextInputLayout summaryTxtLay;      // 리뷰 내용 컨테이너
+    TextInputEditText summaryEdt;      // 리뷰 내용
+    RatingBar starRtb;            // 리뷰 별점
 
     // 액티비티 종료 시, 메모리 해제
     @Override
@@ -125,7 +125,6 @@ public class ReviewwriteActivity extends AppCompatActivity {
         summaryTxtLay = findViewById(R.id.txtLay_reviewwrite_summaryContainer);     // 리뷰 내용 컨테이너
         summaryEdt = findViewById(R.id.edt_reviewwrite_summary);    // 리뷰 내용 EditText
         progressDialog = new ProgressDialog(ReviewwriteActivity.this);      // 등록 로딩 Dialog
-        ImageView verifiedImg = findViewById(R.id.img_reviewwrite_verified);    // 리뷰 인증 여부
 
         Button registerBtn = findViewById(R.id.btn_reviewwrite_register);  // 리뷰 등록 Button
         Button cancelBtn = findViewById(R.id.btn_reviewwrite_cancel);      // 리뷰 취소 Button
@@ -169,18 +168,8 @@ public class ReviewwriteActivity extends AppCompatActivity {
         if (intent != null) {
             pchKey = intent.getStringExtra("pchKey");         // 포차 고유키
             String pchName = intent.getStringExtra("pchName");      // 포차 이름
-            Boolean verified = intent.getBooleanExtra("verified", false);  // 포차 인증 여부
-
             // 포차 이름 변경
             pchNameTv.setText(pchName);
-            // 포차 인증 여부
-            if(verified){
-                // 인증된 포차인 경우, 인증 이미지가 보이도록 설정
-                verifiedImg.setVisibility(View.VISIBLE);
-            }else {
-                // 인증되지 않은 포차인 경우, 인증 이미지가 안 보이도록 설정
-                verifiedImg.setVisibility(View.GONE);
-            }
         }
 
         // firebase에서 회원 id 가져오기
@@ -421,7 +410,7 @@ public class ReviewwriteActivity extends AppCompatActivity {
     private void showUploadSuccessDialog() {
         FragmentManager frgManager = getSupportFragmentManager();
         UploadSuccessDialogFragment successDialog = new UploadSuccessDialogFragment(); // 업로드 확인 다이어로그 생성 및 초기화
-        successDialog.setDialogCallPlace("리뷰");   // 리뷰에서 다이얼로그를 호출함을 전달
+        successDialog.setDialogCallPlace("리뷰", "등록");   // 리뷰에서 다이얼로그를 호출함을 전달
         successDialog.show(frgManager, "upload_success_review");
     }
 
@@ -429,7 +418,7 @@ public class ReviewwriteActivity extends AppCompatActivity {
     private void showUploadFailDialog() {
         FragmentManager frgManager = getSupportFragmentManager();
         UploadFailDialogFragment failDialog = new UploadFailDialogFragment(); // 업로드 확인 다이어로그 생성 및 초기화
-        failDialog.setDialogCallPlace("리뷰");   // 리뷰에서 다이얼로그를 호출함을 전달
+        failDialog.setDialogCallPlace("리뷰", "등록");   // 리뷰에서 다이얼로그를 호출함을 전달
         failDialog.show(frgManager, "upload_fail_review");
     }
 

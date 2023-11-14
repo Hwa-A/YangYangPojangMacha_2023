@@ -233,38 +233,65 @@ public class MeetingwriteActivity extends AppCompatActivity {
 
                     // 번개 id 생성 후 획득
                     String meetingKey = ref.child("meeting").push().getKey();
-                    ref.child("user-info/"+meeting.getHostUid()+"/user_Nickname").addListenerForSingleValueEvent(new ValueEventListener() {
+                    // shop의 hasMeeting이 false인 경우, true로 변경
+                    ref.child("shops/"+pchKey+"/hasMeeting").addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            String userNickName = snapshot.getValue(String.class);      // 개최자 닉네임 가져오기
+                            Boolean hasMeeting = snapshot.getValue(Boolean.class);  // 현재 hasMeeting의 값 얻기
 
-                            // firebase에 저장
-                            Map<String, Object> meetingInsert = new HashMap<>();
-                            // meeting 테이블에 저장
-                            // meeting > 포차 id > 번개 id > 번개 정보
-                            meetingInsert.put("/meeting/"+pchKey+"/"+meetingKey, meeting);
-                            // myMeeting 테이블에 저장
-                            // myMeeting > uid > 번개 id : 포차 id
-                            meetingInsert.put("/myMeeting/"+meeting.getHostUid()+"/"+meetingKey, pchKey);
-                            // meetingAttenders
-                            // meetingAttenders > 번개 id > uid : 닉네임
-                            meetingInsert.put("meetingAttenders/"+meetingKey+"/"+meeting.getHostUid(), userNickName);
+                            Log.e("test1", hasMeeting.toString());
 
-                            // firebase에 업로드
-                            ref.updateChildren(meetingInsert, new DatabaseReference.CompletionListener() {
+                            ref.child("user-info/"+meeting.getHostUid()+"/user_Nickname").addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
-                                public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
-                                    if (error == null){
-                                        // 업로드 성공한 경우,
-                                        progressDialog.dismiss();       // 로딩 화면 숨기기
-                                        showUploadSuccessDialog();      // 성공 다이얼로그 출력
-                                    }else {
-                                        //  업로드 실패 경우
-                                        progressDialog.dismiss();       // 로딩 화면 숨기기
-                                        showUploadFailDialog();     // 실패 다이얼로그 출력
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    String userNickName = snapshot.getValue(String.class);      // 개최자 닉네임 가져오기
+
+                                    // firebase에 저장
+                                    Map<String, Object> meetingInsert = new HashMap<>();
+                                    // meeting 테이블에 저장
+                                    // meeting > 포차 id > 번개 id > 번개 정보
+                                    meetingInsert.put("/meeting/"+pchKey+"/"+meetingKey, meeting);
+                                    // myMeeting 테이블에 저장
+                                    // myMeeting > uid > 번개 id : 포차 id
+                                    meetingInsert.put("/myMeeting/"+meeting.getHostUid()+"/"+meetingKey, pchKey);
+                                    // meetingAttenders
+                                    // meetingAttenders > 번개 id > uid : 닉네임
+                                    meetingInsert.put("meetingAttenders/"+meetingKey+"/"+meeting.getHostUid(), userNickName);
+
+                                    Log.e("test1", "판단하기 전");
+
+                                    if(!hasMeeting){
+                                        // shops 테이블에 저장
+                                        // shops > 포차 id > hasMeeting
+                                        meetingInsert.put("shops/"+pchKey+"/hasMeeting", true);
+                                        Log.e("test1", "판단");
+
                                     }
+                                    Log.e("test1", "판단하기 후");
+
+                                    // firebase에 업로드
+                                    ref.updateChildren(meetingInsert, new DatabaseReference.CompletionListener() {
+                                        @Override
+                                        public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
+                                            if (error == null){
+                                                // 업로드 성공한 경우,
+                                                progressDialog.dismiss();       // 로딩 화면 숨기기
+                                                showUploadSuccessDialog();      // 성공 다이얼로그 출력
+                                            }else {
+                                                //  업로드 실패 경우
+                                                progressDialog.dismiss();       // 로딩 화면 숨기기
+                                                showUploadFailDialog();     // 실패 다이얼로그 출력
+                                            }
+                                        }
+                                    });
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+
                                 }
                             });
+
                         }
 
                         @Override
@@ -272,6 +299,7 @@ public class MeetingwriteActivity extends AppCompatActivity {
 
                         }
                     });
+
 
                 }else {
                     Toast.makeText(getApplicationContext(), "입력된 연령대의 범위가 옳지 않습니다", Toast.LENGTH_SHORT).show();
@@ -286,7 +314,7 @@ public class MeetingwriteActivity extends AppCompatActivity {
     private void showUploadSuccessDialog(){
         FragmentManager frgManager = getSupportFragmentManager();
         UploadSuccessDialogFragment successDialog = new UploadSuccessDialogFragment(); // 업로드 확인 다이어로그 생성 및 초기화
-        successDialog.setDialogCallPlace("번개");   // 번개에서 다이얼로그를 호출함을 전달
+        successDialog.setDialogCallPlace("번개", "등록");   // 번개에서 다이얼로그를 호출함을 전달
         successDialog.show(frgManager, "upload_success_meeting");
     }
 
@@ -294,7 +322,7 @@ public class MeetingwriteActivity extends AppCompatActivity {
     private void showUploadFailDialog(){
         FragmentManager frgManager = getSupportFragmentManager();
         UploadFailDialogFragment failDialog = new UploadFailDialogFragment(); // 업로드 확인 다이어로그 생성 및 초기화
-        failDialog.setDialogCallPlace("번개");   // 번개에서 다이얼로그를 호출함을 전달
+        failDialog.setDialogCallPlace("번개", "등록");   // 번개에서 다이얼로그를 호출함을 전달
         failDialog.show(frgManager, "upload_fail_meeting");
     }
 

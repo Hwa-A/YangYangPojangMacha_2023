@@ -30,13 +30,13 @@
                 android:id="@+id/tv_reviewwrite_pochaName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:maxWidth="310sp"
+                android:maxWidth="310dp"
                 android:text="양양포차"
                 android:singleLine="true"
                 android:ellipsize="marquee"
                 android:marqueeRepeatLimit="marquee_forever"
                 android:textColor="@color/black"
-                android:textSize="25sp"
+                android:textSize="25dp"
                 android:textStyle="bold"
                 android:letterSpacing="0.1"/>
             <ImageView
@@ -56,43 +56,52 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:padding="15dp">
+
             <TextView
                 android:id="@+id/tv_reviewwrite_ratingLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="별점"
+                android:layout_marginStart="10dp"
+                android:text=" 🌟 별점"
                 android:textColor="@color/black"
-                android:textSize="20sp"
+                android:textSize="16dp"
+                android:layout_marginTop="20dp"
                 android:textStyle="bold"
+                app:layout_constraintBottom_toTopOf="@id/rtb_reviewwrite_rating"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toTopOf="@id/rtb_reviewwrite_rating"/>
+                app:layout_constraintTop_toTopOf="parent" />
+
             <RatingBar
                 android:id="@+id/rtb_reviewwrite_rating"
+                style="?android:attr/ratingBarStyleIndicator"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="10dp"
                 android:isIndicator="false"
                 android:numStars="5"
+                android:progressTint="#F8D15D"
                 android:rating="0"
                 android:stepSize="0.5"
+                app:layout_constraintBottom_toTopOf="@id/tv_reviewwrite_textContentLabel"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tv_reviewwrite_ratingLabel"
-                app:layout_constraintBottom_toTopOf="@id/tv_reviewwrite_textContentLabel"
-                tools:ignore="SpeakableTextPresentCheck"
-                style="?android:attr/ratingBarStyleIndicator"
-                android:progressTint="#FFC107" />
+                tools:ignore="SpeakableTextPresentCheck" />
+
             <TextView
                 android:id="@+id/tv_reviewwrite_textContentLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="내용"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="25dp"
+                android:text="📍  내용"
                 android:textColor="@color/black"
-                android:textSize="20sp"
+                android:textSize="16dp"
                 android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/rtb_reviewwrite_rating"
                 app:layout_constraintBottom_toTopOf="@id/txtLay_reviewwrite_summaryContainer"
-                android:layout_marginTop="15dp"/>
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/rtb_reviewwrite_rating" />
+
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/txtLay_reviewwrite_summaryContainer"
                 android:layout_width="0dp"
@@ -106,114 +115,129 @@
                 app:layout_constraintTop_toBottomOf="@id/tv_reviewwrite_textContentLabel"
                 app:layout_constraintBottom_toTopOf="@id/tv_reviewwrite_imageLabel"
                 android:layout_marginTop="5dp">
+
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/edt_reviewwrite_summary"
                     android:layout_width="match_parent"
                     android:layout_height="200dp"
-                    android:textSize="15sp"
+                    android:gravity="top"
                     android:maxLength="150"
-                    android:gravity="top"/>
+                    android:textSize="14dp" />
             </com.google.android.material.textfield.TextInputLayout>
+
             <TextView
                 android:id="@+id/tv_reviewwrite_imageLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="사진 등록"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="15dp"
+                android:text="🖼️  사진 등록"
                 android:textColor="@color/black"
-                android:textSize="20sp"
+                android:textSize="16dp"
                 android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/txtLay_reviewwrite_summaryContainer"
                 app:layout_constraintBottom_toTopOf="@id/lin_reviewwrite_imageContainer"
-                android:layout_marginTop="15dp"/>
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/txtLay_reviewwrite_summaryContainer" />
+
             <LinearLayout
                 android:id="@+id/lin_reviewwrite_imageContainer"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_width="368dp"
+                android:layout_height="101dp"
+                android:layout_marginTop="5dp"
                 android:orientation="horizontal"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tv_reviewwrite_imageLabel"
                 app:layout_constraintBottom_toTopOf="@id/lin_reviewwrite_registerButtonContainer"
-                android:layout_marginTop="5dp">
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_reviewwrite_imageLabel">
+
                 <FrameLayout
                     android:id="@+id/framLay_reviewwrite_pictureContainer1"
                     android:layout_width="97dp"
                     android:layout_height="97dp"
                     android:layout_marginRight="10dp">
+
                     <ImageButton
                         android:id="@+id/imgbtn_reviewwrite_picture1"
-                        android:layout_width="90dp"
-                        android:layout_height="90dp"
-                        android:src="@drawable/pochareview_camera"
+                        android:layout_width="83dp"
+                        android:layout_height="84dp"
+                        android:layout_gravity="left|bottom"
                         android:adjustViewBounds="true"
                         android:background="#CFCFCF"
-                        tools:ignore="SpeakableTextPresentCheck"
-                        android:layout_gravity="left|bottom"/>
+                        android:src="@drawable/pochareview_camera"
+                        tools:ignore="SpeakableTextPresentCheck" />
+
                     <ImageButton
                         android:id="@+id/imgbtn_reviewwrite_pictureCancel1"
                         android:layout_width="25dp"
                         android:layout_height="25dp"
-                        android:src="@drawable/reviewwrite_picture_clear"
+                        android:layout_gravity="right"
                         android:adjustViewBounds="true"
                         android:background="@drawable/reviewwrite_picture_clear_btn"
-                        tools:ignore="SpeakableTextPresentCheck"
+                        android:src="@drawable/reviewwrite_picture_clear"
                         android:visibility="gone"
-                        android:layout_gravity="right"/>
+                        tools:ignore="SpeakableTextPresentCheck" />
                 </FrameLayout>
+
                 <FrameLayout
                     android:id="@+id/framLay_reviewwrite_pictureContainer2"
                     android:layout_width="97dp"
                     android:layout_height="97dp"
-                    android:visibility="gone"
-                    android:layout_marginRight="10dp">
+                    android:layout_marginRight="10dp"
+                    android:visibility="gone">
+
                     <ImageButton
                         android:id="@+id/imgbtn_reviewwrite_picture2"
                         android:layout_width="90dp"
                         android:layout_height="90dp"
-                        android:src="@drawable/pochareview_camera"
+                        android:layout_gravity="left|bottom"
                         android:adjustViewBounds="true"
                         android:background="#CFCFCF"
-                        tools:ignore="SpeakableTextPresentCheck"
-                        android:layout_gravity="left|bottom"/>
+                        android:src="@drawable/pochareview_camera"
+                        tools:ignore="SpeakableTextPresentCheck" />
+
                     <ImageButton
                         android:id="@+id/imgbtn_reviewwrite_pictureCancel2"
                         android:layout_width="25dp"
                         android:layout_height="25dp"
-                        android:src="@drawable/reviewwrite_picture_clear"
+                        android:layout_gravity="right"
                         android:adjustViewBounds="true"
                         android:background="@drawable/reviewwrite_picture_clear_btn"
-                        tools:ignore="SpeakableTextPresentCheck"
+                        android:src="@drawable/reviewwrite_picture_clear"
                         android:visibility="gone"
-                        android:layout_gravity="right"/>
+                        tools:ignore="SpeakableTextPresentCheck" />
                 </FrameLayout>
+
                 <FrameLayout
                     android:id="@+id/framLay_reviewwrite_pictureContainer3"
                     android:layout_width="97dp"
                     android:layout_height="97dp"
-                    android:visibility="gone"
-                    android:layout_marginRight="10dp">
+                    android:layout_marginRight="10dp"
+                    android:visibility="gone">
+
                     <ImageButton
                         android:id="@+id/imgbtn_reviewwrite_picture3"
                         android:layout_width="90dp"
                         android:layout_height="90dp"
-                        android:src="@drawable/pochareview_camera"
+                        android:layout_gravity="left|bottom"
                         android:adjustViewBounds="true"
                         android:background="#CFCFCF"
-                        tools:ignore="SpeakableTextPresentCheck"
-                        android:layout_gravity="left|bottom"/>
+                        android:src="@drawable/pochareview_camera"
+                        tools:ignore="SpeakableTextPresentCheck" />
+
                     <ImageButton
                         android:id="@+id/imgbtn_reviewwrite_pictureCancel3"
                         android:layout_width="25dp"
                         android:layout_height="25dp"
-                        android:src="@drawable/reviewwrite_picture_clear"
+                        android:layout_gravity="right"
                         android:adjustViewBounds="true"
                         android:background="@drawable/reviewwrite_picture_clear_btn"
-                        tools:ignore="SpeakableTextPresentCheck"
+                        android:src="@drawable/reviewwrite_picture_clear"
                         android:visibility="gone"
-                        android:layout_gravity="right"/>
+                        tools:ignore="SpeakableTextPresentCheck" />
                 </FrameLayout>
             </LinearLayout>
+
             <LinearLayout
                 android:id="@+id/lin_reviewwrite_registerButtonContainer"
                 android:layout_width="match_parent"
@@ -231,20 +255,22 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="50dp"
-                    android:backgroundTint="#FF9800"
+                    android:backgroundTint="#DF793E"
                     android:letterSpacing="0.2"
                     android:text="취소"
+                    android:textStyle="bold"
                     android:textColor="@color/white"
-                    android:textSize="20sp" />
+                    android:textSize="13dp" />
 
                 <Button
                     android:id="@+id/btn_reviewwrite_register"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="등록"
-                    android:textSize="20sp"
+                    android:textSize="13dp"
+                    android:textStyle="bold"
                     android:textColor="@color/white"
-                    android:backgroundTint="#FF9800"
+                    android:backgroundTint="#DF793E"
                     android:letterSpacing="0.2" />
             </LinearLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>

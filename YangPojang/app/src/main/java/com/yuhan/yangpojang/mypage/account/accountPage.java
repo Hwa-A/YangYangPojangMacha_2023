@@ -39,6 +39,10 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.yuhan.yangpojang.R;
 import com.yuhan.yangpojang.SplashImage;
+//import com.yuhan.yangpojang.Splashoutimage;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -227,12 +231,14 @@ public class accountPage extends AppCompatActivity {
                 .setPositiveButton("네", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int i) {
+                        signOut();
                         deleteAccount();
                         Intent intent = new Intent(getApplicationContext(), SplashImage.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(intent);
                         finish();
+
                     }
                 })
                 .setNegativeButton("아니요", new DialogInterface.OnClickListener() {
@@ -249,11 +255,7 @@ public class accountPage extends AppCompatActivity {
 
 
     private void signOut() {
-        mGoogleSignInClient.signOut()
-                .addOnCompleteListener(this, task -> {
-                    mAuth.getInstance().signOut();
-                    gsa = null;
-                });
+        // Implement your sign-out logic here
     }
 
 

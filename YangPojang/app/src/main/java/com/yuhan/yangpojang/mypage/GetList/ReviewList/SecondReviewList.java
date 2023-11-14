@@ -54,7 +54,7 @@ public class SecondReviewList {
                     Log.d("프로필reviewSecond", "onDataChange: " + selectReview.size());
                 }
 
-                reviewRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                reviewRef.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         for (i = 0; i < selectShop.size(); i++) {

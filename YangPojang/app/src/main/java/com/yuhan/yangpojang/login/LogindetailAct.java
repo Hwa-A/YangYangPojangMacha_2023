@@ -36,6 +36,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.yuhan.yangpojang.MainActivity;
 import com.yuhan.yangpojang.R;
+import com.yuhan.yangpojang.SplashImage;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -52,6 +53,10 @@ public class LogindetailAct extends AppCompatActivity {
     DatePickerDialog datePickerDialog;
     RadioGroup radioGroup;
     TextView sexchecked;
+
+    //서빈추가 필요
+    TextView textView;
+
     ImageView profileImage;
     private Uri User_profileuri;
     private String User_img;
@@ -79,7 +84,7 @@ public class LogindetailAct extends AppCompatActivity {
         sexchecked = findViewById(R.id.sex);
         profileImage = findViewById(R.id.profileImagesetting);
         User_img = "/profile/"+user_info_uid;
-
+        textView= findViewById(R.id.textView);
 
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -202,6 +207,10 @@ public class LogindetailAct extends AppCompatActivity {
                     if(result.getResultCode() == RESULT_OK && result.getData() != null) {
                         User_profileuri = result.getData().getData();
                         profileImage.setImageURI(User_profileuri);
+                        // 서빈 추가
+                        profileImage.setBackground(null);
+                        textView.setVisibility(View.GONE);
+
                     }
                 }
             });
@@ -214,11 +223,11 @@ public class LogindetailAct extends AppCompatActivity {
                     @Override
                     public void onSuccess(Void aVoid) {
                         Toast.makeText(LogindetailAct.this, "회원가입 완료!.", Toast.LENGTH_SHORT).show();
-                        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
-                        if(bottomNavigationView!=null)
-                        {
-                            bottomNavigationView.setSelectedItemId(R.id.navigation_map);
-                        }
+                        Intent intent = new Intent(getApplication(), MainActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
+                        finish();
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
