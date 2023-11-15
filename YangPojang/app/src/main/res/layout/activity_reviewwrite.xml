@@ -164,6 +164,8 @@
                         android:layout_gravity="left|bottom"
                         android:adjustViewBounds="true"
                         android:background="#CFCFCF"
+                        android:scaleType="centerCrop"
+                        android:padding="0dp"
                         android:src="@drawable/pochareview_camera"
                         tools:ignore="SpeakableTextPresentCheck" />
 
@@ -193,6 +195,8 @@
                         android:layout_gravity="left|bottom"
                         android:adjustViewBounds="true"
                         android:background="#CFCFCF"
+                        android:scaleType="centerCrop"
+                        android:padding="0dp"
                         android:src="@drawable/pochareview_camera"
                         tools:ignore="SpeakableTextPresentCheck" />
 
@@ -222,6 +226,8 @@
                         android:layout_gravity="left|bottom"
                         android:adjustViewBounds="true"
                         android:background="#CFCFCF"
+                        android:scaleType="centerCrop"
+                        android:padding="0dp"
                         android:src="@drawable/pochareview_camera"
                         tools:ignore="SpeakableTextPresentCheck" />
 
