@@ -30,3 +30,7 @@
   - 전체 UI: 홍서빈
   - 전체 파일 병합: 이승현
   - 테스터: 신영완
+
+## 작품 구조도
+![noname01](https://github.com/Hwa-A/YangYangPojangMacha_2023/assets/100755682/a479ef21-f8f0-405a-b3bf-55c3051ef51a)
+
