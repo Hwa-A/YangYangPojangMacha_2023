@@ -77,9 +77,12 @@
 　　　![주소검색_기본주소검색](https://github.com/Hwa-A/YangYangPojangMacha_2023/assets/100755682/16398faa-300d-4e83-b6d6-8e7b3c506ce9)<br>
 　　　2. 키워드에 따른 검색 목록 출력<br>
 　　　![주소검색_키워드 검색](https://github.com/Hwa-A/YangYangPojangMacha_2023/assets/100755682/b90f6157-d23c-49ec-9c74-cf5b7fe6c14c)<br>
-　　　　　　- 사용자가 한 글자씩 키워드를 입력할 때마다 웹 서버로 http요청을 보낸 후<br>해당 키워드와 일치하는 데이터를 30개 정도를 받음<br>
-　　　　　　- 현재 사용자의 위치를 기준으로 동일한 지역에 속하는 주소를 우선적으로 표시하고<br>추가적인 필터링 과정을 통해 관련 데이터를 상위에 정렬하여 리스트 뷰에 나타냄<br>
-　　　　　　- 지명, 도로명 주소, 지번 주소, 좌표값 등을 데이터로 받고<br>해당 좌표값을 기준으로 마커를 표시
+　　　　　　- 사용자가 한 글자씩 키워드를 입력할 때마다 웹 서버로 http요청을 보낸 후<br>
+　　　　　　　해당 키워드와 일치하는 데이터를 30개 정도를 받음<br>
+　　　　　　- 현재 사용자의 위치를 기준으로 동일한 지역에 속하는 주소를 우선적으로 표시하고<br>
+　　　　　　　추가적인 필터링 과정을 통해 관련 데이터를 상위에 정렬하여 리스트 뷰에 나타냄<br>
+　　　　　　- 지명, 도로명 주소, 지번 주소, 좌표값 등을 데이터로 받고<br>
+　　　　　　　해당 좌표값을 기준으로 마커를 표시
 ### 가게 제보
 　　　1. 가게 제보<br>
 　　　![가게제보_입력](https://github.com/Hwa-A/YangYangPojangMacha_2023/assets/100755682/000fceda-ecc4-4f95-bd00-38f65a83f265)<br>
@@ -127,3 +130,19 @@
 　　　　　　![계정관리_인증설명](https://github.com/Hwa-A/YangYangPojangMacha_2023/assets/100755682/cb0ad931-916a-4720-a8c9-4700e3d289c7)<br>
 　　　　　　③ 가게 번개<br>
 　　　　　　![계정관리_번개설명](https://github.com/Hwa-A/YangYangPojangMacha_2023/assets/100755682/c3a12724-c681-4fb5-a318-36ad1812fcc4)
+
+## 관련 이론
+### NoSQL 클라우드 데이터베이스
+**: Firebase Realtime Database는 NoSQL 클라우드 데이터베이스 방식**<br>
+모든 클라이언트에서 실시간으로 데이터가 동기화되고 앱이 오프라인일 때도 데이터를 사용 가능<br>
+https://firebase.google.com/docs/database?hl=ko
+### GeoHash
+**: 위치를 고유한 문자열로 인코딩하는 방법**<br>
+　　　- 지구를 일정한 크기의 구역으로 나눈 후, 각 구역에 고유한 해쉬값을 부여함으로써 지리적 위치를 문자열로 표현<br>
+　　　- 지정 반경 내의 좌표 데이터만 선별하여 가져올 수 있음
+### Geocoding
+**: 주소나 지명을 좌표(위도 및 경도)로 변환하는 프로세스**<br>
+　　　- 지명, 도로명 주소, 건물명 등을 입력하면 이를 지리적 좌표로 매핑하여 해당 위치를 식별
+### 국토정보플랫폼의 검색API(https://map.ngii.go.kr/mn/mainPage.do) 제공 API
+구글과 카카오 지도에서 제공하는 주소 검색 API는 과금의 우려로, 해당 API를 사용해 직접 구현
+https://map.ngii.go.kr/mi/emapApi/searchApiGuid.do
